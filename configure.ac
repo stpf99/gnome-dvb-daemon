@@ -23,13 +23,14 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-GLIB_REQUIRED=2.12.0
-GTK_REQUIRED=2.10.0
+GLIB_REQUIRED=2.16.0
+GIO_REQUIRED=2.16.0
 GST_REQUIRED=0.10.19
 DBUS_REQUIRED=0.74
 GEE_REQUIRED=0.1.4
 
 PKG_CHECK_MODULES(DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
+							gio-2.0 >= $GIO_REQUIRED
                             gobject-2.0 >= $GLIB_REQUIRED
                             gstreamer-0.10 >= $GST_REQUIRED
                             dbus-glib-1 >= $DBUS_REQUIRED

@@ -30,6 +30,7 @@ dvb_daemon_VALASOURCES = \
 	src/ScannedItem.vala \
 	src/Manager.vala \
 	src/Constants.vala \
+	src/ChannelListWriter.vala \
 	$(NULL)
 
 dvb_daemon_SOURCES = \
@@ -38,10 +39,10 @@ dvb_daemon_SOURCES = \
 	$(NULL)
 
 vala_pkgs = \
-    --pkg gtk+-2.0 \
+	--pkg gio-2.0 \
     --pkg dbus-glib-1 \
     --pkg gstreamer-0.10 \
-    --pkg gee-1.0
+    --pkg gee-1.0 
 
 src/dvb-daemon.vala.stamp: $(dvb_daemon_VALASOURCES)
 	$(VALAC) -C $(vala_pkgs) --basedir $(top_srcdir) $^
