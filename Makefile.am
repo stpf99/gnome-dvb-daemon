@@ -22,15 +22,19 @@ BUILT_SOURCES = \
 bin_PROGRAMS = dvb-daemon
 
 dvb_daemon_VALASOURCES = \
+	src/Scanner/Scanner.vala \
+	src/Scanner/CableScanner.vala \
+	src/Scanner/SatelliteScanner.vala \
+	src/Scanner/TerrestrialScanner.vala \
+	src/Scanner/ScannedItem.vala \
+	src/Scanner/ChannelListWriter.vala \
 	src/Main.vala \
-	src/Device.vala \
-	src/Scanner.vala \
+	src/Device.vala \	
 	src/MpegTsEnums.vala \
 	src/Channel.vala \
-	src/ScannedItem.vala \
 	src/Manager.vala \
 	src/Constants.vala \
-	src/ChannelListWriter.vala \
+	src/Recorder.vala \
 	$(NULL)
 
 dvb_daemon_SOURCES = \
