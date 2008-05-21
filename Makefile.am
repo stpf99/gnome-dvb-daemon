@@ -35,6 +35,7 @@ dvb_daemon_VALASOURCES = \
 	src/Manager.vala \
 	src/Constants.vala \
 	src/Recorder.vala \
+	src/Utils.vala \
 	$(NULL)
 
 dvb_daemon_SOURCES = \

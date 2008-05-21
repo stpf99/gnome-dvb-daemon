@@ -66,12 +66,15 @@ namespace DVB {
                 }
             }
 
+            string new_text;
             try {
-                return convert (sb.str, sb.len, "utf8", encoding);
+                new_text = convert (sb.str, sb.len, "utf8", encoding);
             } catch (ConvertError e) {
                 error(e.message);
                 return text;
             }
+            
+            return new_text;
         }
     }
 
