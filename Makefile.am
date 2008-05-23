@@ -27,6 +27,7 @@ dvb_daemon_VALASOURCES = \
 	src/Satellite/SatelliteChannel.vala \
 	src/Satellite/SatelliteScanner.vala \
 	src/Terrestrial/TerrestrialChannel.vala \
+	src/Terrestrial/TerrestrialRecorder.vala \
 	src/Terrestrial/TerrestrialScanner.vala \
 	src/Channel.vala \
 	src/ChannelList.vala \
@@ -37,8 +38,10 @@ dvb_daemon_VALASOURCES = \
 	src/Manager.vala \
 	src/MpegTsEnums.vala \
 	src/Recorder.vala \
+	src/Recording.vala \
 	src/Scanner.vala \
 	src/ScannedItem.vala \
+	src/Timer.vala \
 	src/Utils.vala \
 	$(NULL)
 

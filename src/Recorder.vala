@@ -1,4 +1,6 @@
 using GLib;
+using Gst;
+using Gee;
 
 namespace DVB {
 
@@ -12,8 +14,23 @@ namespace DVB {
         public signal void recording_finished (uint recording_id);
         
         public DVB.Device Device { get; construct; }
+        public ChannelList Channels { get; construct; }
         
-        protected abstract void start_recording ();
+        protected Element pipeline;
+        protected Timer active_timer;
+        
+        private HashMap<uint, Timer> timers;
+        private uint timer_counter;
+        
+        construct {
+            this.timers = new HashMap<uint, Timer> (int_hash, int_equal, direct_equal);
+            this.timer_counter = 0;
+        }
+        
+        /**
+         * Setup dvbbasebin element with name "dvbbasebin"
+         */
+        protected abstract weak Element? get_dvbbasebin (Channel channel);
         
         /**
          * @channel: Channel number
@@ -31,7 +48,14 @@ namespace DVB {
             uint start_year, uint start_month, uint start_day,
             uint start_hour, uint start_minute, uint duration) {
             
-            return 0;
+            this.timer_counter++;
+            this.timers.set (this.timer_counter,
+                new Timer (this.timer_counter, this.Channels.get(channel),
+                           null, null,
+                           start_year, start_month, start_day,
+                           start_hour, start_minute, duration));
+            
+            return this.timer_counter;
         }
         
         /**
@@ -41,8 +65,13 @@ namespace DVB {
          * Delete timer
          */
         public bool DeleteTimer (uint timer_id) {
-            
-            return true;
+            // TODO: Check if timer is active
+            if (this.timers.contains (timer_id)) {
+                this.timers.remove (timer_id);
+                return true;
+            } else {
+                return false;
+            }
         }
         
         /**
@@ -50,8 +79,15 @@ namespace DVB {
          * @returns: A list of all timer ids
          */
         public uint[] GetTimers () {
+            uint[] timer_arr = new uint[this.timers.size];
+            
+            int i=0;
+            foreach (uint key in this.timers.get_keys()) {
+                timer_arr[i] = this.timers.get(key).Id;
+                i++;
+            }
         
-            return new uint[] {0};
+            return timer_arr;
         }
         
         /**
@@ -59,27 +95,30 @@ namespace DVB {
          * @returns: An array of length 5, where index 0 = year, 1 = month,
          * 2 = day, 3 = hour and 4 = minute.
          */
-        public uint[] GetStartTime (uint timer_id) {
+        public uint[]? GetStartTime (uint timer_id) {
+            if (!this.timers.contains (timer_id)) return null;
         
-            return new uint[] {0};
+            return this.timers.get(timer_id).get_start_time ();
         }
         
         /**
          * @timer_id: Timer's id
          * @returns: Same as dvb_recorder_GetStartTime()
          */
-        public uint[] GetEndTime (uint timer_id) {
+        public uint[]? GetEndTime (uint timer_id) {
+            if (!this.timers.contains (timer_id)) return null;
         
-            return new uint[] {0};
+            return this.timers.get(timer_id).get_end_time ();
         }
         
         /**
          * @timer_id: Timer's id
          * @returns: Duration in seconds
          */
-        public uint GetDuration (uint timer_id) {
-
-            return 0;
+        public uint? GetDuration (uint timer_id) {
+            if (!this.timers.contains (timer_id)) return null;
+        
+            return this.timers.get(timer_id).Duration;
         }
         
         /**
@@ -87,8 +126,17 @@ namespace DVB {
          * (i.e.currently active recordings)
          */
         public uint[] GetActiveTimers () {
-            
+            // TODO: Move to other class
             return new uint[] {0};
+        }
+        
+        /**
+         * @timer_id: Timer's id
+         * @returns: TRUE if timer is currently active
+         */
+        public bool IsTimerActive (uint timer_id) {
+
+            return (timer_id == this.active_timer.Id);
         }
         
         /**
@@ -137,6 +185,38 @@ namespace DVB {
             return "";
         }
     
+        protected void stop_recording () {
+            this.pipeline.set_state (State.NULL);
+            this.pipeline = null;
+            this.recording_finished (active_timer.Id);
+        }
+        
+        protected void start_recording (Timer timer) {
+            Element dvbbasebin = this.get_dvbbasebin (timer.Channel);
+            
+            if (dvbbasebin == null) return;
+            
+            this.pipeline = new Pipeline ("recording_%s".printf(timer.Channel.Sid));
+            dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
+            Element filesink = ElementFactory.make ("filesink", "sink");
+            //TODO: filesink.set ("location", );
+            ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
+            
+        }
+        
+        private void on_dvbbasebin_pad_added (Pad pad) {
+            string sid = this.active_timer.Channel.Sid.to_string();
+            string program = "program_%s".printf(sid);
+            if (pad.get_name() == program) {
+                Element dvbbasebin = ((Bin) this.pipeline).get_by_name ("dvbbasebin");
+                dvbbasebin.set ("program-numbers", sid);
+                
+                Element sink = ((Bin) this.pipeline).get_by_name ("sink");
+                Pad sinkpad = sink.get_pad ("sink");
+                
+                pad.link (sinkpad);
+            }
+        }
     }
 
 }
