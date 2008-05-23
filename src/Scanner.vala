@@ -29,26 +29,12 @@ namespace DVB {
          */
         public DVB.Device Device { get; construct; }
 
-        /**
-         * A list of channels found by the scanner
-         */
-        public Channel[]# Channels {
-            get {
-                Channel[] chan_arr = new Channel[this.channels.size];
-                int i=0;
-                foreach (uint key in this.channels.get_keys ()) {
-                    chan_arr[i] = this.channels.get(key);
-                    i++;
-                }
-                return #chan_arr;
-            }
+        public ChannelList Channels {
+            get { return this.channels; }
         }
         
-        /**
-         * Maps channels' SID to the channels' data
-         */
-        protected HashMap<uint, Channel> channels;
-        
+        protected ChannelList channels;
+
         /**
          * The Gst pipeline used for scanning
          */
@@ -86,7 +72,7 @@ namespace DVB {
                 new HashSet<ScannedItem> (direct_hash, ScannedItem.equal);
             this.found_channels = new HashSet<int> (int_hash, int_equal);
             this.frequencies = new Queue<Gst.Structure> ();
-            this.channels = new HashMap<uint, Channel> (int_hash, int_equal, direct_equal);
+            this.channels = new ChannelList ();
             
             this.nit_arrived = false;
             this.sdt_arrived = false;

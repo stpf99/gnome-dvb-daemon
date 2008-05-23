@@ -29,6 +29,7 @@ dvb_daemon_VALASOURCES = \
 	src/Terrestrial/TerrestrialChannel.vala \
 	src/Terrestrial/TerrestrialScanner.vala \
 	src/Channel.vala \
+	src/ChannelList.vala \
 	src/ChannelListWriter.vala \
 	src/Constants.vala \
 	src/Device.vala \
