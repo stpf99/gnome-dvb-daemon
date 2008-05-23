@@ -6,14 +6,14 @@ namespace DVB {
      * This class is responsible for managing upcoming recordings and
      * already recorded items
      */
-    public class Recorder : GLib.Object {
+    public abstract class Recorder : GLib.Object {
     
         public signal void recording_started (uint timer_id);
         public signal void recording_finished (uint recording_id);
         
         public DVB.Device Device { get; construct; }
         
-        protected virtual void start_recording ();
+        protected abstract void start_recording ();
         
         /**
          * @channel: Channel number

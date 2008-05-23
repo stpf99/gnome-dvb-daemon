@@ -3,23 +3,75 @@ using Gee;
 
 namespace DVB {
 
+    /**
+     * An abstract class responsible for scanning for new channels
+     */
     public abstract class Scanner : GLib.Object {
 
+        /**
+         * Emitted when a frequency has been scanned.
+         * Whether a new channel has been found on that frequency or not.
+         */
         public signal void frequency_scanned (uint frequency);
+        
+        /**
+         * Emitted when a new channel has been found
+         */
         public signal void channel_added (Channel channel);
+        
+        /**
+         * Emitted when all frequencies have been scanned
+         */
         public signal void finished ();
         
+        /**
+         * The DVB device the scanner should use
+         */
         public DVB.Device Device { get; construct; }
 
-        public HashMap<uint, Channel> Channels {
-            get { return this.channels; }
+        /**
+         * A list of channels found by the scanner
+         */
+        public Channel[]# Channels {
+            get {
+                Channel[] chan_arr = new Channel[this.channels.size];
+                int i=0;
+                foreach (uint key in this.channels.get_keys ()) {
+                    chan_arr[i] = this.channels.get(key);
+                    i++;
+                }
+                return #chan_arr;
+            }
         }
         
+        /**
+         * Maps channels' SID to the channels' data
+         */
         protected HashMap<uint, Channel> channels;
+        
+        /**
+         * The Gst pipeline used for scanning
+         */
         protected Gst.Element pipeline;
+        
+        /**
+         * Contains the tuning parameters we use for scanning
+         */
         protected Queue<Gst.Structure> frequencies;
+        
+        /**
+         * The tuning paramters we're currently using
+         */
         protected Gst.Structure current_tuning_params;
+        
+        /**
+         * The SID of the current channel
+         */
         protected uint current_sid;
+        
+        /**
+         * All the frequencies that have been scanned already
+         */
         protected HashSet<ScannedItem> scanned_frequencies;
         
         private HashSet<int> found_channels;
@@ -42,11 +94,21 @@ namespace DVB {
             this.locked = false;
             this.check_for_lock_event_id = null;
         }
-       
+        
+        /**
+         * Setup the pipeline correctly
+         */
         protected abstract void prepare();
         
+        /**
+         * Use the frequency and possibly other data to
+         * mark the tuning paramters as already used
+         */
         protected abstract void add_scanned_item (uint frequency);
         
+        /**
+         * Start the scanner
+         */
         public virtual void Run() {
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
@@ -73,6 +135,10 @@ namespace DVB {
             this.frequencies.push_tail (#structure);
         }
         
+        /**
+         * Pick up the next tuning paramters from the queue
+         * and start scanning with them
+         */
         protected void start_scan () {
             this.nit_arrived = false;
             this.sdt_arrived = false;
@@ -99,6 +165,10 @@ namespace DVB {
             
         }
         
+        /**
+         * Check if we received a lock with the currently
+         * used tuning parameters
+         */
         protected bool check_for_lock () {
             if (!this.locked)
                 this.pipeline.set_state(Gst.State.READY);
