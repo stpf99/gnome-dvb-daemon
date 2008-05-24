@@ -41,7 +41,11 @@ public class Main {
         // Initializing GStreamer
         Gst.init (ref args);
         
-        start_manager();
+        File channelsfile = File.new_for_path ("/home/sebp/.gstreamer-0.10/dvb-channels.conf");
+        var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
+        reader.read ();
+        
+        //start_manager();
         /*
         Gst.Structure pro7 = new Gst.Structure ("pro7",
                 "hierarchy", typeof(uint), DVB.DvbSrcHierarchy.HIERARCHY_AUTO,
