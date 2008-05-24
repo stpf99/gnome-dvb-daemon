@@ -48,7 +48,25 @@ namespace DVB {
         }
         
         public uint[] get_end_time () {
-            return new uint[] {0,0,0,0,0};
+            uint minutes = this.Minute + this.Duration;
+            uint hours = this.Hour + (minutes / 60);
+            uint days = this.Day + (hours / 24);
+            // FIXME: month
+            uint months = this.Month + (days / 30);
+            uint year = this.Year + (days / 365);
+        
+            uint end_min = minutes % 60;
+            uint end_hour = hours % 24;
+            uint end_day = days % 365;
+            uint end_month = months % 30;
+            
+            return new uint[] {
+                year,
+                end_month,
+                end_day,
+                end_hour,
+                end_min
+            };
         }
     
     }

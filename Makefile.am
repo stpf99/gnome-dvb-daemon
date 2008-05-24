@@ -39,6 +39,7 @@ dvb_daemon_VALASOURCES = \
 	src/MpegTsEnums.vala \
 	src/Recorder.vala \
 	src/Recording.vala \
+	src/RecordingsStore.vala \
 	src/Scanner.vala \
 	src/ScannedItem.vala \
 	src/Timer.vala \

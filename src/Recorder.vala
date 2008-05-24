@@ -6,7 +6,7 @@ namespace DVB {
 
     /**
      * This class is responsible for managing upcoming recordings and
-     * already recorded items
+     * already recorded items for a single device
      */
     public abstract class Recorder : GLib.Object {
     
@@ -21,10 +21,12 @@ namespace DVB {
         
         private HashMap<uint, Timer> timers;
         private uint timer_counter;
+        private uint? check_timers_event_id;
         
         construct {
             this.timers = new HashMap<uint, Timer> (int_hash, int_equal, direct_equal);
             this.timer_counter = 0;
+            this.check_timers_event_id = null;
         }
         
         /**
@@ -39,7 +41,7 @@ namespace DVB {
          * @start_day: The day when recording should start
          * @start_hour: The hour when recording should start
          * @start_minute: The minute when recording should start
-         * @duration: How long the channel should be recorded
+         * @duration: How long the channel should be recorded (in minutes)
          * @returns: The new timer's id on success
          * 
          * Add a new timer
@@ -47,13 +49,19 @@ namespace DVB {
         public uint AddTimer (uint channel,
             uint start_year, uint start_month, uint start_day,
             uint start_hour, uint start_minute, uint duration) {
-            
+            // FIXME thread-safety
             this.timer_counter++;
             this.timers.set (this.timer_counter,
                 new Timer (this.timer_counter, this.Channels.get(channel),
                            null, null,
                            start_year, start_month, start_day,
                            start_hour, start_minute, duration));
+                           
+            if (this.check_timers_event_id == null) {
+                this.check_timers_event_id = Timeout.add_seconds (
+                    30, this.check_timers
+                );
+            }
             
             return this.timer_counter;
         }
@@ -66,6 +74,7 @@ namespace DVB {
          */
         public bool DeleteTimer (uint timer_id) {
             // TODO: Check if timer is active
+            // FIXME thread-safety
             if (this.timers.contains (timer_id)) {
                 this.timers.remove (timer_id);
                 return true;
@@ -80,7 +89,7 @@ namespace DVB {
          */
         public uint[] GetTimers () {
             uint[] timer_arr = new uint[this.timers.size];
-            
+            // FIXME thread-safety
             int i=0;
             foreach (uint key in this.timers.get_keys()) {
                 timer_arr[i] = this.timers.get(key).Id;
@@ -96,6 +105,7 @@ namespace DVB {
          * 2 = day, 3 = hour and 4 = minute.
          */
         public uint[]? GetStartTime (uint timer_id) {
+            // FIXME thread-safety
             if (!this.timers.contains (timer_id)) return null;
         
             return this.timers.get(timer_id).get_start_time ();
@@ -106,6 +116,7 @@ namespace DVB {
          * @returns: Same as dvb_recorder_GetStartTime()
          */
         public uint[]? GetEndTime (uint timer_id) {
+            // FIXME thread-safety
             if (!this.timers.contains (timer_id)) return null;
         
             return this.timers.get(timer_id).get_end_time ();
@@ -116,6 +127,7 @@ namespace DVB {
          * @returns: Duration in seconds
          */
         public uint? GetDuration (uint timer_id) {
+            // FIXME thread-safety
             if (!this.timers.contains (timer_id)) return null;
         
             return this.timers.get(timer_id).Duration;
@@ -149,42 +161,6 @@ namespace DVB {
             return true;
         }
         
-        /**
-         * @returns: A list of ids for all recordings
-         */
-        public uint[] GetRecordings () {
-            return new uint[] {0};
-        }
-        
-        /**
-         * @rec_id: The id of the recording
-         * @returns: The location of the recording on the filesystem
-         */
-        public string GetLocationOfRecording (uint rec_id) {
-           
-            return "";
-        }
-        
-        /**
-         * @rec_id: The id of the recording
-         * @returns: The name of the recording (e.g. the name of
-         * a TV show)
-         */
-        public string GetNameOfRecording (uint rec_id) {
-        
-            return "";
-        }
-        
-        /**
-         * @rec_id: The id of the recording
-         * @returns: A short text describing the recorded item
-         * (e.g. the description from EPG)
-         */
-        public string GetDescriptionOfRecording (uint rec_id) {
-        
-            return "";
-        }
-    
         protected void stop_recording () {
             this.pipeline.set_state (State.NULL);
             this.pipeline = null;
@@ -202,6 +178,7 @@ namespace DVB {
             //TODO: filesink.set ("location", );
             ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
             
+            this.pipeline.set_state (State.PLAYING);
         }
         
         private void on_dvbbasebin_pad_added (Pad pad) {
@@ -215,6 +192,32 @@ namespace DVB {
                 Pad sinkpad = sink.get_pad ("sink");
                 
                 pad.link (sinkpad);
+            }
+        }
+        
+        private bool check_timers () {
+            Time localtime = Time.local (time_t ());
+            // FIXME thread-safety
+            foreach (uint key in this.timers.get_keys()) {
+                Timer timer = this.timers.get (key);
+                
+                if (timer.Year >= localtime.year && timer.Month >= localtime.month
+                    && timer.Day >= localtime.day && timer.Hour >= localtime.hour
+                    && timer.Minute >= localtime.minute) {
+                    this.active_timer = timer;
+                    this.start_recording (timer);
+                    this.timers.remove (timer);
+                    break;   
+                }
+            }
+            
+            if (this.timers.size == 0) {
+                // We don't have any timers
+                this.check_timers_event_id = null;
+                return false;
+            } else {
+                // We still have timers
+                return true;
             }
         }
     }
