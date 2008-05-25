@@ -70,7 +70,7 @@ namespace DVB {
         construct {
             this.scanned_frequencies =
                 new HashSet<ScannedItem> (direct_hash, ScannedItem.equal);
-            this.found_channels = new HashSet<int> (int_hash, int_equal);
+            this.found_channels = new HashSet<int> ();
             this.frequencies = new Queue<Gst.Structure> ();
             this.channels = new ChannelList ();
             

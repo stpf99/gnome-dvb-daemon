@@ -24,7 +24,7 @@ namespace DVB {
         private uint? check_timers_event_id;
         
         construct {
-            this.timers = new HashMap<uint, Timer> (int_hash, int_equal, direct_equal);
+            this.timers = new HashMap<uint, Timer> ();
             this.timer_counter = 0;
             this.check_timers_event_id = null;
         }

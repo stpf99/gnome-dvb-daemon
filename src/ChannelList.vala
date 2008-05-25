@@ -15,7 +15,7 @@ namespace DVB {
         protected HashMap<uint, Channel> channels;
         
         construct {
-            this.channels = new HashMap<uint, Channel> (int_hash, int_equal, direct_equal);
+            this.channels = new HashMap<uint, Channel> ();
         }
         
         public Channel? get (uint sid) {
