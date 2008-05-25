@@ -8,24 +8,12 @@ namespace DVB {
         public DVB.Channel Channel {get; construct;}
         public string? Name {get; construct;}
         public string? Description {get; construct;}
-        public Time TimeTM {get; construct;}
+        public uint Year {get; construct;}
+        public uint Month {get; construct;}
+        public uint Day {get; construct;}
+        public uint Hour {get; construct;}
+        public uint Minute {get; construct;}
         public uint Duration {get; construct;}
-        
-        public uint Year {
-            get { return this.TimeTM.year + 1900; }
-        }
-        public uint Month {
-            get { return this.TimeTM.month + 1; }
-        }
-        public uint Day {
-            get { return this.TimeTM.day; }
-        }
-        public uint Hour {
-            get { return this.TimeTM.hour; }
-        }
-        public uint Minute {
-            get { return this.TimeTM.minute; }
-        }
         
         public Timer (uint id, DVB.Channel channel, string? name, string? description,
         int year, int month, int day, int hour, int minute, uint duration) {
@@ -34,8 +22,12 @@ namespace DVB {
             this.Name = name;
             this.Description = description;
             
-            this.TimeTM = this.create_time (year, month, day, hour, minute);
-            
+            this.Year = year;
+            this.Month = month;
+            this.Day = day;
+            this.Hour = hour;
+            this.Minute = minute;
+           
             this.Duration = duration;
         }
         
@@ -93,10 +85,14 @@ namespace DVB {
         
         public bool is_due () {
             var localtime = Time.local (time_t ());
+
+            // Convert to values of struct tm aka Time            
+            int year = (int)this.Year - 1900;
+            int month = (int)this.Month - 1;
             
-            return (this.TimeTM.year >= localtime.year && this.TimeTM.month >= localtime.month
-                    && this.TimeTM.day >= localtime.day && this.TimeTM.hour >= localtime.hour
-                    && this.TimeTM.minute >= localtime.minute);
+            return (year == localtime.year && month == localtime.month
+                    && this.Day == localtime.day && this.Hour == localtime.hour
+                    && this.Minute == localtime.minute);
         }
         
         public string to_string () {

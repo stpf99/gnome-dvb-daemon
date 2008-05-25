@@ -218,8 +218,6 @@ namespace DVB {
             foreach (uint key in this.timers.get_keys()) {
                 Timer timer = this.timers.get (key);
                 
-                debug(timer.to_string());
-                
                 if (timer.is_due()) {
                     this.start_recording (timer);
                     this.timers.remove (timer);
@@ -229,6 +227,7 @@ namespace DVB {
             
             if (this.timers.size == 0) {
                 // We don't have any timers
+                debug ("No timers anymore");
                 return false;
             } else {
                 // We still have timers
