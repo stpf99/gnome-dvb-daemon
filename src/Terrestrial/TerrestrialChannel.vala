@@ -14,11 +14,22 @@ namespace DVB {
         public DvbSrcHierarchy Hierarchy {get; set;}
         
         public string to_string () {
-            EnumClass eclass = (EnumClass)typeof(DvbSrcTransmissionMode).class_ref();
-        
-            return "%s:%d:%s:%s:%d:%d:%d".printf(base.Name, base.Frequency,
+            return "%s:%d:%s:%s:%s:%s:%s:%s:%s:%s:%d:%d:%d".printf(base.Name, base.Frequency,
+                Utils.get_nick_from_enum (typeof(DvbSrcInversion),
+                                          this.Inversion),
+                Utils.get_nick_from_enum (typeof(DvbSrcBandwidth),
+                                          this.Bandwith),
+                Utils.get_nick_from_enum (typeof(DvbSrcCodeRate),
+                                          this.CodeRateHP),
+                Utils.get_nick_from_enum (typeof(DvbSrcCodeRate),
+                                          this.CodeRateLP),
                 this.Constellation,
-                eclass.get_value(this.TransmissionMode).value_nick,
+                Utils.get_nick_from_enum (typeof(DvbSrcTransmissionMode),
+                                          this.TransmissionMode),
+                Utils.get_nick_from_enum (typeof(DvbSrcGuard),
+                                          this.GuardInterval),
+                Utils.get_nick_from_enum (typeof(DvbSrcHierarchy),
+                                          this.Hierarchy),
                 base.VideoPID, base.AudioPID, base.Sid);
         }
     

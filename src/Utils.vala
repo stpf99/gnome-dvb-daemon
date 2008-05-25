@@ -76,6 +76,17 @@ namespace DVB {
             
             return new_text;
         }
+        
+        public static weak string get_nick_from_enum (GLib.Type enumtype, int val) {
+            EnumClass eclass = (EnumClass)enumtype.class_ref();
+            return eclass.get_value(val).value_nick;
+        }
+        
+        public static weak int get_value_by_name_from_enum (GLib.Type enumtype, string name) {
+            EnumClass enumclass = (EnumClass)enumtype.class_ref ();
+            return enumclass.get_value_by_name(name).value;
+        }
+         
     }
 
 }
