@@ -16,16 +16,19 @@ namespace DVB {
         public DVB.Device Device { get; construct; }
         public ChannelList Channels { get; construct; }
         
-        protected Element pipeline;
+        protected Element? pipeline;
         protected Recording active_recording;
         
         private HashMap<uint, Timer> timers;
         private uint timer_counter;
         private string basedir;
         
+        private static const int CHECK_TIMERS_INTERVAL = 5;
+        
         construct {
             this.timers = new HashMap<uint, Timer> ();
             this.timer_counter = 0;
+            this.pipeline = null;
             this.basedir = "/home/sebp/TV/";
         }
         
@@ -63,7 +66,7 @@ namespace DVB {
             if (this.timers.size == 1) {
                 debug ("Creating new check timers");
                 Timeout.add_seconds (
-                    30, this.check_timers
+                    CHECK_TIMERS_INTERVAL, this.check_timers
                 );
             }
             
@@ -188,8 +191,16 @@ namespace DVB {
             this.active_recording.location = this.basedir+"dump.ts";
             
             this.pipeline = new Pipeline (
-                "recording_%s".printf(this.active_recording.channel_sid));
+                "recording_%d".printf(this.active_recording.channel_sid));
+            
+            weak Gst.Bus bus = this.pipeline.get_bus();
+            bus.add_signal_watch();
+            bus.message += this.bus_watch_func;
+                
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
+            dvbbasebin.set ("program-numbers",
+                            this.active_recording.channel_sid.to_string());
+            
             Element filesink = ElementFactory.make ("filesink", "sink");
             filesink.set ("location", this.active_recording.location);
             ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
@@ -197,13 +208,12 @@ namespace DVB {
             this.pipeline.set_state (State.PLAYING);
         }
         
-        private void on_dvbbasebin_pad_added (Pad pad) {
+        private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
+            debug ("Pad %s added", pad.get_name());
+        
             string sid = this.active_recording.channel_sid.to_string();
             string program = "program_%s".printf(sid);
             if (pad.get_name() == program) {
-                Element dvbbasebin = ((Bin) this.pipeline).get_by_name ("dvbbasebin");
-                dvbbasebin.set ("program-numbers", sid);
-                
                 Element sink = ((Bin) this.pipeline).get_by_name ("sink");
                 Pad sinkpad = sink.get_pad ("sink");
                 
@@ -211,6 +221,15 @@ namespace DVB {
             }
         }
         
+        private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
+            if (message.type == Gst.MessageType.ELEMENT) {
+                if (message.structure.get_name() == "dvb-read-failure") {
+                    error ("Could not read from DVB device");
+                    this.pipeline.set_state (State.NULL);
+                    this.pipeline = null;
+                }
+            }
+        }
         private bool check_timers () {
             debug ("Checking timers");
             
@@ -220,17 +239,18 @@ namespace DVB {
                 
                 if (timer.is_due()) {
                     this.start_recording (timer);
-                    this.timers.remove (timer);
+                    this.timers.remove (key);
                     break;   
                 }
             }
             
             if (this.timers.size == 0) {
                 // We don't have any timers
-                debug ("No timers anymore");
+                debug ("No timers left");
                 return false;
             } else {
                 // We still have timers
+                debug ("%d timers left", this.timers.size);
                 return true;
             }
         }
