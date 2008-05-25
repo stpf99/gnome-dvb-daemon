@@ -8,7 +8,7 @@ namespace DVB {
         public DvbSrcBandwidth Bandwith {get; set;}
         public DvbSrcCodeRate CodeRateHP {get; set;}
         public DvbSrcCodeRate CodeRateLP {get; set;}
-        public string Constellation {get; set;}
+        public DvbSrcModulation Constellation {get; set;}
         public DvbSrcTransmissionMode TransmissionMode {get; set;}
         public DvbSrcGuard GuardInterval {get; set;}
         public DvbSrcHierarchy Hierarchy {get; set;}
@@ -23,7 +23,8 @@ namespace DVB {
                                           this.CodeRateHP),
                 Utils.get_nick_from_enum (typeof(DvbSrcCodeRate),
                                           this.CodeRateLP),
-                this.Constellation,
+                Utils.get_nick_from_enum (typeof(DvbSrcModulation),
+                                          this.Constellation),
                 Utils.get_nick_from_enum (typeof(DvbSrcTransmissionMode),
                                           this.TransmissionMode),
                 Utils.get_nick_from_enum (typeof(DvbSrcGuard),

@@ -123,7 +123,9 @@ namespace DVB {
                     channel.CodeRateLP = Utils.get_value_by_name_from_enum (
                         typeof(DvbSrcCodeRate), val);
                 } else if (i == 6) {
-                    channel.Constellation = val;
+                    val = "DVB_DVB_SRC_MODULATION_"+val;
+                    channel.Constellation = Utils.get_value_by_name_from_enum (
+                        typeof(DvbSrcModulation), val);
                 } else if (i == 7) {
                     val = "DVB_DVB_SRC_TRANSMISSION_MODE_"+val;
                     channel.TransmissionMode = Utils.get_value_by_name_from_enum (
