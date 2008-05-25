@@ -17,16 +17,16 @@ namespace DVB {
         public ChannelList Channels { get; construct; }
         
         protected Element pipeline;
-        protected Timer active_timer;
+        protected Recording active_recording;
         
         private HashMap<uint, Timer> timers;
         private uint timer_counter;
-        private uint? check_timers_event_id;
+        private string basedir;
         
         construct {
             this.timers = new HashMap<uint, Timer> ();
             this.timer_counter = 0;
-            this.check_timers_event_id = null;
+            this.basedir = "/home/sebp/TV/";
         }
         
         /**
@@ -47,8 +47,11 @@ namespace DVB {
          * Add a new timer
          */
         public uint AddTimer (uint channel,
-            uint start_year, uint start_month, uint start_day,
-            uint start_hour, uint start_minute, uint duration) {
+            int start_year, int start_month, int start_day,
+            int start_hour, int start_minute, uint duration) {
+            debug ("Adding new timer: channel: %d, start: %d-%d-%d %d:%d, duration: %d",
+                channel, start_year, start_month, start_day,
+                start_hour, start_minute, duration);
             // FIXME thread-safety
             this.timer_counter++;
             this.timers.set (this.timer_counter,
@@ -57,8 +60,9 @@ namespace DVB {
                            start_year, start_month, start_day,
                            start_hour, start_minute, duration));
                            
-            if (this.check_timers_event_id == null) {
-                this.check_timers_event_id = Timeout.add_seconds (
+            if (this.timers.size == 1) {
+                debug ("Creating new check timers");
+                Timeout.add_seconds (
                     30, this.check_timers
                 );
             }
@@ -148,7 +152,7 @@ namespace DVB {
          */
         public bool IsTimerActive (uint timer_id) {
 
-            return (timer_id == this.active_timer.Id);
+            return (timer_id == this.active_recording.id);
         }
         
         /**
@@ -162,27 +166,39 @@ namespace DVB {
         }
         
         protected void stop_recording () {
+            debug ("Stoping recording of channel %s", active_recording.channel_sid);
+        
             this.pipeline.set_state (State.NULL);
             this.pipeline = null;
-            this.recording_finished (active_timer.Id);
+            this.recording_finished (active_recording.id);
         }
         
         protected void start_recording (Timer timer) {
+            debug ("Starting recording of channel %d", timer.Channel.Sid);
+        
             Element dvbbasebin = this.get_dvbbasebin (timer.Channel);
             
             if (dvbbasebin == null) return;
             
-            this.pipeline = new Pipeline ("recording_%s".printf(timer.Channel.Sid));
+            this.active_recording = Recording ();
+            this.active_recording.id = timer.Id;
+            this.active_recording.channel_sid = timer.Channel.Sid;
+            this.active_recording.start = timer.get_start_time ();
+            this.active_recording.length = timer.Duration;
+            this.active_recording.location = this.basedir+"dump.ts";
+            
+            this.pipeline = new Pipeline (
+                "recording_%s".printf(this.active_recording.channel_sid));
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
             Element filesink = ElementFactory.make ("filesink", "sink");
-            //TODO: filesink.set ("location", );
+            filesink.set ("location", this.active_recording.location);
             ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
             
             this.pipeline.set_state (State.PLAYING);
         }
         
         private void on_dvbbasebin_pad_added (Pad pad) {
-            string sid = this.active_timer.Channel.Sid.to_string();
+            string sid = this.active_recording.channel_sid.to_string();
             string program = "program_%s".printf(sid);
             if (pad.get_name() == program) {
                 Element dvbbasebin = ((Bin) this.pipeline).get_by_name ("dvbbasebin");
@@ -196,15 +212,15 @@ namespace DVB {
         }
         
         private bool check_timers () {
-            Time localtime = Time.local (time_t ());
+            debug ("Checking timers");
+            
             // FIXME thread-safety
             foreach (uint key in this.timers.get_keys()) {
                 Timer timer = this.timers.get (key);
                 
-                if (timer.Year >= localtime.year && timer.Month >= localtime.month
-                    && timer.Day >= localtime.day && timer.Hour >= localtime.hour
-                    && timer.Minute >= localtime.minute) {
-                    this.active_timer = timer;
+                debug(timer.to_string());
+                
+                if (timer.is_due()) {
                     this.start_recording (timer);
                     this.timers.remove (timer);
                     break;   
@@ -213,7 +229,6 @@ namespace DVB {
             
             if (this.timers.size == 0) {
                 // We don't have any timers
-                this.check_timers_event_id = null;
                 return false;
             } else {
                 // We still have timers

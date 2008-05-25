@@ -6,7 +6,7 @@ namespace DVB {
     
         public File ChannelFile {get; construct;}
         public AdapterType Type {get; construct;}
-        public ChannelList Channels {
+        public weak ChannelList Channels {
             get { return this.channels; }
         }
         

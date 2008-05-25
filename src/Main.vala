@@ -45,6 +45,11 @@ public class Main {
         var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
         reader.read ();
         
+        DVB.Device device = new DVB.Device(0,0);
+        var rec = new DVB.TerrestrialRecorder (device, reader.Channels);
+        uint id = rec.AddTimer (16403, 2008, 5, 25, 12, 49, 2);
+        stdout.printf ("Id is %d\n", id);
+        
         //start_manager();
         /*
         Gst.Structure pro7 = new Gst.Structure ("pro7",
@@ -57,7 +62,6 @@ public class Main {
                 "constellation", typeof(uint), DVB.DvbSrcModulation.QAM_64,
                 "guard-interval", typeof(uint), DVB.DvbSrcGuard.GUARD_INTERVAL_AUTO);
         
-        DVB.Device device = new DVB.Device(0,0);
         DVB.Scanner scanner = new DVB.Scanner(device);
         scanner.add_frequency(#pro7);
         scanner.run();
