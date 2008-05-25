@@ -221,7 +221,7 @@ namespace DVB {
             this.nit_arrived = true;
         }
         
-        protected void bus_watch_func (Object sender, Gst.Message message) {
+        protected void bus_watch_func (Gst.Bus bus, Gst.Message message) {
             if (message.type == Gst.MessageType.ELEMENT) {
                 if (message.structure.get_name() == "dvb-frontend-stats")
                     this.on_dvb_frontend_stats_structure (message.structure);
