@@ -80,7 +80,7 @@ namespace DVB {
                 break;
                 
                 case AdapterType.DVB_C:
-                c = null;
+                c = parse_cable_channel (line);
                 break;
             }
             return c;
@@ -100,7 +100,6 @@ namespace DVB {
             
             int i=0;
             string val;
-            weak EnumValue enumval;
             while ( (val = fields[i]) != null) {
                 if (i == 0) {
                     channel.Name = val;
@@ -192,6 +191,50 @@ namespace DVB {
             return channel;
         }
         
+        /**
+         *
+         * line looks like
+         * ProSieben:330000000:INVERSION_AUTO:6900000:FEC_NONE:QAM_64:255:256:898
+         */
+        private CableChannel# parse_cable_channel (string line) {
+            var channel = new CableChannel ();
+            
+            string[] fields = line.split(":");
+            
+            int i=0;
+            string val;
+            while ( (val = fields[i]) != null) {
+                if (i == 0) {
+                    channel.Name = val;
+                } else if (i == 1) {
+                    channel.Frequency = val.to_int ();
+                } else if (i == 2) {
+                    val = "DVB_DVB_SRC_INVERSION_"+val;
+                    channel.Inversion = Utils.get_value_by_name_from_enum (
+                        typeof(DvbSrcInversion), val);
+                } else if (i == 3) {
+                    channel.SymbolRate = val.to_int ();
+                } else if (i == 4) {
+                    val = "DVB_DVB_SRC_CODE_RATE_"+val;
+                    channel.CodeRate = Utils.get_value_by_name_from_enum (
+                        typeof(DvbSrcCodeRate), val);
+                } else if (i == 5) {
+                    val = "DVB_DVB_SRC_MODULATION_"+val;
+                    channel.Modulation = Utils.get_value_by_name_from_enum (
+                        typeof(DvbSrcModulation), val);
+                } else if (i == 6) {                
+                    channel.VideoPID = val.to_int ();
+                } else if (i == 7) {
+                    channel.AudioPID = val.to_int ();
+                } else if (i == 8) {
+                    channel.Sid = val.to_int ();
+                }
+                
+                i++;
+            }
+            
+            return channel;
+        }
     }
     
 }
