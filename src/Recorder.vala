@@ -18,6 +18,7 @@ namespace DVB {
         
         protected Element? pipeline;
         protected Recording active_recording;
+        protected Timer? active_timer;
         
         private HashMap<uint, Timer> timers;
         private uint timer_counter;
@@ -27,8 +28,7 @@ namespace DVB {
         
         construct {
             this.timers = new HashMap<uint, Timer> ();
-            this.timer_counter = 0;
-            this.pipeline = null;
+            this.reset ();
             this.basedir = "/home/sebp/TV/";
         }
         
@@ -168,11 +168,16 @@ namespace DVB {
             return true;
         }
         
-        protected void stop_recording () {
+        protected void reset () {
+            if (this.pipeline != null)
+                this.pipeline.set_state (State.NULL);
+            this.pipeline = null;
+            this.active_timer = null;
+        }
+        
+        protected void stop_current_recording () {
             debug ("Stoping recording of channel %s", active_recording.channel_sid);
         
-            this.pipeline.set_state (State.NULL);
-            this.pipeline = null;
             this.recording_finished (active_recording.id);
         }
         
@@ -182,6 +187,8 @@ namespace DVB {
             Element dvbbasebin = this.get_dvbbasebin (timer.Channel);
             
             if (dvbbasebin == null) return;
+            
+            this.active_timer = timer;
             
             this.active_recording = Recording ();
             this.active_recording.id = timer.Id;
@@ -225,28 +232,36 @@ namespace DVB {
             if (message.type == Gst.MessageType.ELEMENT) {
                 if (message.structure.get_name() == "dvb-read-failure") {
                     error ("Could not read from DVB device");
-                    this.pipeline.set_state (State.NULL);
-                    this.pipeline = null;
+                    this.reset ();
                 }
             }
         }
+        
         private bool check_timers () {
             debug ("Checking timers");
+            
+            if (this.active_timer != null && this.active_timer.is_end_due()) {
+                this.stop_current_recording ();
+            }
             
             // FIXME thread-safety
             foreach (uint key in this.timers.get_keys()) {
                 Timer timer = this.timers.get (key);
                 
-                if (timer.is_due()) {
+                debug ("Checking timer: %s", timer.to_string());
+                
+                if (timer.is_start_due()) {
                     this.start_recording (timer);
                     this.timers.remove (key);
-                    break;   
+                } else if (timer.has_expired()) {
+                    debug ("Removing expired timer: %s", timer.to_string());
+                    this.timers.remove (key);
                 }
             }
             
-            if (this.timers.size == 0) {
-                // We don't have any timers
-                debug ("No timers left");
+            if (this.timers.size == 0 && this.active_timer == null) {
+                // We don't have any timers and no recording is in progress
+                debug ("No timers left and no recording in progress");
                 return false;
             } else {
                 // We still have timers

@@ -31,7 +31,7 @@ namespace DVB {
             this.Duration = duration;
         }
         
-        private Time create_time (int year, int month, int day, int hour, int minute) {
+        private static Time create_time (int year, int month, int day, int hour, int minute) {
             var t = Time ();
             
             t.year = year - 1900;
@@ -62,28 +62,21 @@ namespace DVB {
         }
         
         public uint[] get_end_time () {
-            uint minutes = this.Minute + this.Duration;
-            uint hours = this.Hour + (minutes / 60);
-            uint days = this.Day + (hours / 24);
-            // FIXME: month
-            uint months = this.Month + (days / 30);
-            uint year = this.Year + (days / 365);
-        
-            uint end_min = minutes % 60;
-            uint end_hour = hours % 24;
-            uint end_day = days % 365;
-            uint end_month = months % 30;
+            var l = Time.local (this.get_end_time_timestamp ());
             
             return new uint[] {
-                year,
-                end_month,
-                end_day,
-                end_hour,
-                end_min
+                l.year + 1900,
+                l.month + 1,
+                l.day,
+                l.hour,
+                l.minute
             };
         }
         
-        public bool is_due () {
+        /**
+         * Whether the start time of the timer equals the current local time
+         */
+        public bool is_start_due () {
             var localtime = Time.local (time_t ());
 
             // Convert to values of struct tm aka Time            
@@ -95,11 +88,44 @@ namespace DVB {
                     && this.Minute == localtime.minute);
         }
         
+        /**
+         * Whether the end time of the timer equals the current local time
+         */
+        public bool is_end_due () {
+            var localtime = Time.local (time_t ());
+            var endtime = Time.local(this.get_end_time_timestamp ());
+            
+            debug ("%d-%d-%d %d:%d %d", endtime.year, endtime.month, endtime.day, endtime.hour, endtime.minute, endtime.isdst);
+            debug ("%d-%d-%d %d:%d %d", localtime.year, localtime.month, localtime.day, localtime.hour, localtime.minute, localtime.isdst);
+            
+            return (endtime.year == localtime.year && endtime.month == localtime.month
+                    && endtime.day == localtime.day && endtime.hour == localtime.hour
+                    && endtime.minute == localtime.minute);
+        }
+        
+        /**
+         * Whether the timer ends in the past
+         */
+        public bool has_expired () {
+            int64 current_time = (int64)time_t ();
+            int64 end_time = (int64)this.get_end_time_timestamp ();
+            
+            return (end_time < current_time);
+        }
+        
         public string to_string () {
             return "channel: %d, start: %d-%d-%d %d:%d, duration: %d".printf (
                 this.Channel.Sid, this.Year, this.Month, this.Day, this.Hour,
-                this.Minute, this.Duration
-            );
+                this.Minute, this.Duration);
+        }
+        
+        private time_t get_end_time_timestamp () {
+            var t = create_time ((int)this.Year, (int)this.Month,
+                (int)this.Day, (int)this.Hour, (int)this.Minute);
+
+            int64 new_time = (int64)t.mktime () + (this.Duration * 60);
+            
+            return (time_t)new_time;
         }
     
     }
