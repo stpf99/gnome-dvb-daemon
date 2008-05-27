@@ -176,9 +176,10 @@ namespace DVB {
         }
         
         protected void stop_current_recording () {
-            debug ("Stoping recording of channel %s", active_recording.channel_sid);
+            debug ("Stoping recording of channel %d", this.active_recording.channel_sid);
         
-            this.recording_finished (active_recording.id);
+            this.reset ();
+            this.recording_finished (this.active_recording.id);
         }
         
         protected void start_recording (Timer timer) {

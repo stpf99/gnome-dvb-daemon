@@ -32,7 +32,8 @@ namespace DVB {
         }
         
         private static Time create_time (int year, int month, int day, int hour, int minute) {
-            var t = Time ();
+            // Create Time with some initial value, otherwise time is wrong
+            var t = Time.local (time_t ());
             
             t.year = year - 1900;
             t.month = month - 1;
@@ -93,10 +94,7 @@ namespace DVB {
          */
         public bool is_end_due () {
             var localtime = Time.local (time_t ());
-            var endtime = Time.local(this.get_end_time_timestamp ());
-            
-            debug ("%d-%d-%d %d:%d %d", endtime.year, endtime.month, endtime.day, endtime.hour, endtime.minute, endtime.isdst);
-            debug ("%d-%d-%d %d:%d %d", localtime.year, localtime.month, localtime.day, localtime.hour, localtime.minute, localtime.isdst);
+            var endtime = Time.local (this.get_end_time_timestamp ());
             
             return (endtime.year == localtime.year && endtime.month == localtime.month
                     && endtime.day == localtime.day && endtime.hour == localtime.hour
@@ -122,10 +120,10 @@ namespace DVB {
         private time_t get_end_time_timestamp () {
             var t = create_time ((int)this.Year, (int)this.Month,
                 (int)this.Day, (int)this.Hour, (int)this.Minute);
-
-            int64 new_time = (int64)t.mktime () + (this.Duration * 60);
             
-            return (time_t)new_time;
+            t.minute += (int)this.Duration;
+            
+            return t.mktime ();
         }
     
     }
