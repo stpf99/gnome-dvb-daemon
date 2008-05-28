@@ -106,37 +106,30 @@ namespace DVB {
                 } else if (i == 1) {
                     channel.Frequency = val.to_int ();
                 } else if (i == 2) {
-                    val = "DVB_DVB_SRC_INVERSION_"+val;
-                    channel.Inversion = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcInversion), val);
+                    channel.Inversion = get_value_with_prefix (
+                        typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                 } else if (i == 3) {
-                    val = "DVB_DVB_SRC_BANDWIDTH_"+val;
-                    channel.Bandwith = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcBandwidth), val);
+                    channel.Bandwith = get_value_with_prefix (
+                        typeof(DvbSrcBandwidth), val, "DVB_DVB_SRC_BANDWIDTH_");
                 } else if (i == 4) {
-                    val = "DVB_DVB_SRC_CODE_RATE_"+val;
-                    channel.CodeRateHP = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcCodeRate), val);
+                    channel.CodeRateHP = get_value_with_prefix (
+                        typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                 } else if (i == 5) {
-                    val = "DVB_DVB_SRC_CODE_RATE_"+val;
-                    channel.CodeRateLP = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcCodeRate), val);
+                    channel.CodeRateLP = get_value_with_prefix (
+                        typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                 } else if (i == 6) {
-                    val = "DVB_DVB_SRC_MODULATION_"+val;
-                    channel.Constellation = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcModulation), val);
+                    channel.Constellation = get_value_with_prefix (
+                        typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
                 } else if (i == 7) {
-                    val = "DVB_DVB_SRC_TRANSMISSION_MODE_"+val;
-                    channel.TransmissionMode = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcTransmissionMode), val);
+                    channel.TransmissionMode = get_value_with_prefix (
+                        typeof(DvbSrcTransmissionMode), val,
+                        "DVB_DVB_SRC_TRANSMISSION_MODE_");
                 } else if (i == 8) {
-                    val = "DVB_DVB_SRC_GUARD_"+val;
-                    channel.GuardInterval = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcGuard), val);
+                    channel.GuardInterval = get_value_with_prefix (
+                        typeof(DvbSrcGuard), val, "DVB_DVB_SRC_GUARD_");
                 } else if (i == 9) {
-                    val = "DVB_DVB_SRC_HIERARCHY_"+val;
-                    channel.Hierarchy = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcHierarchy), val);
+                    channel.Hierarchy = get_value_with_prefix (
+                        typeof(DvbSrcHierarchy), val, "DVB_DVB_SRC_HIERARCHY_");
                 } else if (i == 10) {                
                     channel.VideoPID = val.to_int ();
                 } else if (i == 11) {
@@ -209,19 +202,16 @@ namespace DVB {
                 } else if (i == 1) {
                     channel.Frequency = val.to_int ();
                 } else if (i == 2) {
-                    val = "DVB_DVB_SRC_INVERSION_"+val;
-                    channel.Inversion = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcInversion), val);
+                    channel.Inversion = get_value_with_prefix (
+                        typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                 } else if (i == 3) {
                     channel.SymbolRate = val.to_int ();
                 } else if (i == 4) {
-                    val = "DVB_DVB_SRC_CODE_RATE_"+val;
-                    channel.CodeRate = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcCodeRate), val);
+                    channel.CodeRate = get_value_with_prefix (
+                        typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                 } else if (i == 5) {
-                    val = "DVB_DVB_SRC_MODULATION_"+val;
-                    channel.Modulation = Utils.get_value_by_name_from_enum (
-                        typeof(DvbSrcModulation), val);
+                    channel.Modulation = get_value_with_prefix (
+                        typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
                 } else if (i == 6) {                
                     channel.VideoPID = val.to_int ();
                 } else if (i == 7) {
@@ -234,6 +224,11 @@ namespace DVB {
             }
             
             return channel;
+        }
+        
+        private static int get_value_with_prefix (GLib.Type enumtype, string name,
+                                                  string prefix) {
+            return Utils.get_value_by_name_from_enum (enumtype, prefix + name);
         }
     }
     
