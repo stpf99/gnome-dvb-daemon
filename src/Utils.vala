@@ -84,5 +84,10 @@ namespace DVB.Utils {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
         return enumclass.get_value_by_name(name).value;
     }
+    
+    public static weak string get_name_by_value_from_enum (GLib.Type enumtype, int val) {
+        EnumClass enumclass = (EnumClass)enumtype.class_ref ();
+        return enumclass.get_value(val).value_name;
+    }
 
 }
