@@ -208,6 +208,8 @@ namespace DVB {
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
             dvbbasebin.set ("program-numbers",
                             this.active_recording.channel_sid.to_string());
+            dvbbasebin.set ("adapter", this.Device.Adapter);
+            dvbbasebin.set ("frontend", this.Device.Frontend);
             
             Element filesink = ElementFactory.make ("filesink", "sink");
             filesink.set ("location", this.active_recording.location);
