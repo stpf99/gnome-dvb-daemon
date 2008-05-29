@@ -5,9 +5,11 @@ namespace DVB {
 
     public class SatelliteRecorder : Recorder {
     
-        public SatelliteRecorder (Device dev, ChannelList channels) {
+        public SatelliteRecorder (Device dev, ChannelList channels,
+            string recordings_base_dir) {
             base.Device = dev;
             base.Channels = channels;
+            base.RecordingsBaseDir = recordings_base_dir;
         }
     
         protected override weak Element? get_dvbbasebin (Channel channel) {

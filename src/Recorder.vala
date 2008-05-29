@@ -15,21 +15,19 @@ namespace DVB {
         
         public DVB.Device Device { get; construct; }
         public ChannelList Channels { get; construct; }
+        public string RecordingsBaseDir { get; construct; }
         
         protected Element? pipeline;
         protected Recording active_recording;
         protected Timer? active_timer;
         
         private HashMap<uint, Timer> timers;
-        private uint timer_counter;
-        private string basedir;
-        
+        private uint timer_counter;        
         private static const int CHECK_TIMERS_INTERVAL = 5;
         
         construct {
             this.timers = new HashMap<uint, Timer> ();
             this.reset ();
-            this.basedir = "/home/sebp/TV/";
         }
         
         /**
@@ -196,7 +194,8 @@ namespace DVB {
             this.active_recording.channel_sid = timer.Channel.Sid;
             this.active_recording.start = timer.get_start_time ();
             this.active_recording.length = timer.Duration;
-            this.active_recording.location = this.basedir+"dump.ts";
+            
+            if (!this.create_recording_dirs (timer.Channel)) return;
             
             this.pipeline = new Pipeline (
                 "recording_%d".printf(this.active_recording.channel_sid));
@@ -216,6 +215,55 @@ namespace DVB {
             ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
             
             this.pipeline.set_state (State.PLAYING);
+        }
+        
+        /**
+         * Create directories and set location of recording
+         *
+         * @returns: TRUE on success
+         */
+        protected bool create_recording_dirs (Channel channel) {
+            Recording rec = this.active_recording;
+            string dirname = "%s/%s/%d-%d-%d_%d-%d".printf (this.RecordingsBaseDir,
+                channel.Name, rec.start[0], rec.start[1], rec.start[2], rec.start[3],
+                rec.start[4], rec.start[5]);
+                
+            File dir = File.new_for_path (dirname);
+            
+            if (!dir.query_exists (null)) {
+                debug ("Creating %s", dirname);
+                try {
+                    Utils.mkdirs (dir);
+                } catch (Error e) {
+                    error (e.message);
+                    return false;
+                }
+            }
+            
+            string attributes = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
+                                                FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
+            FileInfo info;
+            try {
+                info = dir.query_info (attributes, 0, null);
+            } catch (Error e) {
+                error (e.message);
+                return false;
+            }
+            
+            if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
+                != FileType.DIRECTORY) {
+                error ("%s is not a directory", dirname);
+                return false;
+            }
+            
+            if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+                error ("Cannot write to %s", dirname);
+                return false;
+            }
+            
+            this.active_recording.location = "%s/001.ts".printf (dirname);
+            
+            return true;
         }
         
         private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
@@ -268,7 +316,9 @@ namespace DVB {
                 return false;
             } else {
                 // We still have timers
-                debug ("%d timers left", this.timers.size);
+                debug ("%d timers and %d active recordings left",
+                    this.timers.size,
+                    (this.active_timer == null) ? 0 : 1);
                 return true;
             }
         }

@@ -89,5 +89,21 @@ namespace DVB.Utils {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
         return enumclass.get_value(val).value_name;
     }
+    
+    public static void mkdirs (File directory) throws Error {
+        SList<File> create_dirs = new SList<File> ();
+        
+        File current_dir = directory;
+        while (current_dir != null) {
+            if (current_dir.query_exists (null)) break;
+            create_dirs.prepend (current_dir);
+            current_dir = current_dir.get_parent ();
+        }
+        
+        foreach (File dir in create_dirs) {
+            debug ("Creating %s", dir.get_path ());
+            dir.make_directory (null);
+        }
+    }
 
 }
