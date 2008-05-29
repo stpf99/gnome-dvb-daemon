@@ -105,7 +105,7 @@ namespace DVB {
             this.stream.write (buffer, buffer.size(), null);
         }
         
-        private void write_satellite_channel (SatelliteChannel channel) {
+        private void write_satellite_channel (SatelliteChannel channel) throws IOError {
             string buffer = "%d:%s:%d:%d".printf (channel.Frequency / 1000,
                                                   channel.Polarization,
                                                   channel.DiseqcSource,
@@ -113,7 +113,7 @@ namespace DVB {
             this.stream.write (buffer, buffer.size(), null);
         }
         
-        private void write_cable_channel (CableChannel channel) {
+        private void write_cable_channel (CableChannel channel) throws IOError {
             string[] elements = new string [5];
             
             elements[0] = "%d".printf (channel.Frequency);
