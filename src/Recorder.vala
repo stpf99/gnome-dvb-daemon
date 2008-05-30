@@ -44,24 +44,31 @@ namespace DVB {
          * @start_hour: The hour when recording should start
          * @start_minute: The minute when recording should start
          * @duration: How long the channel should be recorded (in minutes)
-         * @returns: The new timer's id on success
+         * @returns: The new timer's id on success, or -1 if timer couldn't
+         * be created
          * 
          * Add a new timer
          */
-        public uint AddTimer (uint channel,
+        public int AddTimer (uint channel,
             int start_year, int start_month, int start_day,
             int start_hour, int start_minute, uint duration) {
             debug ("Adding new timer: channel: %d, start: %d-%d-%d %d:%d, duration: %d",
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
             // FIXME thread-safety
-            // TODO Check for conflicts
+            
+            var new_timer = new Timer (this.timer_counter, this.Channels.get(channel),
+                                       null, null,
+                                       start_year, start_month, start_day,
+                                       start_hour, start_minute, duration);
+            // Check for conflicts
+            foreach (uint key in this.timers.get_keys()) {
+                if (this.timers.get(key).conflicts_with (new_timer))
+                    return -1;
+            }
+            
             this.timer_counter++;
-            this.timers.set (this.timer_counter,
-                new Timer (this.timer_counter, this.Channels.get(channel),
-                           null, null,
-                           start_year, start_month, start_day,
-                           start_hour, start_minute, duration));
+            this.timers.set (this.timer_counter, new_timer);
                            
             if (this.timers.size == 1) {
                 debug ("Creating new check timers");
@@ -70,7 +77,7 @@ namespace DVB {
                 );
             }
             
-            return this.timer_counter;
+            return (int)this.timer_counter;
         }
         
         /**
