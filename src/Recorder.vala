@@ -13,6 +13,7 @@ namespace DVB {
         public signal void recording_started (uint timer_id);
         public signal void recording_finished (uint recording_id);
         
+        /* Set in constructor of sub-classes */
         public DVB.Device Device { get; construct; }
         public ChannelList Channels { get; construct; }
         public string RecordingsBaseDir { get; construct; }
@@ -22,7 +23,7 @@ namespace DVB {
         protected Timer? active_timer;
         
         private HashMap<uint, Timer> timers;
-        private uint timer_counter;        
+        private uint timer_counter;
         private static const int CHECK_TIMERS_INTERVAL = 5;
         
         construct {
@@ -54,6 +55,7 @@ namespace DVB {
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
             // FIXME thread-safety
+            // TODO Check for conflicts
             this.timer_counter++;
             this.timers.set (this.timer_counter,
                 new Timer (this.timer_counter, this.Channels.get(channel),
@@ -75,10 +77,15 @@ namespace DVB {
          * @timer_id: The id of the timer you want to delete
          * @returns: TRUE on success
          *
-         * Delete timer
+         * Delete timer. If the id belongs to the currently
+         * active timer recording is aborted.
          */
         public bool DeleteTimer (uint timer_id) {
-            // TODO: Check if timer is active
+            if (this.active_timer != null && this.IsTimerActive (timer_id)) {
+                this.stop_current_recording ();
+                return true;
+            }
+            
             // FIXME thread-safety
             if (this.timers.contains (timer_id)) {
                 this.timers.remove (timer_id);
@@ -163,7 +170,13 @@ namespace DVB {
         public bool HasTimer (uint start_year, uint start_month,
         uint start_day, uint start_hour, uint start_minute, uint duration) {
         
-            return true;
+            foreach (uint key in this.timers.get_keys()) {
+                if (this.timers.get(key).is_in_range (start_year, start_month,
+                start_day, start_hour, start_minute, duration))
+                    return true;
+            }
+        
+            return false;
         }
         
         protected void reset () {

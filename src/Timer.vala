@@ -2,6 +2,9 @@ using GLib;
 
 namespace DVB {
 
+    /**
+     * This class represents an event that should be recorded
+     */
     public class Timer : GLib.Object {
     
         public uint Id {get; construct;}
@@ -47,8 +50,42 @@ namespace DVB {
         /**
          * Whether the timer conflicts with the other one
          */
-        public bool conflicts (Timer t2) {
-            return false;
+        public bool conflicts_with (Timer t2) {
+            int64 this_start = (int64)this.get_start_time_timestamp ();
+            int64 other_start = (int64)t2.get_start_time_timestamp ();
+            
+            if (this_start <= other_start) {
+                // No conflict when this timer ends before other starts
+                int64 this_end = (int64)this.get_end_time_timestamp ();
+                return (this_end > other_start);
+            } else {
+                // No conflict when other timer ends before this starts
+                int64 other_end = (int64)t2.get_end_time_timestamp ();
+                return (other_end > this_start);
+            }
+        }
+        
+        /**
+         * Whether the timer is scheduled somewhere in the given timeframe
+         */
+        public bool is_in_range (uint start_year, uint start_month,
+        uint start_day, uint start_hour, uint start_minute, uint duration) {
+            int64 this_start = (int64)this.get_start_time_timestamp ();
+            
+            Time other_time = this.create_time ((int)start_year, (int)start_month,
+                (int)start_day, (int)start_hour, (int)start_minute);
+            int64 other_start = (int64)other_time.mktime ();
+            
+            if (this_start <= other_start) {
+                // No conflict when this timer ends before other starts
+                int64 this_end = (int64)this.get_end_time_timestamp ();
+                return (this_end > other_start);
+            } else {
+                // No conflict when other timer ends before this starts
+                other_time.minute += (int)duration;
+                int64 other_end = (int64)other_time.mktime ();
+                return (other_end > this_start);
+            }
         }
         
         public uint[] get_start_time () {
@@ -123,6 +160,12 @@ namespace DVB {
             
             t.minute += (int)this.Duration;
             
+            return t.mktime ();
+        }
+        
+        private time_t get_start_time_timestamp () {
+            var t = create_time ((int)this.Year, (int)this.Month,
+                (int)this.Day, (int)this.Hour, (int)this.Minute);
             return t.mktime ();
         }
     
