@@ -32,11 +32,11 @@ namespace DVB {
             this.stream = new BufferedOutputStream (fostream);
         }
         
-        public ChannelListWriter (File file) throws IOError {
+        public ChannelListWriter (File file) throws Error {
             this.file = file;
         }
         
-        public void write (Channel channel) throws IOError {
+        public void write (Channel channel) throws Error {
             string buffer;
         
             // Write channel name
@@ -60,11 +60,11 @@ namespace DVB {
             this.stream.write (buffer, buffer.size(), null);
         }
         
-        public bool close () throws IOError {
+        public bool close () throws Error {
             return this.stream.close (null);
         } 
     
-        private void write_terrestrial_channel (TerrestrialChannel channel) throws IOError {
+        private void write_terrestrial_channel (TerrestrialChannel channel) throws Error {
             string[] elements = new string[9];
             
             elements[0] = "%d".printf (channel.Frequency);
@@ -105,7 +105,7 @@ namespace DVB {
             this.stream.write (buffer, buffer.size(), null);
         }
         
-        private void write_satellite_channel (SatelliteChannel channel) throws IOError {
+        private void write_satellite_channel (SatelliteChannel channel) throws Error {
             string buffer = "%d:%s:%d:%d".printf (channel.Frequency / 1000,
                                                   channel.Polarization,
                                                   channel.DiseqcSource,
@@ -113,7 +113,7 @@ namespace DVB {
             this.stream.write (buffer, buffer.size(), null);
         }
         
-        private void write_cable_channel (CableChannel channel) throws IOError {
+        private void write_cable_channel (CableChannel channel) throws Error {
             string[] elements = new string [5];
             
             elements[0] = "%d".printf (channel.Frequency);
