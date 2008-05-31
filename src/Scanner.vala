@@ -99,12 +99,12 @@ namespace DVB {
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
                 this.pipeline = Gst.parse_launch(
-                    "dvbsrc name=dvbsrc adapter=%d frontend=%d pids=0:16:17:18" +
-                    "stats-reporting-interval=0 ! mpegtsparse ! " +
-                    "fakesink silent=true".printf(this.Device.Adapter,
-                                                  this.Device.Frontend));
+                    "dvbsrc name=dvbsrc adapter=%d frontend=%d ".printf(
+                    this.Device.Adapter, this.Device.Frontend)
+                    + "pids=0:16:17:18 stats-reporting-interval=0 "
+                    + "! mpegtsparse ! fakesink silent=true");
             } catch (Error e) {
-                stderr.printf("ERROR: %s\n", e.message);
+                error (e.message);
                 return;
             }
             
@@ -202,6 +202,22 @@ namespace DVB {
             
             uint tsid;
             structure.get_uint ("transport-stream-id", out tsid);
+            
+            bool actual_ts;
+            structure.get_boolean ("actual-transport-stream", out actual_ts);
+            if (actual_ts) {
+                Value services = structure.get_value ("services");
+                uint size = ((Gst.Value)services).list_get_size();
+                
+                Gst.Value val;
+                Gst.Structure s;
+                for (uint i=0; i<size; i++) {
+                    // TODO val must be const in C code
+                    // val = ((Gst.Value)services).list_get_value (i);
+                    //s = val.get_structure ();
+                    //debug (s.get_name());
+                }
+            }
         
             this.sdt_arrived = true;
         }
