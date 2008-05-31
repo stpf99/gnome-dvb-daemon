@@ -5,10 +5,9 @@ namespace DVB {
 
     public class TerrestrialRecorder : Recorder {
     
-        public TerrestrialRecorder (Device dev, ChannelList channels,
+        public TerrestrialRecorder (Device dev,
             string recordings_base_dir) {
             base.Device = dev;
-            base.Channels = channels;
             base.RecordingsBaseDir = recordings_base_dir;
         }
     

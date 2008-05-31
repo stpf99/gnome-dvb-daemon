@@ -14,11 +14,13 @@ namespace DVB {
         public uint Adapter { get; construct; }
         public uint Frontend { get; construct; }
         public AdapterType Type { get; construct; }
+        public ChannelList? Channels { get; set; }
         
-        public Device (uint adapter, uint frontend) {
+        public Device (uint adapter, uint frontend, ChannelList? channels=null) {
             this.Adapter = adapter;
             this.Frontend = frontend;
             this.Type = getAdapterType(adapter);
+            this.Channels = channels;
         }
 
         private static AdapterType getAdapterType (uint adapter) {

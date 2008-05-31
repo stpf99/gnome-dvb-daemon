@@ -15,7 +15,6 @@ namespace DVB {
         
         /* Set in constructor of sub-classes */
         public DVB.Device Device { get; construct; }
-        public ChannelList Channels { get; construct; }
         public string RecordingsBaseDir { get; construct; }
         
         protected Element? pipeline;
@@ -58,7 +57,7 @@ namespace DVB {
             // FIXME thread-safety
             
             // TODO Get name for timer
-            var new_timer = new Timer (this.timer_counter, this.Channels.get(channel),
+            var new_timer = new Timer (this.timer_counter, this.Device.Channels.get(channel),
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);

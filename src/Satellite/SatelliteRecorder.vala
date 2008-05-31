@@ -5,10 +5,9 @@ namespace DVB {
 
     public class SatelliteRecorder : Recorder {
     
-        public SatelliteRecorder (Device dev, ChannelList channels,
+        public SatelliteRecorder (Device dev,
             string recordings_base_dir) {
             base.Device = dev;
-            base.Channels = channels;
             base.RecordingsBaseDir = recordings_base_dir;
         }
     
