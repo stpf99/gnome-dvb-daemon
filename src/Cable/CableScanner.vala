@@ -38,6 +38,10 @@ namespace DVB {
         protected override void add_scanned_item (uint frequency) {
             // TODO
         }
+        
+        protected override Channel get_new_channel () {
+            return new CableChannel ();
+        }
     }
     
 }

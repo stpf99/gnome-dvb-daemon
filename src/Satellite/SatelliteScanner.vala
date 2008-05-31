@@ -40,6 +40,10 @@ namespace DVB {
                 new ScannedSatteliteItem (frequency, pol)
             );
         }
+        
+        protected override Channel get_new_channel () {
+            return new SatelliteChannel ();
+        }
     }
     
 }
