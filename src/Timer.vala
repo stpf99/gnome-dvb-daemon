@@ -10,7 +10,6 @@ namespace DVB {
         public uint Id {get; construct;}
         public DVB.Channel Channel {get; construct;}
         public string? Name {get; construct;}
-        public string? Description {get; construct;}
         public uint Year {get; construct;}
         public uint Month {get; construct;}
         public uint Day {get; construct;}
@@ -18,12 +17,12 @@ namespace DVB {
         public uint Minute {get; construct;}
         public uint Duration {get; construct;}
         
-        public Timer (uint id, DVB.Channel channel, string? name, string? description,
-        int year, int month, int day, int hour, int minute, uint duration) {
+        public Timer (uint id, DVB.Channel channel,
+        int year, int month, int day, int hour, int minute, uint duration,
+        string? name=null) {
             this.Id = id;
             this.Channel = channel;
             this.Name = name;
-            this.Description = description;
             
             this.Year = year;
             this.Month = month;
@@ -146,6 +145,13 @@ namespace DVB {
             int64 end_time = (int64)this.get_end_time_timestamp ();
             
             return (end_time < current_time);
+        }
+        
+        public string serialize () {
+            return "%d;%d;%s;%d-%d-%d %d:%d;%d\n".printf(
+                this.Id, this.Channel.Sid, (this.Name == null) ? "" : this.Name,
+                this.Year, this.Month, this.Day, this.Hour, this.Minute,
+                this.Duration);
         }
         
         public string to_string () {

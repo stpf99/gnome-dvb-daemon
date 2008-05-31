@@ -57,10 +57,11 @@ namespace DVB {
                 start_hour, start_minute, duration);
             // FIXME thread-safety
             
+            // TODO Get name for timer
             var new_timer = new Timer (this.timer_counter, this.Channels.get(channel),
-                                       null, null,
                                        start_year, start_month, start_day,
-                                       start_hour, start_minute, duration);
+                                       start_hour, start_minute, duration,
+                                       null);
             // Check for conflicts
             foreach (uint key in this.timers.get_keys()) {
                 if (this.timers.get(key).conflicts_with (new_timer))
@@ -235,6 +236,8 @@ namespace DVB {
             ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
             
             this.pipeline.set_state (State.PLAYING);
+            
+            this.recording_started (timer.Id);
         }
         
         /**
@@ -243,6 +246,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         protected bool create_recording_dirs (Channel channel) {
+            // TODO Remove bad characters from channel name
             Recording rec = this.active_recording;
             string dirname = "%s/%s/%d-%d-%d_%d-%d".printf (this.RecordingsBaseDir,
                 channel.Name, rec.start[0], rec.start[1], rec.start[2], rec.start[3],
