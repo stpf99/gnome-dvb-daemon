@@ -8,7 +8,7 @@ namespace DVB {
         public DvbSrcCodeRate CodeRate {get; set;}
         public DvbSrcModulation Modulation {get; set;}
         
-        public string to_string () {
+        public override string to_string () {
             return "%s:%d:%s:%d:%s:%s:%d:%d:%d".printf(base.Name, base.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
                                           this.Inversion),

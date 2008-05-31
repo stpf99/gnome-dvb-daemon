@@ -2,7 +2,7 @@ using GLib;
 
 namespace DVB {
 
-    public class Channel : GLib.Object {
+    public abstract class Channel : GLib.Object {
 
         public uint Sid {get; set;}
         public string Name {get; set;}
@@ -13,9 +13,7 @@ namespace DVB {
         public uint AudioPID {get; set;}
         public uint Frequency {get; set;}
         
-        public Channel (uint sid) {
-            this.Sid = sid;
-        }
+        public abstract string to_string ();
     }
     
 }
