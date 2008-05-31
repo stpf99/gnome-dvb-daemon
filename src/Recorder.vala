@@ -54,29 +54,29 @@ namespace DVB {
             debug ("Adding new timer: channel: %d, start: %d-%d-%d %d:%d, duration: %d",
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
-            // FIXME thread-safety
             
             // TODO Get name for timer
             var new_timer = new Timer (this.timer_counter, this.Device.Channels.get(channel),
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);
-            // Check for conflicts
-            foreach (uint key in this.timers.get_keys()) {
-                if (this.timers.get(key).conflicts_with (new_timer))
-                    return -1;
+            lock (this.timers) {
+                // Check for conflicts
+                foreach (uint key in this.timers.get_keys()) {
+                    if (this.timers.get(key).conflicts_with (new_timer))
+                        return -1;
+                }
+                
+                this.timer_counter++;
+                this.timers.set (this.timer_counter, new_timer);
+                               
+                if (this.timers.size == 1) {
+                    debug ("Creating new check timers");
+                    Timeout.add_seconds (
+                        CHECK_TIMERS_INTERVAL, this.check_timers
+                    );
+                }
             }
-            
-            this.timer_counter++;
-            this.timers.set (this.timer_counter, new_timer);
-                           
-            if (this.timers.size == 1) {
-                debug ("Creating new check timers");
-                Timeout.add_seconds (
-                    CHECK_TIMERS_INTERVAL, this.check_timers
-                );
-            }
-            
             return (int)this.timer_counter;
         }
         
@@ -93,13 +93,16 @@ namespace DVB {
                 return true;
             }
             
-            // FIXME thread-safety
-            if (this.timers.contains (timer_id)) {
-                this.timers.remove (timer_id);
-                return true;
-            } else {
-                return false;
+            bool val;
+            lock (this.timers) {
+                if (this.timers.contains (timer_id)) {
+                    this.timers.remove (timer_id);
+                    val = true;
+                } else {
+                    val = false;
+                }
             }
+            return val;
         }
         
         /**
@@ -107,12 +110,15 @@ namespace DVB {
          * @returns: A list of all timer ids
          */
         public uint[] GetTimers () {
-            uint[] timer_arr = new uint[this.timers.size];
-            // FIXME thread-safety
-            int i=0;
-            foreach (uint key in this.timers.get_keys()) {
-                timer_arr[i] = this.timers.get(key).Id;
-                i++;
+            uint[] timer_arr;
+            lock (this.timers) {
+                timer_arr = new uint[this.timers.size];
+                
+                int i=0;
+                foreach (uint key in this.timers.get_keys()) {
+                    timer_arr[i] = this.timers.get(key).Id;
+                    i++;
+                }
             }
         
             return timer_arr;
@@ -124,10 +130,12 @@ namespace DVB {
          * 2 = day, 3 = hour and 4 = minute.
          */
         public uint[]? GetStartTime (uint timer_id) {
-            // FIXME thread-safety
-            if (!this.timers.contains (timer_id)) return null;
-        
-            return this.timers.get(timer_id).get_start_time ();
+            uint[]? val = null;
+            lock (this.timers) {
+                if (this.timers.contains (timer_id))
+                    val = this.timers.get(timer_id).get_start_time ();
+            }
+            return val;
         }
         
         /**
@@ -135,10 +143,12 @@ namespace DVB {
          * @returns: Same as dvb_recorder_GetStartTime()
          */
         public uint[]? GetEndTime (uint timer_id) {
-            // FIXME thread-safety
-            if (!this.timers.contains (timer_id)) return null;
-        
-            return this.timers.get(timer_id).get_end_time ();
+            uint[]? val = null;
+            lock (this.timers) {
+                if (this.timers.contains (timer_id))
+                    val = this.timers.get(timer_id).get_end_time ();
+            }
+            return val;
         }
         
         /**
@@ -146,10 +156,12 @@ namespace DVB {
          * @returns: Duration in seconds
          */
         public uint? GetDuration (uint timer_id) {
-            // FIXME thread-safety
-            if (!this.timers.contains (timer_id)) return null;
-        
-            return this.timers.get(timer_id).Duration;
+            uint? val = null;
+            lock (this.timers) {
+                if (this.timers.contains (timer_id))
+                    val = this.timers.get(timer_id).Duration;
+            }
+            return val;
         }
         
         /**
@@ -157,8 +169,12 @@ namespace DVB {
          * (i.e.currently active recording)
          */
         public uint? GetActiveTimer () {
-            if (this.active_timer == null) return null;
-            else return this.active_timer.Id;
+            uint? val = null;
+            lock (this.timers) {
+                if (this.active_timer != null)
+                val = this.active_timer.Id;
+            }
+            return val;
         }
         
         /**
@@ -176,14 +192,17 @@ namespace DVB {
          */
         public bool HasTimer (uint start_year, uint start_month,
         uint start_day, uint start_hour, uint start_minute, uint duration) {
-        
-            foreach (uint key in this.timers.get_keys()) {
-                if (this.timers.get(key).is_in_range (start_year, start_month,
-                start_day, start_hour, start_minute, duration))
-                    return true;
+            bool val = false;
+            lock (this.timers) {
+                foreach (uint key in this.timers.get_keys()) {
+                    if (this.timers.get(key).is_in_range (start_year, start_month,
+                    start_day, start_hour, start_minute, duration))
+                        val = true;
+                        break;
+                }
             }
         
-            return false;
+            return val;
         }
         
         protected void reset () {
@@ -322,32 +341,35 @@ namespace DVB {
                 this.stop_current_recording ();
             }
             
-            // FIXME thread-safety
-            foreach (uint key in this.timers.get_keys()) {
-                Timer timer = this.timers.get (key);
+            bool val;
+            lock (this.timers) {
+                foreach (uint key in this.timers.get_keys()) {
+                    Timer timer = this.timers.get (key);
+                    
+                    debug ("Checking timer: %s", timer.to_string());
+                    
+                    if (timer.is_start_due()) {
+                        this.start_recording (timer);
+                        this.timers.remove (key);
+                    } else if (timer.has_expired()) {
+                        debug ("Removing expired timer: %s", timer.to_string());
+                        this.timers.remove (key);
+                    }
+                }
                 
-                debug ("Checking timer: %s", timer.to_string());
-                
-                if (timer.is_start_due()) {
-                    this.start_recording (timer);
-                    this.timers.remove (key);
-                } else if (timer.has_expired()) {
-                    debug ("Removing expired timer: %s", timer.to_string());
-                    this.timers.remove (key);
+                if (this.timers.size == 0 && this.active_timer == null) {
+                    // We don't have any timers and no recording is in progress
+                    debug ("No timers left and no recording in progress");
+                    val = false;
+                } else {
+                    // We still have timers
+                    debug ("%d timers and %d active recordings left",
+                        this.timers.size,
+                        (this.active_timer == null) ? 0 : 1);
+                    val = true;
                 }
             }
-            
-            if (this.timers.size == 0 && this.active_timer == null) {
-                // We don't have any timers and no recording is in progress
-                debug ("No timers left and no recording in progress");
-                return false;
-            } else {
-                // We still have timers
-                debug ("%d timers and %d active recordings left",
-                    this.timers.size,
-                    (this.active_timer == null) ? 0 : 1);
-                return true;
-            }
+            return val;
         }
     }
 
