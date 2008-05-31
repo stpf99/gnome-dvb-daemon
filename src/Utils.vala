@@ -105,5 +105,26 @@ namespace DVB.Utils {
             dir.make_directory (null);
         }
     }
+    
+    public static string remove_nonalphanums (string text) {
+        Regex regex;
+        try {
+            regex = new Regex ("\\W", 0, 0);
+        } catch (RegexError e) {
+            error (e.message);
+            return text;
+        }
+        
+        string new_text;
+        try {
+            new_text = regex.replace_literal (text, text.size(), 0, "_", 0);
+        } catch (RegexError e) {
+            error (e.message);
+            return text;
+        }
+        
+        return new_text;
+    }
+        
 
 }

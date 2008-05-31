@@ -246,11 +246,10 @@ namespace DVB {
          * @returns: TRUE on success
          */
         protected bool create_recording_dirs (Channel channel) {
-            // TODO Remove bad characters from channel name
             Recording rec = this.active_recording;
             string dirname = "%s/%s/%d-%d-%d_%d-%d".printf (this.RecordingsBaseDir,
-                channel.Name, rec.start[0], rec.start[1], rec.start[2], rec.start[3],
-                rec.start[4], rec.start[5]);
+                Utils.remove_nonalphanums (channel.Name), rec.start[0], rec.start[1],
+                rec.start[2], rec.start[3], rec.start[4], rec.start[5]);
                 
             File dir = File.new_for_path (dirname);
             
