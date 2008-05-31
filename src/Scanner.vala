@@ -212,10 +212,16 @@ namespace DVB {
                 Gst.Value val;
                 Gst.Structure s;
                 for (uint i=0; i<size; i++) {
-                    // TODO val must be const in C code
-                    // val = ((Gst.Value)services).list_get_value (i);
-                    //s = val.get_structure ();
-                    //debug (s.get_name());
+                    val = ((Gst.Value)services).list_get_value (i);
+                    // FIXME we're not supposed to free this
+                    s = val.get_structure ();
+                    
+                    // Returns "service-%d"
+                    string name = s.get_name ();
+                    // Get the number at the end
+                    int sid = name.substring (8, name.size()).to_int ();
+                    
+                    debug ("%s, %d", name, sid);
                 }
             }
         
