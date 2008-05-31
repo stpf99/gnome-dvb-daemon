@@ -153,12 +153,12 @@ namespace DVB {
         }
         
         /**
-         * @returns: A list of ids for the currently active timers
-         * (i.e.currently active recordings)
+         * @returns: The currently active timer
+         * (i.e.currently active recording)
          */
-        public uint[] GetActiveTimers () {
-            // TODO: Move to other class
-            return new uint[] {0};
+        public uint? GetActiveTimer () {
+            if (this.active_timer == null) return null;
+            else return this.active_timer.Id;
         }
         
         /**
@@ -167,7 +167,7 @@ namespace DVB {
          */
         public bool IsTimerActive (uint timer_id) {
 
-            return (timer_id == this.active_recording.id);
+            return (timer_id == this.active_timer.Id);
         }
         
         /**
@@ -194,8 +194,12 @@ namespace DVB {
         }
         
         protected void stop_current_recording () {
-            debug ("Stoping recording of channel %d", this.active_recording.channel_sid);
+            this.active_recording.length = Utils.difftime (Time.local (time_t ()),
+                this.active_recording.start_time);
         
+            debug ("Stopping recording of channel %d after %d seconds",
+                this.active_recording.channel_sid, this.active_recording.length);
+            
             this.reset ();
             this.recording_finished (this.active_recording.id);
         }
@@ -212,7 +216,7 @@ namespace DVB {
             this.active_recording = Recording ();
             this.active_recording.id = timer.Id;
             this.active_recording.channel_sid = timer.Channel.Sid;
-            this.active_recording.start = timer.get_start_time ();
+            this.active_recording.start_time = timer.get_start_time_time ();
             this.active_recording.length = timer.Duration;
             
             if (!this.create_recording_dirs (timer.Channel)) return;
@@ -246,9 +250,10 @@ namespace DVB {
          */
         protected bool create_recording_dirs (Channel channel) {
             Recording rec = this.active_recording;
+            uint[] start = rec.get_start ();
             string dirname = "%s/%s/%d-%d-%d_%d-%d".printf (this.RecordingsBaseDir,
-                Utils.remove_nonalphanums (channel.Name), rec.start[0], rec.start[1],
-                rec.start[2], rec.start[3], rec.start[4], rec.start[5]);
+                Utils.remove_nonalphanums (channel.Name), start[0], start[1],
+                start[2], start[3], start[4], start[5]);
                 
             File dir = File.new_for_path (dirname);
             

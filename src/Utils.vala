@@ -125,6 +125,30 @@ namespace DVB.Utils {
         
         return new_text;
     }
+    
+    /**
+     * @returns: Difference in seconds
+     */ 
+    public static int64 difftime (Time t1, Time t2) {
+        int64 ts1 = (int64)t1.mktime ();
+        int64 ts2 = (int64)t2.mktime ();
         
+        int64 diff = ts1 - ts2;
+        if (diff < 0) return -1*diff;
+        else return diff;
+    }
+    
+    public static Time create_time (int year, int month, int day, int hour, int minute) {
+        // Create Time with some initial value, otherwise time is wrong
+        var t = Time.local (time_t ());
+        
+        t.year = year - 1900;
+        t.month = month - 1;
+        t.day = day;
+        t.hour = hour;
+        t.minute = minute;
+        
+        return t;
+    }
 
 }

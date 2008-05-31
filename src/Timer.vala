@@ -10,12 +10,20 @@ namespace DVB {
         public uint Id {get; construct;}
         public DVB.Channel Channel {get; construct;}
         public string? Name {get; construct;}
+        // TODO Create values from starttime
         public uint Year {get; construct;}
         public uint Month {get; construct;}
         public uint Day {get; construct;}
         public uint Hour {get; construct;}
         public uint Minute {get; construct;}
         public uint Duration {get; construct;}
+        
+        private Time starttime;
+        
+        construct {
+            this.starttime = Utils.create_time ((int)this.Year, (int)this.Month,
+                (int)this.Day, (int)this.Hour, (int)this.Minute);
+        }
         
         public Timer (uint id, DVB.Channel channel,
         int year, int month, int day, int hour, int minute, uint duration,
@@ -31,19 +39,6 @@ namespace DVB {
             this.Minute = minute;
            
             this.Duration = duration;
-        }
-        
-        private static Time create_time (int year, int month, int day, int hour, int minute) {
-            // Create Time with some initial value, otherwise time is wrong
-            var t = Time.local (time_t ());
-            
-            t.year = year - 1900;
-            t.month = month - 1;
-            t.day = day;
-            t.hour = hour;
-            t.minute = minute;
-            
-            return t;
         }
         
         /**
@@ -71,7 +66,7 @@ namespace DVB {
         uint start_day, uint start_hour, uint start_minute, uint duration) {
             int64 this_start = (int64)this.get_start_time_timestamp ();
             
-            Time other_time = this.create_time ((int)start_year, (int)start_month,
+            Time other_time = Utils.create_time ((int)start_year, (int)start_month,
                 (int)start_day, (int)start_hour, (int)start_minute);
             int64 other_start = (int64)other_time.mktime ();
             
@@ -96,6 +91,10 @@ namespace DVB {
                 this.Minute
             };
             return start;
+        }
+        
+        public Time get_start_time_time () {
+             return this.starttime;
         }
         
         public uint[] get_end_time () {
@@ -161,7 +160,7 @@ namespace DVB {
         }
         
         private time_t get_end_time_timestamp () {
-            var t = create_time ((int)this.Year, (int)this.Month,
+            var t = Utils.create_time ((int)this.Year, (int)this.Month,
                 (int)this.Day, (int)this.Hour, (int)this.Minute);
             
             t.minute += (int)this.Duration;
@@ -170,8 +169,7 @@ namespace DVB {
         }
         
         private time_t get_start_time_timestamp () {
-            var t = create_time ((int)this.Year, (int)this.Month,
-                (int)this.Day, (int)this.Hour, (int)this.Minute);
+            var t = this.get_start_time_time ();
             return t.mktime ();
         }
     
