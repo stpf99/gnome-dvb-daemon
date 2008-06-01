@@ -254,7 +254,7 @@ namespace DVB {
                     
                     Channel channel = this.Channels.get(sid);
                      
-                    channel.Name = Utils.reencode_string (name);
+                    channel.Name = name;
                     channel.TransportStreamId = tsid;
                     channel.Network = service.get_string ("provider-name");
                     
@@ -327,7 +327,7 @@ namespace DVB {
                             structure.get_uint ("network-id", out nid);
                             name = "%d".printf (nid);
                         }
-                        dvb_channel.Network = Utils.reencode_string (name);
+                        dvb_channel.Network = name;
                         
                         uint lcnumber;
                         channel_struct.get_uint ("logical-channel-number", out lcnumber);
