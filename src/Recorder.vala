@@ -228,7 +228,7 @@ namespace DVB {
             debug ("Stopping recording of channel %d after %d seconds",
                 this.active_recording.ChannelSid, this.active_recording.Length);
             
-            RecordingsStore.get_instance().add (#this.active_recording);
+            RecordingsStore.get_instance().add (this.active_recording);
             
             this.recording_finished (this.active_recording.Id);
             this.reset ();
@@ -353,6 +353,8 @@ namespace DVB {
             }
             
             bool val;
+            // Store items we want to delete in here
+            SList<uint> removeable_items = new SList<uint> ();
             lock (this.timers) {
                 foreach (uint key in this.timers.get_keys()) {
                     Timer timer = this.timers.get (key);
@@ -361,10 +363,10 @@ namespace DVB {
                     
                     if (timer.is_start_due()) {
                         this.start_recording (timer);
-                        this.timers.remove (key);
+                        removeable_items.prepend (key);
                     } else if (timer.has_expired()) {
                         debug ("Removing expired timer: %s", timer.to_string());
-                        this.timers.remove (key);
+                        removeable_items.prepend (key);
                     }
                 }
                 
@@ -378,6 +380,11 @@ namespace DVB {
                         this.timers.size,
                         (this.active_timer == null) ? 0 : 1);
                     val = true;
+                }
+                
+                // Delete items from this.timers
+                for (int i=0; i<removeable_items.length(); i++) {
+                    this.timers.remove (removeable_items.nth_data (i));
                 }
             }
             return val;
