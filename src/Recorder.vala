@@ -54,6 +54,12 @@ namespace DVB {
             debug ("Adding new timer: channel: %d, start: %d-%d-%d %d:%d, duration: %d",
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
+                
+            if (!this.Device.Channels.contains (channel)) {
+                debug ("No channel %d for device %d %d", channel,
+                    this.Device.Adapter, this.Device.Frontend);
+                return -1;
+            }
             
             // TODO Get name for timer
             var new_timer = new Timer (this.timer_counter, this.Device.Channels.get(channel),
@@ -63,8 +69,11 @@ namespace DVB {
             lock (this.timers) {
                 // Check for conflicts
                 foreach (uint key in this.timers.get_keys()) {
-                    if (this.timers.get(key).conflicts_with (new_timer))
+                    if (this.timers.get(key).conflicts_with (new_timer)) {
+                        debug ("Timer is conflicting with another timer: %s",
+                            this.timers.get(key).to_string ());
                         return -1;
+                    }
                 }
                 
                 this.timer_counter++;
@@ -213,14 +222,16 @@ namespace DVB {
         }
         
         protected void stop_current_recording () {
-            this.active_recording.length = Utils.difftime (Time.local (time_t ()),
-                this.active_recording.start_time);
+            this.active_recording.Length = Utils.difftime (Time.local (time_t ()),
+                this.active_recording.StartTime);
         
             debug ("Stopping recording of channel %d after %d seconds",
-                this.active_recording.channel_sid, this.active_recording.length);
+                this.active_recording.ChannelSid, this.active_recording.Length);
             
+            RecordingsStore.get_instance().add (#this.active_recording);
+            
+            this.recording_finished (this.active_recording.Id);
             this.reset ();
-            this.recording_finished (this.active_recording.id);
         }
         
         protected void start_recording (Timer timer) {
@@ -232,16 +243,16 @@ namespace DVB {
             
             this.active_timer = timer;
             
-            this.active_recording = Recording ();
-            this.active_recording.id = timer.Id;
-            this.active_recording.channel_sid = timer.Channel.Sid;
-            this.active_recording.start_time = timer.get_start_time_time ();
-            this.active_recording.length = timer.Duration;
+            this.active_recording = new Recording ();
+            this.active_recording.Id = timer.Id;
+            this.active_recording.ChannelSid = timer.Channel.Sid;
+            this.active_recording.StartTime = timer.get_start_time_time ();
+            this.active_recording.Length = timer.Duration;
             
             if (!this.create_recording_dirs (timer.Channel)) return;
             
             this.pipeline = new Pipeline (
-                "recording_%d".printf(this.active_recording.channel_sid));
+                "recording_%d".printf(this.active_recording.ChannelSid));
             
             weak Gst.Bus bus = this.pipeline.get_bus();
             bus.add_signal_watch();
@@ -249,12 +260,12 @@ namespace DVB {
                 
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
             dvbbasebin.set ("program-numbers",
-                            this.active_recording.channel_sid.to_string());
+                            this.active_recording.ChannelSid.to_string());
             dvbbasebin.set ("adapter", this.Device.Adapter);
             dvbbasebin.set ("frontend", this.Device.Frontend);
             
             Element filesink = ElementFactory.make ("filesink", "sink");
-            filesink.set ("location", this.active_recording.location);
+            filesink.set ("location", this.active_recording.Location);
             ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
             
             this.pipeline.set_state (State.PLAYING);
@@ -307,7 +318,7 @@ namespace DVB {
                 return false;
             }
             
-            this.active_recording.location = "%s/001.ts".printf (dirname);
+            this.active_recording.Location = "%s/001.ts".printf (dirname);
             
             return true;
         }
@@ -315,7 +326,7 @@ namespace DVB {
         private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
             debug ("Pad %s added", pad.get_name());
         
-            string sid = this.active_recording.channel_sid.to_string();
+            string sid = this.active_recording.ChannelSid.to_string();
             string program = "program_%s".printf(sid);
             if (pad.get_name() == program) {
                 Element sink = ((Bin) this.pipeline).get_by_name ("sink");
