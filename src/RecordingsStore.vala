@@ -22,7 +22,7 @@ namespace DVB {
             return instance;
         }
         
-        public bool add (Recording# rec) {
+        public bool add (Recording rec) {
             uint id = rec.Id;
             if (this.recordings.contains (id)) {
                 critical ("Recording with id %s already available", id);
