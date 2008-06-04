@@ -159,7 +159,7 @@ namespace DVB {
             uint id, duration;
             uint channel_sid;
             int year, month, day, hour, minute;
-            string? name = null;
+            string? name;
         
             int i = 0;
             string field;
@@ -171,34 +171,19 @@ namespace DVB {
                     break;
                     
                     case 1:
-                        channel_sid = field.to_int ();
+                        channel_sid = (uint)field.to_int ();
                     break;
                     
                     case 2:
-                        //TODO name
+                        name = (field == "") ? null : field;
                     break;
                     
                     case 3:
-                        year = field.to_int ();
+                        field.scanf ("%d-%d-%d %d:%d", &year, &month, &day,
+                            &hour, &minute);
                     break;
                     
                     case 4:
-                        month = field.to_int ();
-                    break;
-                    
-                    case 5:
-                        day = field.to_int ();
-                    break;
-                    
-                    case 6:
-                        hour = field.to_int ();
-                    break;
-                    
-                    case 7:
-                        minute = field.to_int ();
-                    break;
-                    
-                    case 8:
                         duration = (uint)field.to_int ();
                     break;
                 }
