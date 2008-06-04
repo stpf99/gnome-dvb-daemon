@@ -153,6 +153,64 @@ namespace DVB {
                 this.Duration);
         }
         
+        public static Timer deserialize (string line) {
+            string[] fields = line.split (";");
+            
+            uint id, duration;
+            uint channel_sid;
+            int year, month, day, hour, minute;
+            string? name = null;
+        
+            int i = 0;
+            string field;
+            while ( (field = fields[i]) != null) {
+            
+                switch (i) {
+                    case 0:
+                        id = field.to_int ();
+                    break;
+                    
+                    case 1:
+                        channel_sid = field.to_int ();
+                    break;
+                    
+                    case 2:
+                        //TODO name
+                    break;
+                    
+                    case 3:
+                        year = field.to_int ();
+                    break;
+                    
+                    case 4:
+                        month = field.to_int ();
+                    break;
+                    
+                    case 5:
+                        day = field.to_int ();
+                    break;
+                    
+                    case 6:
+                        hour = field.to_int ();
+                    break;
+                    
+                    case 7:
+                        minute = field.to_int ();
+                    break;
+                    
+                    case 8:
+                        duration = (uint)field.to_int ();
+                    break;
+                }
+            
+                i++;
+            }
+            // TODO channel
+            var channel = new TerrestrialChannel ();
+            return new Timer (id, channel, year, month, day, hour, minute,
+                duration, name);
+        }
+        
         public string to_string () {
             return "channel: %d, start: %d-%d-%d %d:%d, duration: %d".printf (
                 this.Channel.Sid, this.Year, this.Month, this.Day, this.Hour,
