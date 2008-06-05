@@ -45,8 +45,8 @@ public class Main {
         var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
         reader.read ();
         
-        DVB.Device device = new DVB.Device(0,0);
-        var rec = new DVB.TerrestrialRecorder (device, reader.Channels);
+        DVB.Device device = new DVB.Device(0, 0, reader.Channels);
+        var rec = new DVB.TerrestrialRecorder (device, "/home/sebp/TV");
         uint id = rec.AddTimer (16403, 2008, 5, 25, 12, 49, 2);
         stdout.printf ("Id is %d\n", id);
         

@@ -198,13 +198,13 @@ namespace DVB {
         protected void on_pat_structure (Gst.Structure structure) {
             debug("Received PAT");
         
-            Value programs = structure.get_value ("programs");
-            uint size = ((Gst.Value)programs).list_get_size ();
+            Gst.Value programs = structure.get_value ("programs");
+            uint size = programs.list_get_size ();
             Gst.Value val;
             weak Gst.Structure program;
             // Iterate over programs
             for (uint i=0; i<size; i++) {
-                val = ((Gst.Value)programs).list_get_value (i);
+                val = programs.list_get_value (i);
                 program = val.get_structure ();
                 
                 uint sid;
@@ -228,14 +228,14 @@ namespace DVB {
             bool actual_ts;
             structure.get_boolean ("actual-transport-stream", out actual_ts);
             if (actual_ts) {
-                Value services = structure.get_value ("services");
-                uint size = ((Gst.Value)services).list_get_size ();
+                Gst.Value services = structure.get_value ("services");
+                uint size = services.list_get_size ();
                 
                 Gst.Value val;
                 weak Gst.Structure service;
                 // Iterate over services
                 for (uint i=0; i<size; i++) {
-                    val = ((Gst.Value)services).list_get_value (i);
+                    val = services.list_get_value (i);
                     service = val.get_structure ();
                     
                     // Returns "service-%d"
@@ -271,22 +271,22 @@ namespace DVB {
         protected void on_nit_structure (Gst.Structure structure) {
             debug("Received NIT");
             
-            Value transports = structure.get_value ("transports");
-            uint size = ((Gst.Value)transports).list_get_size ();
+            Gst.Value transports = structure.get_value ("transports");
+            uint size = transports.list_get_size ();
             Gst.Value val;
             weak Gst.Structure transport;
             // Iterate over transports
             for (uint i=0; i<size; i++) {
-                val = ((Gst.Value)transports).list_get_value (i);
+                val = transports.list_get_value (i);
                 transport = val.get_structure ();
                 
                 uint tsid;
                 transport.get_uint ("transport-stream-id", out tsid);
                 
                 if (transport.has_field ("delivery")) {
-                    Value delivery_val = transport.get_value ("delivery");
+                    Gst.Value delivery_val = transport.get_value ("delivery");
                     weak Gst.Structure delivery =
-                        ((Gst.Value)delivery_val).get_structure ();
+                        delivery_val.get_structure ();
                         
                     // TODO add to transport streams
                     
@@ -300,14 +300,14 @@ namespace DVB {
                 }
                 
                 if (transport.has_field ("channels")) {
-                    Value channels = transport.get_value ("channels");
-                    uint channels_size = ((Gst.Value)channels).list_get_size ();
+                    Gst.Value channels = transport.get_value ("channels");
+                    uint channels_size = channels.list_get_size ();
                     
                     Gst.Value channel_val;
                     weak Gst.Structure channel_struct;
                     // Iterate over channels
                     for (int i=0; i<channels_size; i++) {
-                        channel_val = ((Gst.Value)channels).list_get_value (i);
+                        channel_val = channels.list_get_value (i);
                         channel_struct = channel_val.get_structure ();
                         
                         uint sid;
