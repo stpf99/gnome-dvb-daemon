@@ -1,7 +1,9 @@
+using GLib;
 
 namespace DVB {
 
     public class Recording : GLib.Object {
+    
         public uint Id {get; set;}
         public uint ChannelSid {get; set;}
         public string Location {get; set;}
@@ -20,9 +22,33 @@ namespace DVB {
             };
         }
         
+        /**
+         * Stores all information of the timer in info.rec
+         * in the directory of this.Location
+         */
+        public void save_to_disk () throws GLib.Error {
+            File parentdir = File.new_for_path (this.Location).get_parent ();
+        
+            File recfile = File.new_for_path (parentdir.get_path () + "/info.rec");
+            
+            debug ("Saving recording to %s", recfile.get_path() );
+            
+            if (recfile.query_exists (null)) {
+                debug ("Deleting old info.rec");
+                recfile.delete (null);
+            }
+            
+            FileOutputStream stream = recfile.create (0, null);
+            
+            string text = this.serialize ();
+            stream.write (text, text.size (), null);
+            
+            stream.close (null);
+        }
+        
         public string serialize () {
             uint[] started = this.get_start ();
-            return "%d;%d;%s;%s;%s;%d-%d-%d %d:%d;%d".printf (
+            return "%d\n%d\n%s\n%s\n%s\n%d-%d-%d %d:%d\n%d".printf (
                 this.Id, this.ChannelSid, this.Location,
                 (this.Name == null) ? "" : this.Name,
                 (this.Description == null) ? "" : this.Description,
@@ -32,7 +58,7 @@ namespace DVB {
         }
         
         public Recording deserialize (string line) {
-            string [] fields = line.split (";");
+            string [] fields = line.split ("\n");
             
             var rec = new Recording ();
             int year, month, day, hour, minute, length;

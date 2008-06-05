@@ -228,6 +228,12 @@ namespace DVB {
             debug ("Stopping recording of channel %d after %d seconds",
                 this.active_recording.ChannelSid, this.active_recording.Length);
             
+            try {
+                this.active_recording.save_to_disk ();
+            } catch (Error e) {
+                critical ("Could not save recording: %s", e.message);
+            }
+            
             RecordingsStore.get_instance().add (this.active_recording);
             
             this.recording_finished (this.active_recording.Id);
@@ -303,18 +309,18 @@ namespace DVB {
             try {
                 info = dir.query_info (attributes, 0, null);
             } catch (Error e) {
-                error (e.message);
+                critical (e.message);
                 return false;
             }
             
             if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
                 != FileType.DIRECTORY) {
-                error ("%s is not a directory", dirname);
+                critical ("%s is not a directory", dirname);
                 return false;
             }
             
             if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
-                error ("Cannot write to %s", dirname);
+                critical ("Cannot write to %s", dirname);
                 return false;
             }
             
@@ -340,13 +346,12 @@ namespace DVB {
             switch (message.type) {
                 case Gst.MessageType.ELEMENT:
                     if (message.structure.get_name() == "dvb-read-failure") {
-                        error ("Could not read from DVB device");
+                        critical ("Could not read from DVB device");
                         this.reset ();
                     }
                 break;
                 
                 case Gst.MessageType.ERROR:
-                    // FIXME free me
                     Error gerror;
                     string debug;
                     message.parse_error (out gerror, out debug);
