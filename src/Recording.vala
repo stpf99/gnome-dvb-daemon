@@ -29,7 +29,7 @@ namespace DVB {
         public void save_to_disk () throws GLib.Error {
             File parentdir = File.new_for_path (this.Location).get_parent ();
         
-            File recfile = File.new_for_path (parentdir.get_path () + "/info.rec");
+            File recfile = parentdir.get_child ("info.rec");
             
             debug ("Saving recording to %s", recfile.get_path() );
             
