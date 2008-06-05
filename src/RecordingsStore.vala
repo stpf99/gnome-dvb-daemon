@@ -115,6 +115,69 @@ namespace DVB {
            
             return val;
         }
+        
+        public void restore_from_dir (File recordingsbasedir) {
+            if (!recordingsbasedir.query_exists (null)) {
+                critical ("Directory %s does not exist", recordingsbasedir.get_path ());
+                return;
+            }
+            
+            string attrs = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
+                FILE_ATTRIBUTE_ACCESS_CAN_READ);
+            FileInfo info;
+            try {
+                recordingsbasedir.query_info (attrs, 0, null);
+            } catch (Error e) {
+                critical (e.message);
+                return;
+            }
+           
+            if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
+                != FileType.DIRECTORY) {
+                critical ("%s is not a directory", recordingsbasedir.get_path ());
+                return;
+            }
+            
+            if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
+                critical ("Cannot read %s", recordingsbasedir.get_path ());
+                return;
+            }
+        
+            FileEnumerator files;
+            try {
+                files = recordingsbasedir.enumerate_children (
+                    FILE_ATTRIBUTE_STANDARD_TYPE, 0, null);
+            } catch (Error e) {
+                critical (e.message);
+                return;
+            }
+            
+            try {
+                FileInfo childinfo;
+                while ((childinfo = files.next_file (null)) != null) {
+                    uint32 type = childinfo.get_attribute_uint32 (
+                        FILE_ATTRIBUTE_STANDARD_TYPE);
+                        
+                    switch (type) {
+                        case FileType.DIRECTORY:
+                            // TODO recursive call
+                        break;
+                        
+                        case FileType.REGULAR:
+                            // TODO ends with .rec
+                        break;
+                    }
+                }
+            } catch (Error e) {
+                critical (e.message);
+            } finally {
+                try {
+                    files.close (null);
+                } catch (Error e) {
+                    critical (e.message);
+                }
+            }
+        }
     
     }
     
