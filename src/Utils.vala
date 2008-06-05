@@ -2,6 +2,8 @@ using GLib;
 
 namespace DVB.Utils {
 
+    private const int BUFFER_SIZE = 4096;
+
     public static weak string get_nick_from_enum (GLib.Type enumtype, int val) {
         EnumClass eclass = (EnumClass)enumtype.class_ref();
         return eclass.get_value(val).value_nick;
@@ -76,6 +78,52 @@ namespace DVB.Utils {
         t.minute = minute;
         
         return t;
+    }
+    
+    // TODO throw error
+    public static string? read_file_contents (File file) throws Error {
+        string attrs = "%s,%s".printf (
+            FILE_ATTRIBUTE_STANDARD_TYPE,
+            FILE_ATTRIBUTE_ACCESS_CAN_READ);
+        
+        FileInfo info;
+        try {
+            info = file.query_info (attrs, 0, null);
+        } catch (Error e) {
+            critical (e.message);
+            return null;
+        }
+        
+        if (info.get_file_type () != FileType.REGULAR) {
+            critical ("%s is not a regular file", file.get_path ());
+            return null;
+        }
+        
+        if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
+            critical ("Cannot read %s", file.get_path ());
+            return null;
+        }
+        
+        FileInputStream stream;
+        try {
+            stream = file.read (null);
+        } catch (IOError e) {
+            critical(e.message);
+            return null;
+        }
+    
+        StringBuilder sb = new StringBuilder ();               
+        char[] buffer = new char[BUFFER_SIZE];
+        
+        long bytes_read;
+        while ((bytes_read = stream.read (buffer, BUFFER_SIZE, null)) > 0) {
+            for (int i=0; i<bytes_read; i++) {
+                sb.append_c (buffer[i]);
+            }
+        }
+        stream.close (null);
+        
+        return sb.str;
     }
 
 }

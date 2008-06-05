@@ -22,42 +22,15 @@ namespace DVB {
         }
         
         public void read () {
-            FileInputStream stream;
+            string contents;
             try {
-                stream = this.ChannelFile.read (null);
-            } catch (IOError e) {
-                error(e.message);
-                return;
-            }
-            
-            FileInfo info;
-            try {
-                info = stream.query_info (
-                    FILE_ATTRIBUTE_STANDARD_SIZE, null);
+                contents = Utils.read_file_contents (this.ChannelFile);
             } catch (Error e) {
-                error(e.message);
+                critical (e.message);
                 return;
             }
             
-            uint64 filesize = info.get_attribute_uint64 (
-                FILE_ATTRIBUTE_STANDARD_SIZE);
-                
-            StringBuilder sb = new StringBuilder ();               
-            char[] buffer = new char[4096];
-            try {
-                long bytes_read;
-                while ((bytes_read = stream.read (buffer, 4096, null)) > 0) {
-                    for (int i=0; i<bytes_read; i++) {
-                        sb.append_c (buffer[i]);
-                    }
-                }
-                stream.close (null);
-            } catch (Error e) {
-                error(e.message);
-                return;
-            }
-            
-            foreach (string line in sb.str.split("\n")) {
+            foreach (string line in contents.split("\n")) {
                 if (line.size () > 0) {
                     Channel c = this.parse_line (line);
                     if (c != null)
