@@ -122,18 +122,17 @@ namespace DVB {
                 return;
             }
             
-            string attrs = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
-                FILE_ATTRIBUTE_ACCESS_CAN_READ);
+            string attrs = "%s,%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
+                FILE_ATTRIBUTE_ACCESS_CAN_READ, FILE_ATTRIBUTE_STANDARD_NAME);
             FileInfo info;
             try {
-                recordingsbasedir.query_info (attrs, 0, null);
+                info = recordingsbasedir.query_info (attrs, 0, null);
             } catch (Error e) {
                 critical (e.message);
                 return;
             }
            
-            if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
-                != FileType.DIRECTORY) {
+            if (info.get_file_type () != FileType.DIRECTORY) {
                 critical ("%s is not a directory", recordingsbasedir.get_path ());
                 return;
             }
@@ -146,7 +145,7 @@ namespace DVB {
             FileEnumerator files;
             try {
                 files = recordingsbasedir.enumerate_children (
-                    FILE_ATTRIBUTE_STANDARD_TYPE, 0, null);
+                    attrs, 0, null);
             } catch (Error e) {
                 critical (e.message);
                 return;
@@ -157,14 +156,28 @@ namespace DVB {
                 while ((childinfo = files.next_file (null)) != null) {
                     uint32 type = childinfo.get_attribute_uint32 (
                         FILE_ATTRIBUTE_STANDARD_TYPE);
-                        
+                    
+                    File child = recordingsbasedir.get_child (
+                        childinfo.get_name ());
+                    
                     switch (type) {
                         case FileType.DIRECTORY:
-                            // TODO recursive call
+                            this.restore_from_dir (child);
                         break;
                         
                         case FileType.REGULAR:
-                            // TODO ends with .rec
+                            if (childinfo.get_name () == "info.rec") {
+                                Recording rec;
+                                try {
+                                    rec = Recording.deserialize (child);
+                                } catch (Error e) {
+                                    critical (e.message);
+                                }
+                                if (rec != null) {
+                                    debug ("Restored timer from %s", child.get_path ());
+                                    this.add (rec);
+                                }
+                            }
                         break;
                     }
                 }

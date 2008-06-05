@@ -57,15 +57,20 @@ namespace DVB {
             );
         }
         
-        public Recording deserialize (string line) {
-            string [] fields = line.split ("\n");
+        // TODO throw error
+        public static Recording? deserialize (File file) throws Error {
+            string? contents = Utils.read_file_contents (file);
+            
+            if (contents == null) return null;
+        
+            string [] fields = contents.split ("\n");
             
             var rec = new Recording ();
             int year, month, day, hour, minute, length;
             
             string field;
             int i = 0;
-            while ((field = fields[0]) != null) {
+            while ((field = fields[i]) != null) {
                 switch (i) {
                     case 0:
                         rec.Id = (uint)field.to_int ();
