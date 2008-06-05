@@ -337,11 +337,25 @@ namespace DVB {
         }
         
         private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            if (message.type == Gst.MessageType.ELEMENT) {
-                if (message.structure.get_name() == "dvb-read-failure") {
-                    error ("Could not read from DVB device");
-                    this.reset ();
-                }
+            switch (message.type) {
+                case Gst.MessageType.ELEMENT:
+                    if (message.structure.get_name() == "dvb-read-failure") {
+                        error ("Could not read from DVB device");
+                        this.reset ();
+                    }
+                break;
+                
+                case Gst.MessageType.ERROR:
+                    // FIXME free me
+                    Error gerror;
+                    string debug;
+                    message.parse_error (out gerror, out debug);
+                    critical ("%s %s", gerror.message, debug);
+                    this.stop_current_recording ();
+                break;
+                
+                default:
+                break;
             }
         }
         

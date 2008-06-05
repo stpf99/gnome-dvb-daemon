@@ -45,6 +45,12 @@ namespace DVB {
                         adapter_type = structure.get_string("type");
                         break;
                     }
+                } else if (msg.type == MessageType.ERROR) {
+                    // FIXME free me
+                    Error gerror;
+                    string debug;
+                    msg.parse_error (out gerror, out debug);
+                    critical ("%s %s", gerror.message, debug);
                 }
             }
                
