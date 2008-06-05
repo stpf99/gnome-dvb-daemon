@@ -116,6 +116,13 @@ namespace DVB {
             return val;
         }
         
+        /**
+         * @recordingsbasedir: The directory to search
+         *
+         * Searches recursively in the given directory
+         * for "info.rec" files, restores a new Recording
+         * from that file and adds it to itsself.
+         */
         public void restore_from_dir (File recordingsbasedir) {
             if (!recordingsbasedir.query_exists (null)) {
                 critical ("Directory %s does not exist", recordingsbasedir.get_path ());
