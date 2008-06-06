@@ -45,11 +45,11 @@ namespace DVB {
             Channel c;
             switch (this.Type) {
                 case AdapterType.DVB_T:
-                c = this.parse_terrestrial_channel (line);
+                c = parse_terrestrial_channel (line);
                 break;
                 
                 case AdapterType.DVB_S:
-                c = this.parse_satellite_channel (line);
+                c = parse_satellite_channel (line);
                 break;
                 
                 case AdapterType.DVB_C:
@@ -66,7 +66,7 @@ namespace DVB {
          * A line looks like
          * Das Erste:212500000:INVERSION_AUTO:BANDWIDTH_7_MHZ:FEC_3_4:FEC_1_2:QAM_16:TRANSMISSION_MODE_8K:GUARD_INTERVAL_1_4:HIERARCHY_NONE:513:514:32
          */
-        private TerrestrialChannel parse_terrestrial_channel (string line) {
+        private static TerrestrialChannel parse_terrestrial_channel (string line) {
             var channel = new TerrestrialChannel ();
             
             string[] fields = line.split(":");
@@ -122,7 +122,7 @@ namespace DVB {
          * A line looks like
          * Das Erste:11836:h:0:27500:101:102:28106
          */
-        private SatelliteChannel parse_satellite_channel (string line) {
+        private static SatelliteChannel parse_satellite_channel (string line) {
             var channel = new SatelliteChannel ();
             
             string[] fields = line.split(":");
@@ -162,7 +162,7 @@ namespace DVB {
          * line looks like
          * ProSieben:330000000:INVERSION_AUTO:6900000:FEC_NONE:QAM_64:255:256:898
          */
-        private CableChannel parse_cable_channel (string line) {
+        private static CableChannel parse_cable_channel (string line) {
             var channel = new CableChannel ();
             
             string[] fields = line.split(":");
