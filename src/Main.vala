@@ -31,6 +31,20 @@ public class Main {
             error("Oops %s", e.message);
         }
     }
+    
+    private static void recording_finished (DVB.Recorder recorder, uint id) {
+        stdout.printf ("Recording %d finished\n", id);
+        
+        weak DVB.RecordingsStore rec = DVB.RecordingsStore.get_instance();
+        
+        foreach (uint rid in rec.GetRecordings()) {
+            stdout.printf ("Location: %s\n", rec.GetLocation (rid));
+            stdout.printf ("Length: %d\n", rec.GetLength (rid));
+            uint[] start = rec.GetStartTime (rid);
+            stdout.printf ("Start: %d-%d-%d %d:%d\n", start[0], start[1],
+                start[2], start[3], start[4]);
+        }
+    }
 
     public static void main (string[] args) {
         MainLoop loop;
@@ -42,14 +56,26 @@ public class Main {
         Gst.init (ref args);
         
         File channelsfile = File.new_for_path ("/home/sebp/.gstreamer-0.10/dvb-channels.conf");
+        
         var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
-        reader.read ();
+        try {
+            reader.read ();
+        } catch (Error e) {
+            error (e.message);
+        }
+
+        DVB.Device device = DVB.Device.new_full (0, 0,
+            reader.Channels,
+            File.new_for_path ("/home/sebp/TV"));
+        var rec = new DVB.TerrestrialRecorder (device);
+        rec.recording_finished += recording_finished;
         
-        DVB.Device device = new DVB.Device(0, 0, reader.Channels);
-        var rec = new DVB.TerrestrialRecorder (device, "/home/sebp/TV");
-        uint id = rec.AddTimer (16403, 2008, 5, 25, 12, 49, 2);
-        stdout.printf ("Id is %d\n", id);
-        
+        rec.AddTimer (16394, 2008, 6, 7, 21, 31, 2);
+        rec.AddTimer (32, 2008, 6, 5, 10, 24, 3);
+        rec.AddTimer (32, 2008, 6, 5, 10, 25, 3);
+        rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
+        rec.AddTimer (16418, 2006, 6, 6, 6, 6, 99);
+
         //start_manager();
         /*
         Gst.Structure pro7 = new Gst.Structure ("pro7",

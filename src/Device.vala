@@ -14,14 +14,22 @@ namespace DVB {
         public uint Adapter { get; construct; }
         public uint Frontend { get; construct; }
         public AdapterType Type { get; construct; }
-        public ChannelList? Channels { get; set; }
+        public ChannelList Channels { get; set; }
+        public File RecordingsDirectory { get; set; }
         
-        public Device (uint adapter, uint frontend, ChannelList? channels=null) {
+        public Device (uint adapter, uint frontend) {
             this.Adapter = adapter;
             this.Frontend = frontend;
             this.Type = getAdapterType(adapter);
-            this.Channels = channels;
         }
+        
+        public static Device new_full (uint adapter, uint frontend,
+            ChannelList channels, File recordings_dir) {
+            var dev = new Device (adapter, frontend);            
+            dev.Channels = channels;
+            dev.RecordingsDirectory = recordings_dir;
+            return dev;
+       }
 
         private static AdapterType getAdapterType (uint adapter) {
             Element dvbsrc = ElementFactory.make("dvbsrc", "test_dvbsrc");
@@ -46,7 +54,6 @@ namespace DVB {
                         break;
                     }
                 } else if (msg.type == MessageType.ERROR) {
-                    // FIXME free me
                     Error gerror;
                     string debug;
                     msg.parse_error (out gerror, out debug);

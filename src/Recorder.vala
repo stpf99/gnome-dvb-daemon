@@ -15,7 +15,6 @@ namespace DVB {
         
         /* Set in constructor of sub-classes */
         public DVB.Device Device { get; construct; }
-        public string RecordingsBaseDir { get; construct; }
         
         protected Element? pipeline;
         protected Recording active_recording;
@@ -287,7 +286,8 @@ namespace DVB {
         protected bool create_recording_dirs (Channel channel) {
             Recording rec = this.active_recording;
             uint[] start = rec.get_start ();
-            string dirname = "%s/%s/%d-%d-%d_%d-%d".printf (this.RecordingsBaseDir,
+            string dirname = "%s/%s/%d-%d-%d_%d-%d".printf (
+                this.Device.RecordingsDirectory.get_path (),
                 Utils.remove_nonalphanums (channel.Name), start[0], start[1],
                 start[2], start[3], start[4], start[5]);
                 
@@ -389,6 +389,11 @@ namespace DVB {
                     }
                 }
                 
+                // Delete items from this.timers
+                for (int i=0; i<removeable_items.length(); i++) {
+                    this.timers.remove (removeable_items.nth_data (i));
+                }
+                
                 if (this.timers.size == 0 && this.active_timer == null) {
                     // We don't have any timers and no recording is in progress
                     debug ("No timers left and no recording in progress");
@@ -401,10 +406,6 @@ namespace DVB {
                     val = true;
                 }
                 
-                // Delete items from this.timers
-                for (int i=0; i<removeable_items.length(); i++) {
-                    this.timers.remove (removeable_items.nth_data (i));
-                }
             }
             return val;
         }

@@ -21,14 +21,9 @@ namespace DVB {
             this.Type = type;
         }
         
-        public void read () {
-            string contents;
-            try {
-                contents = Utils.read_file_contents (this.ChannelFile);
-            } catch (Error e) {
-                critical (e.message);
-                return;
-            }
+        public void read () throws Error {
+            string contents = Utils.read_file_contents (this.ChannelFile);
+            if (contents == null) return;
             
             foreach (string line in contents.split("\n")) {
                 if (line.size () > 0) {

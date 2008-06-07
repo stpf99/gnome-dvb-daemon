@@ -5,9 +5,14 @@ namespace DVB {
     
     //[DBus (name = "org.gnome.DVB.Manager")]
     public class Manager : Object {
+    
+        private static const int PRIME = 31;
 
+        // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
+        // Maps object path to Recorder
         private HashMap<string, Recorder> recorders;
+        // Maps device id to Device
         private HashMap<int, Device> devices;
         
         construct {
@@ -31,8 +36,9 @@ namespace DVB {
                 debug ("Creating new Scanner D-Bus service for adapter %d, frontend %d",
                       adapter, frontend);
                 
-                Device device = new Device (adapter, frontend);
-                // TODO Tell the user what scanner we created
+                Device device = this.get_device_if_exists (adapter, frontend);
+                if (device == null) return null;
+                
                 Scanner scanner;
                 switch (device.Type) {
                     case AdapterType.DVB_T:
@@ -68,14 +74,27 @@ namespace DVB {
          * @returns: A list of Object path's to the recorders of all devices
          */
         public string[] GetRecorders () {
-            return new string[] {""};
+            string[] recs = new string[this.recorders.size];
+            int i = 0;
+            foreach (string key in this.recorders.get_keys ()) {
+                recs[i] = key;
+                i++;
+            }
+            return recs;
         }
         
         /**
          * @returns: adapter and frontend number for each registered device
          */
         public uint[][] GetRegisteredDevices () {
-            return new uint[][] { new uint[] {0, 0} };
+            uint[][] devs = new uint[this.devices.size][2];
+            int i = 0;
+            foreach (int key in this.devices.get_keys ()) {
+                devs[i][0] = this.devices.get (key).Adapter;
+                devs[i][1] = this.devices.get (key).Frontend;
+                i++;
+            }
+            return devs;
         }
         
         /**
@@ -93,23 +112,21 @@ namespace DVB {
             if (!this.recorders.contains (path)) {
                 debug ("Creating new Recorder for adapter %d, frontend %d");
                 
-                DVB.Device device = this.devices.get (
-                    this.generate_device_id(adapter, frontend));
-                // TODO store somewhere
-                string recordings_dir = "";
+                Device device = this.get_device_if_exists (adapter, frontend);
+                if (device == null) return null;
                 
                 Recorder recorder;
                 switch (device.Type) {
                     case AdapterType.DVB_T:
-                    recorder = new TerrestrialRecorder (device, recordings_dir);
+                    recorder = new TerrestrialRecorder (device);
                     break;
                     
                     case AdapterType.DVB_S:
-                    recorder = new SatelliteRecorder (device, recordings_dir);
+                    recorder = new SatelliteRecorder (device);
                     break;
                     
                     case AdapterType.DVB_C:
-                    recorder = new CableRecorder (device, recordings_dir);
+                    recorder = new CableRecorder (device);
                     break;
                 }
                 
@@ -137,12 +154,20 @@ namespace DVB {
             string channels_conf, string recordings_dir) {
             // TODO Check if adapter and frontend exists
             
-            Device device = new Device (adapter, frontend);
-            
             File channelsfile = File.new_for_path (channels_conf);
+            File recdir = File.new_for_path (recordings_dir);
+            
+            Device device = new Device (adapter, frontend);
+            device.RecordingsDirectory = recdir;
             
             var reader = new DVB.ChannelListReader (channelsfile, device.Type);
-            reader.read ();
+            try {
+                reader.read ();
+            } catch (Error e) {
+                critical (e.message);
+                return false;
+            }
+            
             device.Channels = reader.Channels;
             
             this.devices.set (this.generate_device_id(adapter, frontend),
@@ -173,9 +198,20 @@ namespace DVB {
             return conn;
         }
         
+        private Device? get_device_if_exists (uint adapter, uint frontend) {
+            int id = generate_device_id (adapter, frontend);
+            if (this.devices.contains (id))
+                return this.devices.get (id);
+            else {
+                message ("No device with adapter %d and frontend %d",
+                    adapter, frontend);
+                return null;
+            }
+        }
+        
         private static int generate_device_id (uint adapter, uint frontend) {
-            // TODO generate unique id
-            return (int)(adapter + frontend);
+            int result = 2 * PRIME + PRIME * (int)adapter + (int)frontend;
+            return result;
         }
     }
 

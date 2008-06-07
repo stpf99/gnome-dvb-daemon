@@ -5,10 +5,8 @@ namespace DVB {
 
     public class TerrestrialRecorder : Recorder {
     
-        public TerrestrialRecorder (Device dev,
-            string recordings_base_dir) {
+        public TerrestrialRecorder (Device dev) {
             base.Device = dev;
-            base.RecordingsBaseDir = recordings_base_dir;
         }
     
         protected override weak Element? get_dvbbasebin (Channel channel) {
