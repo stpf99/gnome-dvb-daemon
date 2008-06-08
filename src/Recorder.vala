@@ -347,7 +347,7 @@ namespace DVB {
                 case Gst.MessageType.ELEMENT:
                     if (message.structure.get_name() == "dvb-read-failure") {
                         critical ("Could not read from DVB device");
-                        this.reset ();
+                        this.stop_current_recording ();
                     }
                 break;
                 
