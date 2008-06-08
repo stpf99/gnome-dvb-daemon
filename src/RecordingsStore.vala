@@ -9,12 +9,12 @@ namespace DVB {
     public class RecordingsStore : GLib.Object {
     
         private HashMap<uint32, Recording> recordings;
-        private uint32 id_counter;
+        private uint32 last_id;
         private static RecordingsStore instance;
         
         construct {
             this.recordings = new HashMap <uint32, Recording> ();
-            this.id_counter = 1;
+            this.last_id = 0;
         }
         
         public static weak RecordingsStore get_instance () {
@@ -119,9 +119,7 @@ namespace DVB {
         }
         
         public uint32 get_next_id () {
-            uint32 current = this.id_counter;
-            this.id_counter++;
-            return current;
+            return (++this.last_id);
         }
         
         /**
@@ -191,13 +189,13 @@ namespace DVB {
                                 if (rec != null) {
                                     debug ("Restored timer from %s", child.get_path ());
                                     this.add (rec);
-                                    this.id_counter = rec.Id;
+                                    if (rec.Id > this.last_id)
+                                        this.last_id = rec.Id;
                                 }
                             }
                         break;
                     }
                 }
-                this.id_counter++;
             } catch (Error e) {
                 critical (e.message);
             } finally {

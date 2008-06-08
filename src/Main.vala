@@ -38,6 +38,7 @@ public class Main {
         weak DVB.RecordingsStore rec = DVB.RecordingsStore.get_instance();
         
         foreach (uint32 rid in rec.GetRecordings()) {
+            stdout.printf ("ID: %d\n", rid);
             stdout.printf ("Location: %s\n", rec.GetLocation (rid));
             stdout.printf ("Length: %d\n", rec.GetLength (rid));
             uint[] start = rec.GetStartTime (rid);
@@ -64,14 +65,17 @@ public class Main {
             error (e.message);
         }
 
+        File recdir = File.new_for_path ("/home/sebp/TV");
+
         DVB.Device device = DVB.Device.new_full (0, 0,
-            reader.Channels,
-            File.new_for_path ("/home/sebp/TV"));
+            reader.Channels, recdir);
         var rec = new DVB.TerrestrialRecorder (device);
         rec.recording_finished += recording_finished;
         
-        rec.AddTimer (16394, 2008, 6, 7, 21, 31, 2);
-        rec.AddTimer (32, 2008, 6, 5, 10, 24, 3);
+        DVB.RecordingsStore.get_instance ().restore_from_dir (recdir);
+        
+        rec.AddTimer (16394, 2008, 6, 8, 14, 12, 2);
+        rec.AddTimer (32, 2008, 6, 8, 14, 8, 3);
         rec.AddTimer (32, 2008, 6, 5, 10, 25, 3);
         rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
         rec.AddTimer (16418, 2006, 6, 6, 6, 6, 99);
