@@ -66,7 +66,7 @@ namespace DVB {
             string [] fields = contents.split ("\n");
             
             var rec = new Recording ();
-            int year, month, day, hour, minute, length;
+            int length;
             
             string field;
             int i = 0;
@@ -92,10 +92,13 @@ namespace DVB {
                         rec.Description = field;
                     break;
                     
-                    case 5:
+                    case 5: {
+                        int year, month, day, hour, minute;
                         field.scanf ("%d-%d-%d %d:%d", &year, &month, &day,
                             &hour, &minute);
+                        rec.StartTime = Utils.create_time (year, month, day, hour, minute);
                     break;
+                    }
                     
                     case 6:
                         rec.Length = (int64)field.to_int ();
