@@ -7,7 +7,7 @@ namespace DVB {
      */
     public class Timer : GLib.Object {
     
-        public uint Id {get; construct;}
+        public uint32 Id {get; construct;}
         public DVB.Channel Channel {get; construct;}
         public string? Name {get; construct;}
         // TODO Create values from starttime
@@ -25,7 +25,7 @@ namespace DVB {
                 (int)this.Day, (int)this.Hour, (int)this.Minute);
         }
         
-        public Timer (uint id, DVB.Channel channel,
+        public Timer (uint32 id, DVB.Channel channel,
         int year, int month, int day, int hour, int minute, uint duration,
         string? name=null) {
             this.Id = id;

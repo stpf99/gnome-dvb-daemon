@@ -8,11 +8,13 @@ namespace DVB {
      */
     public class RecordingsStore : GLib.Object {
     
-        private HashMap<uint, Recording> recordings;
+        private HashMap<uint32, Recording> recordings;
+        private uint32 id_counter;
         private static RecordingsStore instance;
         
         construct {
-            this.recordings = new HashMap <uint, Recording> ();
+            this.recordings = new HashMap <uint32, Recording> ();
+            this.id_counter = 1;
         }
         
         public static weak RecordingsStore get_instance () {
@@ -23,7 +25,7 @@ namespace DVB {
         }
         
         public bool add (Recording rec) {
-            uint id = rec.Id;
+            uint32 id = rec.Id;
             if (this.recordings.contains (id)) {
                 critical ("Recording with id %s already available", id);
                 return false;
@@ -36,11 +38,11 @@ namespace DVB {
         /**
          * @returns: A list of ids for all recordings
          */
-        public uint[] GetRecordings () {
-            uint[] ids = new uint[this.recordings.size];
+        public uint32[] GetRecordings () {
+            uint32[] ids = new uint32[this.recordings.size];
             
             int i = 0;
-            foreach (uint key in this.recordings.get_keys ()) {
+            foreach (uint32 key in this.recordings.get_keys ()) {
                 ids[i] = key;
                 i++;
             }
@@ -52,7 +54,7 @@ namespace DVB {
          * @rec_id: The id of the recording
          * @returns: The location of the recording on the filesystem
          */
-        public string? GetLocation (uint rec_id) {
+        public string? GetLocation (uint32 rec_id) {
             string? val = null;
             if (this.recordings.contains (rec_id)) {
                 val = this.recordings.get(rec_id).Location;
@@ -66,7 +68,7 @@ namespace DVB {
          * @returns: The name of the recording (e.g. the name of
          * a TV show)
          */
-        public string? GetName (uint rec_id) {
+        public string? GetName (uint32 rec_id) {
             string? val = null;
             if (this.recordings.contains (rec_id)) {
                 val = this.recordings.get(rec_id).Name;
@@ -80,7 +82,7 @@ namespace DVB {
          * @returns: A short text describing the recorded item
          * (e.g. the description from EPG)
          */
-        public string? GetDescription (uint rec_id) {
+        public string? GetDescription (uint32 rec_id) {
             string? val = null;
             if (this.recordings.contains (rec_id)) {
                 val = this.recordings.get(rec_id).Description;
@@ -93,7 +95,7 @@ namespace DVB {
          * @rec_id: The id of the recording
          * @returns: The starting time of the recording
          */
-        public uint[]? GetStartTime (uint rec_id) {
+        public uint[]? GetStartTime (uint32 rec_id) {
             uint[]? val = null;
             if (this.recordings.contains (rec_id)) {
                 val = this.recordings.get(rec_id).get_start ();
@@ -107,13 +109,19 @@ namespace DVB {
          * @returns: The length of the recording in seconds
          * or -1 if no recording with the given id exists
          */
-        public int64 GetLength (uint rec_id) {
+        public int64 GetLength (uint32 rec_id) {
             int64 val = -1;
             if (this.recordings.contains (rec_id)) {
                 val = this.recordings.get(rec_id).Length;
             }
            
             return val;
+        }
+        
+        public uint32 get_next_id () {
+            uint32 current = this.id_counter;
+            this.id_counter++;
+            return current;
         }
         
         /**
@@ -183,11 +191,13 @@ namespace DVB {
                                 if (rec != null) {
                                     debug ("Restored timer from %s", child.get_path ());
                                     this.add (rec);
+                                    this.id_counter = rec.Id;
                                 }
                             }
                         break;
                     }
                 }
+                this.id_counter++;
             } catch (Error e) {
                 critical (e.message);
             } finally {

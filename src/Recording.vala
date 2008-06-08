@@ -4,7 +4,7 @@ namespace DVB {
 
     public class Recording : GLib.Object {
     
-        public uint Id {get; set;}
+        public uint32 Id {get; set;}
         public uint ChannelSid {get; set;}
         public string Location {get; set;}
         public string? Name {get; set;}
@@ -73,7 +73,7 @@ namespace DVB {
             while ((field = fields[i]) != null) {
                 switch (i) {
                     case 0:
-                        rec.Id = (uint)field.to_int ();
+                        rec.Id = (uint32)field.to_int ();
                     break;
                     
                     case 1:

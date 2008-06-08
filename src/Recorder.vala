@@ -10,8 +10,8 @@ namespace DVB {
      */
     public abstract class Recorder : GLib.Object {
     
-        public signal void recording_started (uint timer_id);
-        public signal void recording_finished (uint recording_id);
+        public signal void recording_started (uint32 timer_id);
+        public signal void recording_finished (uint32 recording_id);
         
         /* Set in constructor of sub-classes */
         public DVB.Device Device { get; construct; }
@@ -20,8 +20,7 @@ namespace DVB {
         protected Recording active_recording;
         protected Timer? active_timer;
         
-        private HashMap<uint, Timer> timers;
-        private uint timer_counter;
+        private HashMap<uint32, Timer> timers;
         private static const int CHECK_TIMERS_INTERVAL = 5;
         
         construct {
@@ -42,12 +41,12 @@ namespace DVB {
          * @start_hour: The hour when recording should start
          * @start_minute: The minute when recording should start
          * @duration: How long the channel should be recorded (in minutes)
-         * @returns: The new timer's id on success, or -1 if timer couldn't
+         * @returns: The new timer's id on success, or 0 if timer couldn't
          * be created
          * 
          * Add a new timer
          */
-        public int AddTimer (uint channel,
+        public uint32 AddTimer (uint channel,
             int start_year, int start_month, int start_day,
             int start_hour, int start_minute, uint duration) {
             debug ("Adding new timer: channel: %d, start: %d-%d-%d %d:%d, duration: %d",
@@ -57,26 +56,27 @@ namespace DVB {
             if (!this.Device.Channels.contains (channel)) {
                 debug ("No channel %d for device %d %d", channel,
                     this.Device.Adapter, this.Device.Frontend);
-                return -1;
+                return 0;
             }
             
+            uint32 timer_id = RecordingsStore.get_instance ().get_next_id ();
+                
             // TODO Get name for timer
-            var new_timer = new Timer (this.timer_counter, this.Device.Channels.get(channel),
+            var new_timer = new Timer (timer_id, this.Device.Channels.get(channel),
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);
             lock (this.timers) {
                 // Check for conflicts
-                foreach (uint key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.get_keys()) {
                     if (this.timers.get(key).conflicts_with (new_timer)) {
                         debug ("Timer is conflicting with another timer: %s",
                             this.timers.get(key).to_string ());
-                        return -1;
+                        return 0;
                     }
                 }
                 
-                this.timer_counter++;
-                this.timers.set (this.timer_counter, new_timer);
+                this.timers.set (timer_id, new_timer);
                                
                 if (this.timers.size == 1) {
                     debug ("Creating new check timers");
@@ -85,7 +85,7 @@ namespace DVB {
                     );
                 }
             }
-            return (int)this.timer_counter;
+            return timer_id;
         }
         
         /**
@@ -95,7 +95,7 @@ namespace DVB {
          * Delete timer. If the id belongs to the currently
          * active timer recording is aborted.
          */
-        public bool DeleteTimer (uint timer_id) {
+        public bool DeleteTimer (uint32 timer_id) {
             if (this.active_timer != null && this.IsTimerActive (timer_id)) {
                 this.stop_current_recording ();
                 return true;
@@ -117,13 +117,13 @@ namespace DVB {
          * dvb_recorder_GetTimers
          * @returns: A list of all timer ids
          */
-        public uint[] GetTimers () {
-            uint[] timer_arr;
+        public uint32[] GetTimers () {
+            uint32[] timer_arr;
             lock (this.timers) {
-                timer_arr = new uint[this.timers.size];
+                timer_arr = new uint32[this.timers.size];
                 
                 int i=0;
-                foreach (uint key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.get_keys()) {
                     timer_arr[i] = this.timers.get(key).Id;
                     i++;
                 }
@@ -137,7 +137,7 @@ namespace DVB {
          * @returns: An array of length 5, where index 0 = year, 1 = month,
          * 2 = day, 3 = hour and 4 = minute.
          */
-        public uint[]? GetStartTime (uint timer_id) {
+        public uint[]? GetStartTime (uint32 timer_id) {
             uint[]? val = null;
             lock (this.timers) {
                 if (this.timers.contains (timer_id))
@@ -150,7 +150,7 @@ namespace DVB {
          * @timer_id: Timer's id
          * @returns: Same as dvb_recorder_GetStartTime()
          */
-        public uint[]? GetEndTime (uint timer_id) {
+        public uint[]? GetEndTime (uint32 timer_id) {
             uint[]? val = null;
             lock (this.timers) {
                 if (this.timers.contains (timer_id))
@@ -163,7 +163,7 @@ namespace DVB {
          * @timer_id: Timer's id
          * @returns: Duration in seconds
          */
-        public uint? GetDuration (uint timer_id) {
+        public uint? GetDuration (uint32 timer_id) {
             uint? val = null;
             lock (this.timers) {
                 if (this.timers.contains (timer_id))
@@ -176,8 +176,8 @@ namespace DVB {
          * @returns: The currently active timer
          * (i.e.currently active recording)
          */
-        public uint? GetActiveTimer () {
-            uint? val = null;
+        public uint32? GetActiveTimer () {
+            uint32? val = null;
             lock (this.timers) {
                 if (this.active_timer != null)
                 val = this.active_timer.Id;
@@ -189,7 +189,7 @@ namespace DVB {
          * @timer_id: Timer's id
          * @returns: TRUE if timer is currently active
          */
-        public bool IsTimerActive (uint timer_id) {
+        public bool IsTimerActive (uint32 timer_id) {
 
             return (timer_id == this.active_timer.Id);
         }
@@ -202,7 +202,7 @@ namespace DVB {
         uint start_day, uint start_hour, uint start_minute, uint duration) {
             bool val = false;
             lock (this.timers) {
-                foreach (uint key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.get_keys()) {
                     if (this.timers.get(key).is_in_range (start_year, start_month,
                     start_day, start_hour, start_minute, duration))
                         val = true;
@@ -373,9 +373,9 @@ namespace DVB {
             
             bool val;
             // Store items we want to delete in here
-            SList<uint> removeable_items = new SList<uint> ();
+            SList<uint32> removeable_items = new SList<uint32> ();
             lock (this.timers) {
-                foreach (uint key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.get_keys()) {
                     Timer timer = this.timers.get (key);
                     
                     debug ("Checking timer: %s", timer.to_string());
