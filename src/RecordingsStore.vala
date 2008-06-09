@@ -35,6 +35,10 @@ namespace DVB {
             return true;
         }
     
+        public uint32 get_next_id () {
+            return (++this.last_id);
+        }
+        
         /**
          * @returns: A list of ids for all recordings
          */
@@ -57,7 +61,7 @@ namespace DVB {
         public string? GetLocation (uint32 rec_id) {
             string? val = null;
             if (this.recordings.contains (rec_id)) {
-                val = this.recordings.get(rec_id).Location;
+                val = this.recordings.get(rec_id).Location.get_path ();
             }
            
             return val;
@@ -118,8 +122,29 @@ namespace DVB {
             return val;
         }
         
-        public uint32 get_next_id () {
-            return (++this.last_id);
+        /**
+         * @rec_id: The id of the recording
+         * @returns: TRUE on success, FALSE otherwises
+         *
+         * Delete the recording. This deletes all files in the directory
+         * created by the Recorder
+         */
+        public bool Delete (uint32 rec_id) {
+            bool val = false;
+            if (!this.recordings.contains (rec_id)) val = false;
+            else {
+                var rec = this.recordings.get (rec_id);
+                try {
+                    Utils.delete_dir_recursively (rec.Location.get_parent ());
+                    this.recordings.remove (rec_id);
+                    val = true;
+                } catch (Error e) {
+                    critical (e.message);
+                    val = false;
+                }
+            }
+            
+            return val;
         }
         
         /**

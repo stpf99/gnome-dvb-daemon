@@ -6,7 +6,7 @@ namespace DVB {
     
         public uint32 Id {get; set;}
         public uint ChannelSid {get; set;}
-        public string Location {get; set;}
+        public File Location {get; set;}
         public string? Name {get; set;}
         public string? Description {get; set;}
         public GLib.Time StartTime {get; set;}
@@ -27,7 +27,7 @@ namespace DVB {
          * in the directory of this.Location
          */
         public void save_to_disk () throws GLib.Error {
-            File parentdir = File.new_for_path (this.Location).get_parent ();
+            File parentdir = this.Location.get_parent ();
         
             File recfile = parentdir.get_child ("info.rec");
             
@@ -49,7 +49,7 @@ namespace DVB {
         public string serialize () {
             uint[] started = this.get_start ();
             return "%d\n%d\n%s\n%s\n%s\n%d-%d-%d %d:%d\n%d".printf (
-                this.Id, this.ChannelSid, this.Location,
+                this.Id, this.ChannelSid, this.Location.get_path (),
                 (this.Name == null) ? "" : this.Name,
                 (this.Description == null) ? "" : this.Description,
                 started[0], started[1], started[2], started[3],
@@ -81,7 +81,8 @@ namespace DVB {
                     break;
                     
                     case 2:
-                        rec.Location = (field == "") ? null : field;
+                        if (field == "") rec.Location = null;
+                        else rec.Location = File.new_for_path (field);
                     break;
                     
                     case 3:

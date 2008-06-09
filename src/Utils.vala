@@ -108,7 +108,7 @@ namespace DVB.Utils {
         try {
             stream = file.read (null);
         } catch (IOError e) {
-            critical(e.message);
+            critical (e.message);
             return null;
         }
     
@@ -124,6 +124,37 @@ namespace DVB.Utils {
         stream.close (null);
         
         return sb.str;
+    }
+    
+    public static void delete_dir_recursively (File dir) throws Error {
+        string attrs = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
+                                       FILE_ATTRIBUTE_STANDARD_NAME);
+    
+        FileEnumerator files;
+        files = dir.enumerate_children (attrs, 0, null);
+        if (files == null) return;
+        
+        FileInfo childinfo;
+        while ((childinfo = files.next_file (null)) != null) {
+            uint32 type = childinfo.get_attribute_uint32 (
+                FILE_ATTRIBUTE_STANDARD_TYPE);
+            
+            File child = dir.get_child (childinfo.get_name ());
+        
+            switch (type) {
+                case FileType.DIRECTORY:
+                delete_dir_recursively (child);
+                break;
+                
+                case FileType.REGULAR:
+                debug ("Deleting file %s", child.get_path ());
+                child.delete (null);
+                break;
+            }
+        }
+        
+        debug ("Deleting directory %s", dir.get_path ());
+        dir.delete (null);
     }
 
 }

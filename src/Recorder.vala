@@ -270,7 +270,7 @@ namespace DVB {
             dvbbasebin.set ("frontend", this.Device.Frontend);
             
             Element filesink = ElementFactory.make ("filesink", "sink");
-            filesink.set ("location", this.active_recording.Location);
+            filesink.set ("location", this.active_recording.Location.get_path ());
             ((Bin) this.pipeline).add_many (dvbbasebin, filesink);
             
             this.pipeline.set_state (State.PLAYING);
@@ -286,15 +286,15 @@ namespace DVB {
         protected bool create_recording_dirs (Channel channel) {
             Recording rec = this.active_recording;
             uint[] start = rec.get_start ();
-            string dirname = "%s/%s/%d-%d-%d_%d-%d".printf (
-                this.Device.RecordingsDirectory.get_path (),
-                Utils.remove_nonalphanums (channel.Name), start[0], start[1],
-                start[2], start[3], start[4], start[5]);
-                
-            File dir = File.new_for_path (dirname);
+            
+            string channel_name = Utils.remove_nonalphanums (channel.Name);
+            string time = "%d-%d-%d_%d-%d".printf (start[0], start[1],
+                start[2], start[3], start[4]);
+            
+            File dir = this.Device.RecordingsDirectory.get_child (
+                channel_name).get_child (time);
             
             if (!dir.query_exists (null)) {
-                debug ("Creating %s", dirname);
                 try {
                     Utils.mkdirs (dir);
                 } catch (Error e) {
@@ -315,16 +315,16 @@ namespace DVB {
             
             if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
                 != FileType.DIRECTORY) {
-                critical ("%s is not a directory", dirname);
+                critical ("%s is not a directory", dir.get_path ());
                 return false;
             }
             
             if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
-                critical ("Cannot write to %s", dirname);
+                critical ("Cannot write to %s", dir.get_path ());
                 return false;
             }
             
-            this.active_recording.Location = "%s/001.ts".printf (dirname);
+            this.active_recording.Location = dir.get_child ("001.ts");
             
             return true;
         }
