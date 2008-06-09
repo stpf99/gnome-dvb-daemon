@@ -235,9 +235,15 @@ namespace DVB {
                                 }
                                 if (rec != null) {
                                     debug ("Restored timer from %s", child.get_path ());
-                                    this.add (rec);
-                                    if (rec.Id > this.last_id)
-                                        this.last_id = rec.Id;
+                                    lock (this.recordings) {
+                                        this.add (rec);
+                                    }
+                                    
+                                    lock (this.last_id) {
+                                        if (rec.Id > this.last_id) {
+                                            this.last_id = rec.Id;
+                                        }
+                                    }
                                 }
                             }
                         break;
