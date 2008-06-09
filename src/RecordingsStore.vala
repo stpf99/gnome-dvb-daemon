@@ -18,6 +18,7 @@ namespace DVB {
         }
         
         public static weak RecordingsStore get_instance () {
+            // TODO make thread-safe
             if (instance == null) {
                 instance = new RecordingsStore ();
             }
@@ -26,29 +27,38 @@ namespace DVB {
         
         public bool add (Recording rec) {
             uint32 id = rec.Id;
-            if (this.recordings.contains (id)) {
-                critical ("Recording with id %s already available", id);
-                return false;
+            lock (this.recordings) {
+                if (this.recordings.contains (id)) {
+                    critical ("Recording with id %s already available", id);
+                    return false;
+                }
+                
+                this.recordings.set (id, rec);
             }
-            
-            this.recordings.set (id, rec);
             return true;
         }
     
         public uint32 get_next_id () {
-            return (++this.last_id);
+            uint32 val;
+            lock (this.last_id) {
+                val = (++this.last_id);
+            }
+            return val;
         }
         
         /**
          * @returns: A list of ids for all recordings
          */
         public uint32[] GetRecordings () {
-            uint32[] ids = new uint32[this.recordings.size];
-            
-            int i = 0;
-            foreach (uint32 key in this.recordings.get_keys ()) {
-                ids[i] = key;
-                i++;
+            uint32[] ids;
+            lock (this.recordings) {
+                ids = new uint32[this.recordings.size];
+                
+                int i = 0;
+                foreach (uint32 key in this.recordings.get_keys ()) {
+                    ids[i] = key;
+                    i++;
+                }
             }
             
             return ids;
@@ -60,8 +70,10 @@ namespace DVB {
          */
         public string? GetLocation (uint32 rec_id) {
             string? val = null;
-            if (this.recordings.contains (rec_id)) {
-                val = this.recordings.get(rec_id).Location.get_path ();
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    val = this.recordings.get(rec_id).Location.get_path ();
+                }
             }
            
             return val;
@@ -74,8 +86,10 @@ namespace DVB {
          */
         public string? GetName (uint32 rec_id) {
             string? val = null;
-            if (this.recordings.contains (rec_id)) {
-                val = this.recordings.get(rec_id).Name;
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    val = this.recordings.get(rec_id).Name;
+                }
             }
            
             return val;
@@ -88,8 +102,10 @@ namespace DVB {
          */
         public string? GetDescription (uint32 rec_id) {
             string? val = null;
-            if (this.recordings.contains (rec_id)) {
-                val = this.recordings.get(rec_id).Description;
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    val = this.recordings.get(rec_id).Description;
+                }
             }
            
             return val;
@@ -101,8 +117,10 @@ namespace DVB {
          */
         public uint[]? GetStartTime (uint32 rec_id) {
             uint[]? val = null;
-            if (this.recordings.contains (rec_id)) {
-                val = this.recordings.get(rec_id).get_start ();
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    val = this.recordings.get(rec_id).get_start ();
+                }
             }
            
             return val;
@@ -115,8 +133,10 @@ namespace DVB {
          */
         public int64 GetLength (uint32 rec_id) {
             int64 val = -1;
-            if (this.recordings.contains (rec_id)) {
-                val = this.recordings.get(rec_id).Length;
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    val = this.recordings.get(rec_id).Length;
+                }
             }
            
             return val;
@@ -131,16 +151,18 @@ namespace DVB {
          */
         public bool Delete (uint32 rec_id) {
             bool val = false;
-            if (!this.recordings.contains (rec_id)) val = false;
-            else {
-                var rec = this.recordings.get (rec_id);
-                try {
-                    Utils.delete_dir_recursively (rec.Location.get_parent ());
-                    this.recordings.remove (rec_id);
-                    val = true;
-                } catch (Error e) {
-                    critical (e.message);
-                    val = false;
+            lock (this.recordings) {
+                if (!this.recordings.contains (rec_id)) val = false;
+                else {
+                    var rec = this.recordings.get (rec_id);
+                    try {
+                        Utils.delete_dir_recursively (rec.Location.get_parent ());
+                        this.recordings.remove (rec_id);
+                        val = true;
+                    } catch (Error e) {
+                        critical (e.message);
+                        val = false;
+                    }
                 }
             }
             
