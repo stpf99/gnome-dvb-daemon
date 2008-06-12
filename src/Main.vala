@@ -72,10 +72,10 @@ public class Main {
         var rec = new DVB.TerrestrialRecorder (device);
         rec.recording_finished += recording_finished;
         
-        DVB.RecordingsStore.get_instance ().restore_from_dir (recdir);
+        //DVB.RecordingsStore.get_instance ().Delete ((uint32)1);
         
-        rec.AddTimer (16394, 2008, 6, 8, 14, 12, 2);
-        rec.AddTimer (32, 2008, 6, 8, 14, 8, 3);
+        rec.AddTimer (16394, 2008, 6, 12, 11, 30, 2);
+        rec.AddTimer (32, 2008, 6, 9, 21, 39, 3);
         rec.AddTimer (32, 2008, 6, 5, 10, 25, 3);
         rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
         rec.AddTimer (16418, 2006, 6, 6, 6, 6, 99);

@@ -26,6 +26,8 @@ namespace DVB {
         construct {
             this.timers = new HashMap<uint, Timer> ();
             this.reset ();
+            RecordingsStore.get_instance ().restore_from_dir (
+                this.Device.RecordingsDirectory);
         }
         
         /**
