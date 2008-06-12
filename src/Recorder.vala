@@ -139,8 +139,8 @@ namespace DVB {
          * @returns: An array of length 5, where index 0 = year, 1 = month,
          * 2 = day, 3 = hour and 4 = minute.
          */
-        public uint[] GetStartTime (uint32 timer_id) {
-            uint[] val;
+        public uint32[] GetStartTime (uint32 timer_id) {
+            uint32[] val;
             lock (this.timers) {
                 if (this.timers.contains (timer_id))
                     val = this.timers.get(timer_id).get_start_time ();
