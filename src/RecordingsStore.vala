@@ -180,7 +180,7 @@ namespace DVB {
          */
         public void restore_from_dir (File recordingsbasedir) {
             if (!recordingsbasedir.query_exists (null)) {
-                critical ("Directory %s does not exist", recordingsbasedir.get_path ());
+                debug ("Directory %s does not exist", recordingsbasedir.get_path ());
                 return;
             }
             
