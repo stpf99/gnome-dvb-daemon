@@ -137,11 +137,13 @@ namespace DVB {
          * @returns: An array of length 5, where index 0 = year, 1 = month,
          * 2 = day, 3 = hour and 4 = minute.
          */
-        public uint[]? GetStartTime (uint32 timer_id) {
-            uint[]? val = null;
+        public uint[] GetStartTime (uint32 timer_id) {
+            uint[] val;
             lock (this.timers) {
                 if (this.timers.contains (timer_id))
                     val = this.timers.get(timer_id).get_start_time ();
+                else
+                    val = new uint[] {};
             }
             return val;
         }
@@ -150,21 +152,24 @@ namespace DVB {
          * @timer_id: Timer's id
          * @returns: Same as dvb_recorder_GetStartTime()
          */
-        public uint[]? GetEndTime (uint32 timer_id) {
-            uint[]? val = null;
+        public uint[] GetEndTime (uint32 timer_id) {
+            uint[] val;
             lock (this.timers) {
                 if (this.timers.contains (timer_id))
                     val = this.timers.get(timer_id).get_end_time ();
+                else
+                    val = new uint[] {};
             }
             return val;
         }
         
         /**
          * @timer_id: Timer's id
-         * @returns: Duration in seconds
+         * @returns: Duration in seconds or 0 if there's no timer with
+         * the given id
          */
-        public uint? GetDuration (uint32 timer_id) {
-            uint? val = null;
+        public uint GetDuration (uint32 timer_id) {
+            uint val = 0;
             lock (this.timers) {
                 if (this.timers.contains (timer_id))
                     val = this.timers.get(timer_id).Duration;
@@ -174,10 +179,10 @@ namespace DVB {
         
         /**
          * @returns: The currently active timer
-         * (i.e.currently active recording)
+         * or 0 if there's no active timer
          */
-        public uint32? GetActiveTimer () {
-            uint32? val = null;
+        public uint32 GetActiveTimer () {
+            uint32 val = 0;
             lock (this.timers) {
                 if (this.active_timer != null)
                 val = this.active_timer.Id;
@@ -353,7 +358,7 @@ namespace DVB {
                 
                 case Gst.MessageType.ERROR:
                     Error gerror;
-                    string debug;
+                    weak string debug;
                     message.parse_error (out gerror, out debug);
                     critical ("%s %s", gerror.message, debug);
                     this.stop_current_recording ();

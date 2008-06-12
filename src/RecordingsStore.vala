@@ -68,8 +68,8 @@ namespace DVB {
          * @rec_id: The id of the recording
          * @returns: The location of the recording on the filesystem
          */
-        public string? GetLocation (uint32 rec_id) {
-            string? val = null;
+        public string GetLocation (uint32 rec_id) {
+            string val = "";
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     val = this.recordings.get(rec_id).Location.get_path ();
@@ -84,8 +84,8 @@ namespace DVB {
          * @returns: The name of the recording (e.g. the name of
          * a TV show)
          */
-        public string? GetName (uint32 rec_id) {
-            string? val = null;
+        public string GetName (uint32 rec_id) {
+            string val = "";
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     val = this.recordings.get(rec_id).Name;
@@ -100,8 +100,8 @@ namespace DVB {
          * @returns: A short text describing the recorded item
          * (e.g. the description from EPG)
          */
-        public string? GetDescription (uint32 rec_id) {
-            string? val = null;
+        public string GetDescription (uint32 rec_id) {
+            string val = "";
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     val = this.recordings.get(rec_id).Description;
@@ -115,11 +115,13 @@ namespace DVB {
          * @rec_id: The id of the recording
          * @returns: The starting time of the recording
          */
-        public uint[]? GetStartTime (uint32 rec_id) {
-            uint[]? val = null;
+        public uint[] GetStartTime (uint32 rec_id) {
+            uint[] val;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     val = this.recordings.get(rec_id).get_start ();
+                } else {
+                    val = new uint[] {};
                 }
             }
            

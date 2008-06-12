@@ -28,7 +28,7 @@ namespace DVB {
          *
          * Get the object path of the channel scanner for this device.
          */
-        public string[]? GetScannerForDevice (uint adapter, uint frontend) {
+        public string[] GetScannerForDevice (uint adapter, uint frontend) {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             string dbusiface;
             
@@ -37,7 +37,7 @@ namespace DVB {
                       adapter, frontend);
                 
                 Device device = this.get_device_if_exists (adapter, frontend);
-                if (device == null) return null;
+                if (device == null) return new string[] {};
                 
                 Scanner scanner;
                 switch (device.Type) {
@@ -60,7 +60,7 @@ namespace DVB {
                 this.scanners.set (path, scanner);
                 
                 var conn = get_dbus_connection ();
-                if (conn == null) return null;
+                if (conn == null) return new string[] {};
                 
                 conn.register_object (
                     path,
@@ -105,7 +105,7 @@ namespace DVB {
          * Returns the object path to the device's recorder.
          * The device must be registered with RegisterDevice () first.
          */
-        public string? GetRecorder (uint adapter, uint frontend) {
+        public string GetRecorder (uint adapter, uint frontend) {
             
             string path = Constants.DBUS_RECORDER_PATH.printf (adapter, frontend);
             
@@ -113,7 +113,7 @@ namespace DVB {
                 debug ("Creating new Recorder for adapter %d, frontend %d");
                 
                 Device device = this.get_device_if_exists (adapter, frontend);
-                if (device == null) return null;
+                if (device == null) return "";
                 
                 Recorder recorder;
                 switch (device.Type) {
@@ -131,7 +131,7 @@ namespace DVB {
                 }
                 
                 var conn = get_dbus_connection ();
-                if (conn == null) return null;
+                if (conn == null) return "";
                 
                 conn.register_object (
                     path,
