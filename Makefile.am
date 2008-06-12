@@ -37,6 +37,7 @@ dvb_daemon_VALASOURCES = \
 	src/ChannelListWriter.vala \
 	src/Constants.vala \
 	src/Device.vala \
+	src/EPGStore.vala \
 	src/Main.vala \
 	src/Manager.vala \
 	src/MpegTsEnums.vala \
