@@ -10,12 +10,10 @@ namespace DVB {
             this.Frequency = frequency;
         }
         
-        public static bool equal (void* a, void* b) {
-            if (a == null || b == null) return false;
-            Object o1 = (Object)a;
-            Object o2 = (Object)b;
+        public static bool equal (ScannedItem* o1, ScannedItem* o2) {
+            if (o1 == null || o2 == null) return false;
             
-            if (o1.get_type() != o2.get_type()) return false;
+            if (o1->get_type().name() != o2->get_type().name()) return false;
             
             if (o1 is ScannedSatteliteItem) {
                 ScannedSatteliteItem item1 = (ScannedSatteliteItem)o1;
@@ -29,7 +27,7 @@ namespace DVB {
                 
                 return (item1.Frequency == item2.Frequency);
             } else {
-                warning("Don't comparing ScannedItem instances");
+                warning ("Don't comparing ScannedItem instances");
                 return false;
             }
         }
