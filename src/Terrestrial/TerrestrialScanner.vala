@@ -66,8 +66,8 @@ namespace DVB {
             dvbsrc.set ("modulation", mod);
         }
         
-        protected override void add_scanned_item (uint frequency) {
-            base.scanned_frequencies.add (new ScannedItem (frequency));
+        protected override ScannedItem get_scanned_item (uint frequency) {
+            return new ScannedItem (frequency);
         }
         
         protected override Channel get_new_channel () {

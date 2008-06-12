@@ -33,12 +33,10 @@ namespace DVB {
             dvbsrc.set ("code-rate-hp", code_rate);
         }
         
-        protected override void add_scanned_item (uint frequency) {
+        protected override ScannedItem get_scanned_item (uint frequency) {
             weak string pol =
                 base.current_tuning_params.get_string ("polarization");
-            base.scanned_frequencies.add (
-                new ScannedSatteliteItem (frequency, pol)
-            );
+            return new ScannedSatteliteItem (frequency, pol);
         }
         
         protected override Channel get_new_channel () {

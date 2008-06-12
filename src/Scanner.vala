@@ -60,6 +60,8 @@ namespace DVB {
          */
         protected HashSet<ScannedItem> scanned_frequencies;
         
+        protected HashMap<uint, Gst.Structure> transport_streams;
+        
         // Contains SIDs
         private HashSet<int> found_channels;
         private uint? check_for_lock_event_id;
@@ -74,6 +76,7 @@ namespace DVB {
             this.found_channels = new HashSet<int> ();
             this.frequencies = new Queue<Gst.Structure> ();
             this.channels = new ChannelList ();
+            this.transport_streams = new HashMap<uint, Gst.Structure> ();
             
             this.nit_arrived = false;
             this.sdt_arrived = false;
@@ -91,7 +94,7 @@ namespace DVB {
          * Use the frequency and possibly other data to
          * mark the tuning paramters as already used
          */
-        protected abstract void add_scanned_item (uint frequency);
+        protected abstract ScannedItem get_scanned_item (uint frequency);
         
         /**
          * Return a new empty channel
@@ -258,8 +261,6 @@ namespace DVB {
                     channel.TransportStreamId = tsid;
                     channel.Network = service.get_string ("provider-name");
                     
-                    debug ("Name: %s", channel.Name);
-                    
                     if (added_new_channel)
                         this.channel_added (channel);
                 }
@@ -292,11 +293,12 @@ namespace DVB {
                     
                     uint freq;
                     delivery.get_uint ("frequency", out freq);
-                    // FIXME can't check for uint when ScannedItems are in the set
-                    /*if (!this.scanned_frequencies.contains (freq)) {
+                    
+                    ScannedItem item = this.get_scanned_item (freq);
+                    if (!this.scanned_frequencies.contains (item)) {
                         debug ("Found new frequency %d", freq);
-                        this.add_scanned_item (freq);
-                    }*/
+                        this.add_structure_to_scan (delivery);
+                    }
                 }
                 
                 if (transport.has_field ("channels")) {
@@ -369,7 +371,7 @@ namespace DVB {
             uint freq;
             this.current_tuning_params.get_uint ("frequency", out freq);
             
-            this.add_scanned_item (freq);            
+            this.scanned_frequencies.add (this.get_scanned_item (freq));
         }
         
         protected void add_new_channel (uint sid) {

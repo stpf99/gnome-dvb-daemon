@@ -35,8 +35,9 @@ namespace DVB {
             dvbsrc.set ("code-rate-hp", code_rate);
         }
         
-        protected override void add_scanned_item (uint frequency) {
+        protected override ScannedItem get_scanned_item (uint frequency) {
             // TODO
+            return new ScannedItem (frequency);
         }
         
         protected override Channel get_new_channel () {
