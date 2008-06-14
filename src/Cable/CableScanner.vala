@@ -43,6 +43,11 @@ namespace DVB {
         protected override Channel get_new_channel () {
             return new CableChannel ();
         }
+        
+        protected override void add_values_from_structure_to_channel (
+            Gst.Structure delivery, Channel channel) {
+               
+        }
     }
     
 }

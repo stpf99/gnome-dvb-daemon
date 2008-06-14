@@ -77,12 +77,6 @@ namespace DVB {
             this.frequencies = new Queue<Gst.Structure> ();
             this.channels = new ChannelList ();
             this.transport_streams = new HashMap<uint, Gst.Structure> ();
-            
-            this.nit_arrived = false;
-            this.sdt_arrived = false;
-            this.pat_arrived = false;
-            this.locked = false;
-            this.check_for_lock_event_id = null;
         }
         
         /**
@@ -102,9 +96,14 @@ namespace DVB {
         protected abstract Channel get_new_channel ();
         
         /**
+         * Retrieve the data from structure and add it to the Channel
+         */
+        protected abstract void add_values_from_structure_to_channel (Gst.Structure delivery, Channel channel);
+        
+        /**
          * Start the scanner
          */
-        public virtual void Run() {
+        public void Run () {
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
                 this.pipeline = Gst.parse_launch(
@@ -124,6 +123,13 @@ namespace DVB {
             this.pipeline.set_state(Gst.State.READY);
             
             this.start_scan();
+        }
+        
+        public void Abort () {
+            this.remove_check_for_lock_timeout ();
+            if (this.pipeline != null)
+                this.pipeline.set_state (Gst.State.NULL);
+            //this.frequencies.clear ();
         }
         
         protected void add_structure_to_scan (Gst.Structure# structure) {
@@ -248,11 +254,10 @@ namespace DVB {
                     
                     if (service.has_field ("name"))
                         name = service.get_string ("name");
-                        
-                    bool added_new_channel = false;
+                    
                     if (!this.Channels.contains (sid)) {
                         this.add_new_channel (sid);
-                        added_new_channel = true;
+                        this.current_sid = sid;
                     }
                     
                     Channel channel = this.Channels.get(sid);
@@ -261,8 +266,11 @@ namespace DVB {
                     channel.TransportStreamId = tsid;
                     channel.Network = service.get_string ("provider-name");
                     
-                    if (added_new_channel)
-                        this.channel_added (channel);
+                    uint freq;
+                    this.current_tuning_params.get_uint ("frequency", out freq);
+                    channel.Frequency = freq;
+                    this.add_values_from_structure_to_channel (this.current_tuning_params,
+                        channel);
                 }
             }
         
@@ -317,6 +325,7 @@ namespace DVB {
                         
                         if (!this.Channels.contains (sid)) {
                             this.add_new_channel (sid);
+                            this.current_sid = sid;
                         }
                         
                         Channel dvb_channel = this.Channels.get (sid);
@@ -342,23 +351,33 @@ namespace DVB {
         }
         
         protected void bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            if (message.type == Gst.MessageType.ELEMENT) {
-                if (message.structure.get_name() == "dvb-frontend-stats")
-                    this.on_dvb_frontend_stats_structure (message.structure);
-                else if (message.structure.get_name() == "dvb-read-failure")
-                    this.on_dvb_read_failure_structure ();
-                else if (message.structure.get_name() == "sdt")
-                    this.on_sdt_structure (message.structure);
-                else if (message.structure.get_name() == "nit")
-                    this.on_nit_structure (message.structure);
-                else if (message.structure.get_name() == "pat")
-                    this.on_pat_structure (message.structure);
-                else
-                    return;
+            switch (message.type) {
+                case Gst.MessageType.ELEMENT: {
+                    if (message.structure.get_name() == "dvb-frontend-stats")
+                        this.on_dvb_frontend_stats_structure (message.structure);
+                    else if (message.structure.get_name() == "dvb-read-failure")
+                        this.on_dvb_read_failure_structure ();
+                    else if (message.structure.get_name() == "sdt")
+                        this.on_sdt_structure (message.structure);
+                    else if (message.structure.get_name() == "nit")
+                        this.on_nit_structure (message.structure);
+                    else if (message.structure.get_name() == "pat")
+                        this.on_pat_structure (message.structure);
+                break;
+                }            
+                case Gst.MessageType.ERROR: {
+                    Error gerror;
+                    weak string debug;
+                    message.parse_error (out gerror, out debug);
+                    critical ("%s %s", gerror.message, debug);
+                    this.Abort ();
+                break;
+                }
             }
             
             if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
                 this.add_found_frequency ();
+                this.channel_added (this.Channels.get (this.current_sid));
                 this.start_scan ();
             }
         }

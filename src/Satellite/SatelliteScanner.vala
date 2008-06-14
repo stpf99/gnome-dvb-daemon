@@ -42,6 +42,21 @@ namespace DVB {
         protected override Channel get_new_channel () {
             return new SatelliteChannel ();
         }
+        
+        protected override void add_values_from_structure_to_channel (
+            Gst.Structure delivery, Channel channel) {
+            if (!(channel is SatelliteChannel)) return;
+            
+            SatelliteChannel sc = (SatelliteChannel)channel;
+            sc.Polarization = delivery.get_string ("polarization");
+
+            uint srate;
+            delivery.get_uint ("symbol-rate", out srate);            
+            sc.SymbolRate = srate;
+            
+            // TODO
+            sc.DiseqcSource = -1;
+        }
     }
     
 }
