@@ -5,7 +5,7 @@ namespace DVB {
     public class TerrestrialChannel : Channel {
     
         public DvbSrcInversion Inversion {get; set;}
-        public DvbSrcBandwidth Bandwith {get; set;}
+        public DvbSrcBandwidth Bandwidth {get; set;}
         public DvbSrcCodeRate CodeRateHP {get; set;}
         public DvbSrcCodeRate CodeRateLP {get; set;}
         public DvbSrcModulation Constellation {get; set;}
@@ -18,7 +18,7 @@ namespace DVB {
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
                                           this.Inversion),
                 Utils.get_nick_from_enum (typeof(DvbSrcBandwidth),
-                                          this.Bandwith),
+                                          this.Bandwidth),
                 Utils.get_nick_from_enum (typeof(DvbSrcCodeRate),
                                           this.CodeRateHP),
                 Utils.get_nick_from_enum (typeof(DvbSrcCodeRate),

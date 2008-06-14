@@ -74,7 +74,7 @@ namespace DVB {
                                                       "DVB_DVB_SRC_INVERSION_");
             
             elements[2] = get_name_without_prefix (typeof(DvbSrcBandwidth),
-                                                      channel.Bandwith,
+                                                      channel.Bandwidth,
                                                       "DVB_DVB_SRC_BANDWIDTH_");
             
             elements[3] = get_name_without_prefix (typeof(DvbSrcCodeRate),

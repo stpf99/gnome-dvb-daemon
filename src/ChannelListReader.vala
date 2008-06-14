@@ -77,7 +77,7 @@ namespace DVB {
                     channel.Inversion = get_value_with_prefix (
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                 } else if (i == 3) {
-                    channel.Bandwith = get_value_with_prefix (
+                    channel.Bandwidth = get_value_with_prefix (
                         typeof(DvbSrcBandwidth), val, "DVB_DVB_SRC_BANDWIDTH_");
                 } else if (i == 4) {
                     channel.CodeRateHP = get_value_with_prefix (

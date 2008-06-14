@@ -22,7 +22,7 @@ namespace DVB {
             dvbbasebin.set ("code-rate-hp", tchannel.CodeRateHP);
             dvbbasebin.set ("code-rate-lp", tchannel.CodeRateLP);
             dvbbasebin.set ("guard", tchannel.GuardInterval);
-            dvbbasebin.set ("bandwidth", tchannel.Bandwith);
+            dvbbasebin.set ("bandwidth", tchannel.Bandwidth);
             dvbbasebin.set ("frequency", tchannel.Frequency);
             dvbbasebin.set ("hierarchy", tchannel.Hierarchy);
             
