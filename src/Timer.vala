@@ -147,7 +147,7 @@ namespace DVB {
         }
         
         public string serialize () {
-            return "%d;%d;%s;%d-%d-%d %d:%d;%d\n".printf(
+            return "%u;%u;%s;%u-%u-%u %u:%u;%u\n".printf(
                 this.Id, this.Channel.Sid, (this.Name == null) ? "" : this.Name,
                 this.Year, this.Month, this.Day, this.Hour, this.Minute,
                 this.Duration);
@@ -197,7 +197,7 @@ namespace DVB {
         }
         
         public string to_string () {
-            return "channel: %d, start: %d-%d-%d %d:%d, duration: %d".printf (
+            return "channel: %u, start: %u-%u-%u %u:%u, duration: %u".printf (
                 this.Channel.Sid, this.Year, this.Month, this.Day, this.Hour,
                 this.Minute, this.Duration);
         }

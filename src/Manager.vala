@@ -33,7 +33,7 @@ namespace DVB {
             string dbusiface;
             
             if (!this.scanners.contains (path)) {
-                debug ("Creating new Scanner D-Bus service for adapter %d, frontend %d",
+                debug ("Creating new Scanner D-Bus service for adapter %u, frontend %u",
                       adapter, frontend);
                 
                 Device device = this.get_device_if_exists (adapter, frontend);
@@ -110,7 +110,8 @@ namespace DVB {
             string path = Constants.DBUS_RECORDER_PATH.printf (adapter, frontend);
             
             if (!this.recorders.contains (path)) {
-                debug ("Creating new Recorder for adapter %d, frontend %d");
+                debug ("Creating new Recorder for adapter %u, frontend %u",
+                    adapter, frontend);
                 
                 Device device = this.get_device_if_exists (adapter, frontend);
                 if (device == null) return "";
@@ -203,7 +204,7 @@ namespace DVB {
             if (this.devices.contains (id))
                 return this.devices.get (id);
             else {
-                message ("No device with adapter %d and frontend %d",
+                message ("No device with adapter %u and frontend %u",
                     adapter, frontend);
                 return null;
             }

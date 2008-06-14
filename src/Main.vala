@@ -33,16 +33,16 @@ public class Main {
     }
     
     private static void recording_finished (DVB.Recorder recorder, uint32 id) {
-        stdout.printf ("Recording %d finished\n", id);
+        stdout.printf ("Recording %u finished\n", id);
         
         weak DVB.RecordingsStore rec = DVB.RecordingsStore.get_instance();
         
         foreach (uint32 rid in rec.GetRecordings()) {
-            stdout.printf ("ID: %d\n", rid);
+            stdout.printf ("ID: %u\n", rid);
             stdout.printf ("Location: %s\n", rec.GetLocation (rid));
-            stdout.printf ("Length: %d\n", rec.GetLength (rid));
+            stdout.printf ("Length: %lli\n", rec.GetLength (rid));
             uint[] start = rec.GetStartTime (rid);
-            stdout.printf ("Start: %d-%d-%d %d:%d\n", start[0], start[1],
+            stdout.printf ("Start: %u-%u-%u %u:%u\n", start[0], start[1],
                 start[2], start[3], start[4]);
         }
     }

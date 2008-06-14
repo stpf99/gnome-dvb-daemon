@@ -9,7 +9,7 @@ namespace DVB {
         public DvbSrcModulation Modulation {get; set;}
         
         public override string to_string () {
-            return "%s:%d:%s:%d:%s:%s:%d:%d:%d".printf(base.Name, base.Frequency,
+            return "%s:%u:%s:%u:%s:%s:%u:%u:%u".printf(base.Name, base.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
                                           this.Inversion),
                 this.SymbolRate,

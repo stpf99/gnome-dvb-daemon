@@ -51,12 +51,12 @@ namespace DVB {
         public uint32 AddTimer (uint channel,
             int start_year, int start_month, int start_day,
             int start_hour, int start_minute, uint duration) {
-            debug ("Adding new timer: channel: %d, start: %d-%d-%d %d:%d, duration: %d",
+            debug ("Adding new timer: channel: %u, start: %d-%d-%d %d:%d, duration: %u",
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
                 
             if (!this.Device.Channels.contains (channel)) {
-                debug ("No channel %d for device %d %d", channel,
+                debug ("No channel %u for device %u %u", channel,
                     this.Device.Adapter, this.Device.Frontend);
                 return 0;
             }
@@ -231,7 +231,7 @@ namespace DVB {
             this.active_recording.Length = Utils.difftime (Time.local (time_t ()),
                 this.active_recording.StartTime);
         
-            debug ("Stopping recording of channel %d after %d seconds",
+            debug ("Stopping recording of channel %u after %lli seconds",
                 this.active_recording.ChannelSid, this.active_recording.Length);
             
             try {
@@ -247,7 +247,7 @@ namespace DVB {
         }
         
         protected void start_recording (Timer timer) {
-            debug ("Starting recording of channel %d", timer.Channel.Sid);
+            debug ("Starting recording of channel %u", timer.Channel.Sid);
         
             Element dvbbasebin = this.get_dvbbasebin (timer.Channel);
             
@@ -264,7 +264,7 @@ namespace DVB {
             if (!this.create_recording_dirs (timer.Channel)) return;
             
             this.pipeline = new Pipeline (
-                "recording_%d".printf(this.active_recording.ChannelSid));
+                "recording_%u".printf(this.active_recording.ChannelSid));
             
             weak Gst.Bus bus = this.pipeline.get_bus();
             bus.add_signal_watch();
@@ -295,7 +295,7 @@ namespace DVB {
             uint[] start = rec.get_start ();
             
             string channel_name = Utils.remove_nonalphanums (channel.Name);
-            string time = "%d-%d-%d_%d-%d".printf (start[0], start[1],
+            string time = "%u-%u-%u_%u-%u".printf (start[0], start[1],
                 start[2], start[3], start[4]);
             
             File dir = this.Device.RecordingsDirectory.get_child (

@@ -55,7 +55,7 @@ namespace DVB {
             }
             
             // Write common data
-            buffer = ":%d:%d:%d\n".printf (channel.VideoPID,
+            buffer = ":%u:%u:%u\n".printf (channel.VideoPID,
                 channel.AudioPID, channel.Sid);
             this.stream.write (buffer, buffer.size(), null);
         }
@@ -67,7 +67,7 @@ namespace DVB {
         private void write_terrestrial_channel (TerrestrialChannel channel) throws Error {
             string[] elements = new string[9];
             
-            elements[0] = "%d".printf (channel.Frequency);
+            elements[0] = "%u".printf (channel.Frequency);
             
             elements[1] = get_name_without_prefix (typeof(DvbSrcInversion),
                                                       channel.Inversion,
@@ -106,7 +106,7 @@ namespace DVB {
         }
         
         private void write_satellite_channel (SatelliteChannel channel) throws Error {
-            string buffer = "%d:%s:%d:%d".printf (channel.Frequency / 1000,
+            string buffer = "%u:%s:%u:%u".printf (channel.Frequency / 1000,
                                                   channel.Polarization,
                                                   channel.DiseqcSource,
                                                   channel.SymbolRate / 1000);
@@ -116,13 +116,13 @@ namespace DVB {
         private void write_cable_channel (CableChannel channel) throws Error {
             string[] elements = new string [5];
             
-            elements[0] = "%d".printf (channel.Frequency);
+            elements[0] = "%u".printf (channel.Frequency);
                         
             elements[1] = get_name_without_prefix (typeof(DvbSrcInversion),
                                                       channel.Inversion,
                                                       "DVB_DVB_SRC_INVERSION_");
             
-            elements[2] = "%d".printf (channel.SymbolRate);
+            elements[2] = "%u".printf (channel.SymbolRate);
                                     
             elements[3] = get_name_without_prefix (typeof(DvbSrcCodeRate),
                                                       channel.CodeRate,

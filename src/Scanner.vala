@@ -108,7 +108,7 @@ namespace DVB {
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
                 this.pipeline = Gst.parse_launch(
-                    "dvbsrc name=dvbsrc adapter=%d frontend=%d ".printf(
+                    "dvbsrc name=dvbsrc adapter=%u frontend=%u ".printf(
                     this.Device.Adapter, this.Device.Frontend)
                     + "pids=0:16:17:18 stats-reporting-interval=0 "
                     + "! mpegtsparse ! fakesink silent=true");
@@ -296,7 +296,7 @@ namespace DVB {
                     
                     ScannedItem item = this.get_scanned_item (freq);
                     if (!this.scanned_frequencies.contains (item)) {
-                        debug ("Found new frequency %d", freq);
+                        debug ("Found new frequency %u", freq);
                         this.add_structure_to_scan (delivery);
                     }
                 }
@@ -327,7 +327,7 @@ namespace DVB {
                         } else {
                             uint nid;
                             structure.get_uint ("network-id", out nid);
-                            name = "%d".printf (nid);
+                            name = "%u".printf (nid);
                         }
                         dvb_channel.Network = name;
                         
@@ -375,7 +375,7 @@ namespace DVB {
         }
         
         protected void add_new_channel (uint sid) {
-            debug ("Adding new channel with SID %d", sid);
+            debug ("Adding new channel with SID %u", sid);
             Channel new_channel = this.get_new_channel ();
             new_channel.Sid = sid;
             this.Channels.add (#new_channel);

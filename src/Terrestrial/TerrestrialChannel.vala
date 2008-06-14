@@ -14,7 +14,7 @@ namespace DVB {
         public DvbSrcHierarchy Hierarchy {get; set;}
         
         public override string to_string () {
-            return "%s:%d:%s:%s:%s:%s:%s:%s:%s:%s:%d:%d:%d".printf(base.Name, base.Frequency,
+            return "%s:%u:%s:%s:%s:%s:%s:%s:%s:%s:%u:%u:%u".printf(base.Name, base.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
                                           this.Inversion),
                 Utils.get_nick_from_enum (typeof(DvbSrcBandwidth),

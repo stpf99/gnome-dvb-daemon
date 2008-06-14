@@ -29,7 +29,7 @@ namespace DVB {
             uint32 id = rec.Id;
             lock (this.recordings) {
                 if (this.recordings.contains (id)) {
-                    critical ("Recording with id %s already available", id);
+                    critical ("Recording with id %u already available", id);
                     return false;
                 }
                 
