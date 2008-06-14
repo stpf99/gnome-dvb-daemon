@@ -137,7 +137,7 @@ namespace DVB {
                     channel.DiseqcSource = val.to_int ();
                 } else if (i == 4) {
                     // symbol rate is stored in kBaud
-                    channel.SymbolRate = val.to_int() * 1000;
+                    channel.SymbolRate = val.to_int();
                 } else if (i == 5) {                
                     channel.VideoPID = val.to_int ();
                 } else if (i == 6) {
