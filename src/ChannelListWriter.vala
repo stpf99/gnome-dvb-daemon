@@ -106,7 +106,7 @@ namespace DVB {
         }
         
         private void write_satellite_channel (SatelliteChannel channel) throws Error {
-            string buffer = "%u:%s:%u:%u".printf (channel.Frequency / 1000,
+            string buffer = "%u:%s:%d:%u".printf (channel.Frequency / 1000,
                                                   channel.Polarization,
                                                   channel.DiseqcSource,
                                                   channel.SymbolRate / 1000);
