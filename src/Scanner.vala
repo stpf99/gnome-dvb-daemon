@@ -49,12 +49,7 @@ namespace DVB {
          * The tuning paramters we're currently using
          */
         protected Gst.Structure current_tuning_params;
-        
-        /**
-         * The SID of the current channel
-         */
-        protected uint current_sid;
-        
+            
         /**
          * All the frequencies that have been scanned already
          */
@@ -72,7 +67,7 @@ namespace DVB {
         
         construct {
             this.scanned_frequencies =
-                new HashSet<ScannedItem> (direct_hash, ScannedItem.equal);
+                new HashSet<ScannedItem> (ScannedItem.hash, ScannedItem.equal);
             this.found_channels = new HashSet<int> ();
             this.frequencies = new Queue<Gst.Structure> ();
             this.channels = new ChannelList ();
@@ -156,6 +151,11 @@ namespace DVB {
             
             debug("Starting scan with params %s",
                 this.current_tuning_params.to_string());
+            
+            // Remember that we already scanned this frequency
+            uint freq;
+            this.current_tuning_params.get_uint ("frequency", out freq);
+            this.scanned_frequencies.add (this.get_scanned_item (freq));
             
             this.prepare ();
             
@@ -255,9 +255,10 @@ namespace DVB {
                     if (service.has_field ("name"))
                         name = service.get_string ("name");
                     
+                    bool new_channel_added = false;
                     if (!this.Channels.contains (sid)) {
                         this.add_new_channel (sid);
-                        this.current_sid = sid;
+                        new_channel_added = true;
                     }
                     
                     Channel channel = this.Channels.get(sid);
@@ -269,8 +270,11 @@ namespace DVB {
                     uint freq;
                     this.current_tuning_params.get_uint ("frequency", out freq);
                     channel.Frequency = freq;
-                    this.add_values_from_structure_to_channel (this.current_tuning_params,
-                        channel);
+                        
+                    if (new_channel_added) {
+                        this.channel_added (this.Channels.get (sid));
+                        debug (this.Channels.get (sid).to_string());
+                    }
                 }
             }
         
@@ -325,7 +329,6 @@ namespace DVB {
                         
                         if (!this.Channels.contains (sid)) {
                             this.add_new_channel (sid);
-                            this.current_sid = sid;
                         }
                         
                         Channel dvb_channel = this.Channels.get (sid);
@@ -376,21 +379,9 @@ namespace DVB {
             }
             
             if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
-                this.add_found_frequency ();
-                this.channel_added (this.Channels.get (this.current_sid));
+                this.pipeline.set_state(Gst.State.READY);
                 this.start_scan ();
             }
-        }
-        
-        protected void add_found_frequency () {
-            this.pipeline.set_state(Gst.State.READY);
-            
-            this.locked = false;        
-            
-            uint freq;
-            this.current_tuning_params.get_uint ("frequency", out freq);
-            
-            this.scanned_frequencies.add (this.get_scanned_item (freq));
         }
         
         protected void add_new_channel (uint sid) {

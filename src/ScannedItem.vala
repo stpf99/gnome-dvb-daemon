@@ -5,9 +5,22 @@ namespace DVB {
     public class ScannedItem : GLib.Object {
 
         public uint Frequency {get; construct;}
+        private static const int PRIME = 31;
         
         public ScannedItem (uint frequency) {
             this.Frequency = frequency;
+        }
+        
+        public static uint hash (ScannedItem* o) {
+            uint hashval;
+            if (o is ScannedItem) {
+                hashval = o->Frequency;
+            } else if (o is ScannedSatteliteItem) {
+                hashval = 2 * PRIME + PRIME * o->Frequency + ((ScannedSatteliteItem)o).Polarization.hash ();
+            } else {
+                hashval = 0;
+            }
+            return hashval;
         }
         
         public static bool equal (ScannedItem* o1, ScannedItem* o2) {
