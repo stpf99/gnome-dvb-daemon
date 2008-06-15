@@ -72,7 +72,7 @@ namespace DVB {
                 if (i == 0) {
                     channel.Name = val;
                 } else if (i == 1) {
-                    channel.Frequency = val.to_int ();
+                    channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
                     channel.Inversion = get_value_with_prefix (
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
@@ -99,11 +99,11 @@ namespace DVB {
                     channel.Hierarchy = get_value_with_prefix (
                         typeof(DvbSrcHierarchy), val, "DVB_DVB_SRC_HIERARCHY_");
                 } else if (i == 10) {                
-                    channel.VideoPID = val.to_int ();
+                    channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 11) {
-                    channel.AudioPID = val.to_int ();
+                    channel.AudioPID = (uint)val.to_int ();
                 } else if (i == 12) {
-                    channel.Sid = val.to_int ();
+                    channel.Sid = (uint)val.to_int ();
                 }
                 
                 i++;
@@ -129,7 +129,7 @@ namespace DVB {
                     channel.Name = val;
                 } else if (i == 1) {
                     // frequency is stored in MHz
-                    channel.Frequency = val.to_int () * 1000;
+                    channel.Frequency = (uint)(val.to_int () * 1000);
                 } else if (i == 2) {
                     channel.Polarization = val;
                 } else if (i == 3) {
@@ -137,13 +137,13 @@ namespace DVB {
                     channel.DiseqcSource = val.to_int ();
                 } else if (i == 4) {
                     // symbol rate is stored in kBaud
-                    channel.SymbolRate = val.to_int();
+                    channel.SymbolRate = (uint)val.to_int();
                 } else if (i == 5) {                
-                    channel.VideoPID = val.to_int ();
+                    channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 6) {
-                    channel.AudioPID = val.to_int ();
+                    channel.AudioPID = (uint)val.to_int ();
                 } else if (i == 7) {
-                    channel.Sid = val.to_int ();
+                    channel.Sid = (uint)val.to_int ();
                 }
                 
                 i++;
@@ -168,12 +168,12 @@ namespace DVB {
                 if (i == 0) {
                     channel.Name = val;
                 } else if (i == 1) {
-                    channel.Frequency = val.to_int ();
+                    channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
                     channel.Inversion = get_value_with_prefix (
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                 } else if (i == 3) {
-                    channel.SymbolRate = val.to_int ();
+                    channel.SymbolRate = (uint)val.to_int ();
                 } else if (i == 4) {
                     channel.CodeRate = get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
@@ -181,11 +181,11 @@ namespace DVB {
                     channel.Modulation = get_value_with_prefix (
                         typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
                 } else if (i == 6) {                
-                    channel.VideoPID = val.to_int ();
+                    channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 7) {
-                    channel.AudioPID = val.to_int ();
+                    channel.AudioPID = (uint)val.to_int ();
                 } else if (i == 8) {
-                    channel.Sid = val.to_int ();
+                    channel.Sid = (uint)val.to_int ();
                 }
                 
                 i++;
