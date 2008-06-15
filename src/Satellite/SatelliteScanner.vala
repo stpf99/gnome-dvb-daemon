@@ -25,8 +25,10 @@ namespace DVB {
                 base.set_uint_property (dvbsrc, base.current_tuning_params, key);
             }
             
-            // TODO
-            //dvbsrc.set_property("polarity", tuning_params["polarization"][0])
+            string polarity =
+                base.current_tuning_params.get_string ("polarization")
+                .substring (0, 1);
+            dvbsrc.set ("polarity", polarity);
             
             uint code_rate;
             base.current_tuning_params.get_uint ("inner-fec", out code_rate);
