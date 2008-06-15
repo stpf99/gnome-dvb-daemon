@@ -178,18 +178,18 @@ namespace DVB {
             return false;
         }
         
-        protected static void set_uint_property (Gst.Element src,
-        Gst.Structure params, string key) {
-            uint val;
-            params.get_uint (key, out val);
-            src.set (key, val);
-        }
-      
         protected void remove_check_for_lock_timeout () {
             Source.remove (this.check_for_lock_event_id);
             this.check_for_lock_event_id = null;
         }
-       
+        
+        protected static void set_uint_property (Gst.Element src,
+            Gst.Structure params, string key) {
+            uint val;
+            params.get_uint (key, out val);
+            src.set (key, val);
+        }
+        
         protected void on_dvb_frontend_stats_structure (Gst.Structure structure) {
             bool has_lock;
             structure.get_boolean ("lock", out has_lock);

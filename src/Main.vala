@@ -56,20 +56,20 @@ public class Main {
         // Initializing GStreamer
         Gst.init (ref args);
         
-        File channelsfile = File.new_for_path ("/home/sebastian/.gstreamer-0.10/dvb-channels.conf");
+        File channelsfile = File.new_for_path ("/home/sepb/.gstreamer-0.10/dvb-channels.conf");
         
-        var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_S);
+        var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
         try {
             reader.read ();
         } catch (Error e) {
             error (e.message);
         }
 
-        File recdir = File.new_for_path ("/home/sebastian/TV");
+        File recdir = File.new_for_path ("/home/sebp/TV");
 
         DVB.Device device = DVB.Device.new_full (0, 0,
             reader.Channels, recdir);
-        var rec = new DVB.SatelliteRecorder (device);
+        var rec = new DVB.TerrestrialRecorder (device);
         rec.recording_finished += recording_finished;
         
         //DVB.RecordingsStore.get_instance ().Delete ((uint32)1);
@@ -81,25 +81,25 @@ public class Main {
         rec.AddTimer (16418, 2006, 6, 6, 6, 6, 99);
 
         //start_manager();
-        /*
+        
         Gst.Structure ter_pro7 = new Gst.Structure ("pro7",
-                "hierarchy", typeof(uint), DVB.DvbSrcHierarchy.HIERARCHY_AUTO,
-                "bandwidth", typeof(uint), DVB.DvbSrcBandwidth.BANDWIDTH_8_MHZ,
+                "hierarchy", typeof(uint), 0,
+                "bandwidth", typeof(uint), 8,
                 "frequency", typeof(uint), 690000000,
-                "transmission-mode", typeof(uint), DVB.DvbSrcTransmissionMode.TRANSMISSION_MODE_8K,
-                "code-rate-hp", typeof(uint), DVB.DvbSrcCodeRate.FEC_NONE,
-                "code-rate-lp", typeof(uint), DVB.DvbSrcCodeRate.FEC_AUTO,
-                "constellation", typeof(uint), DVB.DvbSrcModulation.QAM_64,
-                "guard-interval", typeof(uint), DVB.DvbSrcGuard.GUARD_INTERVAL_AUTO);
-        */
+                "transmission-mode", typeof(string), "8k",
+                "code-rate-hp", typeof(string), "2/3",
+                "code-rate-lp", typeof(string), "1/2",
+                "constellation", typeof(string), "QAM16",
+                "guard-interval", typeof(uint), 4);
+        /*
         Gst.Structure sat_pro7 = new Gst.Structure ("pro7",
             "frequency", typeof(uint), 12544000,
             "symbol-rate", typeof(uint), 22000,
             "polarization", typeof(string), "h");
-            
+        */  
         
-        DVB.Scanner scanner = new DVB.SatelliteScanner (device);
-        scanner.add_structure_to_scan (#sat_pro7);
+        DVB.Scanner scanner = new DVB.TerrestrialScanner (device);
+        scanner.add_structure_to_scan (#ter_pro7);
         scanner.Run ();
         
         // Start GLib mainloop
