@@ -57,6 +57,8 @@ namespace DVB {
         
         protected HashMap<uint, Gst.Structure> transport_streams;
         
+        private static const string BASE_PIDS = "0:16:17:18";
+        
         // Contains SIDs
         private HashSet<int> found_channels;
         private uint? check_for_lock_event_id;
@@ -64,6 +66,7 @@ namespace DVB {
         private bool sdt_arrived;
         private bool pat_arrived;
         private bool locked;
+        private string prev_pids;
         
         construct {
             this.scanned_frequencies =
@@ -102,14 +105,15 @@ namespace DVB {
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
                 this.pipeline = Gst.parse_launch(
-                    "dvbsrc name=dvbsrc adapter=%u frontend=%u ".printf(
+                    "dvbsrc name=dvbsrc adapter=%u frontend=%u ".printf (
                     this.Device.Adapter, this.Device.Frontend)
-                    + "pids=0:16:17:18 stats-reporting-interval=0 "
+                    + "pids=%s stats-reporting-interval=0 ".printf (BASE_PIDS)
                     + "! mpegtsparse ! fakesink silent=true");
             } catch (Error e) {
                 error (e.message);
                 return;
             }
+            this.prev_pids = BASE_PIDS;
             
             weak Gst.Bus bus = this.pipeline.get_bus();
             bus.add_signal_watch();
@@ -224,7 +228,8 @@ namespace DVB {
                 
                 // We want to parse the pmt as well
                 Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
-                dvbsrc.set ("pids", "0:16:17:18:%u".printf (pmt));
+                this.prev_pids = "%s:%u".printf (prev_pids, pmt);
+                dvbsrc.set ("pids", this.prev_pids);
             }
             
             this.pat_arrived = true;
@@ -355,6 +360,51 @@ namespace DVB {
             this.nit_arrived = true;
         }
         
+        protected void on_pmt_structure (Gst.Structure structure) {
+            debug ("Received PMT");
+            
+            uint program_number;
+            structure.get_uint ("program-number", out program_number);
+            
+            if (!this.Channels.contains (program_number)) {
+                this.add_new_channel (program_number);
+            }
+            
+            Channel dvb_channel = this.Channels.get (program_number);
+            
+            Gst.Value streams = structure.get_value ("streams");
+            uint size = streams.list_get_size ();
+            
+            Gst.Value stream_val;
+            weak Gst.Structure stream;
+            // Iterate over streams
+            for (int i=0; i<size; i++) {
+                stream_val = streams.list_get_value (i);
+                stream = stream_val.get_structure ();
+                
+                uint pid;
+                stream.get_uint ("pid", out pid);
+                
+                // See ISO/IEC 13818-1 Table 2-29
+                uint stream_type;
+                stream.get_uint ("stream-type", out stream_type);
+                
+                switch (stream_type) {
+                    case 0x01:
+                    case 0x02:
+                    case 0x1b: /* H.264 video stream */
+                        dvb_channel.VideoPID = pid;
+                    break;
+                    case 0x03:
+                    case 0x04:
+                    case 0x0f:
+                    case 0x11:
+                        dvb_channel.AudioPID = pid;
+                    break;
+                }
+            }
+        }
+        
         protected void bus_watch_func (Gst.Bus bus, Gst.Message message) {
             switch (message.type) {
                 case Gst.MessageType.ELEMENT: {
@@ -368,7 +418,8 @@ namespace DVB {
                         this.on_nit_structure (message.structure);
                     else if (message.structure.get_name() == "pat")
                         this.on_pat_structure (message.structure);
-                    else debug (message.structure.get_name());
+                    else if (message.structure.get_name() == "pmt")
+                        this.on_pmt_structure (message.structure);
                 break;
                 }            
                 case Gst.MessageType.ERROR: {
