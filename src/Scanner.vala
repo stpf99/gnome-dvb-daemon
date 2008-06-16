@@ -222,7 +222,9 @@ namespace DVB {
                 uint pmt;
                 program.get_uint ("pid", out pmt);
                 
-                // TODO store pmt. when we need it?
+                // We want to parse the pmt as well
+                Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
+                dvbsrc.set ("pids", "0:16:17:18:%u".printf (pmt));
             }
             
             this.pat_arrived = true;
@@ -366,11 +368,12 @@ namespace DVB {
                         this.on_nit_structure (message.structure);
                     else if (message.structure.get_name() == "pat")
                         this.on_pat_structure (message.structure);
+                    else debug (message.structure.get_name());
                 break;
                 }            
                 case Gst.MessageType.ERROR: {
                     Error gerror;
-                    weak string debug;
+                    string debug;
                     message.parse_error (out gerror, out debug);
                     critical ("%s %s", gerror.message, debug);
                     this.Abort ();

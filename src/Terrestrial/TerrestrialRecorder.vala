@@ -16,7 +16,7 @@ namespace DVB {
             }
             TerrestrialChannel tchannel = (TerrestrialChannel)channel;
             
-            weak Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
+            Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
             dvbbasebin.set ("modulation", tchannel.Constellation);
             dvbbasebin.set ("trans-mode", tchannel.TransmissionMode);
             dvbbasebin.set ("code-rate-hp", tchannel.CodeRateHP);

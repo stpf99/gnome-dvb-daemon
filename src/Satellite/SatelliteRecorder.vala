@@ -16,7 +16,7 @@ namespace DVB {
             }
             SatelliteChannel schannel = (SatelliteChannel)channel;
             
-            weak Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
+            Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
             dvbbasebin.set ("frequency", schannel.Frequency);
             dvbbasebin.set ("polarity", schannel.Polarization);
             dvbbasebin.set ("symbol-rate", schannel.SymbolRate);

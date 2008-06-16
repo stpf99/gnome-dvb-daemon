@@ -16,7 +16,7 @@ namespace DVB {
             }
             CableChannel cchannel = (CableChannel)channel;
             
-            weak Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
+            Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
             dvbbasebin.set ("frequency", cchannel.Frequency);
             dvbbasebin.set ("inversion", cchannel.Inversion);
             dvbbasebin.set ("symbol-rate", cchannel.SymbolRate);
