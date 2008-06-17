@@ -8,7 +8,7 @@ namespace DVB {
      * This class is responsible for managing upcoming recordings and
      * already recorded items for a single device
      */
-    public abstract class Recorder : GLib.Object {
+    public abstract class Recorder : GLib.Object, IDBusRecorder {
     
         public signal void recording_started (uint32 timer_id);
         public signal void recording_finished (uint32 recording_id);

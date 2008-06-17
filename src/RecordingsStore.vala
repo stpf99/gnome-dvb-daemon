@@ -6,7 +6,7 @@ namespace DVB {
     /**
      * This class manages the recordings off all devices
      */
-    public class RecordingsStore : GLib.Object {
+    public class RecordingsStore : GLib.Object, IDBusRecordingsStore {
     
         private HashMap<uint32, Recording> recordings;
         private uint32 last_id;
@@ -34,6 +34,7 @@ namespace DVB {
                 }
                 
                 this.recordings.set (id, rec);
+                this.changed (id, ChangeType.ADDED);
             }
             return true;
         }
@@ -165,6 +166,7 @@ namespace DVB {
                         critical (e.message);
                         val = false;
                     }
+                    this.changed (rec_id, ChangeType.DELETED);
                 }
             }
             

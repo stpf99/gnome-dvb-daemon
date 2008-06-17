@@ -40,6 +40,8 @@ dvb_daemon_VALASOURCES = \
 	src/EPGScanner.vala \
 	src/EPGStore.vala \
 	src/Event.vala \
+	src/IDBusRecorder.vala \
+	src/IDBusRecordingsStore.vala \
 	src/Main.vala \
 	src/Manager.vala \
 	src/MpegTsEnums.vala \
