@@ -81,7 +81,7 @@ namespace DVB {
             if (!(channel is TerrestrialChannel)) return;
             
             TerrestrialChannel tc = (TerrestrialChannel)channel;
-            
+            // FIXME set inversion
             uint bandwidth;
             delivery.get_uint ("bandwidth", out bandwidth);
             tc.Bandwidth = get_bandwidth_val (bandwidth);
@@ -92,7 +92,7 @@ namespace DVB {
             
             string constellation = delivery.get_string ("constellation");
             tc.Constellation = get_constellation_val (constellation);
-                
+            
             tc.CodeRateHP = get_code_rate_val (delivery.get_string ("code-rate-hp"));
             tc.CodeRateLP = get_code_rate_val (delivery.get_string ("code-rate-lp"));
             
@@ -137,7 +137,7 @@ namespace DVB {
                 val = DvbSrcModulation.QAM_64;
             else
                 val = DvbSrcModulation.QAM_AUTO;
-                
+            
             return val;
         }
         

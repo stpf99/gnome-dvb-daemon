@@ -25,6 +25,7 @@ namespace DVB {
             dvbbasebin.set ("bandwidth", tchannel.Bandwidth);
             dvbbasebin.set ("frequency", tchannel.Frequency);
             dvbbasebin.set ("hierarchy", tchannel.Hierarchy);
+            dvbbasebin.set ("inversion", tchannel.Inversion);
             
             return dvbbasebin;
         }
