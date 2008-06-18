@@ -10,9 +10,6 @@ namespace DVB {
      */
     public abstract class Recorder : GLib.Object, IDBusRecorder {
     
-        public signal void recording_started (uint32 timer_id);
-        public signal void recording_finished (uint32 recording_id);
-        
         /* Set in constructor of sub-classes */
         public DVB.Device Device { get; construct; }
         
