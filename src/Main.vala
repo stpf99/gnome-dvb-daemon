@@ -91,6 +91,7 @@ public class Main {
                 "code-rate-lp", typeof(string), "1/2",
                 "constellation", typeof(string), "QAM16",
                 "guard-interval", typeof(uint), 4);
+
         /*
         Gst.Structure sat_pro7 = new Gst.Structure ("pro7",
             "frequency", typeof(uint), 12544000,
@@ -100,6 +101,7 @@ public class Main {
         
         DVB.Scanner scanner = new DVB.TerrestrialScanner (device);
         scanner.add_structure_to_scan (#ter_pro7);
+        ((DVB.TerrestrialScanner)scanner).AddScanningData (586000000, 0, 8, "8k", "2/3", "1/2", "QAM16", 4);
         scanner.Run ();
         
         // Start GLib mainloop

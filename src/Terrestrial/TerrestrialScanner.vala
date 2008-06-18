@@ -18,22 +18,23 @@ namespace DVB {
           * See enums in MpegTsEnums
           */
         public void AddScanningData (uint frequency,
-                                     uint hierarchy,
-                                     uint bandwith,
-                                     uint transmode,
-                                     uint code_rate_hp,
-                                     uint code_rate_lp,
-                                     uint constellation,
-                                     uint guard) {
+                                     uint hierarchy, // 0-3
+                                     uint bandwith, // 0, 6, 7, 8
+                                     string transmode, // "2k", "8k"
+                                     string code_rate_hp, // "1/2", "2/3", "3/4", ..., "8/9"
+                                     string code_rate_lp,
+                                     string constellation, // QPSK, QAM16, QAM64
+                                     uint guard) { // 4, 8, 16, 32
             Gst.Structure tuning_params = new Gst.Structure ("tuning_params",
                 "frequency", typeof(uint), frequency,
                 "hierarchy", typeof(uint), hierarchy,
                 "bandwidth", typeof(uint), bandwith,
-                "transmission-mode", typeof(uint), transmode,
-                "code-rate-hp", typeof(uint), code_rate_hp,
-                "code-rate-lp", typeof(uint), code_rate_lp,
-                "constellation", typeof(uint), constellation,
+                "transmission-mode", typeof(string), transmode,
+                "code-rate-hp", typeof(string), code_rate_hp,
+                "code-rate-lp", typeof(string), code_rate_lp,
+                "constellation", typeof(string), constellation,
                 "guard-interval", typeof(uint), guard);
+            
             base.add_structure_to_scan (#tuning_params);
         }
         
