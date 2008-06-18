@@ -48,7 +48,7 @@ namespace DVB {
         /**
          * The tuning paramters we're currently using
          */
-        protected Gst.Structure current_tuning_params;
+        protected Gst.Structure? current_tuning_params;
             
         /**
          * All the frequencies that have been scanned already
@@ -60,7 +60,7 @@ namespace DVB {
         private static const string BASE_PIDS = "0:16:17:18";
         
         // Contains SIDs
-        private HashSet<int> found_channels;
+        private ArrayList<uint> new_channels;
         private uint? check_for_lock_event_id;
         private bool nit_arrived;
         private bool sdt_arrived;
@@ -71,7 +71,7 @@ namespace DVB {
         construct {
             this.scanned_frequencies =
                 new HashSet<ScannedItem> (ScannedItem.hash, ScannedItem.equal);
-            this.found_channels = new HashSet<int> ();
+            this.new_channels = new ArrayList<uint> ();
             this.frequencies = new Queue<Gst.Structure> ();
             this.channels = new ChannelList ();
             this.transport_streams = new HashMap<uint, Gst.Structure> ();
@@ -126,9 +126,17 @@ namespace DVB {
         
         public void Abort () {
             this.remove_check_for_lock_timeout ();
+            this.clear_and_reset_all ();
+        }
+            
+        protected void clear_and_reset_all () {
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
-            //this.frequencies.clear ();
+                
+            this.transport_streams.clear ();
+            this.scanned_frequencies.clear ();
+            this.frequencies.clear ();
+            this.current_tuning_params = null;
         }
         
         protected void add_structure_to_scan (Gst.Structure# structure) {
@@ -144,9 +152,11 @@ namespace DVB {
             this.sdt_arrived = false;
             this.pat_arrived = false;
             this.locked = false;
+            this.new_channels.clear ();
             
             if (this.frequencies.is_empty()) {
                 message("Finished scanning");
+                this.clear_and_reset_all ();
                 this.finished ();
                 return;
             }
@@ -176,15 +186,17 @@ namespace DVB {
          */
         protected bool check_for_lock () {
             if (!this.locked)
-                this.pipeline.set_state(Gst.State.READY);
+                this.pipeline.set_state (Gst.State.READY);
                 
             this.start_scan ();
             return false;
         }
         
         protected void remove_check_for_lock_timeout () {
-            Source.remove (this.check_for_lock_event_id);
-            this.check_for_lock_event_id = null;
+            if (this.check_for_lock_event_id != null) {
+                Source.remove (this.check_for_lock_event_id);
+                this.check_for_lock_event_id = null;
+            }
         }
         
         protected static void set_uint_property (Gst.Element src,
@@ -205,7 +217,7 @@ namespace DVB {
         
         protected void on_dvb_read_failure_structure () {
             error("Read failure");
-            this.remove_check_for_lock_timeout ();
+            this.Abort ();
         }
         
         protected void on_pat_structure (Gst.Structure structure) {
@@ -262,10 +274,8 @@ namespace DVB {
                     if (service.has_field ("name"))
                         name = service.get_string ("name");
                     
-                    bool new_channel_added = false;
                     if (!this.Channels.contains (sid)) {
                         this.add_new_channel (sid);
-                        new_channel_added = true;
                     }
                     
                     Channel channel = this.Channels.get(sid);
@@ -277,11 +287,6 @@ namespace DVB {
                     uint freq;
                     this.current_tuning_params.get_uint ("frequency", out freq);
                     channel.Frequency = freq;
-                        
-                    if (new_channel_added) {
-                        this.channel_added (this.Channels.get (sid));
-                        debug (this.Channels.get (sid).to_string());
-                    }
                 }
             }
         
@@ -307,8 +312,8 @@ namespace DVB {
                     Gst.Value delivery_val = transport.get_value ("delivery");
                     weak Gst.Structure delivery =
                         delivery_val.get_structure ();
-                        
-                    // TODO add to transport streams
+                    
+                    this.transport_streams.set (tsid, delivery);
                     
                     uint freq;
                     delivery.get_uint ("frequency", out freq);
@@ -433,7 +438,22 @@ namespace DVB {
             }
             
             if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
-                this.pipeline.set_state(Gst.State.READY);
+                foreach (uint sid in this.new_channels) {
+                    DVB.Channel channel = this.Channels.get (sid);
+                    if (this.transport_streams.contains (channel.TransportStreamId)) {
+                        // add values from Gst.Structure to Channel
+                        this.add_values_from_structure_to_channel (
+                            this.transport_streams.get (channel.TransportStreamId),
+                            channel);
+                        
+                        this.channel_added (this.Channels.get (sid));
+                        debug (this.Channels.get (sid).to_string ());
+                    } else
+                        warning ("Could not find transport stream for channel %u",
+                            sid);
+                }
+            
+                this.pipeline.set_state (Gst.State.READY);
                 this.start_scan ();
             }
         }
@@ -443,6 +463,7 @@ namespace DVB {
             Channel new_channel = this.get_new_channel ();
             new_channel.Sid = sid;
             this.Channels.add (#new_channel);
+            this.new_channels.add (sid);
         }
     }
     
