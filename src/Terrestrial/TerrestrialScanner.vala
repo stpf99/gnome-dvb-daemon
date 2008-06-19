@@ -82,7 +82,11 @@ namespace DVB {
             if (!(channel is TerrestrialChannel)) return;
             
             TerrestrialChannel tc = (TerrestrialChannel)channel;
-            // FIXME set inversion
+            
+            // structure doesn't contain information about inversion
+            // set it to auto
+            tc.Inversion = DvbSrcInversion.INVERSION_AUTO;
+            
             uint bandwidth;
             delivery.get_uint ("bandwidth", out bandwidth);
             tc.Bandwidth = get_bandwidth_val (bandwidth);
