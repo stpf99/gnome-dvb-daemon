@@ -9,20 +9,18 @@ namespace DVB {
             base.Device = dev;
         }
     
-        protected override weak Element? get_dvbbasebin (Channel channel) {
+        protected override void get_dvbbasebin (Channel channel) {
             if (!(channel is SatelliteChannel)) {
                 warning("Cannot setup pipeline for non-satellite channel");
-                return null;
+                this.dvbbasebin = null;
             }
             SatelliteChannel schannel = (SatelliteChannel)channel;
             
-            Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
-            dvbbasebin.set ("frequency", schannel.Frequency);
-            dvbbasebin.set ("polarity", schannel.Polarization);
-            dvbbasebin.set ("symbol-rate", schannel.SymbolRate);
-            dvbbasebin.set ("diseqc-source", schannel.DiseqcSource);
-            
-            return dvbbasebin;
+            this.dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
+            this.dvbbasebin.set ("frequency", schannel.Frequency);
+            this.dvbbasebin.set ("polarity", schannel.Polarization);
+            this.dvbbasebin.set ("symbol-rate", schannel.SymbolRate);
+            this.dvbbasebin.set ("diseqc-source", schannel.DiseqcSource);
         }
     }
 
