@@ -132,7 +132,7 @@ namespace DVB {
         protected void clear_and_reset_all () {
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
-                
+            
             this.transport_streams.clear ();
             this.scanned_frequencies.clear ();
             this.frequencies.clear ();

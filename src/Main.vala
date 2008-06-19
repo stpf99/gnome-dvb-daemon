@@ -56,7 +56,7 @@ public class Main {
         // Initializing GStreamer
         Gst.init (ref args);
         
-        File channelsfile = File.new_for_path ("/home/sepb/.gstreamer-0.10/dvb-channels.conf");
+        File channelsfile = File.new_for_path ("/home/sebp/.gstreamer-0.10/dvb-channels.conf");
         
         var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
         try {
@@ -74,11 +74,11 @@ public class Main {
         
         //DVB.RecordingsStore.get_instance ().Delete ((uint32)1);
         
-        rec.AddTimer (17501, 2008, 6, 14, 17, 52, 2);
-        rec.AddTimer (32, 2008, 6, 9, 21, 39, 3);
+        //rec.AddTimer (17501, 2008, 6, 19, 15, 7, 2);
+        rec.AddTimer (32, 2008, 6, 19, 16, 13, 2);
         rec.AddTimer (32, 2008, 6, 5, 10, 25, 3);
         rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
-        rec.AddTimer (16418, 2006, 6, 6, 6, 6, 99);
+        rec.AddTimer (16418, 2008, 6, 19, 16, 17, 1);
 
         //start_manager();
         
@@ -98,11 +98,15 @@ public class Main {
             "symbol-rate", typeof(uint), 22000,
             "polarization", typeof(string), "h");
         */  
-        
+        /*
         DVB.Scanner scanner = new DVB.TerrestrialScanner (device);
         scanner.add_structure_to_scan (#ter_pro7);
         ((DVB.TerrestrialScanner)scanner).AddScanningData (586000000, 0, 8, "8k", "2/3", "1/2", "QAM16", 4);
         scanner.Run ();
+        */
+        
+        var epgscanner = new DVB.EPGScanner (device);
+        epgscanner.start ();
         
         // Start GLib mainloop
         loop.run ();
