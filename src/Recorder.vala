@@ -8,13 +8,12 @@ namespace DVB {
      * This class is responsible for managing upcoming recordings and
      * already recorded items for a single device
      */
-    public abstract class Recorder : GLib.Object, IDBusRecorder {
+    public class Recorder : GLib.Object, IDBusRecorder {
     
         /* Set in constructor of sub-classes */
         public DVB.Device Device { get; construct; }
         
         protected Element? pipeline;
-        protected Element? dvbbasebin;
         protected Recording active_recording;
         protected Timer? active_timer;
         
@@ -28,10 +27,9 @@ namespace DVB {
                 this.Device.RecordingsDirectory);
         }
         
-        /**
-         * Setup dvbbasebin element with name "dvbbasebin"
-         */
-        protected abstract void get_dvbbasebin (Channel channel);
+        public Recorder (DVB.Device dev) {
+            this.Device = dev;
+        }
         
         /**
          * @channel: Channel number
@@ -247,9 +245,8 @@ namespace DVB {
         protected void start_recording (Timer timer) {
             debug ("Starting recording of channel %u", timer.Channel.Sid);
         
-            this.get_dvbbasebin (timer.Channel);
-            
-            if (this.dvbbasebin == null) return;
+            Gst.Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
+            timer.Channel.setup_dvb_source (dvbbasebin);
             
             this.active_timer = timer;
             
@@ -268,15 +265,17 @@ namespace DVB {
             bus.add_signal_watch();
             bus.message += this.bus_watch_func;
                 
-            this.dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
-            this.dvbbasebin.set ("program-numbers",
+            dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
+            dvbbasebin.set ("program-numbers",
                             this.active_recording.ChannelSid.to_string());
-            this.dvbbasebin.set ("adapter", this.Device.Adapter);
-            this.dvbbasebin.set ("frontend", this.Device.Frontend);
+            dvbbasebin.set ("adapter", this.Device.Adapter);
+            dvbbasebin.set ("frontend", this.Device.Frontend);
             
             Element filesink = ElementFactory.make ("filesink", "sink");
             filesink.set ("location", this.active_recording.Location.get_path ());
-            ((Bin) this.pipeline).add_many (this.dvbbasebin, filesink);
+            // don't use add_many because of problems with ownership transfer
+            ((Bin) this.pipeline).add (dvbbasebin);
+            ((Bin) this.pipeline).add (filesink);
             
             this.pipeline.set_state (State.PLAYING);
             

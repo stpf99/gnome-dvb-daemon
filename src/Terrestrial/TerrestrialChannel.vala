@@ -13,6 +13,18 @@ namespace DVB {
         public DvbSrcGuard GuardInterval {get; set;}
         public DvbSrcHierarchy Hierarchy {get; set;}
         
+        public override void setup_dvb_source (Gst.Element source) {
+            source.set ("modulation", this.Constellation);
+            source.set ("trans-mode", this.TransmissionMode);
+            source.set ("code-rate-hp", this.CodeRateHP);
+            source.set ("code-rate-lp", this.CodeRateLP);
+            source.set ("guard", this.GuardInterval);
+            source.set ("bandwidth", this.Bandwidth);
+            source.set ("frequency", this.Frequency);
+            source.set ("hierarchy", this.Hierarchy);
+            source.set ("inversion", this.Inversion);
+        }
+        
         public override string to_string () {
             return "%s:%u:%s:%s:%s:%s:%s:%s:%s:%s:%u:%u:%u".printf(base.Name, base.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),

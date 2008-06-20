@@ -116,20 +116,7 @@ namespace DVB {
                 Device device = this.get_device_if_exists (adapter, frontend);
                 if (device == null) return "";
                 
-                Recorder recorder;
-                switch (device.Type) {
-                    case AdapterType.DVB_T:
-                    recorder = new TerrestrialRecorder (device);
-                    break;
-                    
-                    case AdapterType.DVB_S:
-                    recorder = new SatelliteRecorder (device);
-                    break;
-                    
-                    case AdapterType.DVB_C:
-                    recorder = new CableRecorder (device);
-                    break;
-                }
+                Recorder recorder = new Recorder (device);
                 
                 var conn = get_dbus_connection ();
                 if (conn == null) return "";

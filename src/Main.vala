@@ -69,7 +69,7 @@ public class Main {
 
         DVB.Device device = DVB.Device.new_full (0, 0,
             reader.Channels, recdir);
-        var rec = new DVB.TerrestrialRecorder (device);
+        var rec = new DVB.Recorder (device);
         rec.recording_finished += recording_finished;
         
         //DVB.RecordingsStore.get_instance ().Delete ((uint32)1);
@@ -78,7 +78,7 @@ public class Main {
         rec.AddTimer (32, 2008, 6, 19, 16, 13, 2);
         rec.AddTimer (32, 2008, 6, 5, 10, 25, 3);
         rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
-        rec.AddTimer (16418, 2008, 6, 19, 16, 17, 1);
+        rec.AddTimer (16418, 2008, 6, 20, 15, 35, 1);
 
         //start_manager();
         
@@ -105,8 +105,8 @@ public class Main {
         scanner.Run ();
         */
         
-        var epgscanner = new DVB.EPGScanner (device);
-        epgscanner.start ();
+        //var epgscanner = new DVB.EPGScanner (device);
+        //epgscanner.start ();
         
         // Start GLib mainloop
         loop.run ();

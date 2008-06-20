@@ -13,7 +13,24 @@ namespace DVB {
         public uint AudioPID {get; set;}
         public uint Frequency {get; set;}
         
+        private Sequence<Event> schedule;
+        
+        construct {
+            this.schedule = new Sequence<Event> (null);
+        }
+        
+        /**
+         * @source: Either dvbbasebin or dvbsrc
+         *
+         * Set properties of source so that the channel can be watched
+         */
+        public abstract void setup_dvb_source (Gst.Element source);
         public abstract string to_string ();
+        
+        public void insert_event (Event# event) {
+            // XXX Vala bug
+            //this.schedule.insert_sorted (#event, Event.compare);
+        }
     }
     
 }
