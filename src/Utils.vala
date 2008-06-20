@@ -67,7 +67,8 @@ namespace DVB.Utils {
         else return diff;
     }
     
-    public static Time create_time (int year, int month, int day, int hour, int minute) {
+    public static Time create_time (int year, int month, int day, int hour,
+        int minute, int second=0) {
         // Create Time with some initial value, otherwise time is wrong
         var t = Time.local (time_t ());
         
@@ -76,6 +77,7 @@ namespace DVB.Utils {
         t.day = day;
         t.hour = hour;
         t.minute = minute;
+        t.second = second;
         
         return t;
     }
