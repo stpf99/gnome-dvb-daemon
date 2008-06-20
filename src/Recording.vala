@@ -2,6 +2,9 @@ using GLib;
 
 namespace DVB {
 
+    /**
+     * This class represents a finished recording
+     */
     public class Recording : GLib.Object {
     
         public uint32 Id {get; set;}

@@ -2,6 +2,10 @@ using GLib;
 
 namespace DVB {
 
+    /**
+     * This class represents a frequency and possibly other parameters
+     * that are necessary to mark a frequency as scanned
+     */
     public class ScannedItem : GLib.Object {
 
         public uint Frequency {get; construct;}
