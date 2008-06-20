@@ -171,6 +171,8 @@ namespace DVB {
             this.current_tuning_params.get_uint ("frequency", out freq);
             this.scanned_frequencies.add (this.get_scanned_item (freq));
             
+            this.pipeline.set_state (Gst.State.READY);
+            
             this.prepare ();
             
             this.pipeline.set_state (Gst.State.PLAYING);
@@ -332,8 +334,8 @@ namespace DVB {
                     Gst.Value channel_val;
                     weak Gst.Structure channel_struct;
                     // Iterate over channels
-                    for (int i=0; i<channels_size; i++) {
-                        channel_val = channels.list_get_value (i);
+                    for (int j=0; i<channels_size; j++) {
+                        channel_val = channels.list_get_value (j);
                         channel_struct = channel_val.get_structure ();
                         
                         uint sid;
@@ -452,8 +454,7 @@ namespace DVB {
                         warning ("Could not find transport stream for channel %u",
                             sid);
                 }
-            
-                this.pipeline.set_state (Gst.State.READY);
+                
                 this.start_scan ();
             }
         }
