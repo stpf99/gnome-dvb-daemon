@@ -23,13 +23,10 @@ bin_PROGRAMS = dvb-daemon
 
 dvb_daemon_VALASOURCES = \
 	src/Cable/CableChannel.vala \
-	src/Cable/CableRecorder.vala \
 	src/Cable/CableScanner.vala \
 	src/Satellite/SatelliteChannel.vala \
-	src/Satellite/SatelliteRecorder.vala \
 	src/Satellite/SatelliteScanner.vala \
 	src/Terrestrial/TerrestrialChannel.vala \
-	src/Terrestrial/TerrestrialRecorder.vala \
 	src/Terrestrial/TerrestrialScanner.vala \
 	src/Channel.vala \
 	src/ChannelList.vala \
