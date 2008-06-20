@@ -14,17 +14,21 @@ namespace DVB {
         public uint day;
         public uint minute;
         public uint second;
-        public uint duration;
+        public uint duration; // in seconds
         public uint running_status;
         public bool free_ca_mode;
         public string name;
         public string description;
         /* Components */
-        public string audio_type;
-        public string teletext_type;
-        public bool high_definition;
-        public string aspect_ratio;
-        public int frequency;
+        public SList<AudioComponent> audio_components;
+        public SList<VideoComponent> video_components;
+        public SList<TeletextComponent> teletext_components;
+        
+        construct {
+            this.audio_components = new SList<AudioComponent> ();
+            this.video_components = new SList<VideoComponent> ();
+            this.teletext_components = new SList<TeletextComponent> ();
+        }
         
         public string serialize () {
             return "";
@@ -78,6 +82,20 @@ namespace DVB {
             if (event1_time < event2_time) return -1;
             else if (event1_time > event2_time) return +1;
             else return 0;
+        }
+        
+        public class AudioComponent {
+            public string type;
+        }
+        
+        public class VideoComponent {
+            public bool high_definition;
+            public string aspect_ratio;
+            public int frequency;
+        }
+        
+        public class TeletextComponent {
+            public string type;
         }
     }
     
