@@ -206,6 +206,7 @@ namespace DVB {
             var t = Utils.create_time ((int)this.Year, (int)this.Month,
                 (int)this.Day, (int)this.Hour, (int)this.Minute);
             
+            // TODO Do we change the value of this.starttime each time?
             t.minute += (int)this.Duration;
             
             return t.mktime ();
