@@ -124,9 +124,33 @@ namespace DVB {
             this.start_scan();
         }
         
+        /**
+         * Abort scanning
+         */
         public void Abort () {
             this.remove_check_for_lock_timeout ();
             this.clear_and_reset_all ();
+        }
+        
+        /** 
+         * @path: Location where the file will be stored
+         *
+         * Write all the channels stored in this.Channels to file
+         */
+        public bool WriteChannelsToFile (string path) {
+            bool ret = false;
+            try {
+                var writer = new ChannelListWriter (File.new_for_path (path));
+                foreach (DVB.Channel c in this.Channels) {
+                    writer.write (c);
+                }
+                writer.close ();
+                ret = true;
+            } catch (IOError e) {
+                error (e.message);
+            }
+            
+            return ret;
         }
             
         protected void clear_and_reset_all () {
