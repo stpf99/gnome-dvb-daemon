@@ -28,8 +28,7 @@ namespace DVB {
         public abstract string to_string ();
         
         public void insert_event (Event# event) {
-            // XXX Vala bug
-            //this.schedule.insert_sorted (#event, Event.compare);
+            this.schedule.insert_sorted (#event, Event.compare);
         }
     }
     
