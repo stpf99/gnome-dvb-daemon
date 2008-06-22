@@ -20,7 +20,7 @@ namespace DVB {
     
         private OutputStream stream;
         
-        construct {
+        private void open_stream () throws Error {
             FileOutputStream fostream = null;
             
             if (file.query_exists (null)) {
@@ -37,6 +37,9 @@ namespace DVB {
         }
         
         public void write (Channel channel) throws Error {
+            if (this.stream == null) this.open_stream ();
+            if (this.stream == null) return;
+        
             string buffer;
         
             // Write channel name
