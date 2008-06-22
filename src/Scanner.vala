@@ -6,6 +6,7 @@ namespace DVB {
     /**
      * An abstract class responsible for scanning for new channels
      */
+    // [DBus (name = "org.gnome.DVB.Scanner")]
     public abstract class Scanner : GLib.Object {
 
         /**

@@ -81,6 +81,8 @@ public class Main {
         rec.AddTimer (16418, 2008, 6, 20, 15, 35, 1);
 
         //start_manager();
+        var manager = new DVB.Manager ();
+        manager.GetScannerForDevice (0, 0);
         
         Gst.Structure ter_pro7 = new Gst.Structure ("pro7",
                 "hierarchy", typeof(uint), 0,
@@ -101,10 +103,10 @@ public class Main {
         /*
         DVB.Scanner scanner = new DVB.TerrestrialScanner (device);
         scanner.add_structure_to_scan (#ter_pro7);
-        ((DVB.TerrestrialScanner)scanner).AddScanningData (586000000, 0, 8, "8k", "2/3", "1/2", "QAM16", 4);
+        ((DVB.TerrestrialScanner)scanner).AddScanningData (586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4);
         scanner.Run ();
+        scanner.finished += s => { s.WriteChannelsToFile ("/home/sebp/channels.conf"); };
         */
-        
         //var epgscanner = new DVB.EPGScanner (device);
         //epgscanner.start ();
         

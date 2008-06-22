@@ -9,11 +9,6 @@ namespace DVB {
             base.Device = device;
         }
         
-        /* Show up in D-Bus interface */
-        public void Run () {
-            base.Run ();
-        }
-        
         /**
           * See enums in MpegTsEnums
           */

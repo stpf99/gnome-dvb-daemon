@@ -30,14 +30,21 @@ namespace DVB {
          */
         public string[] GetScannerForDevice (uint adapter, uint frontend) {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
-            string dbusiface;
             
-            if (!this.scanners.contains (path)) {
-                debug ("Creating new Scanner D-Bus service for adapter %u, frontend %u",
-                      adapter, frontend);
+            var conn = get_dbus_connection ();
+            try {
+                dynamic DBus.Object bus = conn.get_object (
+                        "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
                 
-                Device device = this.get_device_if_exists (adapter, frontend);
-                if (device == null) return new string[] {};
+                // try to register service in session bus
+                uint request_name_result = bus.RequestName (DVB.Constants.DBUS_SERVICE, (uint) 0);
+            } catch (Error e) {
+                critical (e.message);
+            }
+            
+            string dbusiface;
+            if (!this.scanners.contains (path)) {
+                Device device = new Device (adapter, frontend);
                 
                 Scanner scanner;
                 switch (device.Type) {
@@ -59,12 +66,14 @@ namespace DVB {
                 
                 this.scanners.set (path, scanner);
                 
-                var conn = get_dbus_connection ();
                 if (conn == null) return new string[] {};
                 
                 conn.register_object (
                     path,
                     scanner);
+                    
+                debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
+                      adapter, frontend, dbusiface);
             }
             
             return new string[] {path, dbusiface};
