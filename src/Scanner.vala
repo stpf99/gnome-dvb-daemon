@@ -18,6 +18,7 @@ namespace DVB {
         /**
          * Emitted when a new channel has been found
          */
+        [DBus (visible = false)]
         public signal void channel_added (Channel channel);
         
         /**
@@ -28,8 +29,10 @@ namespace DVB {
         /**
          * The DVB device the scanner should use
          */
+        [DBus (visible = false)]
         public DVB.Device Device { get; construct; }
 
+        [DBus (visible = false)]
         public ChannelList Channels {
             get { return this.channels; }
         }
