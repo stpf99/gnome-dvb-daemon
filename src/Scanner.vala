@@ -147,7 +147,7 @@ namespace DVB {
                 writer.close ();
                 ret = true;
             } catch (IOError e) {
-                error (e.message);
+                critical (e.message);
             }
             
             return ret;
