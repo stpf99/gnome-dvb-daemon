@@ -87,6 +87,10 @@ namespace DVB {
             // set it to auto
             tc.Inversion = DvbSrcInversion.INVERSION_AUTO;
             
+            uint freq;
+            delivery.get_uint ("frequency", out freq);
+            tc.Frequency = freq;
+            
             uint bandwidth;
             delivery.get_uint ("bandwidth", out bandwidth);
             tc.Bandwidth = get_bandwidth_val (bandwidth);

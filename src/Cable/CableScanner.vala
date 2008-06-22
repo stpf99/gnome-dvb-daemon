@@ -20,9 +20,7 @@ namespace DVB {
             Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
             
             string[] keys = new string[] {
-                "inversion", 
                 "frequency",
-                "modulation",
                 "symbol-rate"
             };
             
@@ -30,9 +28,11 @@ namespace DVB {
                 this.set_uint_property (dvbsrc, this.current_tuning_params, key);
             }
             
-            uint code_rate;
-            this.current_tuning_params.get_uint ("inner-fec", out code_rate);
-            dvbsrc.set ("code-rate-hp", code_rate);
+            dvbsrc.set ("modulation",
+                get_modulation_val (this.current_tuning_params.get_string ("modulation")));
+            
+            dvbsrc.set ("code-rate-hp", get_code_rate_val (
+                this.current_tuning_params.get_string ("inner-fec")));
         }
         
         protected override ScannedItem get_scanned_item (uint frequency) {
@@ -46,7 +46,25 @@ namespace DVB {
         
         protected override void add_values_from_structure_to_channel (
             Gst.Structure delivery, Channel channel) {
-               
+            if (!(channel is CableChannel)) return;
+            
+            CableChannel cc = (CableChannel)channel;
+            
+            // structure doesn't contain information about inversion
+            // set it to auto
+            cc.Inversion = DvbSrcInversion.INVERSION_AUTO;
+            
+            cc.Modulation = get_modulation_val (delivery.get_string ("modulation"));
+            
+            uint freq;
+            delivery.get_uint ("frequency", out freq);
+            cc.Frequency = freq;
+            
+            uint symbol_rate;
+            delivery.get_uint ("symbol-rate", out symbol_rate);
+            cc.SymbolRate = symbol_rate;
+            
+            cc.CodeRate = get_code_rate_val (delivery.get_string ("inner-fec"));
         }
     }
     

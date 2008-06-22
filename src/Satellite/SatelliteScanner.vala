@@ -50,7 +50,12 @@ namespace DVB {
             if (!(channel is SatelliteChannel)) return;
             
             SatelliteChannel sc = (SatelliteChannel)channel;
-            sc.Polarization = delivery.get_string ("polarization");
+            
+            uint freq;
+            delivery.get_uint ("frequency", out freq);
+            sc.Frequency = freq;
+            
+            sc.Polarization = delivery.get_string ("polarization").substring (0, 1);
 
             uint srate;
             delivery.get_uint ("symbol-rate", out srate);            
