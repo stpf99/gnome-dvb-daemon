@@ -7,7 +7,6 @@ import gobject
 service = "org.gnome.DVB"
 manager_iface = "org.gnome.DVB.Manager"
 manager_path = "/org/gnome/DVB/Manager"
-scanner_iface = "org.gnome.DVB.Scanner.Terrestrial"
 
 pro7 = [690000000, 4, 0, 1, 0, 9, 3, 4]
 rtl =  [578000000, 4, 0, 2, 0, 9, 3, 4]
@@ -24,12 +23,11 @@ class DVBClient:
         self.manager = dbus.Interface(proxy, manager_iface)
         
     def get_scanner_for_device(self, adapter, frontend):
-        #objpath = self.manager.GetScannerForDevice (adapter, frontend)
-        #print objpath
-        objpath = "/org/gnome/DVB/Scanner/0/0"
+        objpath, scanner_iface = self.manager.GetScannerForDevice (adapter, frontend)
+        print objpath, scanner_iface
         proxy = self.bus.get_object(service, objpath)
         self.scanner = dbus.Interface(proxy, scanner_iface)
-        self.scanner.connect_to_signal ("finished", self.on_finished)
+        self.scanner.connect_to_signal ("Finished", self.on_finished)
         
     def add_scanning_data(self):
         self.scanner.AddScanningData (*a)
@@ -39,6 +37,7 @@ class DVBClient:
         
     def on_finished(self):
         print "Done scanning"
+        self.scanner.WriteChannelsToFile ("/home/sebp/channels.conf")
         
 c = DVBClient()
 c.get_scanner_for_device(0,0)

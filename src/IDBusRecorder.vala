@@ -1,6 +1,6 @@
 namespace DVB {
 
-    //[DBus (name = "org.gnome.DVB.Recorder")]
+    [DBus (name = "org.gnome.DVB.Recorder")]
     public interface IDBusRecorder : GLib.Object {
     
         public abstract signal void recording_started (uint32 timer_id);

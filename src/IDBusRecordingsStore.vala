@@ -6,7 +6,7 @@ namespace DVB {
         UPDATED = 2
     }
 
-    //[DBus (name = "org.gnome.DVB.RecordingsStore")]
+    [DBus (name = "org.gnome.DVB.RecordingsStore")]
     public interface IDBusRecordingsStore : GLib.Object {
         
         /**

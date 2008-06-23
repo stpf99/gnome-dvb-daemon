@@ -80,9 +80,7 @@ public class Main {
         rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
         rec.AddTimer (16418, 2008, 6, 20, 15, 35, 1);
 
-        //start_manager();
-        var manager = new DVB.Manager ();
-        manager.GetScannerForDevice (0, 0);
+        start_manager();
         
         Gst.Structure ter_pro7 = new Gst.Structure ("pro7",
                 "hierarchy", typeof(uint), 0,

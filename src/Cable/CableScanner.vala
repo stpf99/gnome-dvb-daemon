@@ -3,17 +3,35 @@ using GLib;
 namespace DVB {
     
     [DBus (name = "org.gnome.DVB.Scanner.Cable")]
-    public class CableScanner : Scanner {
+    public interface IDBusCableScanner : GLib.Object {
+    
+        public abstract signal void finished ();
+        
+        public abstract void Run ();
+        public abstract void Abort ();
+        public abstract bool WriteChannelsToFile (string path);
+        
+        public abstract void AddScanningData (uint frequency, string modulation,
+            uint symbol_rate, string code_rate);
+    }
+    
+    public class CableScanner : Scanner, IDBusCableScanner {
         
         public CableScanner (DVB.Device device) {
             base.Device = device;
         }
         
-        /* Show up in D-Bus interface */
-        public void Run () {
-            base.Run ();
+        public void AddScanningData (uint frequency, string modulation,
+                uint symbol_rate, string code_rate) {
+            var tuning_params = new Gst.Structure ("tuning_params",
+            "frequency", typeof(uint), frequency,
+            "symbol-rate", typeof(uint), symbol_rate,
+            "inner-fec", typeof(string), code_rate,
+            "modulation", typeof(string), modulation);
+            
+            base.add_structure_to_scan (#tuning_params);  
         }
-
+       
         protected override void prepare () {
             debug("Setting up pipeline for DVB-C scan");
         

@@ -3,15 +3,33 @@ using GLib;
 namespace DVB {
     
     [DBus (name = "org.gnome.DVB.Scanner.Satellite")]
-    public class SatelliteScanner : Scanner {
+    public interface IDBusSatelliteScanner : GLib.Object {
+    
+        public abstract signal void finished ();
+        
+        public abstract void Run ();
+        public abstract void Abort ();
+        public abstract bool WriteChannelsToFile (string path);
+        
+        public abstract void AddScanningData (uint frequency,
+                                     string polarization, // "horizontal", "vertical"
+                                     uint symbol_rate);
+    }
+    
+    public class SatelliteScanner : Scanner, IDBusSatelliteScanner {
     
         public SatelliteScanner (DVB.Device device) {
             base.Device = device;
         }
      
-        /* Show up in D-Bus interface */
-        public void Run () {
-            base.Run ();
+        public void AddScanningData (uint frequency,
+                string polarization, uint symbol_rate) {
+            var tuning_params = new Gst.Structure ("tuning_params",
+            "frequency", typeof(uint), frequency,
+            "symbol-rate", typeof(uint), symbol_rate,
+            "polarization", typeof(string), polarization);
+            
+            base.add_structure_to_scan (#tuning_params);
         }
         
         protected override void prepare () {

@@ -1,9 +1,27 @@
 using GLib;
 
 namespace DVB {
+    
+    [DBus (name = "org.gnome.DVB.Scanner.Terrestrial")]    
+    public interface IDBusTerrestrialScanner : GLib.Object {
+    
+        public abstract signal void finished ();
         
-    [DBus (name = "org.gnome.DVB.Scanner.Terrestrial")]
-    public class TerrestrialScanner : Scanner {
+        public abstract void Run ();
+        public abstract void Abort ();
+        public abstract bool WriteChannelsToFile (string path);
+        
+        public abstract void AddScanningData (uint frequency,
+                                     uint hierarchy, // 0-3
+                                     uint bandwith, // 0, 6, 7, 8
+                                     string transmode, // "2k", "8k"
+                                     string code_rate_hp, // "1/2", "2/3", "3/4", ..., "8/9"
+                                     string code_rate_lp,
+                                     string constellation, // QPSK, QAM16, QAM64
+                                     uint guard);  // 4, 8, 16, 32
+    }
+    
+    public class TerrestrialScanner : Scanner, IDBusTerrestrialScanner {
     
         public TerrestrialScanner (DVB.Device device) {
             base.Device = device;
@@ -12,14 +30,9 @@ namespace DVB {
         /**
           * See enums in MpegTsEnums
           */
-        public void AddScanningData (uint frequency,
-                                     uint hierarchy, // 0-3
-                                     uint bandwith, // 0, 6, 7, 8
-                                     string transmode, // "2k", "8k"
-                                     string code_rate_hp, // "1/2", "2/3", "3/4", ..., "8/9"
-                                     string code_rate_lp,
-                                     string constellation, // QPSK, QAM16, QAM64
-                                     uint guard) { // 4, 8, 16, 32
+        public void AddScanningData (uint frequency, uint hierarchy,
+                uint bandwith, string transmode, string code_rate_hp,
+                string code_rate_lp, string constellation, uint guard) {
             Gst.Structure tuning_params = new Gst.Structure ("tuning_params",
                 "frequency", typeof(uint), frequency,
                 "hierarchy", typeof(uint), hierarchy,

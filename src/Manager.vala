@@ -3,7 +3,7 @@ using Gee;
 
 namespace DVB {
     
-    //[DBus (name = "org.gnome.DVB.Manager")]
+    [DBus (name = "org.gnome.DVB.Manager")]
     public class Manager : Object {
     
         private static const int PRIME = 31;
@@ -32,15 +32,6 @@ namespace DVB {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             
             var conn = get_dbus_connection ();
-            try {
-                dynamic DBus.Object bus = conn.get_object (
-                        "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
-                
-                // try to register service in session bus
-                uint request_name_result = bus.RequestName (DVB.Constants.DBUS_SERVICE, (uint) 0);
-            } catch (Error e) {
-                critical (e.message);
-            }
             
             string dbusiface;
             if (!this.scanners.contains (path)) {
