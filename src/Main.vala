@@ -3,9 +3,9 @@ using GLib;
 public class Main {
 
     private static DVB.Manager manager;
+    private static DVB.RecordingsStore recstore;
 
     private static void start_manager () {
-    
         try {
             var conn = DBus.Bus.get (DBus.BusType.SESSION);
             
@@ -16,7 +16,7 @@ public class Main {
             uint request_name_result = bus.RequestName (DVB.Constants.DBUS_SERVICE, (uint) 0);
 
             if (request_name_result == DBus.RequestNameReply.PRIMARY_OWNER) {
-                debug("Creating new Manager D-Bus service");
+                debug ("Creating new Manager D-Bus service");
             
                 manager = new DVB.Manager ();
                                 
@@ -24,12 +24,27 @@ public class Main {
                     DVB.Constants.DBUS_MANAGER_PATH,
                     manager);
             } else {
-                debug("Manager D-Bus service is already running");
+                debug ("Manager D-Bus service is already running");
             }
 
         } catch (Error e) {
-            error("Oops %s", e.message);
+            error ("Oops %s", e.message);
         }
+    }
+    
+    private static void start_recordings_store () {
+       debug ("Creating new RecordingsStore D-Bus service");
+       try {
+            var conn = DBus.Bus.get (DBus.BusType.SESSION);
+        
+            recstore = DVB.RecordingsStore.get_instance ();
+                            
+            conn.register_object (
+                DVB.Constants.DBUS_RECORDINGS_STORE_PATH,
+                recstore);
+        } catch (Error e) {
+            error ("Oops %s", e.message);
+        } 
     }
     
     private static void recording_finished (DVB.Recorder recorder, uint32 id) {
@@ -56,6 +71,9 @@ public class Main {
         // Initializing GStreamer
         Gst.init (ref args);
         
+        start_manager ();
+        start_recordings_store ();
+        
         File channelsfile = File.new_for_path ("/home/sebp/.gstreamer-0.10/dvb-channels.conf");
         
         var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
@@ -80,8 +98,6 @@ public class Main {
         rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
         rec.AddTimer (16418, 2008, 6, 20, 15, 35, 1);
 
-        start_manager();
-        
         Gst.Structure ter_pro7 = new Gst.Structure ("pro7",
                 "hierarchy", typeof(uint), 0,
                 "bandwidth", typeof(uint), 8,
