@@ -47,6 +47,12 @@ namespace DVB {
         
         /**
          * @rec_id: The id of the recording
+         * @returns: Start time as UNIX timestamp
+         */
+        public abstract int64 GetStartTimestamp (uint32 rec_id);
+        
+        /**
+         * @rec_id: The id of the recording
          * @returns: The length of the recording in seconds
          * or -1 if no recording with the given id exists
          */

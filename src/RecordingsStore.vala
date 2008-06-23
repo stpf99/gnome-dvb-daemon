@@ -131,6 +131,22 @@ namespace DVB {
         
         /**
          * @rec_id: The id of the recording
+         * @returns: Start time as UNIX timestamp
+         */
+        public int64 GetStartTimestamp (uint32 rec_id) {
+            int64 val = -1;
+            
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    val = (int64)this.recordings.get(rec_id).StartTime.mktime ();
+                }
+            }
+            
+            return val;
+        }
+        
+        /**
+         * @rec_id: The id of the recording
          * @returns: The length of the recording in seconds
          * or -1 if no recording with the given id exists
          */
