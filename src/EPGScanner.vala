@@ -181,7 +181,7 @@ namespace DVB {
                 Channel channel = this.Device.Channels.get (sid);
                 if (channel != null) {
                     debug (event_class.to_string ());
-                    channel.insert_event (#event_class);
+                    channel.Schedule.add (#event_class);
                 } else
                     warning ("Could not find channel %u for this device", sid);
             }

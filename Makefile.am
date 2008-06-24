@@ -47,6 +47,7 @@ dvb_daemon_VALASOURCES = \
 	src/RecordingsStore.vala \
 	src/Scanner.vala \
 	src/ScannedItem.vala \
+	src/Schedule.vala \
 	src/Timer.vala \
 	src/Utils.vala \
 	$(NULL)

@@ -12,11 +12,14 @@ namespace DVB {
         public uint VideoPID {get; set;}
         public uint AudioPID {get; set;}
         public uint Frequency {get; set;}
+        public DVB.Schedule Schedule {
+            get { return this.schedule; }
+        }
         
-        private Sequence<Event> schedule;
+        private DVB.Schedule schedule;
         
         construct {
-            this.schedule = new Sequence<Event> (null);
+            this.schedule = new DVB.Schedule ();
         }
         
         /**
@@ -26,10 +29,6 @@ namespace DVB {
          */
         public abstract void setup_dvb_source (Gst.Element source);
         public abstract string to_string ();
-        
-        public void insert_event (Event# event) {
-            this.schedule.insert_sorted (#event, Event.compare);
-        }
     }
     
 }
