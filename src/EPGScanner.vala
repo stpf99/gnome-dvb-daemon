@@ -19,7 +19,7 @@ namespace DVB {
         }
         
         /**
-         * @device: The where EPG should be collected from
+         * @device: The device where EPG should be collected from
          */
         public EPGScanner (DVB.Device device) {
             this.Device = device;
