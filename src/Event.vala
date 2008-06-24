@@ -50,10 +50,15 @@ namespace DVB {
         }
         
         public string to_string () {
-            return "ID: %u\nDate: %u-%u-%u %u:%u:%u\n".printf (this.id,
+            string text = "ID: %u\nDate: %u-%u-%u %u:%u:%u\n".printf (this.id,
             this.year, this.month, this.day, this.hour, this.minute, this.second)
-            + "Duration: %u\nName: %s\nDescription: %s".printf (
+            + "Duration: %u\nName: %s\nDescription: %s\n".printf (
             this.duration, this.name, this.description);
+            
+            for (int i=0; i<this.audio_components.length (); i++) {
+                text += "%s ".printf(this.audio_components.nth_data (i).type);
+            }
+            return text;
         }
         
         private int64 get_end_timestamp () {
@@ -82,6 +87,18 @@ namespace DVB {
             if (event1_time < event2_time) return -1;
             else if (event1_time > event2_time) return +1;
             else return 0;
+        }
+        
+        /**
+         * @returns: TRUE if event1 and event2 represent the same event,
+         * else FALSE
+         *
+         * event1 and event2 must be part of the same transport stream
+         */
+        public static bool equal (Event* event1, Event* event2) {
+            if (event1 == null || event2 == null) return false;
+            
+            return (event1->id == event2->id);
         }
         
         public class AudioComponent {
