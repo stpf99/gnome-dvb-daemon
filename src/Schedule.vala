@@ -43,8 +43,10 @@ namespace DVB {
         }
         
         public void add (Event# event) {
-            SequenceIter<Event> iter = this.events.insert_sorted (#event, Event.compare);
-            this.event_id_map.set (event.id, iter);
+            if (!this.event_id_map.contains (event.id)) {
+                SequenceIter<Event> iter = this.events.insert_sorted (#event, Event.compare);
+                this.event_id_map.set (event.id, iter);
+            }
         }
         /*
         public weak Event get_present_event () {
