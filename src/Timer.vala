@@ -8,7 +8,7 @@ namespace DVB {
     public class Timer : GLib.Object {
     
         public uint32 Id {get; construct;}
-        public DVB.Channel Channel {get; construct;}
+        public uint ChannelSid {get; construct;}
         public string? Name {get; construct;}
         // TODO Create values from starttime
         public uint Year {get; construct;}
@@ -25,11 +25,11 @@ namespace DVB {
                 (int)this.Day, (int)this.Hour, (int)this.Minute);
         }
         
-        public Timer (uint32 id, DVB.Channel channel,
+        public Timer (uint32 id, uint channel_sid,
         int year, int month, int day, int hour, int minute, uint duration,
         string? name=null) {
             this.Id = id;
-            this.Channel = channel;
+            this.ChannelSid = channel_sid;
             this.Name = name;
             
             this.Year = year;
@@ -148,7 +148,7 @@ namespace DVB {
         
         public string serialize () {
             return "%u;%u;%s;%u-%u-%u %u:%u;%u\n".printf(
-                this.Id, this.Channel.Sid, (this.Name == null) ? "" : this.Name,
+                this.Id, this.ChannelSid, (this.Name == null) ? "" : this.Name,
                 this.Year, this.Month, this.Day, this.Hour, this.Minute,
                 this.Duration);
         }
@@ -190,15 +190,14 @@ namespace DVB {
             
                 i++;
             }
-            // TODO channel
-            var channel = new TerrestrialChannel ();
-            return new Timer (id, channel, year, month, day, hour, minute,
+            
+            return new Timer (id, channel_sid, year, month, day, hour, minute,
                 duration, name);
         }
         
         public string to_string () {
             return "channel: %u, start: %u-%u-%u %u:%u, duration: %u".printf (
-                this.Channel.Sid, this.Year, this.Month, this.Day, this.Hour,
+                this.ChannelSid, this.Year, this.Month, this.Day, this.Hour,
                 this.Minute, this.Duration);
         }
         

@@ -60,7 +60,7 @@ namespace DVB {
             uint32 timer_id = RecordingsStore.get_instance ().get_next_id ();
                 
             // TODO Get name for timer
-            var new_timer = new Timer (timer_id, this.Device.Channels.get(channel),
+            var new_timer = new Timer (timer_id, this.Device.Channels.get(channel).Sid,
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);
@@ -243,20 +243,21 @@ namespace DVB {
         }
         
         protected void start_recording (Timer timer) {
-            debug ("Starting recording of channel %u", timer.Channel.Sid);
+            debug ("Starting recording of channel %u", timer.ChannelSid);
         
             Gst.Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
-            timer.Channel.setup_dvb_source (dvbbasebin);
+            DVB.Channel channel = this.Device.Channels.get (timer.ChannelSid);
+            channel.setup_dvb_source (dvbbasebin);
             
             this.active_timer = timer;
             
             this.active_recording = new Recording ();
             this.active_recording.Id = timer.Id;
-            this.active_recording.ChannelSid = timer.Channel.Sid;
+            this.active_recording.ChannelSid = timer.ChannelSid;
             this.active_recording.StartTime = timer.get_start_time_time ();
             this.active_recording.Length = timer.Duration;
             
-            if (!this.create_recording_dirs (timer.Channel)) return;
+            if (!this.create_recording_dirs (channel)) return;
             
             this.pipeline = new Pipeline (
                 "recording_%u".printf(this.active_recording.ChannelSid));
