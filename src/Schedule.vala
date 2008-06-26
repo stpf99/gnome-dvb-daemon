@@ -17,21 +17,19 @@ namespace DVB {
         }
         
         public void remove_expired_events () {
-            /*
-            SList<SequenceIter<Event>> expired_events = new SList <SequenceIter<Event>> ();
+            SList<int> expired_events = new SList <int> ();
             
-            SequenceIter<Event> iter = this.events.get_begin_iter ();
-            do {
-                Event e = this.events.get (iter);
-                if (e.has_expired ()) expired_events.prepend (iter);
+            for (int i=0; i<this.events.get_length (); i++) {
+                SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
                 
-                iter = iter.next ();
-            } while (!iter.is_end ());
+                Event e = this.events.get (iter);
+                if (e.has_expired ()) expired_events.prepend (i);
+            }
             
-            foreach (SequenceIter<Event> iter in expired_events) {
+            foreach (int i in expired_events) {
+                SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
                 this.events.remove (iter);
             }
-            */
         }
         
         public weak Event? get (uint event_id) {
@@ -43,10 +41,10 @@ namespace DVB {
         }
         
         public void add (Event# event) {
-            if (!this.event_id_map.contains (event.id)) {
+            //if (!this.event_id_map.contains (event.id)) {
                 SequenceIter<Event> iter = this.events.insert_sorted (#event, Event.compare);
-                this.event_id_map.set (event.id, iter);
-            }
+            //    this.event_id_map.set (event.id, iter);
+            //}
         }
         /*
         public weak Event get_present_event () {
