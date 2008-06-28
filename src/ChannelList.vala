@@ -5,6 +5,7 @@ namespace DVB {
 
     public class ChannelList : GLib.Object, Iterable<Channel> {
         
+        public File channels_file {get; construct;}
         public int size {
             get { return this.channels.size; }
         }
@@ -14,8 +15,14 @@ namespace DVB {
          */
         protected HashMap<uint, Channel> channels;
         
+        private File? channelsfile;
+        
         construct {
             this.channels = new HashMap<uint, Channel> ();
+        }
+        
+        public ChannelList (File? channelsfile = null) {
+            this.channels_file = channelsfile;
         }
         
         public Channel? get (uint sid) {
@@ -43,6 +50,11 @@ namespace DVB {
         
         public Iterator<Channel> iterator () {
             return this.channels.get_values().iterator();
+        }
+        
+        public static ChannelList restore_from_file (File channelsfile, AdapterType type) throws Error {
+            var reader = new DVB.ChannelListReader (channelsfile, type);
+            return reader.read ();
         }
     }
 

@@ -148,15 +148,15 @@ namespace DVB {
             Device device = new Device (adapter, frontend);
             device.RecordingsDirectory = recdir;
             
-            var reader = new DVB.ChannelListReader (channelsfile, device.Type);
+            ChannelList channels;
             try {
-                reader.read ();
+                channels = DVB.ChannelList.restore_from_file (channelsfile, DVB.AdapterType.DVB_T);
             } catch (Error e) {
                 critical (e.message);
                 return false;
             }
             
-            device.Channels = reader.Channels;
+            device.Channels = channels;
             
             this.devices.set (this.generate_device_id(adapter, frontend),
                               device);

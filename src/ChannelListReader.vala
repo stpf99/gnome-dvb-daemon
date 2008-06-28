@@ -6,34 +6,29 @@ namespace DVB {
     
         public File ChannelFile {get; construct;}
         public AdapterType Type {get; construct;}
-        public weak ChannelList Channels {
-            get { return this.channels; }
-        }
-        
-        private ChannelList channels;
-        
-        construct {
-            this.channels = new ChannelList ();
-        }
         
         public ChannelListReader (File file, AdapterType type) {
             this.ChannelFile = file;
             this.Type = type;
         }
         
-        public void read () throws Error {
+        public ChannelList? read () throws Error {
             string contents = Utils.read_file_contents (this.ChannelFile);
-            if (contents == null) return;
+            if (contents == null) return null;
             
+            ChannelList channels = new ChannelList (this.ChannelFile);
+        
             foreach (string line in contents.split("\n")) {
                 if (line.size () > 0) {
                     Channel c = this.parse_line (line);
                     if (c != null)
-                        this.channels.add (#c);
+                        channels.add (#c);
                     else
                         warning("Could not parse channel");
                 }
             }
+            
+            return channels;
         }
         
         private Channel? parse_line (string line) {
