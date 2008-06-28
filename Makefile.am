@@ -37,6 +37,7 @@ dvb_daemon_VALASOURCES = \
 	src/EPGScanner.vala \
 	src/EPGStore.vala \
 	src/Event.vala \
+	src/GConfStore.vala \
 	src/IDBusRecorder.vala \
 	src/IDBusRecordingsStore.vala \
 	src/Main.vala \
@@ -61,7 +62,8 @@ vala_pkgs = \
 	--pkg gio-2.0 \
     --pkg dbus-glib-1 \
     --pkg gstreamer-0.10 \
-    --pkg gee-1.0 
+    --pkg gee-1.0 \
+    --pkg gconf-2.0
 
 src/dvb-daemon.vala.stamp: $(dvb_daemon_VALASOURCES)
 	$(VALAC) -C $(vala_pkgs) --basedir $(top_srcdir) $^

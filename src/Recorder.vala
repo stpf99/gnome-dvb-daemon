@@ -17,11 +17,13 @@ namespace DVB {
         protected Recording active_recording;
         protected Timer? active_timer;
         
+        private bool have_check_timers_timeout;
         private HashMap<uint32, Timer> timers;
         private static const int CHECK_TIMERS_INTERVAL = 5;
         
         construct {
             this.timers = new HashMap<uint, Timer> ();
+            this.have_check_timers_timeout = false;
             this.reset ();
             RecordingsStore.get_instance ().restore_from_dir (
                 this.Device.RecordingsDirectory);
@@ -60,10 +62,18 @@ namespace DVB {
             uint32 timer_id = RecordingsStore.get_instance ().get_next_id ();
                 
             // TODO Get name for timer
-            var new_timer = new Timer (timer_id, this.Device.Channels.get(channel).Sid,
+            var new_timer = new Timer (timer_id,
+                                       this.Device.Channels.get(channel).Sid,
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);
+            return this.add_timer (new_timer);
+        }
+        
+        [DBus (visible = false)]
+        public uint32 add_timer (Timer new_timer) {
+            if (new_timer.has_expired()) return 0;
+            
             lock (this.timers) {
                 // Check for conflicts
                 foreach (uint32 key in this.timers.get_keys()) {
@@ -74,16 +84,19 @@ namespace DVB {
                     }
                 }
                 
-                this.timers.set (timer_id, new_timer);
+                this.timers.set (new_timer.Id, new_timer);
+                GConfStore.get_instance ().add_timer_to_device (new_timer,
+                    this.Device);
                                
-                if (this.timers.size == 1) {
+                if (this.timers.size == 1 && !this.have_check_timers_timeout) {
                     debug ("Creating new check timers");
                     Timeout.add_seconds (
                         CHECK_TIMERS_INTERVAL, this.check_timers
                     );
+                    this.have_check_timers_timeout = true;
                 }
             }
-            return timer_id;
+            return new_timer.Id;
         }
         
         /**
@@ -103,6 +116,8 @@ namespace DVB {
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     this.timers.remove (timer_id);
+                    GConfStore.get_instance ().remove_timer_from_device (
+                        timer_id, this.Device);
                     val = true;
                 } else {
                     val = false;
@@ -396,12 +411,13 @@ namespace DVB {
                 
                 // Delete items from this.timers
                 for (int i=0; i<removeable_items.length(); i++) {
-                    this.timers.remove (removeable_items.nth_data (i));
+                    this.DeleteTimer (removeable_items.nth_data (i));
                 }
                 
                 if (this.timers.size == 0 && this.active_timer == null) {
                     // We don't have any timers and no recording is in progress
                     debug ("No timers left and no recording in progress");
+                    this.have_check_timers_timeout = false;
                     val = false;
                 } else {
                     // We still have timers

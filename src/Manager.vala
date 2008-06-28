@@ -87,11 +87,14 @@ namespace DVB {
          * @returns: adapter and frontend number for each registered device
          */
         public uint[][] GetRegisteredDevices () {
+            // FIXME initialize and set array correctly
             uint[][] devs = new uint[this.devices.size][2];
             int i = 0;
             foreach (int key in this.devices.get_keys ()) {
-                devs[i][0] = this.devices.get (key).Adapter;
-                devs[i][1] = this.devices.get (key).Frontend;
+                Device dev = this.devices.get (key);
+                devs[i] = new uint[2];
+                devs[i][0] = dev.Adapter;
+                devs[i][1] = dev.Frontend;
                 i++;
             }
             return devs;
@@ -124,6 +127,8 @@ namespace DVB {
                 conn.register_object (
                     path,
                     recorder);
+                    
+                this.recorders.set (path, recorder);
             }
             
             return path;
@@ -158,8 +163,7 @@ namespace DVB {
             
             device.Channels = channels;
             
-            this.devices.set (this.generate_device_id(adapter, frontend),
-                              device);
+            this.add_device (device);
             
             return true;
         }
@@ -173,6 +177,24 @@ namespace DVB {
          */
         public string GetChannelList (uint adapter, uint frontend) {
             return "";
+        }
+        
+        [DBus (visible = false)]
+        public void add_device (Device device) {
+            this.devices.set (this.generate_device_id (
+                device.Adapter, device.Frontend), device);
+            this.GetRecorder (device.Adapter, device.Frontend);
+            GConfStore.get_instance ().add_device (device);
+        }
+        
+        [DBus (visible = false)]
+        public Recorder? get_recorder_for_device (Device device) {
+            string path = Constants.DBUS_RECORDER_PATH.printf (device.Adapter,
+                device.Frontend);
+            if (this.recorders.contains (path))
+                return this.recorders.get (path);
+            else
+                return null;
         }
         
         private static DBus.Connection? get_dbus_connection () {

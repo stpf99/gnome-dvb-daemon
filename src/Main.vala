@@ -74,30 +74,20 @@ public class Main {
         start_manager ();
         start_recordings_store ();
         
-        File channelsfile = File.new_for_path ("/home/sebp/.gstreamer-0.10/dvb-channels.conf");
+        // Restore devices and timers
+        var gconf = DVB.GConfStore.get_instance ();
+        Gee.ArrayList<DVB.Device> devices = gconf.get_all_devices ();
+        foreach (DVB.Device dev in devices) {
+            // register device
+            manager.add_device (dev);
+            DVB.Recorder rec = manager.get_recorder_for_device (dev);
         
-        var reader = new DVB.ChannelListReader (channelsfile, DVB.AdapterType.DVB_T);
-        try {
-            reader.read ();
-        } catch (Error e) {
-            error (e.message);
+            Gee.ArrayList<DVB.Timer> timers = gconf.get_all_timers_of_device (dev);
+            foreach (DVB.Timer t in timers) {
+                rec.add_timer (t);
+            }
         }
-
-        File recdir = File.new_for_path ("/home/sebp/TV");
-
-        DVB.Device device = DVB.Device.new_full (0, 0,
-            reader.Channels, recdir);
-        var rec = new DVB.Recorder (device);
-        rec.recording_finished += recording_finished;
         
-        //DVB.RecordingsStore.get_instance ().Delete ((uint32)1);
-        
-        //rec.AddTimer (17501, 2008, 6, 19, 15, 7, 2);
-        rec.AddTimer (32, 2008, 6, 19, 16, 13, 2);
-        rec.AddTimer (32, 2008, 6, 5, 10, 25, 3);
-        rec.AddTimer (99999, 2008, 6, 20, 10, 55, 9);
-        rec.AddTimer (16418, 2008, 6, 20, 15, 35, 1);
-
         Gst.Structure ter_pro7 = new Gst.Structure ("pro7",
                 "hierarchy", typeof(uint), 0,
                 "bandwidth", typeof(uint), 8,
