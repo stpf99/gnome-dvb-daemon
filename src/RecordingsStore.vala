@@ -254,7 +254,7 @@ namespace DVB {
                                     critical (e.message);
                                 }
                                 if (rec != null) {
-                                    debug ("Restored timer from %s", child.get_path ());
+                                    debug ("Restored recording from %s", child.get_path ());
                                     lock (this.recordings) {
                                         this.add (rec);
                                     }
