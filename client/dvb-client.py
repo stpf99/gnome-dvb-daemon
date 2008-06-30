@@ -67,6 +67,7 @@ class DVBRecordingsStoreClient:
         proxy = bus.get_object(service, recstore_path)
         # Apply the correct interace to the proxy object
         self.recstore = dbus.Interface(proxy, recstore_iface)
+        self.recstore.connect_to_signal ("Changed", self.on_changed)
         
     def get_recordings(self):
         return self.recstore.GetRecordings()
@@ -85,6 +86,16 @@ class DVBRecordingsStoreClient:
         
     def delete(self, rid):
         return self.recstore.Delete(rid)
+        
+    def on_changed(self, rid, typeid):
+        if (typeid == 0):
+            print "Recording %d added" % rid
+        elif (typeid == 1):
+            print "Recording %d deleted" % rid
+        elif (typeid == 2):
+            print "Recording %d changed" % rid
+        else:
+            print "Unknown change type"
         
 class DVBRecorderClient:
 
