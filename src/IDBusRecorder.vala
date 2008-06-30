@@ -5,6 +5,7 @@ namespace DVB {
     
         public abstract signal void recording_started (uint32 timer_id);
         public abstract signal void recording_finished (uint32 recording_id);
+        public abstract signal void timer_added (uint32 timer_id);
         
         /**
          * @channel: Channel number
