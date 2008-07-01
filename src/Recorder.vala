@@ -192,6 +192,22 @@ namespace DVB {
         }
         
         /**
+         * @timer_id: Timer's id
+         * @returns: The name of the channel the timer belongs to or an
+         * empty string when a timer with the given id doesn't exist
+         */
+        public string GetChannelName (uint32 timer_id) {
+            string name = "";
+            lock (this.timers) {
+                if (this.timers.contains (timer_id)) {
+                    Timer t = this.timers.get (timer_id);
+                    name = this.Device.Channels.get (t.ChannelSid).Name;
+                }
+            }
+            return name;
+        }
+        
+        /**
          * @returns: The currently active timer
          * or 0 if there's no active timer
          */
