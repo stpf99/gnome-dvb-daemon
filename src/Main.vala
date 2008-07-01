@@ -32,12 +32,14 @@ public class Main {
         }
     }
     
-    private static void start_recordings_store () {
+    private static void start_recordings_store (uint32 minimum_id) {
        debug ("Creating new RecordingsStore D-Bus service");
+       
        try {
             var conn = DBus.Bus.get (DBus.BusType.SESSION);
         
             recstore = DVB.RecordingsStore.get_instance ();
+            recstore.update_last_id (minimum_id);
                             
             conn.register_object (
                 DVB.Constants.DBUS_RECORDINGS_STORE_PATH,
@@ -72,8 +74,8 @@ public class Main {
         Gst.init (ref args);
         
         start_manager ();
-        start_recordings_store ();
         
+        uint32 max_id = 0;
         // Restore devices and timers
         var gconf = DVB.GConfStore.get_instance ();
         Gee.ArrayList<DVB.Device> devices = gconf.get_all_devices ();
@@ -84,9 +86,12 @@ public class Main {
         
             Gee.ArrayList<DVB.Timer> timers = gconf.get_all_timers_of_device (dev);
             foreach (DVB.Timer t in timers) {
+                if (t.Id > max_id) max_id = t.Id;
                 rec.add_timer (t);
             }
         }
+        
+        start_recordings_store (max_id);
         
         Gst.Structure ter_pro7 = new Gst.Structure ("pro7",
                 "hierarchy", typeof(uint), 0,

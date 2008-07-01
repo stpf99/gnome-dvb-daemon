@@ -25,6 +25,13 @@ namespace DVB {
             return instance;
         }
         
+        public void update_last_id (uint32 new_last_id) {
+            lock (this.last_id) {
+                if (new_last_id > this.last_id)
+                    this.last_id = new_last_id;
+            }
+        }
+        
         public bool add (Recording rec) {
             uint32 id = rec.Id;
             lock (this.recordings) {

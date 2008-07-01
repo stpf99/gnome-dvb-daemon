@@ -411,6 +411,8 @@ namespace DVB {
             
             bool val;
             // Store items we want to delete in here
+            SList<uint32> deleteable_items = new SList<uint32> ();
+            // Don't use this.DeleteTimer for them
             SList<uint32> removeable_items = new SList<uint32> ();
             lock (this.timers) {
                 foreach (uint32 key in this.timers.get_keys()) {
@@ -423,13 +425,17 @@ namespace DVB {
                         removeable_items.prepend (key);
                     } else if (timer.has_expired()) {
                         debug ("Removing expired timer: %s", timer.to_string());
-                        removeable_items.prepend (key);
+                        deleteable_items.prepend (key);
                     }
                 }
                 
-                // Delete items from this.timers
+                // Delete items from this.timers using this.DeleteTimer
+                for (int i=0; i<deleteable_items.length(); i++) {
+                    this.DeleteTimer (deleteable_items.nth_data (i));
+                }
+                
                 for (int i=0; i<removeable_items.length(); i++) {
-                    this.DeleteTimer (removeable_items.nth_data (i));
+                    this.timers.remove (removeable_items.nth_data (i));
                 }
                 
                 if (this.timers.size == 0 && this.active_timer == null) {
