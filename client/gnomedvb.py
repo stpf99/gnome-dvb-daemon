@@ -11,11 +11,6 @@ recstore_iface = "org.gnome.DVB.RecordingsStore"
 recstore_path = "/org/gnome/DVB/RecordingsStore"
 recorder_iface = "org.gnome.DVB.Recorder"
 
-pro7 = [690000000, 4, 0, 1, 0, 9, 3, 4]
-rtl =  [578000000, 4, 0, 2, 0, 9, 3, 4]
-
-a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
-
 class DVBManagerClient:
 
     def __init__(self):
@@ -41,9 +36,15 @@ class DVBManagerClient:
     def register_device (self, adapter, frontend, channels_file, recordings_dir):
         self.manager.RegisterDevice(adapter, frontend, channels_file, recordings_dir)
         
-class DVBScannerClient:
+class DVBScannerClient(gobject.GObject):
+
+    __gsignals__ = {
+        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+    }
 
     def __init__(self, objpath, scanner_iface):
+        gobject.GObject.__init__(self)
+        
         bus = dbus.SessionBus()
         proxy = bus.get_object(service, objpath)
         self.scanner = dbus.Interface(proxy, scanner_iface)
@@ -55,13 +56,25 @@ class DVBScannerClient:
     def run(self):
         self.scanner.Run()
         
+    def abort(self):
+        self.scanner.Abort()
+        
+    def write_channels_to_file(self, channelfile):
+        self.scanner.WriteChannelsToFile(channelfile)
+        
     def on_finished(self):
         print "Done scanning"
-        self.scanner.WriteChannelsToFile ("/home/sebp/channels.conf")
+        self.emit("finished")
         
-class DVBRecordingsStoreClient:
+class DVBRecordingsStoreClient(gobject.GObject):
+
+    __gsignals__ = {
+        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
+    }
 
     def __init__(self):
+        gobject.GObject.__init__(self)
+        
         bus = dbus.SessionBus()
         # Get proxy object
         proxy = bus.get_object(service, recstore_path)
@@ -96,15 +109,31 @@ class DVBRecordingsStoreClient:
             print "Recording %d changed" % rid
         else:
             print "Unknown change type"
+        self.emit("changed", rid, typeid)
         
-class DVBRecorderClient:
+class DVBRecorderClient(gobject.GObject):
+
+    __gsignals__ = {
+        "recording-started": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "recording-finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
+    }
 
     def __init__(self, object_path):
+        gobject.GObject.__init__(self)
+        
         bus = dbus.SessionBus()
         # Get proxy object
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.recorder = dbus.Interface(proxy, recorder_iface)
+        self.recorder.connect_to_signal("RecordingStarted", self.on_recording_started)
+        self.recorder.connect_to_signal("RecordingFinished", self.on_recording_finished)
+        self.recorder.connect_to_signal("Changed", self.on_changed)
+        self.object_path = object_path
+        
+    def get_path(self):
+        return self.object_path
         
     def add_timer (self, channel, year, month, day, hour, minute, duration):
         return self.recorder.AddTimer(channel, year, month, day, hour, minute, duration)
@@ -124,6 +153,9 @@ class DVBRecorderClient:
     def get_duration(self, tid):
         return self.recorder.GetDuration(tid)
         
+    def get_channel_name(self, tid):
+        return self.recorder.GetChannelName(tid)
+        
     def get_active_timer(self):
         return self.recorder.GetActiveTimer()
         
@@ -133,12 +165,36 @@ class DVBRecorderClient:
     def has_timer(self, year, month, day, hour, minute, duration):
         return self.recorder.HasTimer(year, month, day, hour, minute, duration)
         
+    def on_recording_started(self, timer_id):
+        print "Recording %d started" % timer_id
+        self.emit("recording-started", timer_id)
+        
+    def on_recording_finished(self, timer_id):
+        print "Recording %d finished" % timer_id
+        self.emit("recording-finished", timer_id)
+         
+    def on_changed(self, rid, typeid):
+        if (typeid == 0):
+            print "Timer %d added" % rid
+        elif (typeid == 1):
+            print "Timer %d deleted" % rid
+        elif (typeid == 2):
+            print "Timer %d changed" % rid
+        else:
+            print "Unknown change type"
+        self.emit("changed", rid, typeid)
+           
 if __name__ == '__main__':
     loop = gobject.MainLoop()
     
     channelsfile = "/home/sebp/.gstreamer-0.10/dvb-channels.conf"
     recdir = "/home/sebp/TV"
-    
+        
+    pro7 = [690000000, 4, 0, 1, 0, 9, 3, 4]
+    rtl =  [578000000, 4, 0, 2, 0, 9, 3, 4]
+
+    a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
+
     manager = DVBManagerClient ()
     manager.register_device (0, 0, channelsfile, recdir)
     #print manager.get_registered_devices()
@@ -156,7 +212,7 @@ if __name__ == '__main__':
             
         print rec.get_active_timer()
         
-        print rec.add_timer(32, 2008, 6, 28, 23, 42, 2)
+        print rec.add_timer(32, 2008, 7, 28, 23, 42, 2)
         
     recstore = DVBRecordingsStoreClient()
     for rid in recstore.get_recordings():
