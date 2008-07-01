@@ -87,7 +87,7 @@ namespace DVB {
                 this.timers.set (new_timer.Id, new_timer);
                 GConfStore.get_instance ().add_timer_to_device (new_timer,
                     this.Device);
-                this.timer_added (new_timer.Id);
+                this.changed (new_timer.Id, ChangeType.ADDED);
                                
                 if (this.timers.size == 1 && !this.have_check_timers_timeout) {
                     debug ("Creating new check timers");
@@ -119,6 +119,7 @@ namespace DVB {
                     this.timers.remove (timer_id);
                     GConfStore.get_instance ().remove_timer_from_device (
                         timer_id, this.Device);
+                    this.changed (timer_id, ChangeType.DELETED);
                     val = true;
                 } else {
                     val = false;

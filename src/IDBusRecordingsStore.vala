@@ -1,11 +1,5 @@
 namespace DVB {
 
-    public enum ChangeType {
-        ADDED = 0,
-        DELETED = 1,
-        UPDATED = 2
-    }
-
     [DBus (name = "org.gnome.DVB.RecordingsStore")]
     public interface IDBusRecordingsStore : GLib.Object {
         

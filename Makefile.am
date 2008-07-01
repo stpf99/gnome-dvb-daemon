@@ -28,6 +28,7 @@ dvb_daemon_VALASOURCES = \
 	src/Satellite/SatelliteScanner.vala \
 	src/Terrestrial/TerrestrialChannel.vala \
 	src/Terrestrial/TerrestrialScanner.vala \
+	src/ChangeType.vala \
 	src/Channel.vala \
 	src/ChannelList.vala \
 	src/ChannelListReader.vala \

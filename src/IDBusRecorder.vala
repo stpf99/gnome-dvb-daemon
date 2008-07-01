@@ -5,7 +5,11 @@ namespace DVB {
     
         public abstract signal void recording_started (uint32 timer_id);
         public abstract signal void recording_finished (uint32 recording_id);
-        public abstract signal void timer_added (uint32 timer_id);
+        
+        /**
+         * @type: 0: added, 1: deleted, 2: updated
+         */
+        public abstract signal void changed (uint32 timer_id, uint type);
         
         /**
          * @channel: Channel number
