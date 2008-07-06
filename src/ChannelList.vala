@@ -69,7 +69,7 @@ namespace DVB {
         }
         
         /**
-         * @returns: List of channel IDs
+         * @returns: List of channel IDs aka SIDs
          */
         public uint[] GetChannels () {
             uint[] ids = new uint32[this.size];
@@ -116,20 +116,6 @@ namespace DVB {
             return val;
         }
         
-        /**
-         * @channel_id: ID of channel
-         * @returns: SID of channel or 0 if channel
-         * with given ID doesn't exist
-         */
-        public uint GetChannelSid (uint channel_id) {
-            uint val = 0;
-            lock (this.channels) {
-                if (this.channels.contains (channel_id))
-                    val = this.channels.get (channel_id).Sid;   
-            }
-            
-            return val;
-        }
     }
 
 }

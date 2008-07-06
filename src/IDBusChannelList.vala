@@ -9,7 +9,7 @@ namespace DVB {
         public abstract signal void changed (uint channel_id, uint type);
         
         /**
-         * @returns: List of channel IDs
+         * @returns: List of channel IDs aka SIDs
          */
         public abstract uint[] GetChannels ();
         
@@ -28,13 +28,6 @@ namespace DVB {
          */
         public abstract string GetChannelNetwork (uint channel_id);
         
-        /**
-         * @channel_id: ID of channel
-         * @returns: SID of channel or 0 if channel
-         * with given ID doesn't exist
-         */
-        public abstract uint GetChannelSid (uint channel_id);
-	
 	}
 
 }
