@@ -158,7 +158,7 @@ namespace DVB {
             
             ChannelList channels;
             try {
-                channels = DVB.ChannelList.restore_from_file (channelsfile, DVB.AdapterType.DVB_T);
+                channels = DVB.ChannelList.restore_from_file (channelsfile, device.Type);
             } catch (Error e) {
                 critical (e.message);
                 return false;
