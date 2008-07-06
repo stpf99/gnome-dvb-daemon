@@ -10,6 +10,7 @@ manager_path = "/org/gnome/DVB/Manager"
 recstore_iface = "org.gnome.DVB.RecordingsStore"
 recstore_path = "/org/gnome/DVB/RecordingsStore"
 recorder_iface = "org.gnome.DVB.Recorder"
+channel_list_iface = "org.gnome.DVB.ChannelList"
 
 class DVBManagerClient:
 
@@ -184,10 +185,33 @@ class DVBRecorderClient(gobject.GObject):
             print "Unknown change type"
         self.emit("changed", rid, typeid)
            
+class DVBChannelListClient:
+
+    def __init__(self, object_path):
+        bus = dbus.SessionBus()
+        # Get proxy object
+        proxy = bus.get_object(service, object_path)
+        # Apply the correct interace to the proxy object
+        self.channels = dbus.Interface(proxy, channel_list_iface)
+        self.object_path = object_path
+        
+    def get_path(self):
+        return self.object_path
+        
+    def get_channels(self):
+        return self.channels.GetChannels()
+        
+    def get_channel_name(self, cid):
+        return self.channels.GetChannelName(cid)
+        
+    def get_channel_network(self, cid):
+        return self.channels.GetChannelNetwork(cid)
+           
 if __name__ == '__main__':
     loop = gobject.MainLoop()
     
     channelsfile = "/home/sebp/.gstreamer-0.10/dvb-channels.conf"
+    #channelsfile = "/home/sebp/DVB/dvb-s-channels.conf"
     recdir = "/home/sebp/TV"
         
     pro7 = [690000000, 4, 0, 1, 0, 9, 3, 4]
@@ -219,6 +243,13 @@ if __name__ == '__main__':
         print recstore.get_location(rid)
         print recstore.get_start_time(rid)
         print recstore.get_start_timestamp(rid)
-        print recstore.get_length(rid)
+        print recstore.get_length(rid)    
+        
+    channel_list_path = "/org/gnome/DVB/ChannelList/0/0"
+    channellist = DVBChannelListClient(channel_list_path)
+    for channel_id in channellist.get_channels():
+        print "SID", channel_id
+        print "Name", channellist.get_channel_name(channel_id)
+        print "Network", channellist.get_channel_network(channel_id)
     
     loop.run()
