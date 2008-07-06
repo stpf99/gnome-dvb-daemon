@@ -65,7 +65,12 @@ namespace DVB {
             string val;
             while ( (val = fields[i]) != null) {
                 if (i == 0) {
-                    channel.Name = val;
+                    if (val.validate())
+                        channel.Name = val;
+                    else {
+                        warning ("Bad UTF-8 encoded channel name");
+                        channel.Name = "Bad encoding";
+                    }
                 } else if (i == 1) {
                     channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
@@ -121,7 +126,12 @@ namespace DVB {
             string val;
             while ( (val = fields[i]) != null) {
                 if (i == 0) {
-                    channel.Name = val;
+                    if (val.validate())
+                        channel.Name = val;
+                    else {
+                        warning ("Bad UTF-8 encoded channel name");
+                        channel.Name = "Bad encoding";
+                    }
                 } else if (i == 1) {
                     // frequency is stored in MHz
                     channel.Frequency = (uint)(val.to_int () * 1000);
@@ -161,7 +171,12 @@ namespace DVB {
             string val;
             while ( (val = fields[i]) != null) {
                 if (i == 0) {
-                    channel.Name = val;
+                    if (val.validate())
+                        channel.Name = val;
+                    else {
+                        warning ("Bad UTF-8 encoded channel name");
+                        channel.Name = "Bad encoding";
+                    }
                 } else if (i == 1) {
                     channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
