@@ -74,30 +74,37 @@ namespace DVB {
         public uint32 add_timer (Timer new_timer) {
             if (new_timer.has_expired()) return 0;
             
+            uint32 timer_id = 0;
             lock (this.timers) {
+                bool has_conflict = false;
                 // Check for conflicts
                 foreach (uint32 key in this.timers.get_keys()) {
                     if (this.timers.get(key).conflicts_with (new_timer)) {
                         debug ("Timer is conflicting with another timer: %s",
                             this.timers.get(key).to_string ());
-                        return 0;
+                        has_conflict = true;
                     }
                 }
                 
-                this.timers.set (new_timer.Id, new_timer);
-                GConfStore.get_instance ().add_timer_to_device (new_timer,
-                    this.Device);
-                this.changed (new_timer.Id, ChangeType.ADDED);
-                               
-                if (this.timers.size == 1 && !this.have_check_timers_timeout) {
-                    debug ("Creating new check timers");
-                    Timeout.add_seconds (
-                        CHECK_TIMERS_INTERVAL, this.check_timers
-                    );
-                    this.have_check_timers_timeout = true;
+                if (!has_conflict) {
+                    this.timers.set (new_timer.Id, new_timer);
+                    GConfStore.get_instance ().add_timer_to_device (new_timer,
+                        this.Device);
+                    this.changed (new_timer.Id, ChangeType.ADDED);
+                                   
+                    if (this.timers.size == 1 && !this.have_check_timers_timeout) {
+                        debug ("Creating new check timers");
+                        Timeout.add_seconds (
+                            CHECK_TIMERS_INTERVAL, this.check_timers
+                        );
+                        this.have_check_timers_timeout = true;
+                    }
+                    
+                    timer_id = new_timer.Id;
                 }
             }
-            return new_timer.Id;
+            
+            return timer_id;
         }
         
         /**
