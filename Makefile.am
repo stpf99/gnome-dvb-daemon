@@ -39,6 +39,7 @@ dvb_daemon_VALASOURCES = \
 	src/EPGStore.vala \
 	src/Event.vala \
 	src/GConfStore.vala \
+	src/IDBusChannelList.vala \
 	src/IDBusRecorder.vala \
 	src/IDBusRecordingsStore.vala \
 	src/Main.vala \

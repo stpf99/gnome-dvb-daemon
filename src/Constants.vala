@@ -8,4 +8,5 @@ namespace DVB.Constants {
     public static const string DBUS_RECORDINGS_STORE_PATH = "/org/gnome/DVB/RecordingsStore";
     public static const string DBUS_SCANNER_PATH = "/org/gnome/DVB/Scanner/%d/%d";
     public static const string DBUS_RECORDER_PATH = "/org/gnome/DVB/Recorder/%d/%d";
+    public static const string DBUS_CHANNEL_LIST_PATH = "/org/gnome/DVB/ChannelList/%d/%d";
 }

@@ -12,12 +12,15 @@ namespace DVB {
         private HashMap<string, Scanner> scanners;
         // Maps object path to Recorder
         private HashMap<string, Recorder> recorders;
+        // Maps object path to ChannelList
+        private HashMap<string, ChannelList> channellists;
         // Maps device id to Device
         private HashMap<int, Device> devices;
         
         construct {
             this.scanners = new HashMap<string, Scanner> (str_hash, str_equal, direct_equal);
             this.recorders = new HashMap<string, Recorder> (str_hash, str_equal, direct_equal);
+            this.channellists = new HashMap<string, ChannelList> (str_hash, str_equal, direct_equal);
             this.devices = new HashMap<int, Device> ();
         }
         
@@ -176,14 +179,39 @@ namespace DVB {
          * The device must be registered with RegisterDevice () first.
          */
         public string GetChannelList (uint adapter, uint frontend) {
-            return "";
+            string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (adapter, frontend);
+        
+            if (!this.channellists.contains (path)) {
+                debug ("Creating new ChannelList D-Bus service for adapter %u, frontend %u",
+                    adapter, frontend);
+                
+                Device device = this.get_device_if_exists (adapter, frontend);
+                if (device == null) return "";
+                
+                ChannelList channels = device.Channels;
+                
+                var conn = get_dbus_connection ();
+                if (conn == null) return "";
+                
+                conn.register_object (
+                    path,
+                    channels);
+                    
+                this.channellists.set (path, channels);
+            }
+            
+            return path;
         }
         
+        /**
+         * Register device, create Recorder and ChannelList D-Bus service
+         */
         [DBus (visible = false)]
         public void add_device (Device device) {
             this.devices.set (this.generate_device_id (
                 device.Adapter, device.Frontend), device);
             this.GetRecorder (device.Adapter, device.Frontend);
+            this.GetChannelList (device.Adapter, device.Frontend);
             GConfStore.get_instance ().add_device (device);
         }
         
