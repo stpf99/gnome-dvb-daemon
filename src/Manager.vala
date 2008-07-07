@@ -204,15 +204,25 @@ namespace DVB {
         }
         
         /**
+         * @returns: Whether the device has been added successfully
+         *
          * Register device, create Recorder and ChannelList D-Bus service
          */
         [DBus (visible = false)]
-        public void add_device (Device device) {
+        public bool add_device (Device device) {
             this.devices.set (this.generate_device_id (
                 device.Adapter, device.Frontend), device);
-            this.GetRecorder (device.Adapter, device.Frontend);
-            this.GetChannelList (device.Adapter, device.Frontend);
+            string rec_path = this.GetRecorder (device.Adapter,
+                    device.Frontend);
+            if (rec_path == "") return false;
+            
+            string channels_path = this.GetChannelList (device.Adapter,
+                    device.Frontend);
+            if (channels_path == "") return false;
+            
             GConfStore.get_instance ().add_device (device);
+            
+            return true;
         }
         
         [DBus (visible = false)]

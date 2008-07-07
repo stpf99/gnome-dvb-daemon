@@ -5,7 +5,7 @@ public class Main {
     private static DVB.Manager manager;
     private static DVB.RecordingsStore recstore;
 
-    private static void start_manager () {
+    private static bool start_manager () {
         try {
             var conn = DBus.Bus.get (DBus.BusType.SESSION);
             
@@ -25,14 +25,18 @@ public class Main {
                     manager);
             } else {
                 debug ("Manager D-Bus service is already running");
+                return false;
             }
 
         } catch (Error e) {
             error ("Oops %s", e.message);
+            return false;
         }
+        
+        return true;
     }
     
-    private static void start_recordings_store (uint32 minimum_id) {
+    private static bool start_recordings_store (uint32 minimum_id) {
        debug ("Creating new RecordingsStore D-Bus service");
        
        try {
@@ -46,24 +50,12 @@ public class Main {
                 recstore);
         } catch (Error e) {
             error ("Oops %s", e.message);
-        } 
+            return false;
+        }
+        
+        return true;
     }
     
-    private static void recording_finished (DVB.Recorder recorder, uint32 id) {
-        stdout.printf ("Recording %u finished\n", id);
-        
-        weak DVB.RecordingsStore rec = DVB.RecordingsStore.get_instance();
-        
-        foreach (uint32 rid in rec.GetRecordings()) {
-            stdout.printf ("ID: %u\n", rid);
-            stdout.printf ("Location: %s\n", rec.GetLocation (rid));
-            stdout.printf ("Length: %lli\n", rec.GetLength (rid));
-            uint[] start = rec.GetStartTime (rid);
-            stdout.printf ("Start: %u-%u-%u %u:%u\n", start[0], start[1],
-                start[2], start[3], start[4]);
-        }
-    }
-
     public static void main (string[] args) {
         MainLoop loop;
     
@@ -73,7 +65,7 @@ public class Main {
         // Initializing GStreamer
         Gst.init (ref args);
         
-        start_manager ();
+        if (!start_manager ()) return;
         
         uint32 max_id = 0;
         // Restore devices and timers
@@ -81,43 +73,18 @@ public class Main {
         Gee.ArrayList<DVB.Device> devices = gconf.get_all_devices ();
         foreach (DVB.Device dev in devices) {
             // register device
-            manager.add_device (dev);
-            DVB.Recorder rec = manager.get_recorder_for_device (dev);
-        
-            Gee.ArrayList<DVB.Timer> timers = gconf.get_all_timers_of_device (dev);
-            foreach (DVB.Timer t in timers) {
-                if (t.Id > max_id) max_id = t.Id;
-                rec.add_timer (t);
+            if (manager.add_device (dev)) {
+                DVB.Recorder rec = manager.get_recorder_for_device (dev);
+            
+                Gee.ArrayList<DVB.Timer> timers = gconf.get_all_timers_of_device (dev);
+                foreach (DVB.Timer t in timers) {
+                    if (t.Id > max_id) max_id = t.Id;
+                    rec.add_timer (t);
+                }
             }
         }
         
-        start_recordings_store (max_id);
-        
-        Gst.Structure ter_pro7 = new Gst.Structure ("pro7",
-                "hierarchy", typeof(uint), 0,
-                "bandwidth", typeof(uint), 8,
-                "frequency", typeof(uint), 690000000,
-                "transmission-mode", typeof(string), "8k",
-                "code-rate-hp", typeof(string), "2/3",
-                "code-rate-lp", typeof(string), "1/2",
-                "constellation", typeof(string), "QAM16",
-                "guard-interval", typeof(uint), 4);
-
-        /*
-        Gst.Structure sat_pro7 = new Gst.Structure ("pro7",
-            "frequency", typeof(uint), 12544000,
-            "symbol-rate", typeof(uint), 22000,
-            "polarization", typeof(string), "h");
-        */  
-        /*
-        DVB.Scanner scanner = new DVB.TerrestrialScanner (device);
-        scanner.add_structure_to_scan (#ter_pro7);
-        ((DVB.TerrestrialScanner)scanner).AddScanningData (586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4);
-        scanner.Run ();
-        scanner.finished += s => { s.WriteChannelsToFile ("/home/sebp/channels.conf"); };
-        */
-        //var epgscanner = new DVB.EPGScanner (device);
-        //epgscanner.start ();
+        if (!start_recordings_store (max_id)) return;
         
         // Start GLib mainloop
         loop.run ();
