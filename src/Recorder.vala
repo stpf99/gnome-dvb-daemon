@@ -70,7 +70,6 @@ namespace DVB {
             return this.add_timer (new_timer);
         }
         
-        [DBus (visible = false)]
         public uint32 add_timer (Timer new_timer) {
             if (new_timer.has_expired()) return 0;
             
