@@ -5,8 +5,6 @@ namespace DVB {
     
     [DBus (name = "org.gnome.DVB.Manager")]
     public class Manager : Object {
-    
-        private static const int PRIME = 31;
 
         // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
@@ -15,13 +13,13 @@ namespace DVB {
         // Maps object path to ChannelList
         private HashMap<string, ChannelList> channellists;
         // Maps device id to Device
-        private HashMap<int, Device> devices;
+        private HashMap<uint, Device> devices;
         
         construct {
             this.scanners = new HashMap<string, Scanner> (str_hash, str_equal, direct_equal);
             this.recorders = new HashMap<string, Recorder> (str_hash, str_equal, direct_equal);
             this.channellists = new HashMap<string, ChannelList> (str_hash, str_equal, direct_equal);
-            this.devices = new HashMap<int, Device> ();
+            this.devices = new HashMap<uint, Device> ();
         }
         
         /**
@@ -93,7 +91,7 @@ namespace DVB {
             // FIXME initialize and set array correctly
             uint[][] devs = new uint[this.devices.size][2];
             int i = 0;
-            foreach (int key in this.devices.get_keys ()) {
+            foreach (uint key in this.devices.get_keys ()) {
                 Device dev = this.devices.get (key);
                 devs[i] = new uint[2];
                 devs[i][0] = dev.Adapter;
@@ -210,8 +208,7 @@ namespace DVB {
          */
         [DBus (visible = false)]
         public bool add_device (Device device) {
-            this.devices.set (this.generate_device_id (
-                device.Adapter, device.Frontend), device);
+            this.devices.set (Device.hash (device), device);
             string rec_path = this.GetRecorder (device.Adapter,
                     device.Frontend);
             if (rec_path == "") return false;
@@ -247,7 +244,7 @@ namespace DVB {
         }
         
         private Device? get_device_if_exists (uint adapter, uint frontend) {
-            int id = generate_device_id (adapter, frontend);
+            uint id = Device.hash_without_device (adapter, frontend);
             if (this.devices.contains (id))
                 return this.devices.get (id);
             else {
@@ -257,10 +254,6 @@ namespace DVB {
             }
         }
         
-        private static int generate_device_id (uint adapter, uint frontend) {
-            int result = 2 * PRIME + PRIME * (int)adapter + (int)frontend;
-            return result;
-        }
     }
 
 }

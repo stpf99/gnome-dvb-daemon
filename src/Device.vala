@@ -10,26 +10,45 @@ namespace DVB {
     }
 
     public class Device : GLib.Object {
+    
+        private static const int PRIME = 31;
 
         public uint Adapter { get; construct; }
         public uint Frontend { get; construct; }
         public AdapterType Type { get; construct; }
         public ChannelList Channels { get; set; }
         public File RecordingsDirectory { get; set; }
-        
+
         public Device (uint adapter, uint frontend) {
             this.Adapter = adapter;
             this.Frontend = frontend;
             this.Type = getAdapterType(adapter);
         }
-        
+
         public static Device new_full (uint adapter, uint frontend,
             ChannelList channels, File recordings_dir) {
             var dev = new Device (adapter, frontend);            
             dev.Channels = channels;
             dev.RecordingsDirectory = recordings_dir;
             return dev;
-       }
+        }
+        
+        public static bool equal (Device* dev1, Device* dev2) {
+            if (dev1 == null || dev2 == null) return false;
+            
+            return (dev1->Adapter == dev2->Adapter
+                    && dev2->Frontend == dev2->Frontend);
+        }
+        
+        public static uint hash (Device *device) {
+            if (device == null) return 0;
+            
+            return hash_without_device (device->Adapter, device->Frontend);
+        }
+        
+        public static uint hash_without_device (uint adapter, uint frontend) {
+            return 2 * PRIME + PRIME * adapter + frontend;
+        }
 
         private static AdapterType getAdapterType (uint adapter) {
             Element dvbsrc = ElementFactory.make("dvbsrc", "test_dvbsrc");
