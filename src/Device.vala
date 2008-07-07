@@ -49,10 +49,43 @@ namespace DVB {
         public static uint hash_without_device (uint adapter, uint frontend) {
             return 2 * PRIME + PRIME * adapter + frontend;
         }
+        
+        public bool is_busy () {
+            Element dvbsrc = ElementFactory.make ("dvbsrc", "text_dvbsrc");
+            dvbsrc.set ("adapter", this.Adapter);
+            dvbsrc.set ("frontend", this.Frontend);
+            
+            Element pipeline = new Pipeline ("");
+            ((Bin)pipeline).add (dvbsrc);
+            pipeline.set_state (State.READY);
+            
+            weak Bus bus = pipeline.get_bus();
+            
+            bool busy_val = false;
+            
+            while (bus.have_pending()) {
+                weak Message msg = bus.pop();
+
+                if (msg.type == MessageType.ERROR && msg.src == dvbsrc) {
+                    Error gerror;
+                    string debug_text;
+                    msg.parse_error (out gerror, out debug_text);
+                    
+                    debug (gerror.message);
+                    debug (debug_text);
+                    
+                    busy_val = true;
+                }
+            }
+               
+            pipeline.set_state(State.NULL);
+            
+            return busy_val;
+        }
 
         private static AdapterType getAdapterType (uint adapter) {
-            Element dvbsrc = ElementFactory.make("dvbsrc", "test_dvbsrc");
-            dvbsrc.set("adapter", adapter);
+            Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
+            dvbsrc.set ("adapter", adapter);
             
             Element pipeline = new Pipeline ("");
             ((Bin)pipeline).add (dvbsrc);

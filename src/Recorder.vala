@@ -397,9 +397,12 @@ namespace DVB {
                 
                 case Gst.MessageType.ERROR:
                     Error gerror;
-                    string debug;
-                    message.parse_error (out gerror, out debug);
-                    critical ("%s %s", gerror.message, debug);
+                    string debug_text;
+                    message.parse_error (out gerror, out debug_text);
+                    
+                    critical (gerror.message);
+                    critical (debug_text);
+                        
                     this.stop_current_recording ();
                 break;
                 
