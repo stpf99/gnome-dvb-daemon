@@ -79,7 +79,8 @@ public class Main {
                 Gee.ArrayList<DVB.Timer> timers = gconf.get_all_timers_of_device (dev);
                 foreach (DVB.Timer t in timers) {
                     if (t.Id > max_id) max_id = t.Id;
-                    rec.add_timer (t);
+                    if (rec.add_timer (t) == 0)
+                        gconf.remove_timer_from_device (t.Id, dev);
                 }
             }
         }
