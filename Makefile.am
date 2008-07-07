@@ -35,6 +35,7 @@ dvb_daemon_VALASOURCES = \
 	src/ChannelListWriter.vala \
 	src/Constants.vala \
 	src/Device.vala \
+	src/DeviceGroup.vala \
 	src/EPGScanner.vala \
 	src/EPGStore.vala \
 	src/Event.vala \
