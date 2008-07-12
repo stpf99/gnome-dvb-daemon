@@ -76,13 +76,19 @@ namespace DVB {
             uint32 timer_id = 0;
             lock (this.timers) {
                 bool has_conflict = false;
-                // TODO
+                int conflict_count = 0;
+                
                 // Check for conflicts
                 foreach (uint32 key in this.timers.get_keys()) {
                     if (this.timers.get(key).conflicts_with (new_timer)) {
-                        debug ("Timer is conflicting with another timer: %s",
-                            this.timers.get(key).to_string ());
-                        has_conflict = true;
+                        conflict_count++;
+                        
+                        if (conflict_count >= this.DeviceGroup.size) {
+                            debug ("Timer is conflicting with another timer: %s",
+                                this.timers.get(key).to_string ());
+                            has_conflict = true;
+                            break;
+                        }
                     }
                 }
                 
@@ -315,7 +321,6 @@ namespace DVB {
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
             dvbbasebin.set ("program-numbers",
                             this.active_recording.ChannelSid.to_string());
-            // XXX
             dvbbasebin.set ("adapter", free_device.Adapter);
             dvbbasebin.set ("frontend", free_device.Frontend);
             
