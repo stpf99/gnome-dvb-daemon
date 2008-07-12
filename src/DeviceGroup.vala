@@ -25,10 +25,10 @@ namespace DVB {
         // All settings are copied from this one
         public Device reference_device {get; construct;}
     
-        private ArrayList<Device> devices;
+        private Set<Device> devices;
         
         construct {
-            this.devices = new ArrayList<Device> ();
+            this.devices = new HashSet<Device> (Device.hash, Device.equal);
             this.add (this.reference_device);
         }
         
