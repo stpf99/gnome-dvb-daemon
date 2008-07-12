@@ -5,6 +5,14 @@ public class Main {
     private static DVB.Manager manager;
     private static DVB.RecordingsStore recstore;
 
+    private static int debug_val;
+
+    const OptionEntry[] options =  {
+        { "debug", 'd', 0, OptionArg.NONE, out debug_val,
+	    "Display debug statements on stdout", null},
+	    { null }
+    };
+    
     private static bool start_manager () {
         try {
             var conn = DBus.Bus.get (DBus.BusType.SESSION);
@@ -56,16 +64,27 @@ public class Main {
         return true;
     }
     
-    public static void main (string[] args) {
+    public static int main (string[] args) {
         MainLoop loop;
-    
+        
+	    OptionContext context = new OptionContext ("- record TV shows using one or more DVB adapters");
+	    context.add_main_entries (options, null);
+	    context.add_group (Gst.init_get_option_group ());
+	    
+	    try {
+	        context.parse (ref args);
+	    } catch (OptionError e) {
+	        stderr.printf ("Parsing options failed: %s", e.message);
+	        return -1;
+	    }
+        
         // Creating a GLib main loop with a default context
         loop = new MainLoop (null, false);
 
         // Initializing GStreamer
         Gst.init (ref args);
         
-        if (!start_manager ()) return;
+        if (!start_manager ()) return -1;
         
         uint32 max_id = 0;
         // Restore devices and timers
@@ -86,10 +105,12 @@ public class Main {
             }
         }
         
-        if (!start_recordings_store (max_id)) return;
+        if (!start_recordings_store (max_id)) return -1;
         
         // Start GLib mainloop
         loop.run ();
+        
+        return 0;
     }
 
 }
