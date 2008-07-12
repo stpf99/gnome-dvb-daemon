@@ -135,10 +135,13 @@ class RecorderWindow(gtk.Window):
             rec.delete_timer(model[aiter][self.COL_ID])
             model.remove(aiter)
         
-    def _on_button_add_clicked(self, button):
-        d = TimerDialog(self)
+    def _on_button_add_clicked(self, button):   
+        recorder_path = self._get_active_recorder_path()
+        
+        adapter, frontend = recorder_path.split("/")[-2:]
+        
+        d = TimerDialog(self, adapter, frontend)
         if (d.run() == gtk.RESPONSE_ACCEPT):
-            recorder_path = self._get_active_recorder_path()
             
             duration = d.get_duration()
             start = d.get_start_time()
@@ -179,7 +182,7 @@ class RecorderWindow(gtk.Window):
 
 class TimerDialog(gtk.Dialog):
 
-    def __init__(self, parent):
+    def __init__(self, parent, adapter, frontend):
         gtk.Dialog.__init__(self, title="Timer", parent=parent,
                 flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
@@ -200,10 +203,15 @@ class TimerDialog(gtk.Dialog):
         channel_ali = gtk.Alignment(0, 0.5)
         table.attach(channel_ali, 1, 2, 0, 1)
         
-        self.channel_num = gtk.SpinButton()
-        self.channel_num.set_range(0, 65535)
-        self.channel_num.set_increments(1, 50)
-        channel_ali.add(self.channel_num)
+        self.channels = gtk.ListStore(str, int)
+        self._add_channels(adapter, frontend)
+        
+        self.channelscombo = gtk.ComboBox(self.channels)
+        
+        cell_name = gtk.CellRendererText()
+        self.channelscombo.pack_start(cell_name)
+        self.channelscombo.add_attribute(cell_name, "text", 0)
+        channel_ali.add(self.channelscombo)
                          
         label_start = gtk.Label()
         label_start.set_markup("<b>Start time:</b>")
@@ -252,6 +260,13 @@ class TimerDialog(gtk.Dialog):
         
         table.show_all()
         
+    def _add_channels(self, adapter, frontend):
+        channel_list_path = "/org/gnome/DVB/ChannelList/%s/%s" % (adapter, frontend)
+        channellist = gnomedvb.DVBChannelListClient(channel_list_path)
+        for channel_id in channellist.get_channels():
+            name = channellist.get_channel_name(channel_id)
+            self.channels.append([name, channel_id])
+        
     def get_duration(self):
         return self.duration.get_value_as_int()
         
@@ -267,7 +282,11 @@ class TimerDialog(gtk.Dialog):
         return start
         
     def get_channel(self):
-        return self.channel_num.get_value_as_int()
+        aiter = self.channelscombo.get_active_iter()
+        if aiter != None:
+            return self.channels[aiter][1]
+        else:
+            return None
         
     def _set_default_time_and_date(self):
         current = datetime.datetime.now()
