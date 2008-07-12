@@ -69,7 +69,7 @@ vala_pkgs = \
     --pkg gconf-2.0
 
 src/dvb-daemon.vala.stamp: $(dvb_daemon_VALASOURCES)
-	$(VALAC) -C $(vala_pkgs) --basedir $(top_srcdir) $^
+	$(VALAC) -C --thread $(vala_pkgs) --basedir $(top_srcdir) $^
 	touch $@
 
 dvb_daemon_LDFLAGS = \
