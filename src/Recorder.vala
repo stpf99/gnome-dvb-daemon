@@ -11,7 +11,7 @@ namespace DVB {
     public class Recorder : GLib.Object, IDBusRecorder {
     
         /* Set in constructor of sub-classes */
-        public DVB.Device Device { get; construct; }
+        public DVB.DeviceGroup DeviceGroup { get; construct; }
         
         protected Element? pipeline;
         protected Recording active_recording;
@@ -26,11 +26,11 @@ namespace DVB {
             this.have_check_timers_timeout = false;
             this.reset ();
             RecordingsStore.get_instance ().restore_from_dir (
-                this.Device.RecordingsDirectory);
+                this.DeviceGroup.RecordingsDirectory);
         }
         
-        public Recorder (DVB.Device dev) {
-            this.Device = dev;
+        public Recorder (DVB.DeviceGroup dev) {
+            this.DeviceGroup = dev;
         }
         
         /**
@@ -53,9 +53,9 @@ namespace DVB {
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
                 
-            if (!this.Device.Channels.contains (channel)) {
-                debug ("No channel %u for device %u %u", channel,
-                    this.Device.Adapter, this.Device.Frontend);
+            if (!this.DeviceGroup.Channels.contains (channel)) {
+                debug ("No channel %u for device group %u", channel,
+                    this.DeviceGroup.Id);
                 return 0;
             }
             
@@ -63,7 +63,7 @@ namespace DVB {
                 
             // TODO Get name for timer
             var new_timer = new Timer (timer_id,
-                                       this.Device.Channels.get(channel).Sid,
+                                       this.DeviceGroup.Channels.get(channel).Sid,
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);
@@ -76,6 +76,7 @@ namespace DVB {
             uint32 timer_id = 0;
             lock (this.timers) {
                 bool has_conflict = false;
+                // TODO
                 // Check for conflicts
                 foreach (uint32 key in this.timers.get_keys()) {
                     if (this.timers.get(key).conflicts_with (new_timer)) {
@@ -87,8 +88,8 @@ namespace DVB {
                 
                 if (!has_conflict) {
                     this.timers.set (new_timer.Id, new_timer);
-                    GConfStore.get_instance ().add_timer_to_device (new_timer,
-                        this.Device);
+                    GConfStore.get_instance ().add_timer_to_device_group (new_timer,
+                        this.DeviceGroup);
                     this.changed (new_timer.Id, ChangeType.ADDED);
                                    
                     if (this.timers.size == 1 && !this.have_check_timers_timeout) {
@@ -123,8 +124,8 @@ namespace DVB {
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     this.timers.remove (timer_id);
-                    GConfStore.get_instance ().remove_timer_from_device (
-                        timer_id, this.Device);
+                    GConfStore.get_instance ().remove_timer_from_device_group (
+                        timer_id, this.DeviceGroup);
                     this.changed (timer_id, ChangeType.DELETED);
                     val = true;
                 } else {
@@ -208,7 +209,7 @@ namespace DVB {
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
-                    name = this.Device.Channels.get (t.ChannelSid).Name;
+                    name = this.DeviceGroup.Channels.get (t.ChannelSid).Name;
                 }
             }
             return name;
@@ -285,7 +286,7 @@ namespace DVB {
             debug ("Starting recording of channel %u", timer.ChannelSid);
         
             Gst.Element dvbbasebin = ElementFactory.make ("dvbbasebin", "dvbbasebin");
-            DVB.Channel channel = this.Device.Channels.get (timer.ChannelSid);
+            DVB.Channel channel = this.DeviceGroup.Channels.get (timer.ChannelSid);
             channel.setup_dvb_source (dvbbasebin);
             
             this.active_timer = timer;
@@ -305,11 +306,18 @@ namespace DVB {
             bus.add_signal_watch();
             bus.message += this.bus_watch_func;
                 
+            DVB.Device free_device = this.DeviceGroup.get_next_free_device ();
+            if (free_device == null) {
+                critical ("All devices are busy");
+                return;
+            }
+                
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
             dvbbasebin.set ("program-numbers",
                             this.active_recording.ChannelSid.to_string());
-            dvbbasebin.set ("adapter", this.Device.Adapter);
-            dvbbasebin.set ("frontend", this.Device.Frontend);
+            // XXX
+            dvbbasebin.set ("adapter", free_device.Adapter);
+            dvbbasebin.set ("frontend", free_device.Frontend);
             
             Element filesink = ElementFactory.make ("filesink", "sink");
             filesink.set ("location", this.active_recording.Location.get_path ());
@@ -335,7 +343,7 @@ namespace DVB {
             string time = "%u-%u-%u_%u-%u".printf (start[0], start[1],
                 start[2], start[3], start[4]);
             
-            File dir = this.Device.RecordingsDirectory.get_child (
+            File dir = this.DeviceGroup.RecordingsDirectory.get_child (
                 channel_name).get_child (time);
             
             if (!dir.query_exists (null)) {

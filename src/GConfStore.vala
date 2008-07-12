@@ -3,18 +3,57 @@ using Gee;
 
 namespace DVB {
 
+    /**
+     * Example tree:
+     * /app/dvb-daemon
+     *     /device_groups
+     *         /group_0
+     *             /devices
+     *                 /device_0_0
+     *                      adapter
+     *                      frontend
+     *                  /device_1_0
+     *                      adapter
+     *                     frontend
+     *             /timers
+     *                 /timer_0
+     *                     id
+     *                     channel_sid
+     *                     year
+     *                 /timer_1
+     *                     id
+     *                     channel_sid
+     *                     year
+     *             channels_file
+     *             adapter_type
+     *             recordings_dir
+     *         /group_1
+     *             /devices
+     *                  /device_2_0
+     *                      adapter
+     *                      frontend
+     *                  /device_3_0
+     *                      adapter
+     *                      frontend
+     *             channels_file
+     *             adapter_type
+     *             recordings_dir
+     */
     public class GConfStore : GLib.Object {
     
         public static const string BASE_DIR = "/apps/dvb-daemon";
         
+        private static const string DEVICE_GROUPS_DIR_KEY = "/device_groups";
+        private static const string DEVICE_GROUP_DIR_NAME = "/group_%d";
+        private static const string DEVICE_GROUP_CHANNELS_FILE_KEY = "/channels_file"; // string
+        private static const string DEVICE_GROUP_ADAPTER_TYPE_KEY = "/adapter_type"; // int
+        private static const string DEVICE_GROUP_RECORDINGS_DIR_KEY = "/recordings_dir";
+    
         private static const string DEVICES_DIR_KEY = "/devices";
         private static const string DEVICE_DIR_NAME = "/device_%d_%d";
         private static const string DEVICE_ADAPTER_KEY = "/adapter"; // int
         private static const string DEVICE_FRONTEND_KEY = "/frontend"; // int
-        private static const string DEVICE_CHANNELS_FILE_KEY = "/channels_file"; // string
-        private static const string DEVICE_ADAPTER_TYPE_KEY = "/adapter_type"; // int
-        private static const string DEVICE_RECORDINGS_DIR_KEY = "/recordings_dir";
-    
+        
         private static const string TIMERS_DIR_KEY = "/timers";
         private static const string TIMER_DIR_NAME = "/timer_%d";
         private static const string TIMER_ID_KEY = "/id"; // int
@@ -42,9 +81,9 @@ namespace DVB {
             return instance;
         }
          
-        public ArrayList<Device> get_all_devices () {
-            string devices_path = BASE_DIR + DEVICES_DIR_KEY;
-        
+        private ArrayList<Device> get_all_devices (string root_dir) {
+            string devices_path = root_dir + DEVICES_DIR_KEY;
+            
             ArrayList<Device> devs = new ArrayList<Device> ();
             
             try {
@@ -58,9 +97,39 @@ namespace DVB {
                     int gconf_frontend =
                         this.client.get_int (base_path + DEVICE_FRONTEND_KEY);
                     if (gconf_frontend < 0) continue;
-                        
+                         
+                    devs.add (new Device ((uint)gconf_adapter,
+                                          (uint)gconf_frontend));
+                }
+            } catch (Error e) {
+                warning (e.message);
+            }
+            
+            return devs;
+        }
+        
+        public ArrayList<DeviceGroup> get_all_device_groups () {
+            string groups_path = BASE_DIR + DEVICE_GROUPS_DIR_KEY;
+            
+            ArrayList<DeviceGroup> groups = new ArrayList<DeviceGroup> ();
+            
+            try {
+                weak SList<string> dirs =
+                    this.client.all_dirs (groups_path);
+                foreach (string base_path in dirs)  {
+                    // base_path looks like
+                    // /apps/dvb-daemon/device_groups/group_1
+                    File groupfile = File.new_for_path (base_path);
+                    string group_dir = groupfile.get_basename ();
+                    
+                    uint group_id = (uint)(group_dir.split("_")[1]).to_int ();
+                    
+                    File recordings_dir = File.new_for_path (
+                        this.client.get_string (
+                            base_path + DEVICE_GROUP_RECORDINGS_DIR_KEY));
+                
                     int gconf_type =
-                        this.client.get_int (base_path + DEVICE_ADAPTER_TYPE_KEY);
+                        this.client.get_int (base_path + DEVICE_GROUP_ADAPTER_TYPE_KEY);
                     AdapterType type;
                     switch (gconf_type) {
                         case 0: type = AdapterType.DVB_T; break;
@@ -71,7 +140,7 @@ namespace DVB {
                     
                     File channels_file = File.new_for_path (
                         this.client.get_string (
-                            base_path + DEVICE_CHANNELS_FILE_KEY));
+                            base_path + DEVICE_GROUP_CHANNELS_FILE_KEY));
                     
                     ChannelList channels;
                     try {
@@ -81,46 +150,71 @@ namespace DVB {
                         warning (e.message);
                         continue;
                     }
-                        
-                    File recordings_dir = File.new_for_path (
-                        this.client.get_string (
-                            base_path + DEVICE_RECORDINGS_DIR_KEY));
-                            
-                    devs.add (Device.new_full ((uint)gconf_adapter,
-                                               (uint)gconf_frontend,
-                                               channels,
-                                               recordings_dir));
+                    
+                    DeviceGroup? new_group = null;
+                    
+                    ArrayList<Device> devs = this.get_all_devices (base_path);
+                    
+                    assert (devs.size > 0);
+                    
+                    foreach (Device dev in devs) {
+                        if (new_group == null) {
+                            dev.Channels = channels;
+                            dev.RecordingsDirectory = recordings_dir;
+                            new_group = new DeviceGroup (group_id, dev);
+                        } else
+                            new_group.add (dev);
+                    }
+                    
+                    assert (new_group != null);
+                    assert (new_group.size > 0);
+                    
+                    groups.add (new_group);
                 }
             } catch (Error e) {
                 warning (e.message);
             }
             
-            return devs;
+            return groups;
         }
         
-        public void add_device (Device dev) {
-            string base_path = get_device_path (dev);
+        public void add_device_group (DeviceGroup dev_group) {
+            string base_path = get_device_group_path (dev_group);
                 
             try {
                 if (!this.client.dir_exists (base_path)) {
-                    this.client.set_int (base_path + DEVICE_ADAPTER_KEY,
-                        (int)dev.Adapter);
-                    this.client.set_int (base_path + DEVICE_FRONTEND_KEY,
-                        (int)dev.Frontend);
-                    this.client.set_string (base_path + DEVICE_CHANNELS_FILE_KEY,
-                        dev.Channels.channels_file.get_path ());
-                    this.client.set_int (base_path + DEVICE_ADAPTER_TYPE_KEY,
-                        dev.Type);
-                    this.client.set_string (base_path + DEVICE_RECORDINGS_DIR_KEY,
-                        dev.RecordingsDirectory.get_path ());
+                    this.client.set_int (base_path + DEVICE_GROUP_ADAPTER_TYPE_KEY,
+                        dev_group.Type);
+                    this.client.set_string (base_path + DEVICE_GROUP_CHANNELS_FILE_KEY,
+                        dev_group.Channels.channels_file.get_path ());
+
+                    this.client.set_string (base_path + DEVICE_GROUP_RECORDINGS_DIR_KEY,
+                        dev_group.RecordingsDirectory.get_path ());
+                        
+                    foreach (Device dev in dev_group) {
+                        this.add_device_to_group (dev, dev_group);
+                    }
                 }
             } catch (Error e) {
                 warning (e.message);
             }
         }
         
-        public ArrayList<Timer> get_all_timers_of_device (Device dev) {
-            string timers_path = get_device_path (dev) +
+        private void add_device_to_group (Device dev, DeviceGroup devgroup) {
+            string base_path = get_device_group_path (devgroup) + get_device_path (dev);
+        
+            try {
+                this.client.set_int (base_path + DEVICE_ADAPTER_KEY,
+                    (int)dev.Adapter);
+                this.client.set_int (base_path + DEVICE_FRONTEND_KEY,
+                    (int)dev.Frontend);
+            }  catch (Error e) {
+                warning (e.message);
+            }
+        }
+        
+        public ArrayList<Timer> get_all_timers_of_device_group (DeviceGroup dev) {
+            string timers_path = get_device_group_path (dev) +
                 TIMERS_DIR_KEY;
             
             ArrayList<Timer> timers = new ArrayList<Timer> ();
@@ -173,8 +267,8 @@ namespace DVB {
             return timers;
         }
         
-        public void add_timer_to_device (Timer timer, Device dev) {
-            string base_path = get_device_path (dev) +
+        public void add_timer_to_device_group (Timer timer, DeviceGroup dev) {
+            string base_path = get_device_group_path (dev) +
                 TIMERS_DIR_KEY +
                 TIMER_DIR_NAME.printf (timer.Id);
             try {
@@ -201,8 +295,8 @@ namespace DVB {
             }
         }
         
-        public void remove_timer_from_device (uint timer_id, Device dev) {
-            string base_path = get_device_path (dev) +
+        public void remove_timer_from_device_group (uint timer_id, DeviceGroup dev) {
+            string base_path = get_device_group_path (dev) +
                 TIMERS_DIR_KEY +
                 TIMER_DIR_NAME.printf (timer_id);
             try {
@@ -216,8 +310,13 @@ namespace DVB {
         }
         
         private static string get_device_path (Device dev) {
-            return BASE_DIR + DEVICES_DIR_KEY +
+            return DEVICES_DIR_KEY +
                 DEVICE_DIR_NAME.printf (dev.Adapter, dev.Frontend);
+        }
+        
+        private static string get_device_group_path (DeviceGroup dev) {
+            return BASE_DIR + DEVICE_GROUPS_DIR_KEY +
+                DEVICE_GROUP_DIR_NAME.printf (dev.Id);
         }
     
     }

@@ -25,17 +25,17 @@ class DVBManagerClient:
         objpath, scanner_iface = self.manager.GetScannerForDevice (adapter, frontend)
         return DVBScannerClient(objpath, scanner_iface)
         
-    def get_recorders(self):
-        return self.manager.GetRecorders()
+    def get_registered_device_groups(self):
+        return self.manager.GetRegisteredDeviceGroups()
         
-    def get_registered_devices(self):
-        return self.manager.GetRegisteredDevices()
+    def get_recorder(self, group_id):
+        return self.manager.GetRecorder(group_id)
         
-    def get_recorder(self, adapter, frontend):
-        self.manager.GetRecorder(adapter, frontend)
+    def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir):
+        return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir)
         
-    def register_device (self, adapter, frontend, channels_file, recordings_dir):
-        self.manager.RegisterDevice(adapter, frontend, channels_file, recordings_dir)
+    def add_device_to_existing_group (self, adapter, frontend, channels_file, recordings_dir, group_id):
+        return self.manager.AddDeviceToExistingGroup(adapter, frontend, channels_file, recordings_dir, group_id)
         
 class DVBScannerClient(gobject.GObject):
 
@@ -220,36 +220,35 @@ if __name__ == '__main__':
     a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
 
     manager = DVBManagerClient ()
-    manager.register_device (0, 0, channelsfile, recdir)
-    #print manager.get_registered_devices()
-    recorder_paths = manager.get_recorders()
-    print recorder_paths
+    manager.add_device_to_new_group (0, 0, channelsfile, recdir)
+    dev_groups = manager.get_registered_device_groups()
     
-    for path in recorder_paths:
+    for group_id in dev_groups:
+        path = "/org/gnome/DVB/Recorder/%d" % group_id
         rec = DVBRecorderClient(path)
         timers = rec.get_timers()
         print timers
         for tid in timers:
-            print rec.get_start_time(tid)
-            print rec.get_end_time(tid)
-            print rec.get_duration(tid)
+            print "Start", rec.get_start_time(tid)
+            print "End", rec.get_end_time(tid)
+            print "Duration", rec.get_duration(tid)
             
         print rec.get_active_timer()
         
         print rec.add_timer(32, 2008, 7, 28, 23, 42, 2)
+            
+        channel_list_path = "/org/gnome/DVB/ChannelList/%d" % group_id
+        channellist = DVBChannelListClient(channel_list_path)
+        for channel_id in channellist.get_channels():
+            print "SID", channel_id
+            print "Name", channellist.get_channel_name(channel_id)
+            print "Network", channellist.get_channel_network(channel_id)
         
     recstore = DVBRecordingsStoreClient()
     for rid in recstore.get_recordings():
-        print recstore.get_location(rid)
-        print recstore.get_start_time(rid)
+        print "Location", recstore.get_location(rid)
+        print "Start", recstore.get_start_time(rid)
         print recstore.get_start_timestamp(rid)
-        print recstore.get_length(rid)    
-        
-    channel_list_path = "/org/gnome/DVB/ChannelList/0/0"
-    channellist = DVBChannelListClient(channel_list_path)
-    for channel_id in channellist.get_channels():
-        print "SID", channel_id
-        print "Name", channellist.get_channel_name(channel_id)
-        print "Network", channellist.get_channel_network(channel_id)
+        print "Length", recstore.get_length(rid)    
     
     loop.run()

@@ -31,10 +31,10 @@ class RecorderWindow(gtk.Window):
         self.vbox.pack_start(recorders_ali, False)
         
         recorders_label = gtk.Label()
-        recorders_label.set_markup("<b>Choose recorder:</b>")
+        recorders_label.set_markup("<b>Choose device group:</b>")
         recorders_ali.add(recorders_label)
         
-        self.recorderslist = gtk.ListStore(str)
+        self.recorderslist = gtk.ListStore(int)
         
         self.recorderscombo = gtk.ComboBox(self.recorderslist)
         self.recorderscombo.connect("changed", self._on_recorderscombo_changed)
@@ -103,14 +103,15 @@ class RecorderWindow(gtk.Window):
         
         self.vbox.pack_start(self.buttonbox, False, False, 0)
         
-        self.get_recorders()
+        self.get_device_groups()
         
-    def get_recorders(self):
+    def get_device_groups(self):
         manager = gnomedvb.DVBManagerClient()
         
-        for path in manager.get_recorders():
-            self.recorderslist.append([path])
-            self.recorders[path] = gnomedvb.DVBRecorderClient(path)
+        for group_id in manager.get_registered_device_groups():
+            self.recorderslist.append([group_id])
+            path = "/org/gnome/DVB/Recorder/%d" % group_id
+            self.recorders[group_id] = gnomedvb.DVBRecorderClient(path)
             
     def get_timers(self, recorder_path):
         rec = self.recorders[recorder_path]
@@ -131,40 +132,38 @@ class RecorderWindow(gtk.Window):
     def _on_button_delete_clicked(self, button):
         model, aiter = self.timersview.get_selection().get_selected()
         if aiter != None:
-            rec = self.recorders[self._get_active_recorder_path()]
+            rec = self.recorders[self._get_active_device_group()]
             rec.delete_timer(model[aiter][self.COL_ID])
             model.remove(aiter)
         
     def _on_button_add_clicked(self, button):   
-        recorder_path = self._get_active_recorder_path()
+        device_group = self._get_active_device_group()
         
-        adapter, frontend = recorder_path.split("/")[-2:]
-        
-        d = TimerDialog(self, adapter, frontend)
+        d = TimerDialog(self, device_group)
         if (d.run() == gtk.RESPONSE_ACCEPT):
             
             duration = d.get_duration()
             start = d.get_start_time()
             channel = d.get_channel()
             
-            rec = gnomedvb.DVBRecorderClient(recorder_path)
+            rec = self.recorders[device_group]
             rec.add_timer (channel, start[0], start[1], start[2], start[3],
                 start[4], duration)
             
         d.destroy()
         
-    def _get_active_recorder_path(self):
+    def _get_active_device_group(self):
         aiter = self.recorderscombo.get_active_iter()
         return self.recorderslist[aiter][self.COL_PATH]
         
     def _on_recorderscombo_changed(self, combo):
-        self.get_timers(self._get_active_recorder_path())
+        self.get_timers(self._get_active_device_group())
         self.button_add.set_sensitive(True)
         
     def _on_recorder_changed(self, recorder, timer_id, typeid):
         if (typeid == 0):
             # Timer added
-            if recorder.get_path() == self._get_active_recorder_path():
+            if recorder.get_path().endswith(str(self._get_active_device_group())):
                 self._add_timer(recorder, timer_id)
         elif (typeid == 1):
             # Timer deleted
@@ -182,7 +181,7 @@ class RecorderWindow(gtk.Window):
 
 class TimerDialog(gtk.Dialog):
 
-    def __init__(self, parent, adapter, frontend):
+    def __init__(self, parent, device_group):
         gtk.Dialog.__init__(self, title="Timer", parent=parent,
                 flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
@@ -204,7 +203,7 @@ class TimerDialog(gtk.Dialog):
         table.attach(channel_ali, 1, 2, 0, 1)
         
         self.channels = gtk.ListStore(str, int)
-        self._add_channels(adapter, frontend)
+        self._add_channels(device_group)
         
         self.channelscombo = gtk.ComboBox(self.channels)
         
@@ -260,8 +259,8 @@ class TimerDialog(gtk.Dialog):
         
         table.show_all()
         
-    def _add_channels(self, adapter, frontend):
-        channel_list_path = "/org/gnome/DVB/ChannelList/%s/%s" % (adapter, frontend)
+    def _add_channels(self, device_group):
+        channel_list_path = "/org/gnome/DVB/ChannelList/%s" % device_group
         channellist = gnomedvb.DVBChannelListClient(channel_list_path)
         for channel_id in channellist.get_channels():
             name = channellist.get_channel_name(channel_id)

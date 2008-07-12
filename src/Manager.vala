@@ -8,18 +8,21 @@ namespace DVB {
 
         // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
-        // Maps object path to Recorder
-        private HashMap<string, Recorder> recorders;
-        // Maps object path to ChannelList
-        private HashMap<string, ChannelList> channellists;
-        // Maps device id to Device
-        private HashMap<uint, Device> devices;
+        // Maps device group id to Recorder
+        private HashMap<uint, Recorder> recorders;
+        // Maps device grou to ChannelList
+        private HashMap<uint, ChannelList> channellists;
+        // Maps device group id to Device
+        private HashMap<uint, DeviceGroup> devices;
+        
+        private uint device_group_counter;
         
         construct {
-            this.scanners = new HashMap<string, Scanner> (str_hash, str_equal, direct_equal);
-            this.recorders = new HashMap<string, Recorder> (str_hash, str_equal, direct_equal);
-            this.channellists = new HashMap<string, ChannelList> (str_hash, str_equal, direct_equal);
-            this.devices = new HashMap<uint, Device> ();
+            this.scanners = new HashMap<string, Scanner> ();
+            this.recorders = new HashMap<uint, Recorder> ();
+            this.channellists = new HashMap<uint, ChannelList> ();
+            this.devices = new HashMap<uint, DeviceGroup> ();
+            this.device_group_counter = 0;
         }
         
         /**
@@ -72,30 +75,14 @@ namespace DVB {
         }
         
         /**
-         * @returns: A list of Object path's to the recorders of all devices
-         */
-        public string[] GetRecorders () {
-            string[] recs = new string[this.recorders.size];
-            int i = 0;
-            foreach (string key in this.recorders.get_keys ()) {
-                recs[i] = key;
-                i++;
-            }
-            return recs;
-        }
-        
-        /**
          * @returns: adapter and frontend number for each registered device
          */
-        public uint[][] GetRegisteredDevices () {
+        public uint[] GetRegisteredDeviceGroups () {
             // FIXME initialize and set array correctly
-            uint[][] devs = new uint[this.devices.size][2];
+            uint[] devs = new uint[this.devices.size];
             int i = 0;
             foreach (uint key in this.devices.get_keys ()) {
-                Device dev = this.devices.get (key);
-                devs[i] = new uint[2];
-                devs[i][0] = dev.Adapter;
-                devs[i][1] = dev.Frontend;
+                devs[i] = key;
                 i++;
             }
             return devs;
@@ -109,15 +96,14 @@ namespace DVB {
          * Returns the object path to the device's recorder.
          * The device must be registered with RegisterDevice () first.
          */
-        public string GetRecorder (uint adapter, uint frontend) {
-            
-            string path = Constants.DBUS_RECORDER_PATH.printf (adapter, frontend);
-            
-            if (!this.recorders.contains (path)) {
-                debug ("Creating new Recorder for adapter %u, frontend %u",
-                    adapter, frontend);
+        public string GetRecorder (uint group_id) {
+            string path = Constants.DBUS_RECORDER_PATH.printf (group_id);
+        
+            if (!this.recorders.contains (group_id)) {
+                debug ("Creating new Recorder for group %u",
+                    group_id);
                 
-                Device device = this.get_device_if_exists (adapter, frontend);
+                DeviceGroup device = this.get_device_group_if_exists (group_id);
                 if (device == null) return "";
                 
                 Recorder recorder = new Recorder (device);
@@ -129,7 +115,7 @@ namespace DVB {
                     path,
                     recorder);
                     
-                this.recorders.set (path, recorder);
+                this.recorders.set (group_id, recorder);
             }
             
             return path;
@@ -144,29 +130,35 @@ namespace DVB {
          *
          * Register a new DVB device
          */
-        public bool RegisterDevice (uint adapter, uint frontend,
+        public bool AddDeviceToNewGroup (uint adapter, uint frontend,
             string channels_conf, string recordings_dir) {
-            // TODO Check if adapter and frontend exists
             
-            File channelsfile = File.new_for_path (channels_conf);
-            File recdir = File.new_for_path (recordings_dir);
+            Device device = this.create_device (adapter, frontend, channels_conf,
+                recordings_dir);
             
-            Device device = new Device (adapter, frontend);
-            device.RecordingsDirectory = recdir;
+            if (device == null) return false;
             
-            ChannelList channels;
-            try {
-                channels = DVB.ChannelList.restore_from_file (channelsfile, device.Type);
-            } catch (Error e) {
-                critical (e.message);
-                return false;
-            }
+            device_group_counter++;
             
-            device.Channels = channels;
-            
-            this.add_device (device);
+            this.add_device_group (
+                new DeviceGroup (device_group_counter, device));
             
             return true;
+        }
+        
+        public bool AddDeviceToExistingGroup (uint adapter, uint frontend,
+            string channels_conf, string recordings_dir, uint group_id) {
+            
+            if (this.devices.contains (group_id)) {
+                Device device = this.create_device (adapter, frontend, channels_conf,
+                    recordings_dir);
+                    
+                if (device == null) return false;
+                    
+                this.devices.get (group_id).add (device);
+                return true;
+            } else
+                return false;
         }
         
         /**
@@ -176,14 +168,14 @@ namespace DVB {
          *
          * The device must be registered with RegisterDevice () first.
          */
-        public string GetChannelList (uint adapter, uint frontend) {
-            string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (adapter, frontend);
-        
-            if (!this.channellists.contains (path)) {
-                debug ("Creating new ChannelList D-Bus service for adapter %u, frontend %u",
-                    adapter, frontend);
+        public string GetChannelList (uint group_id) {
+            string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (group_id);
+            
+            if (!this.channellists.contains (group_id)) {
+                debug ("Creating new ChannelList D-Bus service for group %u",
+                    group_id);
                 
-                Device device = this.get_device_if_exists (adapter, frontend);
+                DeviceGroup device = this.get_device_group_if_exists (group_id);
                 if (device == null) return "";
                 
                 ChannelList channels = device.Channels;
@@ -195,7 +187,7 @@ namespace DVB {
                     path,
                     channels);
                     
-                this.channellists.set (path, channels);
+                this.channellists.set (group_id, channels);
             }
             
             return path;
@@ -207,29 +199,51 @@ namespace DVB {
          * Register device, create Recorder and ChannelList D-Bus service
          */
         [DBus (visible = false)]
-        public bool add_device (Device device) {
-            this.devices.set (Device.hash (device), device);
-            string rec_path = this.GetRecorder (device.Adapter,
-                    device.Frontend);
+        public bool add_device_group (DeviceGroup device) {
+            this.devices.set (device.Id, device);
+            string rec_path = this.GetRecorder (device.Id);
             if (rec_path == "") return false;
             
-            string channels_path = this.GetChannelList (device.Adapter,
-                    device.Frontend);
+            string channels_path = this.GetChannelList (device.Id);
             if (channels_path == "") return false;
             
-            GConfStore.get_instance ().add_device (device);
+            GConfStore.get_instance ().add_device_group (device);
+            
+            if (device.Id > device_group_counter)
+                device_group_counter = device.Id;
             
             return true;
         }
         
         [DBus (visible = false)]
-        public Recorder? get_recorder_for_device (Device device) {
-            string path = Constants.DBUS_RECORDER_PATH.printf (device.Adapter,
-                device.Frontend);
-            if (this.recorders.contains (path))
-                return this.recorders.get (path);
+        public Recorder? get_recorder_for_device_group (DeviceGroup device) {
+            uint id = device.Id;
+            if (this.recorders.contains (id))
+                return this.recorders.get (id);
             else
                 return null;
+        }
+        
+        private static Device? create_device (uint adapter, uint frontend,
+                string channels_conf, string recordings_dir) {
+            // TODO Check if adapter and frontend exists
+            File channelsfile = File.new_for_path (channels_conf);
+            File recdir = File.new_for_path (recordings_dir);
+            
+            Device device = new Device (adapter, frontend);
+            device.RecordingsDirectory = recdir;
+            
+            ChannelList channels;
+            try {
+                channels = DVB.ChannelList.restore_from_file (channelsfile, device.Type);
+            } catch (Error e) {
+                critical (e.message);
+                return null;
+            }
+            
+            device.Channels = channels;
+            
+            return device;
         }
         
         private static DBus.Connection? get_dbus_connection () {
@@ -243,15 +257,11 @@ namespace DVB {
             return conn;
         }
         
-        private Device? get_device_if_exists (uint adapter, uint frontend) {
-            uint id = Device.hash_without_device (adapter, frontend);
-            if (this.devices.contains (id))
-                return this.devices.get (id);
-            else {
-                message ("No device with adapter %u and frontend %u",
-                    adapter, frontend);
+        private DeviceGroup? get_device_group_if_exists (uint group_id) {;
+            if (this.devices.contains (group_id))
+                return this.devices.get (group_id);
+            else
                 return null;
-            }
         }
         
     }
