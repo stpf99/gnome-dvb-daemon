@@ -5,11 +5,14 @@ public class Main {
     private static DVB.Manager manager;
     private static DVB.RecordingsStore recstore;
 
-    private static int debug_val;
+    private static bool has_debug;
+    private static bool has_version;
 
     const OptionEntry[] options =  {
-        { "debug", 'd', 0, OptionArg.NONE, out debug_val,
+        { "debug", 'd', 0, OptionArg.NONE, out has_debug,
 	    "Display debug statements on stdout", null},
+	    { "version", 0, 0, OptionArg.NONE, out has_version,
+	    "Display version number", null},
 	    { null }
     };
     
@@ -74,8 +77,15 @@ public class Main {
 	    try {
 	        context.parse (ref args);
 	    } catch (OptionError e) {
-	        stderr.printf ("Parsing options failed: %s", e.message);
-	        return -1;
+	        stderr.printf ("%s\n", e.message);
+			stderr.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+	        return 1;
+	    }
+	    
+	    if (has_version) {
+	    	stdout.printf (Config.PACKAGE_NAME);
+			stdout.printf (" %s\n", Config.PACKAGE_VERSION);
+	        return 0;
 	    }
         
         // Creating a GLib main loop with a default context
