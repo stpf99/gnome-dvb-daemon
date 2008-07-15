@@ -75,7 +75,7 @@ namespace DVB {
         }
         
         /**
-         * @returns: adapter and frontend number for each registered device
+         * @returns: Device groups' ID
          */
         public uint[] GetRegisteredDeviceGroups () {
             // FIXME initialize and set array correctly
@@ -89,12 +89,11 @@ namespace DVB {
         }
         
         /**
-         * @adapter: Number of the device's adapter
-         * @frontend: Number of the device's frontend
+         * @group_id: ID of device group
          * @returns: Object path of the device's recorder
          * 
          * Returns the object path to the device's recorder.
-         * The device must be registered with RegisterDevice () first.
+         * The device group must be registered with AddDeviceToNewGroup () first.
          */
         public string GetRecorder (uint group_id) {
             string path = Constants.DBUS_RECORDER_PATH.printf (group_id);
@@ -128,7 +127,10 @@ namespace DVB {
          * @recordings_dir: Path where the recordings should be stored
          * @returns: TRUE when the device has been registered successfully
          *
-         * Register a new DVB device
+         * Creates a new DeviceGroup and new DVB device whereas the
+         * DVB device is the reference device of this group (i.e.
+         * all other devices of this group will inherit the settings
+         * of the reference device).
          */
         public bool AddDeviceToNewGroup (uint adapter, uint frontend,
             string channels_conf, string recordings_dir) {
@@ -162,11 +164,10 @@ namespace DVB {
         }
         
         /**
-         * @adapter: Number of the device's adapter
-         * @frontend: Number of the device's frontend
+         * @group_id: ID of device group
          * @returns: Object path to the ChannelList service for this device
          *
-         * The device must be registered with RegisterDevice () first.
+         * The device group must be registered with AddDeviceToNewGroup () first.
          */
         public string GetChannelList (uint group_id) {
             string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (group_id);
