@@ -148,6 +148,18 @@ namespace DVB {
             return true;
         }
         
+        /**
+         * @adapter: Number of the device's adapter
+         * @frontend: Number of the device's frontend
+         * @channels_conf: Path to channels.conf for this device
+         * @recordings_dir: Path where the recordings should be stored
+         * @group_id: ID of device group
+         * @returns: TRUE when the device has been registered successfully
+         *
+         * Creates a new device and adds it to the specified DeviceGroup.
+         * The new device will inherit all settings from the group's
+         * reference device.
+         */
         public bool AddDeviceToExistingGroup (uint adapter, uint frontend,
             string channels_conf, string recordings_dir, uint group_id) {
             
@@ -161,6 +173,46 @@ namespace DVB {
                 return true;
             } else
                 return false;
+        }
+        
+        /**
+         * @adapter: Number of the device's adapter
+         * @frontend: Number of the device's frontend
+         * @group_id: ID of device group
+         * @returns: TRUE when device has been removed successfully
+         *
+         * Removes the device from the specified group.
+         */
+        public bool RemoveDeviceFromGroup (uint adapter, uint frontend,
+                uint group_id) {
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                Device dev = new Device (adapter, frontend, false);
+                
+                if (devgroup.contains (dev)) {
+                    // TODO might not work, because we create a new device instance
+                    return devgroup.remove (dev);
+                }
+            }
+            
+            return false;
+        }
+        
+        /**
+         * @group_id: ID of device group
+         * @returns: TRUE when device has been removed successfully
+         *
+         * Deletes the specified group. The group must be empty.
+         */
+        public bool DeleteDeviceGroup (uint group_id) {
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                
+                if (devgroup.size == 0)
+                    return this.devices.remove (group_id);
+            }
+            
+            return false;
         }
         
         /**
