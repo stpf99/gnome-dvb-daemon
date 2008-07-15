@@ -5,7 +5,7 @@ namespace DVB {
 
     public class EPGScanner : GLib.Object {
     
-        public DVB.Device Device {get; set;}
+        public DVB.DeviceGroup DeviceGroup {get; set;}
         
         private static const int CHECK_EIT_INTERVAL = 120*60;
         // how long to wait for EIT data for each channel in seconds
@@ -21,8 +21,8 @@ namespace DVB {
         /**
          * @device: The device where EPG should be collected from
          */
-        public EPGScanner (DVB.Device device) {
-            this.Device = device;
+        public EPGScanner (DVB.DeviceGroup device) {
+            this.DeviceGroup = device;
         }
         
         /**
@@ -41,19 +41,22 @@ namespace DVB {
         public void start () {
             // TODO scan all channels?
             HashSet<uint> unique_frequencies = new HashSet<uint> ();
-            foreach (Channel c in this.Device.Channels) {
+            foreach (Channel c in this.DeviceGroup.Channels) {
                 uint freq = c.Frequency;
                 if (!unique_frequencies.contains (freq)) {
                     unique_frequencies.contains (freq);
                     this.channels.push_tail (c);
                 }
             }
+            
+            DVB.Device? device = this.DeviceGroup.get_next_free_device ();
+            if (device == null) return;
         
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
                 this.pipeline = Gst.parse_launch (
                     "dvbsrc name=dvbsrc adapter=%u frontend=%u ".printf(
-                    this.Device.Adapter, this.Device.Frontend)
+                    device.Adapter, device.Frontend)
                     + "pids=0:16:17:18 stats-reporting-interval=0 "
                     + "! mpegtsparse ! fakesink silent=true");
             } catch (Error e) {
@@ -178,7 +181,7 @@ namespace DVB {
                 }
                 
                 uint sid = get_uint_val (structure, "service-id");
-                Channel channel = this.Device.Channels.get (sid);
+                Channel channel = this.DeviceGroup.Channels.get (sid);
                 if (channel != null) {
                     debug (event_class.to_string ());
                     channel.Schedule.add (#event_class);
