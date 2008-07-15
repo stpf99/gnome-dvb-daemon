@@ -19,10 +19,10 @@ namespace DVB {
         public ChannelList Channels { get; set; }
         public File RecordingsDirectory { get; set; }
 
-        public Device (uint adapter, uint frontend) {
+        public Device (uint adapter, uint frontend, bool get_type=true) {
             this.Adapter = adapter;
             this.Frontend = frontend;
-            this.Type = getAdapterType(adapter);
+            this.Type = getAdapterType(adapter, get_type);
         }
 
         public static Device new_full (uint adapter, uint frontend,
@@ -83,7 +83,9 @@ namespace DVB {
             return busy_val;
         }
 
-        private static AdapterType getAdapterType (uint adapter) {
+        private static AdapterType getAdapterType (uint adapter, bool get_type) {
+            if (!get_type) return AdapterType.UNKNOWN;
+        
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
             dvbsrc.set ("adapter", adapter);
             
