@@ -37,6 +37,12 @@ class DVBManagerClient:
     def add_device_to_existing_group (self, adapter, frontend, channels_file, recordings_dir, group_id):
         return self.manager.AddDeviceToExistingGroup(adapter, frontend, channels_file, recordings_dir, group_id)
         
+    def remove_device_from_group(self, adapter, frontend, group_id):
+        return self.manager.RemoveDeviceFromGroup(adapter, frontend, group_id)
+        
+    def delete_device_group(group_id):
+        return self.manager.DeleteDeviceGroup(group_id)
+        
 class DVBScannerClient(gobject.GObject):
 
     __gsignals__ = {
