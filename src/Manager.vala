@@ -133,7 +133,7 @@ namespace DVB {
          * of the reference device).
          */
         public bool AddDeviceToNewGroup (uint adapter, uint frontend,
-            string channels_conf, string recordings_dir) {
+                string channels_conf, string recordings_dir) {
             
             Device device = this.create_device (adapter, frontend, channels_conf,
                 recordings_dir);
@@ -151,8 +151,6 @@ namespace DVB {
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
-         * @channels_conf: Path to channels.conf for this device
-         * @recordings_dir: Path where the recordings should be stored
          * @group_id: ID of device group
          * @returns: TRUE when the device has been registered successfully
          *
@@ -161,11 +159,10 @@ namespace DVB {
          * reference device.
          */
         public bool AddDeviceToExistingGroup (uint adapter, uint frontend,
-            string channels_conf, string recordings_dir, uint group_id) {
+                uint group_id) {
             
             if (this.devices.contains (group_id)) {
-                Device device = this.create_device (adapter, frontend, channels_conf,
-                    recordings_dir);
+                Device device = new Device (adapter, frontend);
                     
                 if (device == null) return false;
                     

@@ -34,8 +34,8 @@ class DVBManagerClient:
     def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir):
         return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir)
         
-    def add_device_to_existing_group (self, adapter, frontend, channels_file, recordings_dir, group_id):
-        return self.manager.AddDeviceToExistingGroup(adapter, frontend, channels_file, recordings_dir, group_id)
+    def add_device_to_existing_group (self, adapter, frontend, group_id):
+        return self.manager.AddDeviceToExistingGroup(adapter, frontend, group_id)
         
     def remove_device_from_group(self, adapter, frontend, group_id):
         return self.manager.RemoveDeviceFromGroup(adapter, frontend, group_id)
@@ -227,6 +227,7 @@ if __name__ == '__main__':
 
     manager = DVBManagerClient ()
     manager.add_device_to_new_group (0, 0, channelsfile, recdir)
+    manager.add_device_to_existing_group (1, 0, 1)
     dev_groups = manager.get_registered_device_groups()
     
     for group_id in dev_groups:
