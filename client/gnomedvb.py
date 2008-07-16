@@ -163,8 +163,8 @@ class DVBRecorderClient(gobject.GObject):
     def get_channel_name(self, tid):
         return self.recorder.GetChannelName(tid)
         
-    def get_active_timer(self):
-        return self.recorder.GetActiveTimer()
+    def get_active_timers(self):
+        return self.recorder.GetActiveTimers()
         
     def is_timer_active(self, tid):
         return self.recorder.IsTimerActive(tid)
@@ -240,7 +240,7 @@ if __name__ == '__main__':
             print "End", rec.get_end_time(tid)
             print "Duration", rec.get_duration(tid)
             
-        print rec.get_active_timer()
+        print rec.get_active_timers()
         
         print rec.add_timer(32, 2008, 7, 28, 23, 42, 2)
             

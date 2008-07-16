@@ -71,10 +71,9 @@ namespace DVB {
         public abstract string GetChannelName (uint32 timer_id);
         
         /**
-         * @returns: The currently active timer
-         * or 0 if there's no active timer
+         * @returns: The currently active timers
          */
-        public abstract uint32 GetActiveTimer ();
+        public abstract uint32[] GetActiveTimers ();
         
         /**
          * @timer_id: Timer's id
