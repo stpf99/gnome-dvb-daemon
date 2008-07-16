@@ -200,7 +200,7 @@ namespace DVB {
             }
         }
         
-        private void add_device_to_group (Device dev, DeviceGroup devgroup) {
+        public void add_device_to_group (Device dev, DeviceGroup devgroup) {
             string base_path = get_device_group_path (devgroup) + get_device_path (dev);
         
             try {

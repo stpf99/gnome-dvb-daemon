@@ -166,7 +166,15 @@ namespace DVB {
                     
                 if (device == null) return false;
                     
-                this.devices.get (group_id).add (device);
+                debug ("Adding device with adapter %u, frontend %u to group %u",
+                    adapter, frontend, group_id);
+                    
+                DeviceGroup devgroup = this.devices.get (group_id);
+                devgroup.add (device);
+                
+                GConfStore.get_instance ().add_device_to_group (device,
+                    devgroup);
+                
                 return true;
             } else
                 return false;
@@ -250,6 +258,8 @@ namespace DVB {
          */
         [DBus (visible = false)]
         public bool add_device_group (DeviceGroup device) {
+            debug ("Adding device group %u", device.Id);
+        
             this.devices.set (device.Id, device);
             string rec_path = this.GetRecorder (device.Id);
             if (rec_path == "") return false;
@@ -276,6 +286,10 @@ namespace DVB {
         
         private static Device? create_device (uint adapter, uint frontend,
                 string channels_conf, string recordings_dir) {
+            debug ("Creating device with adapter %d, frontend %d, channels %s"+
+                ", recordings dir %s", adapter, frontend, channels_conf,
+                recordings_dir);
+                
             // TODO Check if adapter and frontend exists
             File channelsfile = File.new_for_path (channels_conf);
             File recdir = File.new_for_path (recordings_dir);
