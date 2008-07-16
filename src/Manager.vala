@@ -140,6 +140,9 @@ namespace DVB {
             
             if (device == null) return false;
             
+            // Check if device is already assigned to other group
+            if (this.device_is_in_any_group (device)) return false;
+            
             device_group_counter++;
             
             this.add_device_group (
@@ -165,6 +168,8 @@ namespace DVB {
                 Device device = new Device (adapter, frontend);
                     
                 if (device == null) return false;
+                
+                if (this.device_is_in_any_group (device)) return false;
                     
                 debug ("Adding device with adapter %u, frontend %u to group %u",
                     adapter, frontend, group_id);
@@ -286,10 +291,6 @@ namespace DVB {
         
         private static Device? create_device (uint adapter, uint frontend,
                 string channels_conf, string recordings_dir) {
-            debug ("Creating device with adapter %d, frontend %d, channels %s"+
-                ", recordings dir %s", adapter, frontend, channels_conf,
-                recordings_dir);
-                
             // TODO Check if adapter and frontend exists
             File channelsfile = File.new_for_path (channels_conf);
             File recdir = File.new_for_path (recordings_dir);
@@ -326,6 +327,14 @@ namespace DVB {
                 return this.devices.get (group_id);
             else
                 return null;
+        }
+        
+        private bool device_is_in_any_group (Device device) {
+            foreach (uint group_id in this.devices.get_keys ()) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                if (devgroup.contains (device)) return true;
+            }
+            return false;
         }
         
     }
