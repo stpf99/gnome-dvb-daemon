@@ -263,7 +263,8 @@ namespace DVB {
          */
         [DBus (visible = false)]
         public bool add_device_group (DeviceGroup device) {
-            debug ("Adding device group %u", device.Id);
+            debug ("Adding device group %u with %d devices", device.Id,
+                device.size);
         
             this.devices.set (device.Id, device);
             string rec_path = this.GetRecorder (device.Id);
