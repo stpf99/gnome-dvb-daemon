@@ -4,150 +4,168 @@ using Gee;
 
 namespace DVB {
 
+    /**
+     * This class does the actual recording for a single device.
+     * It record more than one channel, if the channels are part
+     * of the same transport stream
+     */
     public class RecordingThread : GLib.Object {
     
-        public Timer active_timer {get; construct;}
-        public Device device {get; construct;}
+        private static const string DVBBASEBIN_NAME = "dvbbasebin";
         
-        protected Element? pipeline;
-        protected Recording active_recording;
-        
-        public signal void recording_stopped (Recording rec);
+        public signal void recording_stopped (Timer timer, string location);
+        public signal void recording_aborted ();
     
-        public RecordingThread (Timer timer, Device device) {
-            this.active_timer = timer;
+        public Device device {get; construct;}
+        public uint count {
+            get { return this.recordings; }
+        }
+        
+        private Element? pipeline;
+        private string? sid;
+        private uint recordings;
+    
+        construct {
+            this.recordings = 0;
+        }
+    
+        public RecordingThread (Device device) {
             this.device = device;
         }
         
-        protected void reset () {
-            if (this.pipeline != null)
+        private void reset () {
+            if (this.pipeline != null) {
+                debug ("Stopping pipeline");
                 this.pipeline.set_state (State.NULL);
+            }
             this.pipeline = null;
         }
         
-        public void stop_current_recording () {
-            this.active_recording.Length = Utils.difftime (Time.local (time_t ()),
-                this.active_recording.StartTime);
-        
-            debug ("Stopping recording of channel %u after %lli seconds",
-                this.active_recording.ChannelSid, this.active_recording.Length);
+        public void stop_recording (Timer timer) {
+            string sink_name = "sink_%u".printf (timer.ChannelSid);
+            Element sink = ((Bin) this.pipeline).get_by_name (sink_name);
+            string location;
+            sink.get ("location", out location);
             
-            try {
-                this.active_recording.save_to_disk ();
-            } catch (Error e) {
-                critical ("Could not save recording: %s", e.message);
-            }
+            if (this.recordings == 1) {
+                // No more active recordings
+                this.reset ();
+            } else {
+                // Still have other recordings,
+                // just remove sid from program-numbers
             
-            RecordingsStore.get_instance().add (this.active_recording);
-            
-            this.recording_stopped (this.active_recording);
-            this.reset ();
-        }
-        
-        public void start_recording () {
-            debug ("Starting recording of channel %u",
-                this.active_timer.ChannelSid);
-        
-            Gst.Element dvbbasebin = ElementFactory.make ("dvbbasebin",
-                "dvbbasebin");
-            DVB.Channel channel = this.device.Channels.get (
-                this.active_timer.ChannelSid);
-            channel.setup_dvb_source (dvbbasebin);
-            
-            this.active_recording = new Recording ();
-            this.active_recording.Id = this.active_timer.Id;
-            this.active_recording.ChannelSid = this.active_timer.ChannelSid;
-            this.active_recording.StartTime =
-                this.active_timer.get_start_time_time ();
-            this.active_recording.Length = this.active_timer.Duration;
-            
-            if (!this.create_recording_dirs (channel)) return;
-            
-            this.pipeline = new Pipeline (
-                "recording_%u".printf(this.active_recording.ChannelSid));
-            
-            weak Gst.Bus bus = this.pipeline.get_bus();
-            bus.add_signal_watch();
-            bus.message += this.bus_watch_func;
+                Element dvbbasebin = ((Bin) this.pipeline).get_by_name (
+                    DVBBASEBIN_NAME);
+                if (dvbbasebin == null) {
+                    critical ("No element with name %s", DVBBASEBIN_NAME);
+                    return;
+                }
                 
-            dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
-            dvbbasebin.set ("program-numbers",
-                            this.active_recording.ChannelSid.to_string());
-            dvbbasebin.set ("adapter", this.device.Adapter);
-            dvbbasebin.set ("frontend", this.device.Frontend);
+                string programs;
+                dvbbasebin.get ("program-numbers", out programs);
+                string[] programs_arr = programs.split (":");
+                
+                string channel_sid_string = timer.ChannelSid.to_string ();
+                
+                SList<string> new_programs_list = new SList<string> ();
+                for (int i=0; i<programs_arr.length; i++) {
+                    string val = programs_arr[i];
+                    if (val != channel_sid_string)
+                        new_programs_list.prepend (val);
+                }
+                
+                StringBuilder new_programs = new StringBuilder (new_programs_list.nth_data (0));
+                for (int i=1; i<new_programs_list.length (); i++) {
+                    new_programs.append (":" + new_programs_list.nth_data (i));
+                }
+                
+                dvbbasebin.set ("program-numbers", new_programs.str);
+            }
+            this.recordings--;
             
-            Element filesink = ElementFactory.make ("filesink", "sink");
-            filesink.set ("location",
-                this.active_recording.Location.get_path ());
-            // don't use add_many because of problems with ownership transfer
-            ((Bin) this.pipeline).add (dvbbasebin);
-            ((Bin) this.pipeline).add (filesink);
-            
-            this.pipeline.set_state (State.PLAYING);
+            this.recording_stopped (timer, location);
         }
         
-        /**
-         * Create directories and set location of recording
-         *
-         * @returns: TRUE on success
-         */
-        private bool create_recording_dirs (Channel channel) {
-            Recording rec = this.active_recording;
-            uint[] start = rec.get_start ();
+        public void start_recording (Timer timer, File location) {
+            uint channel_sid = timer.ChannelSid;
+            this.sid = channel_sid.to_string ();
+            string sink_name = "sink_%u".printf (channel_sid);
+        
+            debug ("Starting recording of channel %u",
+                channel_sid);
             
-            string channel_name = Utils.remove_nonalphanums (channel.Name);
-            string time = "%u-%u-%u_%u-%u".printf (start[0], start[1],
-                start[2], start[3], start[4]);
+            if (this.pipeline == null) {
+                // Setup new pipeline
             
-            File dir = this.device.RecordingsDirectory.get_child (
-                channel_name).get_child (time);
+                Gst.Element dvbbasebin = ElementFactory.make ("dvbbasebin",
+                    DVBBASEBIN_NAME);
+                DVB.Channel channel = this.device.Channels.get (
+                    channel_sid);
+                channel.setup_dvb_source (dvbbasebin);
+                
+                this.pipeline = new Pipeline ("recording");
+                
+                weak Gst.Bus bus = this.pipeline.get_bus();
+                bus.add_signal_watch();
+                bus.message += this.bus_watch_func;
+                    
+                dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
+                dvbbasebin.set ("program-numbers", this.sid);
+                dvbbasebin.set ("adapter", this.device.Adapter);
+                dvbbasebin.set ("frontend", this.device.Frontend);
+                
+                // don't use add_many because of problems with ownership transfer    
+                ((Bin) this.pipeline).add (dvbbasebin);
+                
+                if (this.add_new_filesink (sink_name, location.get_path ())) {
+                    debug ("Starting pipeline");
+                    this.pipeline.set_state (State.PLAYING);
+                }
+            } else {
+                // Use current pipeline and add new filesink
             
-            if (!dir.query_exists (null)) {
-                try {
-                    Utils.mkdirs (dir);
-                } catch (Error e) {
-                    error (e.message);
-                    return false;
+                Element dvbbasebin = ((Bin) this.pipeline).get_by_name (DVBBASEBIN_NAME);
+                if (dvbbasebin == null) {
+                    critical ("No element with name %s", DVBBASEBIN_NAME);
+                    return;
+                }
+                
+                if (this.add_new_filesink (sink_name, location.get_path ())) {
+                    string programs;
+                    dvbbasebin.get ("program-numbers", out programs);
+                    dvbbasebin.set ("program-numbers", "%s:%s".printf (programs, this.sid) );
                 }
             }
-            
-            string attributes = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
-                                                FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
-            FileInfo info;
-            try {
-                info = dir.query_info (attributes, 0, null);
-            } catch (Error e) {
-                critical (e.message);
+        }
+        
+        private bool add_new_filesink (string sink_name, string location) {
+            Element filesink = ElementFactory.make ("filesink", sink_name);
+            filesink.set ("location", location);
+            if (!((Bin) this.pipeline).add (filesink)) {
+                critical ("Could not add filesink sink %s", sink_name);
                 return false;
             }
-            
-            if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
-                != FileType.DIRECTORY) {
-                critical ("%s is not a directory", dir.get_path ());
-                return false;
-            }
-            
-            if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
-                critical ("Cannot write to %s", dir.get_path ());
-                return false;
-            }
-            
-            this.active_recording.Location = dir.get_child ("001.ts");
-            
             return true;
         }
         
         private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
             debug ("Pad %s added", pad.get_name());
-        
-            string sid = this.active_recording.ChannelSid.to_string();
-            string program = "program_%s".printf(sid);
+            
+            string program = "program_" + this.sid;
             if (pad.get_name() == program) {
-                Element sink = ((Bin) this.pipeline).get_by_name ("sink");
-                Pad sinkpad = sink.get_pad ("sink");
-                
-                pad.link (sinkpad);
+                string sink_name = "sink_" + this.sid;
+                Element sink = ((Bin) this.pipeline).get_by_name (sink_name);
+                if (sink == null) {
+                    critical ("No element with name %s", sink_name);
+                } else {
+                    Pad sinkpad = sink.get_pad ("sink");
+                    
+                    pad.link (sinkpad);
+                    this.recordings++;
+                }
             }
+            
+            this.sid = null;
         }
         
         private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
@@ -155,7 +173,8 @@ namespace DVB {
                 case Gst.MessageType.ELEMENT:
                     if (message.structure.get_name() == "dvb-read-failure") {
                         critical ("Could not read from DVB device");
-                        this.stop_current_recording ();
+                        this.reset ();
+                        this.recording_aborted ();
                     }
                 break;
                 
@@ -167,7 +186,8 @@ namespace DVB {
                     critical (gerror.message);
                     critical (debug_text);
                         
-                    this.stop_current_recording ();
+                    this.reset ();
+                    this.recording_aborted ();
                 break;
                 
                 default:
@@ -179,22 +199,24 @@ namespace DVB {
 
     /**
      * This class is responsible for managing upcoming recordings and
-     * already recorded items for a single device
+     * already recorded items for a single group of devices
      */
     public class Recorder : GLib.Object, IDBusRecorder {
     
         /* Set in constructor of sub-classes */
         public DVB.DeviceGroup DeviceGroup { get; construct; }
         
-        // Map timer id to recording thread
-        protected Map<uint32, RecordingThread> active_recordings;
+        protected Map<Timer, RecordingThread> active_recording_threads;
+        // Maps timer id to timer
+        protected Map<uint32, Timer> active_timers;
         
         private bool have_check_timers_timeout;
         private HashMap<uint32, Timer> timers;
         private static const int CHECK_TIMERS_INTERVAL = 5;
         
         construct {
-            this.active_recordings = new HashMap<uint32, RecordingThread> ();
+            this.active_recording_threads = new HashMap<Timer, RecordingThread> ();
+            this.active_timers = new HashMap<uint32, Timer> ();
             this.timers = new HashMap<uint, Timer> ();
             this.have_check_timers_timeout = false;
             RecordingsStore.get_instance ().restore_from_dir (
@@ -294,8 +316,8 @@ namespace DVB {
          */
         public bool DeleteTimer (uint32 timer_id) {
             if (this.IsTimerActive (timer_id)) {
-                this.stop_recording (
-                    this.active_recordings.get(timer_id));
+                Timer timer = this.active_timers.get (timer_id);
+                this.stop_recording (timer);
                 return true;
             }
             
@@ -398,13 +420,12 @@ namespace DVB {
          * @returns: The currently active timers
          */
         public uint32[] GetActiveTimers () {
-            uint32[] val = new uint32[this.active_recordings.size];
+            uint32[] val = new uint32[this.active_timers.size];
             
             int i=0;
-            foreach (uint32 timer_id in this.active_recordings.get_keys ()) {
-                RecordingThread recthread =
-                    this.active_recordings.get (timer_id);
-                val[i] = recthread.active_timer.Id;
+            foreach (uint32 timer_id in this.active_timers.get_keys ()) {
+                Timer timer = this.active_timers.get (timer_id);
+                val[i] = timer.Id;
                 i++;
             }
             return val;
@@ -415,8 +436,7 @@ namespace DVB {
          * @returns: TRUE if timer is currently active
          */
         public bool IsTimerActive (uint32 timer_id) {
-
-            return this.active_recordings.contains (timer_id);
+            return this.active_timers.contains (timer_id);
         }
         
         /**
@@ -438,41 +458,127 @@ namespace DVB {
             return val;
         }
         
+        /**
+         * Start recording of specified timer
+         */
         protected void start_recording (Timer timer) {
-            DVB.Device? free_device = this.DeviceGroup.get_next_free_device ();
-            if (free_device == null) {
-                critical ("All devices are busy");
-                return;
+            Channel channel = this.DeviceGroup.Channels.get (timer.ChannelSid);
+            
+            File? location = this.create_recording_dirs (channel,
+                timer.get_start_time ());
+            if (location == null) return;
+            
+            bool create_new_thread = true;
+            RecordingThread recthread;
+            // Check if there's already an active recording on the
+            // same transport stream
+            foreach (uint32 timer_id in this.active_timers.get_keys ()) {
+                Timer other_timer = this.active_timers.get (timer_id);
+                Channel other_channel =
+                    this.DeviceGroup.Channels.get (timer.ChannelSid);
+                // FIXME
+                if (other_channel.Frequency == channel.Frequency) {
+                    debug ("Using already active RecordingThread");
+                    recthread = this.active_recording_threads.get (other_timer);
+                    create_new_thread = false;
+                }
             }
         
-            RecordingThread recthread = new RecordingThread (timer, free_device);
-            recthread.recording_stopped += on_recording_stopped;
-            recthread.start_recording ();
+            if (create_new_thread) {
+                debug ("Creating new RecordingThread");
+                
+                DVB.Device? free_device = this.DeviceGroup.get_next_free_device ();
+                if (free_device == null) {
+                    critical ("All devices are busy");
+                    return;
+                }
+                
+                recthread = new RecordingThread (free_device);
+                recthread.recording_stopped += this.on_recording_stopped;
+                // FIXME
+                //recthread.recording_aborted += this.on_recording_aborted;
+            }
+            recthread.start_recording (timer, location);
             
-            this.active_recordings.set (timer.Id, recthread);
+            this.active_timers.set (timer.Id, timer);
+            this.active_recording_threads.set (timer, recthread);
             
             this.recording_started (timer.Id);
         }
         
-        protected void stop_recording (RecordingThread recthread) {
-            recthread.stop_current_recording ();
+        /**
+         * Stop recording of specified timer
+         */
+        protected void stop_recording (Timer timer) {
+            RecordingThread recthread =
+                this.active_recording_threads.get (timer);
+           
+            recthread.stop_recording (timer);
+        }
+        
+        /**
+         * @returns: File on success, NULL otherwise
+         * 
+         * Create directories and set location of recording
+         */
+        private File? create_recording_dirs (Channel channel, uint[] start) {
+            string channel_name = Utils.remove_nonalphanums (channel.Name);
+            string time = "%u-%u-%u_%u-%u".printf (start[0], start[1],
+                start[2], start[3], start[4]);
+            
+            File dir = this.DeviceGroup.RecordingsDirectory.get_child (
+                channel_name).get_child (time);
+            
+            if (!dir.query_exists (null)) {
+                try {
+                    Utils.mkdirs (dir);
+                } catch (Error e) {
+                    error (e.message);
+                    return null;
+                }
+            }
+            
+            string attributes = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
+                                                FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
+            FileInfo info;
+            try {
+                info = dir.query_info (attributes, 0, null);
+            } catch (Error e) {
+                critical (e.message);
+                return null;
+            }
+            
+            if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
+                != FileType.DIRECTORY) {
+                critical ("%s is not a directory", dir.get_path ());
+                return null;
+            }
+            
+            if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+                critical ("Cannot write to %s", dir.get_path ());
+                return null;
+            }
+            
+            return dir.get_child ("001.ts");
         }
         
         private bool check_timers () {
             debug ("Checking timers");
             
-            SList<RecordingThread> ended_recordings =
-                new SList<RecordingThread> ();
-            foreach (uint32 timer_id in this.active_recordings.get_keys ()) {
-                RecordingThread recthread =
-                    this.active_recordings.get (timer_id);
-                Timer timer = recthread.active_timer;
-                if (timer.is_end_due())
-                    ended_recordings.prepend (recthread);
+            SList<uint32> ended_recordings =
+                new SList<uint32> ();
+            foreach (uint32 timer_id in this.active_timers.get_keys ()) {
+                Timer timer =
+                    this.active_timers.get (timer_id);
+                if (timer.is_end_due()) {
+                    this.stop_recording (timer);
+                    ended_recordings.prepend (timer_id);
+                }
             }
             
+            // Delete timers of recordings that have ended
             for (int i=0; i<ended_recordings.length(); i++) {
-                this.stop_recording (ended_recordings.nth_data (i));
+                this.active_timers.remove (ended_recordings.nth_data (i));
             }
             
             bool val;
@@ -504,7 +610,7 @@ namespace DVB {
                     this.timers.remove (removeable_items.nth_data (i));
                 }
                 
-                if (this.timers.size == 0 && this.active_recordings.size == 0) {
+                if (this.timers.size == 0 && this.active_timers.size == 0) {
                     // We don't have any timers and no recording is in progress
                     debug ("No timers left and no recording in progress");
                     this.have_check_timers_timeout = false;
@@ -513,7 +619,7 @@ namespace DVB {
                     // We still have timers
                     debug ("%d timers and %d active recordings left",
                         this.timers.size,
-                        this.active_recordings.size);
+                        this.active_timers.size);
                     val = true;
                 }
                 
@@ -521,12 +627,35 @@ namespace DVB {
             return val;
         }
         
+        /**
+         * Add recording to RecordinsStore and let the world now
+         */
         private void on_recording_stopped (RecordingThread recthread,
-                Recording recording) {
-            this.recording_finished (recording.Id);
-            this.active_recordings.remove (recthread.active_timer.Id);
-        }
+                Timer timer, string location) {
+            Recording recording = new Recording ();
+            recording.Id = timer.Id;
+            recording.ChannelSid = timer.ChannelSid;
+            recording.StartTime =
+                timer.get_start_time_time ();
+            recording.Length = Utils.difftime (Time.local (time_t ()),
+                recording.StartTime);
+            recording.Location = File.new_for_path (location);
         
+            debug ("Stopping recording of channel %u after %lli seconds",
+                timer.ChannelSid, recording.Length);
+            
+            try {
+                recording.save_to_disk ();
+            } catch (Error e) {
+                critical ("Could not save recording: %s", e.message);
+            }
+            
+            RecordingsStore.get_instance().add (recording);
+            
+            this.active_recording_threads.remove (timer);
+            
+            this.recording_finished (recording.Id);
+        }
     }
 
 }
