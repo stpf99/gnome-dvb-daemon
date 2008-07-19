@@ -3,6 +3,7 @@ NULL =
 AUTOMAKE_OPTIONS = subdir-objects
 
 SUBDIRS = \
+	client \
 	data \
 	po \
 	$(NULL)

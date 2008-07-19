@@ -12,6 +12,8 @@ AC_PROG_LIBTOOL
 AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
 
+AM_PATH_PYTHON
+
 AH_TEMPLATE([GETTEXT_PACKAGE], [dvb-daemon])
 GETTEXT_PACKAGE=dvb-daemon
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
@@ -53,9 +55,13 @@ DBUS_SERVICES_DIR="$expanded_datadir/dbus-1/services"
 AC_SUBST(DBUS_SERVICES_DIR)
 AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR", [DBus services directory])
 
+AS_AC_EXPAND(PYTHONDIR, $pythondir)
+AC_SUBST(PYTHONDIR)
+
 AC_CONFIG_FILES([
-    Makefile
-    data/Makefile
+	Makefile
+	client/Makefile
+	data/Makefile
 	po/Makefile.in])
 
 AC_OUTPUT
@@ -67,4 +73,5 @@ $PACKAGE_NAME $PACKAGE_VERSION
     Datadir:                      ${expanded_datadir}
     Libdir:                       ${expanded_libdir}
     D-Bus dir:                    ${DBUS_SERVICES_DIR}
+    Python dir:                   ${pythondir}
 "
