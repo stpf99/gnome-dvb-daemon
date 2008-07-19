@@ -1,0 +1,9 @@
+[RB Plugin]
+Loader=python
+Module=dvb-rhythm
+IAge=1
+_Name=DVB daemon
+_Description=A plugin to access DVB radio channels
+Authors=Sebastian Pölsterl <marduk@k-d-w.org>
+Copyright=Copyright © 2008 Sebastian Pölsterl
+Website=http://www.k-d-w.org/
