@@ -129,11 +129,12 @@ class DVBRecorderClient(gobject.GObject):
         "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
     }
 
-    def __init__(self, object_path):
+    def __init__(self, group_od):
         gobject.GObject.__init__(self)
         
         bus = dbus.SessionBus()
         # Get proxy object
+        object_path = "/org/gnome/DVB/Recorder/%d" % group_id
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.recorder = dbus.Interface(proxy, recorder_iface)
@@ -196,9 +197,10 @@ class DVBRecorderClient(gobject.GObject):
            
 class DVBChannelListClient:
 
-    def __init__(self, object_path):
+    def __init__(self, group_id):
         bus = dbus.SessionBus()
         # Get proxy object
+        object_path = "/org/gnome/DVB/ChannelList/%d" % group_id
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.channels = dbus.Interface(proxy, channel_list_iface)
@@ -247,8 +249,7 @@ if __name__ == '__main__':
     dev_groups = manager.get_registered_device_groups()
     
     for group_id in dev_groups:
-        path = "/org/gnome/DVB/Recorder/%d" % group_id
-        rec = DVBRecorderClient(path)
+        rec = DVBRecorderClient(group_id)
         timers = rec.get_timers()
         print timers
         for tid in timers:
@@ -260,8 +261,7 @@ if __name__ == '__main__':
         
         print rec.add_timer(32, 2008, 7, 28, 23, 42, 2)
             
-        channel_list_path = "/org/gnome/DVB/ChannelList/%d" % group_id
-        channellist = DVBChannelListClient(channel_list_path)
+        channellist = DVBChannelListClient(group_id)
         print "RADIO CHANNELS"
         for channel_id in channellist.get_radio_channels():
             print "SID", channel_id
