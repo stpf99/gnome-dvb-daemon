@@ -11,6 +11,9 @@ recstore_iface = "org.gnome.DVB.RecordingsStore"
 recstore_path = "/org/gnome/DVB/RecordingsStore"
 recorder_iface = "org.gnome.DVB.Recorder"
 channel_list_iface = "org.gnome.DVB.ChannelList"
+sat_scanner_iface = "org.gnome.DVB.Scanner.Satellite"
+cable_scanner_iface = "org.gnome.DVB.Scanner.Cable"
+terrestrial_scanner_iface = "org.gnome.DVB.Scanner.Terrestrial"
 
 class DVBManagerClient:
 
@@ -207,27 +210,40 @@ class DVBChannelListClient:
     def get_channels(self):
         return self.channels.GetChannels()
         
+    def get_radio_channels(self):
+        return self.channels.GetRadioChannels()
+        
+    def get_tv_channels(self):
+        return self.channels.GetTVChannels()
+        
     def get_channel_name(self, cid):
         return self.channels.GetChannelName(cid)
         
     def get_channel_network(self, cid):
         return self.channels.GetChannelNetwork(cid)
-           
+        
+    def is_radio_channel(self, cid):
+        return self.channels.IsRadioChannel(cid)
+        
 if __name__ == '__main__':
     loop = gobject.MainLoop()
     
     channelsfile = "/home/sebp/.gstreamer-0.10/dvb-channels.conf"
     #channelsfile = "/home/sebp/DVB/dvb-s-channels.conf"
     recdir = "/home/sebp/TV"
-        
-    pro7 = [690000000, 4, 0, 1, 0, 9, 3, 4]
-    rtl =  [578000000, 4, 0, 2, 0, 9, 3, 4]
-
-    a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
+    
+    #a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
 
     manager = DVBManagerClient ()
     manager.add_device_to_new_group (0, 0, channelsfile, recdir)
-    manager.add_device_to_existing_group (1, 0, 1)
+    #manager.add_device_to_existing_group (1, 0, 1)
+    
+    #pro7_sat = [12544000, "horizontal", 22000]
+    
+    #scanner = manager.get_scanner_for_device(0, 0)
+    #scanner.add_scanning_data(pro7_sat)
+    #scanner.run()
+    
     dev_groups = manager.get_registered_device_groups()
     
     for group_id in dev_groups:
@@ -246,7 +262,14 @@ if __name__ == '__main__':
             
         channel_list_path = "/org/gnome/DVB/ChannelList/%d" % group_id
         channellist = DVBChannelListClient(channel_list_path)
-        for channel_id in channellist.get_channels():
+        print "RADIO CHANNELS"
+        for channel_id in channellist.get_radio_channels():
+            print "SID", channel_id
+            print "Name", channellist.get_channel_name(channel_id)
+            print "Network", channellist.get_channel_network(channel_id)
+        print
+        print "TV CHANNELS"
+        for channel_id in channellist.get_tv_channels():
             print "SID", channel_id
             print "Name", channellist.get_channel_name(channel_id)
             print "Network", channellist.get_channel_network(channel_id)

@@ -72,13 +72,57 @@ namespace DVB {
          * @returns: List of channel IDs aka SIDs
          */
         public uint[] GetChannels () {
-            uint[] ids = new uint32[this.size];
+            uint[] ids = new uint[this.size];
             int i=0;
             lock (this.channels) {
                 foreach (uint id in this.channels.get_keys ()) {
                     ids[i] = id;
                     i++;
                 }
+            }
+            
+            return ids;
+        }
+        
+        /**
+         * @returns: List of channel IDs aka SIDs of radio channels
+         */
+        public uint[] GetRadioChannels () {
+            SList<uint> radio_channels = new SList<uint> ();
+            lock (this.channels) {
+                foreach (uint id in this.channels.get_keys ()) {
+                    Channel chan = this.channels.get (id);
+                    if (chan.VideoPID == 0)
+                        radio_channels.prepend (id);
+                }
+            }
+            radio_channels.reverse ();
+            
+            uint[] ids = new uint[radio_channels.length ()];
+            for (int i=0; i<radio_channels.length (); i++) {
+                ids[i] = radio_channels.nth_data (i);
+            }
+            
+            return ids;
+        }
+        
+        /**
+         * @returns: List of channel IDs aka SIDs of TV channels
+         */
+        public uint[] GetTVChannels () {
+            SList<uint> video_channels = new SList<uint> ();
+            lock (this.channels) {
+                foreach (uint id in this.channels.get_keys ()) {
+                    Channel chan = this.channels.get (id);
+                    if (chan.VideoPID != 0)
+                        video_channels.prepend (id);
+                }
+            }
+            video_channels.reverse ();
+            
+            uint[] ids = new uint[video_channels.length ()];
+            for (int i=0; i<video_channels.length (); i++) {
+                ids[i] = video_channels.nth_data (i);
             }
             
             return ids;
@@ -116,6 +160,20 @@ namespace DVB {
             return val;
         }
         
+        /**
+         * @channel_id: ID of channel
+         * @returns: Whether the channel is a radio channel or not
+         */
+        public bool IsRadioChannel (uint channel_id) {
+            bool val = false;
+            lock (this.channels) {
+                if (this.channels.contains (channel_id)) {
+                    val = (this.channels.get (channel_id).VideoPID == 0);   
+                }
+            }
+            
+            return val;
+        }
     }
 
 }
