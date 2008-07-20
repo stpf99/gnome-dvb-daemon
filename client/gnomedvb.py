@@ -3,6 +3,7 @@
 import dbus
 import dbus.glib
 import gobject
+import gst
 
 service = "org.gnome.DVB"
 manager_iface = "org.gnome.DVB.Manager"
@@ -14,6 +15,25 @@ channel_list_iface = "org.gnome.DVB.ChannelList"
 sat_scanner_iface = "org.gnome.DVB.Scanner.Satellite"
 cable_scanner_iface = "org.gnome.DVB.Scanner.Cable"
 terrestrial_scanner_iface = "org.gnome.DVB.Scanner.Terrestrial"
+
+def get_adapter_type(adapter):
+    dvbelement = gst.element_factory_make ("dvbsrc", "test_dvbsrc")
+    dvbelement.set_property("adapter", int(adapter))
+    pipeline = gst.Pipeline("")
+    pipeline.add(dvbelement)
+    pipeline.set_state(gst.STATE_READY)
+    pipeline.get_state()
+    bus = pipeline.get_bus()
+    adaptertype = None
+    while bus.have_pending():
+        msg = bus.pop()
+        if msg.type == gst.MESSAGE_ELEMENT and msg.src == dvbelement:
+            structure = msg.structure
+            if structure.get_name() == "dvb-adapter":
+                adaptertype = structure["type"]
+                break
+    pipeline.set_state(gst.STATE_NULL)
+    return adaptertype
 
 class DVBManagerClient:
 
