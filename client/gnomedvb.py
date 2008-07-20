@@ -149,12 +149,12 @@ class DVBRecorderClient(gobject.GObject):
         "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
     }
 
-    def __init__(self, group_od):
+    def __init__(self, group_id):
         gobject.GObject.__init__(self)
         
         bus = dbus.SessionBus()
         # Get proxy object
-        object_path = "/org/gnome/DVB/Recorder/%d" % group_id
+        object_path = "/org/gnome/DVB/Recorder/%s" % group_id
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.recorder = dbus.Interface(proxy, recorder_iface)
@@ -220,7 +220,7 @@ class DVBChannelListClient:
     def __init__(self, group_id):
         bus = dbus.SessionBus()
         # Get proxy object
-        object_path = "/org/gnome/DVB/ChannelList/%d" % group_id
+        object_path = "/org/gnome/DVB/ChannelList/%s" % group_id
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.channels = dbus.Interface(proxy, channel_list_iface)
