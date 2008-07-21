@@ -10,6 +10,8 @@ HAL_DEVICE_IFACE = "org.freedesktop.Hal.Device"
 HAL_MANAGER_PATH = "/org/freedesktop/Hal/Manager"
 HAL_SERVICE = "org.freedesktop.Hal"
 
+SUPPORTED_DVB_TYPES = ("DVB-C", "DVB-S", "DVB-T")
+
 class BasePage(gtk.VBox):
 
 	def __init__(self):
@@ -63,6 +65,13 @@ class AdaptersPage(BasePage):
 		
 		self.pack_start(scrolledview)
 		
+	def get_selected_device(self):
+		model, aiter = self.devicesview.get_selection().get_selected()
+		if aiter != None:
+			return None
+		else:
+			return model[aiter]
+		
 	def get_dvb_devices(self):
 		bus = dbus.SystemBus()
 		# Get proxy object
@@ -83,17 +92,23 @@ class AdaptersPage(BasePage):
 				adapter = int(match.group(1))
 				frontend = int(match.group(2))
 				adapter_type = gnomedvb.get_adapter_type(adapter)
-				self.deviceslist.append([dev_file, adapter_type, adapter, frontend])
+				if adapter_type in SUPPORTED_DVB_TYPES:
+					self.deviceslist.append([dev_file, adapter_type, adapter, frontend])
 
 class ChannelScanPage(BasePage):
 
-	def __init__(self, name):
+	def __init__(self):
 		BasePage.__init__(self)
 		
-		text = "Scanning for channels on device %s" % name
-		label = gtk.Label(text)
-		label.set_line_wrap(True)
-		self.pack_start(label)
+		self.label = gtk.Label()
+		self.label.set_line_wrap(True)
+		self.pack_start(self.label)
+		
+	def set_name(self, name):
+		self.label.set_text("Scanning for channels on device %s" % name)
+		
+	def start_scanning(self):
+		pass
 
 class SummaryPage(BasePage):
 
@@ -113,6 +128,7 @@ class SetupWizard(gtk.Assistant):
 		self.connect ('delete-event', self.confirm_quit)
 		self.connect ('cancel', self.confirm_quit)
 		self.connect ('close', self.confirm_quit)
+		self.connect ('prepare', self.on_prepare)
 		self.set_default_size(500, 400)
 		
 		intro_page = IntroPage()
@@ -130,7 +146,7 @@ class SetupWizard(gtk.Assistant):
 			self.on_device_selection_changed)
 		
 		# FIXME
-		scan_page = ChannelScanPage("test")
+		scan_page = ChannelScanPage()
 		self.append_page(scan_page)
 		self.set_page_title(scan_page, "Scanning for channels")
 		self.set_page_type(scan_page, gtk.ASSISTANT_PAGE_PROGRESS)
@@ -139,6 +155,12 @@ class SetupWizard(gtk.Assistant):
 		self.append_page(summary_page)
 		self.set_page_title(summary_page, "Setup finished")
 		self.set_page_type(summary_page, gtk.ASSISTANT_PAGE_SUMMARY)
+		
+	def on_prepare(self, assistant, page):
+		if isinstance(page, ChannelScanPage):
+			dev_data = self.adapters_page.get_selected_device()
+			if dev_data != None:
+				page.set_name(dev_data[0])
 		
 	def on_device_selection_changed(self, treeselection):
 		model, aiter = treeselection.get_selected()
@@ -160,7 +182,8 @@ class SetupWizard(gtk.Assistant):
 			gtk.main_quit()
 		elif response == gtk.RESPONSE_NO:
 			dialog.destroy()
-			return True
+		
+		return True
 		
 if __name__ == '__main__':
 	w = SetupWizard()
