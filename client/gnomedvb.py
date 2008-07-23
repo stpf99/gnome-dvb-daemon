@@ -16,7 +16,7 @@ sat_scanner_iface = "org.gnome.DVB.Scanner.Satellite"
 cable_scanner_iface = "org.gnome.DVB.Scanner.Cable"
 terrestrial_scanner_iface = "org.gnome.DVB.Scanner.Terrestrial"
 
-def get_adapter_type(adapter):
+def get_adapter_info(adapter):
     dvbelement = gst.element_factory_make ("dvbsrc", "test_dvbsrc")
     dvbelement.set_property("adapter", int(adapter))
     pipeline = gst.Pipeline("")
@@ -24,16 +24,17 @@ def get_adapter_type(adapter):
     pipeline.set_state(gst.STATE_READY)
     pipeline.get_state()
     bus = pipeline.get_bus()
-    adaptertype = None
+    info = {}
     while bus.have_pending():
         msg = bus.pop()
         if msg.type == gst.MESSAGE_ELEMENT and msg.src == dvbelement:
             structure = msg.structure
             if structure.get_name() == "dvb-adapter":
-                adaptertype = structure["type"]
+                info["type"] = structure["type"]
+                info["name"] = structure["name"]
                 break
     pipeline.set_state(gst.STATE_NULL)
-    return adaptertype
+    return info
 
 class DVBManagerClient:
 

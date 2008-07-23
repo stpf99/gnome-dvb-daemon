@@ -91,9 +91,9 @@ class AdaptersPage(BasePage):
 			if match != None:
 				adapter = int(match.group(1))
 				frontend = int(match.group(2))
-				adapter_type = gnomedvb.get_adapter_type(adapter)
-				if adapter_type in SUPPORTED_DVB_TYPES:
-					self.deviceslist.append([dev_file, adapter_type, adapter, frontend])
+				info = gnomedvb.get_adapter_info(adapter)
+				if info["type"] in SUPPORTED_DVB_TYPES:
+					self.deviceslist.append([info["name"], info["type"], adapter, frontend])
 
 class ChannelScanPage(BasePage):
 
