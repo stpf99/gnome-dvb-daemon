@@ -6,7 +6,6 @@ namespace DVB {
     /**
      * An abstract class responsible for scanning for new channels
      */
-    // [DBus (name = "org.gnome.DVB.Scanner")]
     public abstract class Scanner : GLib.Object {
 
         /**
@@ -16,15 +15,25 @@ namespace DVB {
         public signal void frequency_scanned (uint frequency);
         
         /**
+         * @frequency: Frequency of the channel
+         * @sid: SID of the channel
+         * @name: Name of the channel
+         * @network: Name of network the channel is part of
+         * @type: What type of channel this is (Radio or TV)
+         *
          * Emitted when a new channel has been found
          */
-        [DBus (visible = false)]
-        public signal void channel_added (Channel channel);
+        public signal void channel_added (uint frequency, uint sid,
+            string name, string network, string type);
         
         /**
          * Emitted when all frequencies have been scanned
          */
         public signal void finished ();
+        
+        public uint queue_size {
+            get { return this.frequencies.length; }
+        }
         
         /**
          * The DVB device the scanner should use
@@ -476,8 +485,10 @@ namespace DVB {
                             this.transport_streams.get (channel.TransportStreamId),
                             channel);
                         
-                        this.channel_added (this.Channels.get (sid));
-                        debug (this.Channels.get (sid).to_string ());
+                        string type = (channel.AudioPID == 0) ? "Radio" : "TV";
+                        this.channel_added (channel.Frequency, sid,
+                        channel.Name, channel.Network, type);
+                        debug (channel.to_string ());
                     } else
                         warning ("Could not find transport stream for channel %u",
                             sid);

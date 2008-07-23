@@ -5,7 +5,10 @@ namespace DVB {
     [DBus (name = "org.gnome.DVB.Scanner.Cable")]
     public interface IDBusCableScanner : GLib.Object {
     
+        public abstract signal void frequency_scanned (uint frequency);
         public abstract signal void finished ();
+        public abstract signal void channel_added (uint frequency, uint sid,
+            string name, string network, string type);
         
         public abstract void Run ();
         public abstract void Abort ();
