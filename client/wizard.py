@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import gtk
+import gobject
 import gnomedvb
 import dbus
 import re
@@ -97,6 +98,10 @@ class AdaptersPage(BasePage):
 
 class ChannelScanPage(BasePage):
 
+	__gsignals__ = {
+        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+    }
+
 	def __init__(self):
 		BasePage.__init__(self)
 		
@@ -104,11 +109,89 @@ class ChannelScanPage(BasePage):
 		self.label.set_line_wrap(True)
 		self.pack_start(self.label)
 		
+		self.channels = gtk.ListStore(str, int)
+		
+		self.channelsview = gtk.TreeView(self.channels)
+		
+		cell_name = gtk.CellRendererText()
+		col_name = gtk.TreeViewColumn("Name")
+		col_name.pack_start(cell_name)
+		col_name.add_attribute(cell_name, "markup", 0)
+		self.channelsview.append_column (col_name)
+		
+		cell_freq = gtk.CellRendererText()
+		col_freq = gtk.TreeViewColumn("Frequency")
+		col_freq.pack_start(cell_freq, False)
+		col_freq.add_attribute(cell_freq, "text", 1)
+		self.channelsview.append_column (col_freq)
+		
+		scrolledview = gtk.ScrolledWindow()
+		scrolledview.add(self.channelsview)
+		scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		self.pack_start(scrolledview)
+		
+		self.progressbar = gtk.ProgressBar()
+		self.pack_start(self.progressbar, False)
+		
 	def set_name(self, name):
 		self.label.set_text("Scanning for channels on device %s" % name)
 		
-	def start_scanning(self):
-		pass
+	def start_scanning(self, adapter, frontend):
+		manager = gnomedvb.DVBManagerClient()
+		
+		scanner = manager.get_scanner_for_device(adapter, frontend)
+		
+		# FIXME
+		a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
+		scanner.add_scanning_data(a)
+		
+		#scanner.connect ("frequency-scanned", self.__on_freq_scanned)
+		scanner.connect ("channel-added", self.__on_channel_added)
+		scanner.connect ("finished", self.__on_finished)
+		scanner.run()
+		
+		return scanner
+		
+	def __on_channel_added(self, scanner, freq, sid, name, network, channeltype):
+		self.channels.append([name, freq])
+		
+	def __on_finished(self, scanner):
+		self.emit("finished")
+		
+class SaveChannelListPage(BasePage):
+
+	__gsignals__ = {
+        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+    }
+
+	def __init__(self):
+		BasePage.__init__(self)
+		self.__scanner = None
+		
+		text = "Choose a location where you want to save the list of channels."
+		label = gtk.Label(text)
+		self.pack_start(label)
+
+		button_box = gtk.HButtonBox()
+		self.pack_start(button_box)
+	
+		save_button = gtk.Button(stock=gtk.STOCK_SAVE)
+		save_button.connect("clicked", self.__on_save_button_clicked)
+		button_box.pack_start(save_button)
+		
+	def set_scanner(self, scanner):
+		self.__scanner = scanner
+		
+	def __on_save_button_clicked(self, button):
+		filechooser = gtk.FileChooserDialog(action=gtk.FILE_CHOOSER_ACTION_SAVE,
+			buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+			gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+		filechooser.set_do_overwrite_confirmation(True)
+		if (filechooser.run() == gtk.RESPONSE_OK):
+			self.__scanner.write_channels_to_file(filechooser.get_filename())
+			self.emit("finished")
+		filechooser.destroy()
 
 class SummaryPage(BasePage):
 
@@ -124,6 +207,11 @@ class SetupWizard(gtk.Assistant):
 
 	def __init__(self):
 		gtk.Assistant.__init__(self)
+		self.__ask_on_exit = True
+		self.__device_name = None
+		self.__adapter = None
+		self.__frontend = None
+		self.__scanner = None
 		
 		self.connect ('delete-event', self.confirm_quit)
 		self.connect ('cancel', self.confirm_quit)
@@ -145,11 +233,17 @@ class SetupWizard(gtk.Assistant):
 		self.adapters_page.devicesview.get_selection().connect('changed',
 			self.on_device_selection_changed)
 		
-		# FIXME
 		scan_page = ChannelScanPage()
+		scan_page.connect("finished", self.on_scan_finished)
 		self.append_page(scan_page)
 		self.set_page_title(scan_page, "Scanning for channels")
 		self.set_page_type(scan_page, gtk.ASSISTANT_PAGE_PROGRESS)
+		
+		save_channels_page = SaveChannelListPage()
+		save_channels_page.connect("finished", self.on_scan_finished)
+		self.append_page(save_channels_page)
+		self.set_page_title(save_channels_page, "Save channels")
+		self.set_page_type(save_channels_page, gtk.ASSISTANT_PAGE_CONTENT)
 		
 		summary_page = SummaryPage()
 		self.append_page(summary_page)
@@ -158,32 +252,44 @@ class SetupWizard(gtk.Assistant):
 		
 	def on_prepare(self, assistant, page):
 		if isinstance(page, ChannelScanPage):
-			dev_data = self.adapters_page.get_selected_device()
-			if dev_data != None:
-				page.set_name(dev_data[0])
+			if self.__device_name != None:
+				page.set_name(self.__device_name)
+				self.__scanner = page.start_scanning(self.__adapter, self.__frontend)
+		elif isinstance(page, SaveChannelListPage):
+			page.set_scanner(self.__scanner)
+		elif isinstance(page, SummaryPage):
+			self.__ask_on_exit = False
 		
 	def on_device_selection_changed(self, treeselection):
 		model, aiter = treeselection.get_selected()
 		if aiter != None:
-			print model[aiter][0]
+			self.__device_name = model[aiter][0]
+			self.__adapter = model[aiter][2]
+			self.__frontend = model[aiter][3]
 			self.set_page_complete(self.adapters_page, True)
 		else:
 			self.set_page_complete(self.adapters_page, False)
 			
-	def confirm_quit(self, *args):
-		dialog = gtk.MessageDialog(parent=self,
-			flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-			type=gtk.MESSAGE_QUESTION,
-			buttons=gtk.BUTTONS_YES_NO,
-			message_format="Are you sure you want to abort?\nAll process will be lost.")
+	def on_scan_finished(self, page):
+		self.set_page_complete(page, True)
 			
-		response = dialog.run()
-		if response == gtk.RESPONSE_YES:
-			gtk.main_quit()
-		elif response == gtk.RESPONSE_NO:
-			dialog.destroy()
+	def confirm_quit(self, *args):
+		if self.__ask_on_exit:
+			dialog = gtk.MessageDialog(parent=self,
+				flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+				type=gtk.MESSAGE_QUESTION,
+				buttons=gtk.BUTTONS_YES_NO,
+				message_format="Are you sure you want to abort?\nAll process will be lost.")
+			
+			response = dialog.run()
+			if response == gtk.RESPONSE_YES:
+				gtk.main_quit()
+			elif response == gtk.RESPONSE_NO:
+				dialog.destroy()
 		
-		return True
+			return True
+		else:
+			gtk.main_quit()
 		
 if __name__ == '__main__':
 	w = SetupWizard()
