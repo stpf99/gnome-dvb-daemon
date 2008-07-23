@@ -70,7 +70,9 @@ class DVBManagerClient:
 class DVBScannerClient(gobject.GObject):
 
     __gsignals__ = {
-        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        "finished":          (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        "frequency-scanned": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "channel-added":     (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, str, str, str]), 
     }
 
     def __init__(self, objpath, scanner_iface):
@@ -80,6 +82,8 @@ class DVBScannerClient(gobject.GObject):
         proxy = bus.get_object(service, objpath)
         self.scanner = dbus.Interface(proxy, scanner_iface)
         self.scanner.connect_to_signal ("Finished", self.on_finished)
+        self.scanner.connect_to_signal ("FrequencyScanned", self.on_frequency_scanned)
+        self.scanner.connect_to_signal ("ChannelAdded", self.on_channel_added)
         
     def add_scanning_data(self, data):
         self.scanner.AddScanningData (*data)
@@ -94,8 +98,13 @@ class DVBScannerClient(gobject.GObject):
         self.scanner.WriteChannelsToFile(channelfile)
         
     def on_finished(self):
-        print "Done scanning"
         self.emit("finished")
+        
+    def on_frequency_scanned(self, freq):
+        self.emit("frequency-scanned", freq)
+        
+    def on_channel_added(self, freq, sid, name, network, channeltype):
+        self.emit("channel-added", freq, sid, name, network, channeltype)
         
 class DVBRecordingsStoreClient(gobject.GObject):
 
