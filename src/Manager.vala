@@ -18,7 +18,8 @@ namespace DVB {
         private uint device_group_counter;
         
         construct {
-            this.scanners = new HashMap<string, Scanner> ();
+            this.scanners = new HashMap<string, Scanner> (GLib.str_hash,
+                GLib.str_equal, GLib.direct_equal);
             this.recorders = new HashMap<uint, Recorder> ();
             this.channellists = new HashMap<uint, ChannelList> ();
             this.devices = new HashMap<uint, DeviceGroup> ();
@@ -35,32 +36,42 @@ namespace DVB {
         public string[] GetScannerForDevice (uint adapter, uint frontend) {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             
-            var conn = get_dbus_connection ();
-            
-            string dbusiface;
-            if (!this.scanners.contains (path)) {
-                Device device = new Device (adapter, frontend);
+            Device device = new Device (adapter, frontend);
                 
+            string dbusiface;
+            switch (device.Type) {
+                case AdapterType.DVB_T:
+                dbusiface = "org.gnome.DVB.Scanner.Terrestrial";
+                break;
+                
+                case AdapterType.DVB_S:
+                dbusiface = "org.gnome.DVB.Scanner.Satellite";
+                break;
+                
+                case AdapterType.DVB_C:
+                dbusiface = "org.gnome.DVB.Scanner.Cable";
+                break;
+            }
+            
+            if (!this.scanners.contains (path)) {
                 Scanner scanner;
                 switch (device.Type) {
                     case AdapterType.DVB_T:
                     scanner = new TerrestrialScanner (device);
-                    dbusiface = "org.gnome.DVB.Scanner.Terrestrial";
                     break;
                     
                     case AdapterType.DVB_S:
                     scanner = new SatelliteScanner (device);
-                    dbusiface = "org.gnome.DVB.Scanner.Satellite";
                     break;
                     
                     case AdapterType.DVB_C:
                     scanner = new CableScanner (device);
-                    dbusiface = "org.gnome.DVB.Scanner.Cable";
                     break;
                 }
                 
                 this.scanners.set (path, scanner);
                 
+                var conn = get_dbus_connection ();
                 if (conn == null) return new string[] {};
                 
                 conn.register_object (
