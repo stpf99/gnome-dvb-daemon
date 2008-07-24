@@ -69,6 +69,8 @@ namespace DVB {
                     break;
                 }
                 
+                scanner.destroyed += this.on_scanner_destroyed;
+                
                 this.scanners.set (path, scanner);
                 
                 var conn = get_dbus_connection ();
@@ -89,7 +91,6 @@ namespace DVB {
          * @returns: Device groups' ID
          */
         public uint[] GetRegisteredDeviceGroups () {
-            // FIXME initialize and set array correctly
             uint[] devs = new uint[this.devices.size];
             int i = 0;
             foreach (uint key in this.devices.get_keys ()) {
@@ -349,6 +350,16 @@ namespace DVB {
             return false;
         }
         
+        private void on_scanner_destroyed (Scanner scanner) {
+            uint adapter = scanner.Device.Adapter;
+            uint frontend = scanner.Device.Frontend;
+            
+            debug ("Destroying scanner for adapter %u, frontend %u", adapter,
+                frontend);
+            
+            string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
+            this.scanners.remove (path);
+        }
     }
 
 }

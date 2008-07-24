@@ -9,6 +9,11 @@ namespace DVB {
     public abstract class Scanner : GLib.Object {
 
         /**
+         * Emitted when the Destroy () method is called
+         */
+        public signal void destroyed ();
+
+        /**
          * Emitted when a frequency has been scanned.
          * Whether a new channel has been found on that frequency or not.
          */
@@ -74,7 +79,7 @@ namespace DVB {
         
         // Contains SIDs
         private ArrayList<uint> new_channels;
-        private uint? check_for_lock_event_id;
+        private uint check_for_lock_event_id;
         private bool nit_arrived;
         private bool sdt_arrived;
         private bool pat_arrived;
@@ -138,11 +143,12 @@ namespace DVB {
         }
         
         /**
-         * Abort scanning
+         * Abort scanning and cleanup
          */
-        public void Abort () {
+        public void Destroy () {
             this.remove_check_for_lock_timeout ();
             this.clear_and_reset_all ();
+            this.destroyed ();
         }
         
         /** 
@@ -165,7 +171,7 @@ namespace DVB {
             
             return ret;
         }
-            
+         
         protected void clear_and_reset_all () {
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
@@ -228,13 +234,14 @@ namespace DVB {
                 this.pipeline.set_state (Gst.State.READY);
                 
             this.start_scan ();
+            this.check_for_lock_event_id = 0;
             return false;
         }
         
         protected void remove_check_for_lock_timeout () {
-            if (this.check_for_lock_event_id != null) {
+            if (this.check_for_lock_event_id != 0) {
                 Source.remove (this.check_for_lock_event_id);
-                this.check_for_lock_event_id = null;
+                this.check_for_lock_event_id = 0;
             }
         }
         
@@ -256,7 +263,7 @@ namespace DVB {
         
         protected void on_dvb_read_failure_structure () {
             error("Read failure");
-            this.Abort ();
+            this.Destroy ();
         }
         
         protected void on_pat_structure (Gst.Structure structure) {
@@ -471,7 +478,7 @@ namespace DVB {
                     string debug;
                     message.parse_error (out gerror, out debug);
                     critical ("%s %s", gerror.message, debug);
-                    this.Abort ();
+                    this.Destroy ();
                 break;
                 }
             }

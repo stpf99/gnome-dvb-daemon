@@ -73,6 +73,7 @@ class DVBScannerClient(gobject.GObject):
         "finished":          (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
         "frequency-scanned": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
         "channel-added":     (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, str, str, str]), 
+        "destroyed":         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
     }
 
     def __init__(self, objpath, scanner_iface):
@@ -84,6 +85,7 @@ class DVBScannerClient(gobject.GObject):
         self.scanner.connect_to_signal ("Finished", self.on_finished)
         self.scanner.connect_to_signal ("FrequencyScanned", self.on_frequency_scanned)
         self.scanner.connect_to_signal ("ChannelAdded", self.on_channel_added)
+        self.scanner.connect_to_signal ("Destroyed", self.on_destroyed)
         
     def add_scanning_data(self, data):
         self.scanner.AddScanningData (*data)
@@ -91,8 +93,8 @@ class DVBScannerClient(gobject.GObject):
     def run(self):
         self.scanner.Run()
         
-    def abort(self):
-        self.scanner.Abort()
+    def destroy(self):
+        self.scanner.Destroy()
         
     def write_channels_to_file(self, channelfile):
         self.scanner.WriteChannelsToFile(channelfile)
@@ -105,6 +107,9 @@ class DVBScannerClient(gobject.GObject):
         
     def on_channel_added(self, freq, sid, name, network, channeltype):
         self.emit("channel-added", freq, sid, name, network, channeltype)
+        
+    def on_destroyed(self):
+        self.emit("destroyed")
         
 class DVBRecordingsStoreClient(gobject.GObject):
 

@@ -11,7 +11,7 @@ namespace DVB {
             string name, string network, string type);
         
         public abstract void Run ();
-        public abstract void Abort ();
+        public abstract void Destroy ();
         public abstract bool WriteChannelsToFile (string path);
         
         public abstract void AddScanningData (uint frequency, string modulation,
