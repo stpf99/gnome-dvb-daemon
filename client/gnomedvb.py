@@ -4,6 +4,7 @@ import dbus
 import dbus.glib
 import gobject
 import gst
+import re
 
 service = "org.gnome.DVB"
 manager_iface = "org.gnome.DVB.Manager"
@@ -15,6 +16,11 @@ channel_list_iface = "org.gnome.DVB.ChannelList"
 sat_scanner_iface = "org.gnome.DVB.Scanner.Satellite"
 cable_scanner_iface = "org.gnome.DVB.Scanner.Cable"
 terrestrial_scanner_iface = "org.gnome.DVB.Scanner.Terrestrial"
+
+HAL_MANAGER_IFACE = "org.freedesktop.Hal.Manager"
+HAL_DEVICE_IFACE = "org.freedesktop.Hal.Device"
+HAL_MANAGER_PATH = "/org/freedesktop/Hal/Manager"
+HAL_SERVICE = "org.freedesktop.Hal"
 
 def get_adapter_info(adapter):
     dvbelement = gst.element_factory_make ("dvbsrc", "test_dvbsrc")
@@ -35,6 +41,31 @@ def get_adapter_info(adapter):
                 break
     pipeline.set_state(gst.STATE_NULL)
     return info
+
+def get_dvb_devices():
+    bus = dbus.SystemBus()
+    # Get proxy object
+    proxy = bus.get_object(HAL_SERVICE, HAL_MANAGER_PATH)
+    # Apply the correct interace to the proxy object
+    halmanager = dbus.Interface(proxy, HAL_MANAGER_IFACE)
+    objects = halmanager.FindDeviceByCapability("dvb")
+
+    deviceslist = []
+    for o in objects:
+	    proxy = bus.get_object(HAL_SERVICE, o)
+	    dev = dbus.Interface(proxy, HAL_DEVICE_IFACE)
+
+	    dev_file = dev.GetProperty("linux.device_file")
+	
+	    match = re.search("adapter(\d+?)/frontend(\d+?)", dev_file)
+	    if match != None:
+		    adapter = int(match.group(1))
+		    info = get_adapter_info(adapter)
+		    info["adapter"] = adapter
+		    info["frontend"] = int(match.group(2))
+		    deviceslist.append(info)
+			
+    return deviceslist
 
 class DVBManagerClient:
 

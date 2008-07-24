@@ -4,12 +4,6 @@ import gtk
 import gobject
 import gnomedvb
 import dbus
-import re
-
-HAL_MANAGER_IFACE = "org.freedesktop.Hal.Manager"
-HAL_DEVICE_IFACE = "org.freedesktop.Hal.Device"
-HAL_MANAGER_PATH = "/org/freedesktop/Hal/Manager"
-HAL_SERVICE = "org.freedesktop.Hal"
 
 SUPPORTED_DVB_TYPES = ("DVB-C", "DVB-S", "DVB-T")
 
@@ -34,8 +28,6 @@ class AdaptersPage(BasePage):
 	
 	def __init__(self):
 		BasePage.__init__(self)
-		
-		self.adapter_pattern = re.compile("adapter(\d+?)/frontend(\d+?)")
 		
 		text = "Select device you want to scan channels."
 		label = gtk.Label(text)
@@ -74,27 +66,10 @@ class AdaptersPage(BasePage):
 			return model[aiter]
 		
 	def get_dvb_devices(self):
-		bus = dbus.SystemBus()
-		# Get proxy object
-		proxy = bus.get_object(HAL_SERVICE, HAL_MANAGER_PATH)
-		# Apply the correct interace to the proxy object
-		halmanager = dbus.Interface(proxy, HAL_MANAGER_IFACE)
-		objects = halmanager.FindDeviceByCapability("dvb")
-
-		for o in objects:
-			proxy = bus.get_object(HAL_SERVICE, o)
-			dev = dbus.Interface(proxy, HAL_DEVICE_IFACE)
-			#for key, val in dev.GetAllProperties().items():
-			#	print key, " - ", val
-			dev_file = dev.GetProperty("linux.device_file")
-			
-			match = self.adapter_pattern.search(dev_file)
-			if match != None:
-				adapter = int(match.group(1))
-				frontend = int(match.group(2))
-				info = gnomedvb.get_adapter_info(adapter)
-				if info["type"] in SUPPORTED_DVB_TYPES:
-					self.deviceslist.append([info["name"], info["type"], adapter, frontend])
+		for info in gnomedvb.get_dvb_devices():
+			if info["type"] in SUPPORTED_DVB_TYPES:
+				self.deviceslist.append([info["name"], info["type"],
+					info["adapter"], info["frontend"]])
 
 class ChannelScanPage(BasePage):
 
