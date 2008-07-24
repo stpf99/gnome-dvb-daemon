@@ -269,6 +269,31 @@ namespace DVB {
         }
         
         /**
+         * @group_id: ID of device group
+         * @returns: List of paths to the devices that are part of
+         * the specified group (e.g. /dev/dvb/adapter0/frontend0)
+         */
+        public string[] GetDeviceGroupMembers (uint group_id) {
+            string[] groupdevs;
+        
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get(group_id);
+                groupdevs = new string[devgroup.size];
+                
+                int i=0;
+                foreach (Device dev in devgroup) {
+                    groupdevs[i] = Constants.DVB_DEVICE_PATH.printf (
+                        dev.Adapter, dev.Frontend);
+                    i++;
+                }
+            } else {
+                groupdevs = new string[0];
+            }
+            
+            return groupdevs;
+        }
+        
+        /**
          * @returns: Whether the device has been added successfully
          *
          * Register device, create Recorder and ChannelList D-Bus service

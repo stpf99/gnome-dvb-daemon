@@ -64,8 +64,11 @@ class DVBManagerClient:
     def remove_device_from_group(self, adapter, frontend, group_id):
         return self.manager.RemoveDeviceFromGroup(adapter, frontend, group_id)
         
-    def delete_device_group(group_id):
+    def delete_device_group(self, group_id):
         return self.manager.DeleteDeviceGroup(group_id)
+        
+    def get_device_group_members(self, group_id):
+        return self.manager.GetDeviceGroupMembers(group_id)
         
 class DVBScannerClient(gobject.GObject):
 
@@ -284,6 +287,8 @@ if __name__ == '__main__':
     dev_groups = manager.get_registered_device_groups()
     
     for group_id in dev_groups:
+        print "Members", manager.get_device_group_members(group_id)
+    
         rec = DVBRecorderClient(group_id)
         timers = rec.get_timers()
         print timers
