@@ -109,27 +109,64 @@ class ChannelScanPage(BasePage):
 		self.label.set_line_wrap(True)
 		self.pack_start(self.label)
 		
-		self.channels = gtk.ListStore(str, int)
+		hbox = gtk.HBox(spacing=12)
+		hbox.set_border_width(6)
+		self.pack_start(hbox)
 		
-		self.channelsview = gtk.TreeView(self.channels)
+		# TV
+		self.tvchannels = gtk.ListStore(str, int)
+		self.tvchannelsview = gtk.TreeView(self.tvchannels)
 		
 		cell_name = gtk.CellRendererText()
 		col_name = gtk.TreeViewColumn("Name")
 		col_name.pack_start(cell_name)
 		col_name.add_attribute(cell_name, "markup", 0)
-		self.channelsview.append_column (col_name)
+		self.tvchannelsview.append_column (col_name)
 		
 		cell_freq = gtk.CellRendererText()
 		col_freq = gtk.TreeViewColumn("Frequency")
 		col_freq.pack_start(cell_freq, False)
 		col_freq.add_attribute(cell_freq, "text", 1)
-		self.channelsview.append_column (col_freq)
+		self.tvchannelsview.append_column (col_freq)
 		
-		scrolledview = gtk.ScrolledWindow()
-		scrolledview.add(self.channelsview)
-		scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-		scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-		self.pack_start(scrolledview)
+		scrolledtvview = gtk.ScrolledWindow()
+		scrolledtvview.set_border_width(6)
+		scrolledtvview.add(self.tvchannelsview)
+		scrolledtvview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		scrolledtvview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+		tvframe = gtk.Frame("TV channels")
+		tvframe.add(scrolledtvview)
+		
+		hbox.pack_start(tvframe)
+		
+		# Radio
+		self.radiochannels = gtk.ListStore(str, int)
+		self.radiochannelsview = gtk.TreeView(self.radiochannels)
+		
+		cell_name = gtk.CellRendererText()
+		col_name = gtk.TreeViewColumn("Name")
+		col_name.pack_start(cell_name)
+		col_name.add_attribute(cell_name, "markup", 0)
+		self.radiochannelsview.append_column (col_name)
+		
+		cell_freq = gtk.CellRendererText()
+		col_freq = gtk.TreeViewColumn("Frequency")
+		col_freq.pack_start(cell_freq, False)
+		col_freq.add_attribute(cell_freq, "text", 1)
+		self.radiochannelsview.append_column (col_freq)
+		
+		scrolledradioview = gtk.ScrolledWindow()
+		scrolledradioview.set_border_width(6)
+		scrolledradioview.add(self.radiochannelsview)
+		scrolledradioview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		scrolledradioview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		
+		radioframe = gtk.Frame("Radio channels")
+		radioframe.add(scrolledradioview)
+		
+		hbox.pack_start(radioframe)
+		
 		
 		self.progressbar = gtk.ProgressBar()
 		self.pack_start(self.progressbar, False)
@@ -154,7 +191,10 @@ class ChannelScanPage(BasePage):
 		return scanner
 		
 	def __on_channel_added(self, scanner, freq, sid, name, network, channeltype):
-		self.channels.append([name, freq])
+		if channeltype == "TV":
+			self.tvchannels.append([name, freq])
+		elif channeltype == "Radio":
+			self.radiochannels.append([name, freq])
 		
 	def __on_finished(self, scanner):
 		self.emit("finished")
@@ -283,12 +323,16 @@ class SetupWizard(gtk.Assistant):
 			
 			response = dialog.run()
 			if response == gtk.RESPONSE_YES:
+				if self.__scanner != None:
+					self.__scanner.destroy()
 				gtk.main_quit()
 			elif response == gtk.RESPONSE_NO:
 				dialog.destroy()
 		
 			return True
 		else:
+			if self.__scanner != None:
+				self.__scanner.destroy()
 			gtk.main_quit()
 		
 if __name__ == '__main__':
