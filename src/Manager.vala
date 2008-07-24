@@ -5,6 +5,19 @@ namespace DVB {
     
     [DBus (name = "org.gnome.DVB.Manager")]
     public class Manager : Object {
+        
+        /**
+         * @type: 0: added, 1: deleted, 2: updated
+         *
+         * Emitted when a group has been added or deleted
+         */
+        public signal void changed (uint group_id, uint change_type);
+        
+        /**
+         * Emitted when a device has been added or removed from a group
+         */
+        public signal void group_changed (uint group_id, uint adapter,
+            uint frontend, uint change_type);
 
         // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
@@ -160,6 +173,8 @@ namespace DVB {
             this.add_device_group (
                 new DeviceGroup (device_group_counter, device));
             
+            this.changed (device_group_counter, ChangeType.ADDED);
+            
             return true;
         }
         
@@ -192,6 +207,9 @@ namespace DVB {
                 GConfStore.get_instance ().add_device_to_group (device,
                     devgroup);
                 
+                this.group_changed (group_id, adapter, frontend,
+                    ChangeType.ADDED);
+                
                 return true;
             } else
                 return false;
@@ -213,7 +231,13 @@ namespace DVB {
                 
                 if (devgroup.contains (dev)) {
                     // TODO might not work, because we create a new device instance
-                    return devgroup.remove (dev);
+                    if (devgroup.remove (dev)) {
+                        this.group_changed (group_id, adapter, frontend,
+                            ChangeType.DELETED);
+                        return true;
+                    }
+                    
+                    return false;
                 }
             }
             
@@ -230,8 +254,13 @@ namespace DVB {
             if (this.devices.contains (group_id)) {
                 DeviceGroup devgroup = this.devices.get (group_id);
                 
-                if (devgroup.size == 0)
-                    return this.devices.remove (group_id);
+                if (devgroup.size == 0) {
+                    if (this.devices.remove (group_id)) {
+                        this.changed (group_id, ChangeType.DELETED);
+                    }
+                    
+                    return false;
+                }
             }
             
             return false;
