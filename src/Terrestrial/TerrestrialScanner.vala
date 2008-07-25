@@ -16,12 +16,14 @@ namespace DVB {
         
         public abstract void AddScanningData (uint frequency,
                                      uint hierarchy, // 0-3
-                                     uint bandwith, // 0, 6, 7, 8
+                                     uint bandwidth, // 0, 6, 7, 8
                                      string transmode, // "2k", "8k"
                                      string code_rate_hp, // "1/2", "2/3", "3/4", ..., "8/9"
                                      string code_rate_lp,
                                      string constellation, // QPSK, QAM16, QAM64
                                      uint guard);  // 4, 8, 16, 32
+                                     
+        public abstract bool AddScanningDataFromFile (string path);
     }
     
     public class TerrestrialScanner : Scanner, IDBusTerrestrialScanner {
@@ -34,19 +36,83 @@ namespace DVB {
           * See enums in MpegTsEnums
           */
         public void AddScanningData (uint frequency, uint hierarchy,
-                uint bandwith, string transmode, string code_rate_hp,
+                uint bandwidth, string transmode, string code_rate_hp,
                 string code_rate_lp, string constellation, uint guard) {
+             
             Gst.Structure tuning_params = new Gst.Structure ("tuning_params",
                 "frequency", typeof(uint), frequency,
                 "hierarchy", typeof(uint), hierarchy,
-                "bandwidth", typeof(uint), bandwith,
+                "bandwidth", typeof(uint), bandwidth,
                 "transmission-mode", typeof(string), transmode,
                 "code-rate-hp", typeof(string), code_rate_hp,
                 "code-rate-lp", typeof(string), code_rate_lp,
                 "constellation", typeof(string), constellation,
                 "guard-interval", typeof(uint), guard);
             
+            debug ("Adding scanning data: %s", tuning_params.to_string ());
+              
             base.add_structure_to_scan (#tuning_params);
+        }
+        
+        public bool AddScanningDataFromFile (string path) {
+            File datafile = File.new_for_path(path);
+            
+            debug ("Reading scanning data from %s", path);
+            
+            string? contents = null;
+            try {
+                contents = Utils.read_file_contents (datafile);
+            } catch (Error e) {
+                critical (e.message);
+            }
+            
+            if (contents == null) return false;
+            
+            // line looks like:
+            // T freq bw fec_hi fec_lo mod transmission-mode guard-interval hierarchy
+            foreach (string line in contents.split("\n")) {
+                if (line.has_prefix ("#")) continue;
+                
+                string[] cols = Regex.split_simple (" ", line);
+                
+                int cols_length = 0;
+                while (cols[cols_length] != null)
+                    cols_length++;
+                cols_length++;
+                
+                if (cols_length < 9) {
+                    continue;
+                }
+                
+                uint freq = (uint)cols[1].to_int ();
+                
+                uint hierarchy;
+                if (cols[8].down () == "none") {
+                    hierarchy = 0;
+                } else if (cols[8] == "1") {
+                    hierarchy = 1;
+                } else if (cols[8] == "2") {
+                    hierarchy = 2;
+                } else if (cols[8] == "4") {
+                    hierarchy = 3;
+                }
+                
+                string bandwidth_str = cols[2].split("MHz")[0];
+                uint bandwidth = (uint)bandwidth_str.to_int ();
+                string transmode = cols[6];
+                string code_rate_hp = cols[3];
+                string code_rate_lp = cols[4];
+                string constellation = cols[5];
+                
+                string guard_str = cols[7].split("/")[1];
+                uint guard = (uint)guard_str.to_int ();
+                
+                this.AddScanningData (freq, hierarchy,
+                    bandwidth, transmode, code_rate_hp,
+                    code_rate_lp, constellation, guard);
+            }
+            
+            return true;
         }
         
         protected override void prepare () {
