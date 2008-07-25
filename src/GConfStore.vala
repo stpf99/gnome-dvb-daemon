@@ -200,6 +200,19 @@ namespace DVB {
             }
         }
         
+        public void remove_device_group (DeviceGroup devgroup) {
+            string base_path = get_device_group_path (devgroup);
+            
+            try {
+                if (this.client.dir_exists (base_path)) {
+                    this.client.recursive_unset (base_path,
+                        GConf.UnsetFlags.NAMES);
+                }
+            } catch (Error e) {
+                warning (e.message);
+            }
+        }
+        
         public void add_device_to_group (Device dev, DeviceGroup devgroup) {
             string base_path = get_device_group_path (devgroup) + get_device_path (dev);
         
@@ -208,7 +221,20 @@ namespace DVB {
                     (int)dev.Adapter);
                 this.client.set_int (base_path + DEVICE_FRONTEND_KEY,
                     (int)dev.Frontend);
-            }  catch (Error e) {
+            } catch (Error e) {
+                warning (e.message);
+            }
+        }
+        
+        public void remove_device_from_group (Device dev, DeviceGroup devgroup) {
+            string base_path = get_device_group_path (devgroup) + get_device_path (dev);
+            
+            try {
+                if (this.client.dir_exists (base_path)) {
+                    this.client.recursive_unset (base_path,
+                        GConf.UnsetFlags.NAMES);
+                }
+            } catch (Error e) {
                 warning (e.message);
             }
         }
