@@ -67,7 +67,7 @@ def get_dvb_devices():
 			
     return deviceslist
 
-class DVBManagerClient:
+class DVBManagerClient(gobject.GObject):
     
     __gsignals__ = {
         "changed":        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
@@ -75,6 +75,8 @@ class DVBManagerClient:
     }
     
     def __init__(self):
+        gobject.GObject.__init__(self)
+    
         bus = dbus.SessionBus()
         # Get proxy object
         proxy = bus.get_object(service, manager_path)
