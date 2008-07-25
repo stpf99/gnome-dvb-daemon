@@ -22,7 +22,13 @@ namespace DVB {
                                      string code_rate_lp,
                                      string constellation, // QPSK, QAM16, QAM64
                                      uint guard);  // 4, 8, 16, 32
-                                     
+        
+        /**
+         * @path: Path to file containing scanning data
+         * @returns: TRUE when the file has been parsed successfully
+         *
+         * Parses initial tuning data from a file as provided by dvb-apps
+         */                             
         public abstract bool AddScanningDataFromFile (string path);
     }
     

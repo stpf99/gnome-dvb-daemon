@@ -16,6 +16,14 @@ namespace DVB {
         
         public abstract void AddScanningData (uint frequency, string modulation,
             uint symbol_rate, string code_rate);
+        
+        /**
+         * @path: Path to file containing scanning data
+         * @returns: TRUE when the file has been parsed successfully
+         *
+         * Parses initial tuning data from a file as provided by dvb-apps
+         */    
+        public abstract bool AddScanningDataFromFile (string path);
     }
     
     public class CableScanner : Scanner, IDBusCableScanner {
@@ -33,6 +41,45 @@ namespace DVB {
             "modulation", typeof(string), modulation);
             
             base.add_structure_to_scan (#tuning_params);  
+        }
+        
+        public bool AddScanningDataFromFile (string path) {
+            File datafile = File.new_for_path(path);
+            
+            debug ("Reading scanning data from %s", path);
+            
+            string? contents = null;
+            try {
+                contents = Utils.read_file_contents (datafile);
+            } catch (Error e) {
+                critical (e.message);
+            }
+            
+            if (contents == null) return false;
+            
+            // line looks like:
+            // C freq sr fec mod
+            foreach (string line in contents.split("\n")) {
+                if (line.has_prefix ("#")) continue;
+                
+                string[] cols = Regex.split_simple (" ", line);
+                
+                int cols_length = 0;
+                while (cols[cols_length] != null)
+                    cols_length++;
+                cols_length++;
+                
+                if (cols_length < 5) continue;
+                
+                uint freq = (uint)cols[1].to_int ();
+                string modulation = cols[4];
+                uint symbol_rate = (uint)cols[2].to_int ();
+                string code_rate = cols[3];
+                
+                this.AddScanningData (freq, modulation, symbol_rate, code_rate);
+            }
+            
+            return true;
         }
        
         protected override void prepare () {

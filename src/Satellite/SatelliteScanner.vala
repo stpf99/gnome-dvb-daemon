@@ -17,6 +17,14 @@ namespace DVB {
         public abstract void AddScanningData (uint frequency,
                                      string polarization, // "horizontal", "vertical"
                                      uint symbol_rate);
+        
+        /**
+         * @path: Path to file containing scanning data
+         * @returns: TRUE when the file has been parsed successfully
+         *
+         * Parses initial tuning data from a file as provided by dvb-apps
+         */                            
+        public abstract bool AddScanningDataFromFile (string path);
     }
     
     public class SatelliteScanner : Scanner, IDBusSatelliteScanner {
@@ -33,6 +41,54 @@ namespace DVB {
             "polarization", typeof(string), polarization);
             
             base.add_structure_to_scan (#tuning_params);
+        }
+        
+        public bool AddScanningDataFromFile (string path) {
+            File datafile = File.new_for_path(path);
+            
+            debug ("Reading scanning data from %s", path);
+            
+            string? contents = null;
+            try {
+                contents = Utils.read_file_contents (datafile);
+            } catch (Error e) {
+                critical (e.message);
+            }
+            
+            if (contents == null) return false;
+            
+            // line looks like:
+            // S freq pol sr fec
+            foreach (string line in contents.split("\n")) {
+                if (line.has_prefix ("#")) continue;
+                
+                string[] cols = Regex.split_simple (" ", line);
+                
+                int cols_length = 0;
+                while (cols[cols_length] != null)
+                    cols_length++;
+                cols_length++;
+                
+                if (cols_length < 5) continue;
+                
+                uint freq = (uint)cols[1].to_int ();
+                uint symbol_rate = (uint)cols[3].to_int ();
+                
+                string pol;
+                string lower_pol = cols[5].down ();
+                if (lower_pol == "h")
+                    pol = "horizontal";
+                else if (lower_pol == "v")
+                    pol = "vertical";
+                else
+                    continue;
+                
+                // TODO what about fec?
+                
+                this.AddScanningData (freq, pol, symbol_rate);
+            }
+            
+            return true;
         }
         
         protected override void prepare () {
