@@ -4,8 +4,15 @@ import gtk
 import gobject
 import gnomedvb
 import dbus
+import os
+import os.path
+import re
 
 SUPPORTED_DVB_TYPES = ("DVB-C", "DVB-S", "DVB-T")
+
+DVB_APPS_DIRS = ("/usr/share/dvb",
+				 "/usr/share/dvb-apps",
+				 "/usr/share/doc/dvb-utils/examples/scan")
 
 class BasePage(gtk.VBox):
 
@@ -70,6 +77,112 @@ class AdaptersPage(BasePage):
 			if info["type"] in SUPPORTED_DVB_TYPES:
 				self.deviceslist.append([info["name"], info["type"],
 					info["adapter"], info["frontend"]])
+
+class InitialTuningDataPage(BasePage):
+	
+	__gsignals__ = {
+		    "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+	}
+
+	def __init__(self):
+		BasePage.__init__(self)
+		
+		self.__adapter_info = None
+		self.__tuning_data = []
+		
+	def set_adapter_info(self, info):
+		self.__adapter_info = info
+		# TODO remove children of table first
+		if info["type"] == "DVB-T":
+			self.setup_dvb_t()
+		elif info["type"] == "DVB-S":
+			self.setup_dvb_s()
+		elif info["type"] == "DVB-C":
+			self.setup_dvb_c()
+			
+	def get_tuning_data(self):
+		return self.__tuning_data
+		
+	def setup_dvb_t(self):
+		countries = { "at": "Austria", "au": "Australia", "be": "Belgium",
+ 	        "ch": "Switzerland", "cz": "Czech Republic", "de": "Germany",
+ 	        "dk": "Denmark", "es": "Spain", "fi": "Finland", "fr": "France",
+ 	        "gr": "Greece", "hr": "Hungary", "is": "Iceland", "it": "Italy",
+ 	        "lu": "Luxemburg", "nl": "Netherlands", "nz": "New Zealand",
+ 	        "pl": "Poland", "se": "Sweden", "sk": "Slovakia", "tw": "Taiwan",
+ 	        "uk": "United Kingdom" }
+	
+		self.table = gtk.Table(rows=4, columns=2)
+		self.table.set_row_spacings(6)
+		self.table.set_col_spacings(3)
+		self.table.show()
+		self.pack_start(self.table)
+		
+		country = gtk.Label()
+		country.set_markup("<b>Country:</b>")
+		country.show()
+		self.table.attach(country, 0, 1, 0, 1, yoptions=0)
+	
+		self.countries = gtk.ListStore(str, str)
+		self.countries.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		
+		for code, name in countries.items():
+			self.countries.append([name, code])
+	
+		self.country_combo = gtk.ComboBox(self.countries)
+		self.country_combo.connect('changed', self.on_country_changed)
+		cell = gtk.CellRendererText()
+		self.country_combo.pack_start(cell)
+		self.country_combo.add_attribute(cell, "text", 0)
+		self.country_combo.show()
+		self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
+		
+		self.antenna_label = gtk.Label()
+		self.antenna_label.set_markup("<b>Antenna:</b>")
+		self.antenna_label.hide()
+		self.table.attach(self.antenna_label, 0, 1, 1, 2, yoptions=0)
+		
+		self.antennas = gtk.ListStore(str, str)
+		self.antennas.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		
+		self.antenna_combo = gtk.ComboBox(self.antennas)
+		self.antenna_combo.connect('changed', self.on_antenna_changed)
+		cell = gtk.CellRendererText()
+		self.antenna_combo.pack_start(cell)
+		self.antenna_combo.add_attribute(cell, "text", 0)
+		self.table.attach(self.antenna_combo, 1, 2, 1, 2, yoptions=0)
+		self.antenna_combo.hide()
+		
+	def setup_dvb_s(self):
+		pass
+		
+	def setup_dvb_c(self):
+		pass	
+		
+	def on_country_changed(self, combo):
+		aiter = combo.get_active_iter()
+		
+		if aiter != None:
+			selected_country = self.countries[aiter][1]
+	
+			self.antennas.clear()
+			for d in DVB_APPS_DIRS:
+				if os.access(d, os.F_OK | os.R_OK):
+					for f in os.listdir(os.path.join(d, 'dvb-t')):
+						country, city = f.split('-', 1)
+					
+						if country == selected_country:
+							self.antennas.append([city, os.path.join(d, 'dvb-t', f)])
+		
+			self.antenna_label.show()
+			self.antenna_combo.show()
+		
+	def on_antenna_changed(self, combo):
+		aiter = combo.get_active_iter()
+		
+		if aiter != None:
+			self.__tuning_data = self.antennas[aiter][1]
+			self.emit("finished")
 
 class ChannelScanPage(BasePage):
 
@@ -149,18 +262,17 @@ class ChannelScanPage(BasePage):
 	def set_name(self, name):
 		self.label.set_text("Scanning for channels on device %s" % name)
 		
-	def start_scanning(self, adapter, frontend):
+	def start_scanning(self, adapter, frontend, tuning_data):
 		manager = gnomedvb.DVBManagerClient()
 		
 		scanner = manager.get_scanner_for_device(adapter, frontend)
 		
-		# FIXME
-		a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
-		scanner.add_scanning_data(a)
-		
 		#scanner.connect ("frequency-scanned", self.__on_freq_scanned)
 		scanner.connect ("channel-added", self.__on_channel_added)
 		scanner.connect ("finished", self.__on_finished)
+		print tuning_data
+		scanner.add_scanning_data_from_file (tuning_data)
+		
 		scanner.run()
 		
 		return scanner
@@ -223,9 +335,7 @@ class SetupWizard(gtk.Assistant):
 	def __init__(self):
 		gtk.Assistant.__init__(self)
 		self.__ask_on_exit = True
-		self.__device_name = None
-		self.__adapter = None
-		self.__frontend = None
+		self.__adapter_info = None
 		self.__scanner = None
 		
 		self.connect ('delete-event', self.confirm_quit)
@@ -248,6 +358,12 @@ class SetupWizard(gtk.Assistant):
 		self.adapters_page.devicesview.get_selection().connect('changed',
 			self.on_device_selection_changed)
 		
+		self.tuning_data_page = InitialTuningDataPage()
+		self.tuning_data_page.connect("finished", self.on_scan_finished)
+		self.append_page(self.tuning_data_page)
+		self.set_page_title(self.tuning_data_page, "Select tuning data")
+		self.set_page_type(self.tuning_data_page, gtk.ASSISTANT_PAGE_CONTENT)
+		
 		scan_page = ChannelScanPage()
 		scan_page.connect("finished", self.on_scan_finished)
 		self.append_page(scan_page)
@@ -266,10 +382,13 @@ class SetupWizard(gtk.Assistant):
 		self.set_page_type(summary_page, gtk.ASSISTANT_PAGE_SUMMARY)
 		
 	def on_prepare(self, assistant, page):
-		if isinstance(page, ChannelScanPage):
-			if self.__device_name != None:
-				page.set_name(self.__device_name)
-				self.__scanner = page.start_scanning(self.__adapter, self.__frontend)
+		if isinstance(page, InitialTuningDataPage):
+			page.set_adapter_info(self.__adapter_info)
+		elif isinstance(page, ChannelScanPage):
+			if self.__adapter_info["name"] != None:
+				page.set_name(self.__adapter_info["name"])
+				self.__scanner = page.start_scanning(self.__adapter_info["adapter"],
+					self.__adapter_info["frontend"], self.tuning_data_page.get_tuning_data ())
 		elif isinstance(page, SaveChannelListPage):
 			page.set_scanner(self.__scanner)
 		elif isinstance(page, SummaryPage):
@@ -278,9 +397,10 @@ class SetupWizard(gtk.Assistant):
 	def on_device_selection_changed(self, treeselection):
 		model, aiter = treeselection.get_selected()
 		if aiter != None:
-			self.__device_name = model[aiter][0]
-			self.__adapter = model[aiter][2]
-			self.__frontend = model[aiter][3]
+			self.__adapter_info = {"name": model[aiter][0],
+								   "type": model[aiter][1],
+								   "adapter": model[aiter][2],
+								   "frontend": model[aiter][3]}
 			self.set_page_complete(self.adapters_page, True)
 		else:
 			self.set_page_complete(self.adapters_page, False)
