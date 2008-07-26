@@ -36,10 +36,6 @@ namespace DVB {
          */
         public signal void finished ();
         
-        public uint queue_size {
-            get { return this.frequencies.length; }
-        }
-        
         /**
          * The DVB device the scanner should use
          */
@@ -172,6 +168,10 @@ namespace DVB {
             return ret;
         }
          
+        public uint GetQueueSize () {
+            return this.frequencies.length;
+        }
+        
         protected void clear_and_reset_all () {
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
@@ -500,7 +500,6 @@ namespace DVB {
                         warning ("Could not find transport stream for channel %u",
                             sid);
                 }
-                
                 this.start_scan ();
             }
         }

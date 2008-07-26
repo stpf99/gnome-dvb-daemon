@@ -13,6 +13,7 @@ namespace DVB {
         public abstract void Run ();
         public abstract void Destroy ();
         public abstract bool WriteChannelsToFile (string path);
+        public abstract uint GetQueueSize ();
         
         public abstract void AddScanningData (uint frequency, string modulation,
             uint symbol_rate, string code_rate);

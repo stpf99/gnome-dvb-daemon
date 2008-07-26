@@ -151,6 +151,9 @@ class DVBScannerClient(gobject.GObject):
     def write_channels_to_file(self, channelfile):
         self.scanner.WriteChannelsToFile(channelfile)
         
+	def get_queue_size(self):
+		return self.scanner.GetQueueSize()
+        
     def on_finished(self):
         self.emit("finished")
         
