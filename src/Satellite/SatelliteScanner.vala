@@ -72,10 +72,10 @@ namespace DVB {
                 if (cols_length < 5) continue;
                 
                 uint freq = (uint)cols[1].to_int ();
-                uint symbol_rate = (uint)cols[3].to_int ();
+                uint symbol_rate = (uint)cols[3].to_int () / 1000;
                 
                 string pol;
-                string lower_pol = cols[5].down ();
+                string lower_pol = cols[2].down ();
                 if (lower_pol == "h")
                     pol = "horizontal";
                 else if (lower_pol == "v")
