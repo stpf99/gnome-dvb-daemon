@@ -202,17 +202,18 @@ namespace DVB {
                     adapter, frontend, group_id);
                     
                 DeviceGroup devgroup = this.devices.get (group_id);
-                devgroup.add (device);
+                if (devgroup.add (device)) {
+                    GConfStore.get_instance ().add_device_to_group (device,
+                        devgroup);
+                    
+                    this.group_changed (group_id, adapter, frontend,
+                        ChangeType.ADDED);
                 
-                GConfStore.get_instance ().add_device_to_group (device,
-                    devgroup);
-                
-                this.group_changed (group_id, adapter, frontend,
-                    ChangeType.ADDED);
-                
-                return true;
-            } else
-                return false;
+                    return true;
+                }
+            }
+            
+            return false;
         }
         
         /**
