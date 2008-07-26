@@ -92,7 +92,10 @@ class InitialTuningDataPage(BasePage):
 		
 	def set_adapter_info(self, info):
 		self.__adapter_info = info
-		# TODO remove children of table first
+		
+		for widget in self.get_children():
+			widget.destroy()
+		
 		if info["type"] == "DVB-T":
 			self.setup_dvb_t()
 		elif info["type"] == "DVB-S":
@@ -154,11 +157,31 @@ class InitialTuningDataPage(BasePage):
 		self.antenna_combo.hide()
 		
 	def setup_dvb_s(self):
-		pass
+		hbox = gtk.HBox(spacing=6)
+		hbox.show()
+		self.pack_start(hbox, False)
+		
+		satellite = gtk.Label()
+		satellite.set_markup("<b>Satellite:</b>")
+		satellite.show()
+		hbox.pack_start(satellite, False, False, 0)
+		
+		self.satellites = gtk.ListStore(str, str)
+		self.satellites.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		
+		self.satellite_combo = gtk.ComboBox(self.satellites)
+		self.satellite_combo.connect("changed", self.on_satellite_changed)
+		cell = gtk.CellRendererText()
+		self.satellite_combo.pack_start(cell)
+		self.satellite_combo.add_attribute(cell, "text", 0)
+		self.satellite_combo.show()
+		hbox.pack_start(self.satellite_combo, False, False, 0)
+		
+		self.read_satellites()
 		
 	def setup_dvb_c(self):
-		pass	
-		
+		pass
+	
 	def on_country_changed(self, combo):
 		aiter = combo.get_active_iter()
 		
@@ -183,7 +206,20 @@ class InitialTuningDataPage(BasePage):
 		if aiter != None:
 			self.__tuning_data = self.antennas[aiter][1]
 			self.emit("finished")
-
+	
+	def read_satellites(self):
+		for d in DVB_APPS_DIRS:
+				if os.access(d, os.F_OK | os.R_OK):
+					for f in os.listdir(os.path.join(d, 'dvb-s')):
+						self.satellites.append([f, os.path.join(d, 'dvb-s', f)])
+						
+	def on_satellite_changed(self, combo):
+		aiter = combo.get_active_iter()
+		
+		if aiter != None:
+			self.__tuning_data = self.satellites[aiter][1]
+			self.emit("finished")
+		
 class ChannelScanPage(BasePage):
 
 	__gsignals__ = {
@@ -255,7 +291,6 @@ class ChannelScanPage(BasePage):
 		
 		hbox.pack_start(radioframe)
 		
-		
 		self.progressbar = gtk.ProgressBar()
 		self.pack_start(self.progressbar, False)
 		
@@ -270,7 +305,6 @@ class ChannelScanPage(BasePage):
 		#scanner.connect ("frequency-scanned", self.__on_freq_scanned)
 		scanner.connect ("channel-added", self.__on_channel_added)
 		scanner.connect ("finished", self.__on_finished)
-		print tuning_data
 		scanner.add_scanning_data_from_file (tuning_data)
 		
 		scanner.run()
