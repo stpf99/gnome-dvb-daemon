@@ -179,6 +179,52 @@ class NewGroupDialog (gtk.Dialog):
             self.recordings_entry.set_text(dialog.get_filename())
         dialog.destroy()
          
+         
+class AddToGroupDialog (gtk.Dialog):
+
+    def __init__(self, parent, model):
+        gtk.Dialog.__init__(self, title="Add To Group",
+            parent=parent,
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+                      gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+                
+        self.__selected_group = None
+                
+        hbox = gtk.HBox(spacing=6)
+        hbox.show()
+        self.vbox.pack_start(hbox)
+        
+        label = gtk.Label()
+        label.set_markup("<b>Group:</b>")
+        label.show()
+        hbox.pack_start(label, False, False, 0)
+        
+        self.groups = gtk.ListStore(str, int)
+        
+        combo = gtk.ComboBox(self.groups)
+        combo.connect("changed", self.on_combo_changed)
+        cell = gtk.CellRendererText()
+        combo.pack_start(cell)
+        combo.add_attribute(cell, "text", 0)
+        combo.show()
+        hbox.pack_start(combo)
+                      
+        for group_id in model.get_registered_device_groups():
+            group_name = "Group %d" % group_id
+            self.groups.append([group_name, group_id])
+            
+    def on_combo_changed(self, combo):
+        aiter = combo.get_active_iter()
+        
+        if aiter == None:
+            self.__selected_group = None
+        else:
+            self.__selected_group = self.groups[aiter][1]
+      
+    def get_selected_group(self):
+        return self.__selected_group   
+         
 class DVBPreferences(gtk.Window):
 
     def __init__(self):
@@ -263,6 +309,13 @@ class DVBPreferences(gtk.Window):
         self.button_new.show()
         buttonbox.pack_start(self.button_new)
         
+        self.button_add = gtk.Button(stock=gtk.STOCK_ADD)
+        self.button_add.connect("clicked", self._on_button_add_clicked)
+        self.button_add.set_tooltip_markup("Add selected device to existing group")
+        self.button_add.set_sensitive(False)
+        self.button_add.show()
+        buttonbox.pack_start(self.button_add)
+        
         unassigned_frame = Frame("<b>Unassigned devices</b>", self.unassigned_view,
             buttonbox)
         unassigned_frame.show()
@@ -288,7 +341,9 @@ class DVBPreferences(gtk.Window):
     def _on_unassigned_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         
-        self.button_new.set_sensitive(aiter != None)
+        val = (aiter != None)
+        self.button_new.set_sensitive(val)
+        self.button_add.set_sensitive(val)
 
     def _on_button_remove_clicked(self, button):
         model, aiter = self.devicegroupsview.get_selection().get_selected()
@@ -317,6 +372,22 @@ class DVBPreferences(gtk.Window):
                     print "Success: create group"
                 else:
                     print "Error: create group"
+            dialog.destroy()
+            
+    def _on_button_add_clicked(self, button):
+        model, aiter = self.unassigned_view.get_selection().get_selected()
+
+        if aiter != None:
+            device = self.unassigned_devices[aiter][0]
+            dialog = AddToGroupDialog(self, self._model)
+            if dialog.run() == gtk.RESPONSE_ACCEPT:
+                group_id = dialog.get_selected_group()
+                if self._model.add_device_to_existing_group(device.adapter,
+                    device.frontend, group_id):
+                    print "Success: add to group"
+                else:
+                    print "Error: add to group"
+                
             dialog.destroy()
 
     def _on_manager_changed(self, manager, group_id, change_type):
