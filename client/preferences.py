@@ -45,13 +45,20 @@ class DeviceGroupsStore (gtk.TreeStore):
     def __init__(self):
         gtk.TreeStore.__init__(self, gobject.TYPE_PYOBJECT)
         
-        
+    def get_groups(self):
+        groups = []
+        for row in self:
+            if not isinstance(row, Device):
+                groups.append((row[self.COL_DEVICE], row.iter))
+        return groups
+ 
+    
 class DeviceGroupsView (gtk.TreeView):
 
     def __init__(self, model):
         gtk.TreeView.__init__(self, model)
         self.set_headers_visible(False)
-        self.set_reorderable(True)
+        #self.set_reorderable(True)
         
         cell_description = gtk.CellRendererText ()
         column_description = gtk.TreeViewColumn ("Devices", cell_description)
@@ -279,7 +286,7 @@ class DVBPreferences(gtk.Window):
         
         self.button_remove = gtk.Button(label = "Remove")
         self.button_remove.connect("clicked", self._on_button_remove_clicked)
-        self.button_remove.set_tooltip_markup("Remove selected device or group")
+        self.button_remove.set_tooltip_markup("Remove selected device")
         delete_image = gtk.image_new_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
         self.button_remove.set_image(delete_image)
         self.button_remove.set_sensitive(False)
@@ -353,6 +360,15 @@ class DVBPreferences(gtk.Window):
             if isinstance(device, Device):
                 if self._model.remove_device_from_group(device):
                     print "Success: remove device"
+                    parent_iter = model.iter_parent(aiter)
+                    if parent_iter != None and model.iter_n_children(parent_iter) == 1:
+                        #model.remove(aiter)
+                        
+                        # Remove empty group
+                        self._model.delete_device_group(device.group)
+                    
+                    # Add device to unassigned devices
+                    self.unassigned_devices.append([device])
                 else:
                     print "Error: remove device"
             else:
@@ -370,6 +386,7 @@ class DVBPreferences(gtk.Window):
                 if self._model.add_device_to_new_group(device.adapter,
                         device.frontend, channels, recdir):
                     print "Success: create group"
+                    model.remove(aiter)
                 else:
                     print "Error: create group"
             dialog.destroy()
@@ -385,17 +402,50 @@ class DVBPreferences(gtk.Window):
                 if self._model.add_device_to_existing_group(device.adapter,
                     device.frontend, group_id):
                     print "Success: add to group"
+                    model.remove(aiter)
                 else:
                     print "Error: add to group"
                 
             dialog.destroy()
 
     def _on_manager_changed(self, manager, group_id, change_type):
-        pass
+        # A group has been added or deleted
+        if change_type == 0:
+            # Added
+            # TODO
+            pass
+        elif change_type == 1:
+            # Removed
+            aiter = self.devicegroups.get_iter_first()
+            # Iterate over groups
+            while aiter != None:
+                group = self.devicegroups[aiter][self.devicegroups.COL_DEVICE]
+                if group == group_id:
+                    self.devicegroups.remove(aiter)
+                    return
+                aiter = self.devicegroups.iter_next(aiter)
         
     def _on_group_changed(self, manager, group_id, adapter, frontend, change_type):
-        pass
-
+        # Iterate over groups
+        for group, aiter in self.devicegroups.get_groups():
+            if group == group_id:
+                if change_type == 0:
+                    # Added
+                    info = gnomedvb.get_adapter_info(adapter)
+                    device = Device (group_id, info["name"], adapter, frontend, info["type"])
+                    dev_iter = self.devicegroups.append(aiter)
+                    self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
+                    break
+                elif change_type == 1:
+                    # Removed
+                    child_iter =  self.devicegroups.iter_children(aiter)
+                    while child_iter != None:
+                        device = self.devicegroups[child_iter][self.devicegroups.COL_DEVICE]
+                        if device.adapter == adapter and device.frontend == frontend:
+                             self.devicegroups.remove(child_iter)
+                             return
+                        child_iter = self.devicegroups.iter_next(child_iter)
+                    
 
 class DVBModel (gnomedvb.DVBManagerClient):
 
