@@ -231,7 +231,6 @@ namespace DVB {
                 Device dev = new Device (adapter, frontend, false);
                 
                 if (devgroup.contains (dev)) {
-                    // TODO might not work, because we create a new device instance
                     if (devgroup.remove (dev)) {
                         GConfStore.get_instance ().remove_device_from_group (
                             dev, devgroup);
@@ -239,8 +238,6 @@ namespace DVB {
                             ChangeType.DELETED);
                         return true;
                     }
-                    
-                    return false;
                 }
             }
             
@@ -262,9 +259,9 @@ namespace DVB {
                         GConfStore.get_instance ().remove_device_group (
                             devgroup);
                         this.changed (group_id, ChangeType.DELETED);
+                        
+                        return true;
                     }
-                    
-                    return false;
                 }
             }
             
