@@ -131,42 +131,54 @@ class NewGroupDialog (gtk.Dialog):
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                       gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-            
-        table = gtk.Table(rows=2, columns=3)
-        table.set_row_spacings(12)
-        table.set_col_spacings(6)
-        table.show()
-        self.vbox.pack_start(table)
         
-        channels = gtk.Label()
-        channels.set_markup("<b>Channels File:</b>")
+        self.set_default_size(400, 150)
+        
+        channels = AlignedLabel("<b>Channels File</b>")
         channels.show()
-        table.attach(channels, 0, 1, 0, 1, xoptions=0, yoptions=0)
+        self.vbox.pack_start(channels, False, False, 0)
         
+        channels_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
+        channels_ali.set_padding(0, 0, 12, 0)
+        channels_ali.show()
+        self.vbox.pack_start(channels_ali)
+        
+        channelsbox = gtk.HBox(spacing=3)
+        channelsbox.show()
+        channels_ali.add(channelsbox)
         self.channels_entry = gtk.Entry()
         self.channels_entry.set_editable(False)
         self.channels_entry.show()
-        table.attach(self.channels_entry, 1, 2, 0, 1)
+        channelsbox.pack_start(self.channels_entry)
         
         channels_open = gtk.Button(stock=gtk.STOCK_OPEN)
         channels_open.connect("clicked", self._on_channels_open_clicked)
         channels_open.show()
-        table.attach(channels_open, 2, 3, 0, 1, xoptions=0, yoptions=0)
+        channelsbox.pack_start(channels_open, False, False, 0)
         
-        recordings = gtk.Label()
-        recordings.set_markup("<b>Recordings' Directory:</b>")
+        
+        recordings = AlignedLabel("<b>Recordings' Directory</b>")
         recordings.show()
-        table.attach(recordings, 0, 1, 1, 2, xoptions=0, yoptions=0)
+        self.vbox.pack_start(recordings, False, False, 0)
+        
+        rec_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
+        rec_ali.set_padding(0, 0, 12, 0)
+        rec_ali.show()
+        self.vbox.pack_start(rec_ali)
+        
+        recbox = gtk.HBox(spacing=6)
+        recbox.show()
+        rec_ali.add(recbox)
         
         self.recordings_entry = gtk.Entry()
         self.recordings_entry.set_editable(False)
         self.recordings_entry.show()
-        table.attach(self.recordings_entry, 1, 2, 1, 2)
+        recbox.pack_start(self.recordings_entry)
         
         recordings_open = gtk.Button(stock=gtk.STOCK_OPEN)
         recordings_open.connect("clicked", self._on_recordings_open_clicked)
         recordings_open.show()
-        table.attach(recordings_open, 2, 3, 1, 2, xoptions=0, yoptions=0)
+        recbox.pack_start(recordings_open, False, False, 0)
         
     def _on_channels_open_clicked(self, button):
         dialog = gtk.FileChooserDialog (title = "Select File",
@@ -197,15 +209,12 @@ class AddToGroupDialog (gtk.Dialog):
                       gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
                 
         self.__selected_group = None
+        self.vbox.set_spacing(6)
                 
-        hbox = gtk.HBox(spacing=6)
-        hbox.show()
-        self.vbox.pack_start(hbox)
-        
         label = gtk.Label()
-        label.set_markup("<b>Group:</b>")
+        label.set_markup("<b>Select a group:</b>")
         label.show()
-        hbox.pack_start(label, False, False, 0)
+        self.vbox.pack_start(label, False, False, 0)
         
         self.groups = gtk.ListStore(str, int)
         
@@ -215,10 +224,9 @@ class AddToGroupDialog (gtk.Dialog):
         combo.pack_start(cell)
         combo.add_attribute(cell, "text", 0)
         combo.show()
-        hbox.pack_start(combo)
+        self.vbox.pack_start(combo)
                       
         for group_id in model.get_registered_device_groups():
-            print model.get_type_of_device_group(group_id)
             if model.get_type_of_device_group(group_id) == device_type:
                 group_name = "Group %d" % group_id
                 self.groups.append([group_name, group_id])
@@ -272,6 +280,8 @@ class DVBPreferences(gtk.Window):
         
         self._fill()
         
+        self.devicegroupsview.expand_all()
+        
     def __create_registered_groups(self):
         self.groups_box = gtk.HBox(spacing=6)
         self.groups_box.show()
@@ -286,11 +296,9 @@ class DVBPreferences(gtk.Window):
         buttonbox.set_layout(gtk.BUTTONBOX_START)
         buttonbox.show()
         
-        self.button_remove = gtk.Button(label = "Remove")
+        self.button_remove = gtk.Button(stock=gtk.STOCK_REMOVE)
         self.button_remove.connect("clicked", self._on_button_remove_clicked)
         self.button_remove.set_tooltip_markup("Remove selected device")
-        delete_image = gtk.image_new_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
-        self.button_remove.set_image(delete_image)
         self.button_remove.set_sensitive(False)
         self.button_remove.show()
         buttonbox.pack_start(self.button_remove)
@@ -311,15 +319,19 @@ class DVBPreferences(gtk.Window):
         buttonbox.set_layout(gtk.BUTTONBOX_START)
         buttonbox.show()
         
-        self.button_new = gtk.Button(stock=gtk.STOCK_NEW)
+        self.button_new = gtk.Button(label="Create new group")
         self.button_new.connect("clicked", self._on_button_new_clicked)
+        new_image = gtk.image_new_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_BUTTON)
+        self.button_new.set_image(new_image)
         self.button_new.set_tooltip_markup("Create new group for selected device")
         self.button_new.set_sensitive(False)
         self.button_new.show()
         buttonbox.pack_start(self.button_new)
         
-        self.button_add = gtk.Button(stock=gtk.STOCK_ADD)
+        self.button_add = gtk.Button(label="Add to group")
         self.button_add.connect("clicked", self._on_button_add_clicked)
+        add_image = gtk.image_new_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_BUTTON)
+        self.button_add.set_image(add_image)
         self.button_add.set_tooltip_markup("Add selected device to existing group")
         self.button_add.set_sensitive(False)
         self.button_add.show()
@@ -345,7 +357,10 @@ class DVBPreferences(gtk.Window):
     def _on_groups_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         
-        self.button_remove.set_sensitive(aiter != None)
+        if aiter != None and \
+            isinstance(self.devicegroups[aiter][self.devicegroups.COL_DEVICE],
+                Device):
+            self.button_remove.set_sensitive(aiter != None)
 
     def _on_unassigned_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
@@ -367,8 +382,6 @@ class DVBPreferences(gtk.Window):
                     self.unassigned_devices.append([device])
                 else:
                     print "Error: remove device"
-            else:
-                pass
 
     def _on_button_new_clicked(self, button):
         model, aiter = self.unassigned_view.get_selection().get_selected()
