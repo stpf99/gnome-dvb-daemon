@@ -360,12 +360,6 @@ class DVBPreferences(gtk.Window):
             if isinstance(device, Device):
                 if self._model.remove_device_from_group(device):
                     print "Success: remove device"
-                    parent_iter = model.iter_parent(aiter)
-                    if parent_iter != None and model.iter_n_children(parent_iter) == 1:
-                        #model.remove(aiter)
-                        
-                        # Remove empty group
-                        self._model.delete_device_group(device.group)
                     
                     # Add device to unassigned devices
                     self.unassigned_devices.append([device])

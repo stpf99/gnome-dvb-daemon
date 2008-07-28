@@ -222,7 +222,8 @@ namespace DVB {
          * @group_id: ID of device group
          * @returns: TRUE when device has been removed successfully
          *
-         * Removes the device from the specified group.
+         * Removes the device from the specified group. If the group contains
+         * no devices after the removal it's removed as well.
          */
         public bool RemoveDeviceFromGroup (uint adapter, uint frontend,
                 uint group_id) {
@@ -236,30 +237,15 @@ namespace DVB {
                             dev, devgroup);
                         this.group_changed (group_id, adapter, frontend,
                             ChangeType.DELETED);
-                        return true;
-                    }
-                }
-            }
-            
-            return false;
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @returns: TRUE when device has been removed successfully
-         *
-         * Deletes the specified group. The group must be empty.
-         */
-        public bool DeleteDeviceGroup (uint group_id) {
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                
-                if (devgroup.size == 0) {
-                    if (this.devices.remove (group_id)) {
-                        GConfStore.get_instance ().remove_device_group (
-                            devgroup);
-                        this.changed (group_id, ChangeType.DELETED);
-                        
+                            
+                        if (devgroup.size == 0) {
+                            if (this.devices.remove (group_id)) {
+                                GConfStore.get_instance ().remove_device_group (
+                                    devgroup);
+                                this.changed (group_id, ChangeType.DELETED);
+                            }
+                        }   
+                            
                         return true;
                     }
                 }

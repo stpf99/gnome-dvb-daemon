@@ -104,9 +104,6 @@ class DVBManagerClient(gobject.GObject):
     def remove_device_from_group(self, adapter, frontend, group_id):
         return self.manager.RemoveDeviceFromGroup(adapter, frontend, group_id)
         
-    def delete_device_group(self, group_id):
-        return self.manager.DeleteDeviceGroup(group_id)
-        
     def get_device_group_members(self, group_id):
         return self.manager.GetDeviceGroupMembers(group_id)
         
