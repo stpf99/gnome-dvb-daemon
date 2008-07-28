@@ -189,7 +189,7 @@ class NewGroupDialog (gtk.Dialog):
          
 class AddToGroupDialog (gtk.Dialog):
 
-    def __init__(self, parent, model):
+    def __init__(self, parent, model, device_type):
         gtk.Dialog.__init__(self, title="Add To Group",
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -218,8 +218,10 @@ class AddToGroupDialog (gtk.Dialog):
         hbox.pack_start(combo)
                       
         for group_id in model.get_registered_device_groups():
-            group_name = "Group %d" % group_id
-            self.groups.append([group_name, group_id])
+            print model.get_type_of_device_group(group_id)
+            if model.get_type_of_device_group(group_id) == device_type:
+                group_name = "Group %d" % group_id
+                self.groups.append([group_name, group_id])
             
     def on_combo_changed(self, combo):
         aiter = combo.get_active_iter()
@@ -390,7 +392,7 @@ class DVBPreferences(gtk.Window):
 
         if aiter != None:
             device = self.unassigned_devices[aiter][0]
-            dialog = AddToGroupDialog(self, self._model)
+            dialog = AddToGroupDialog(self, self._model, device.type)
             if dialog.run() == gtk.RESPONSE_ACCEPT:
                 group_id = dialog.get_selected_group()
                 if self._model.add_device_to_existing_group(device.adapter,
