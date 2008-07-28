@@ -115,6 +115,27 @@ namespace DVB {
         
         /**
          * @group_id: ID of device group
+         * @returns: Name of adapter type the group holds
+         * or an empty string when group with given id doesn't exist.
+         */
+        public string GetTypeOfDeviceGroup (uint group_id) {
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                string type_str;
+                switch (devgroup.Type) {
+                    case AdapterType.DVB_T: type_str = "DVB-T"; break;
+                    case AdapterType.DVB_S: type_str = "DVB-S"; break;
+                    case AdapterType.DVB_C: type_str = "DVB-C"; break;
+                    default: type_str = ""; break;
+                }
+                return type_str;
+            }
+            
+            return "";
+        }
+        
+        /**
+         * @group_id: ID of device group
          * @returns: Object path of the device's recorder
          * 
          * Returns the object path to the device's recorder.

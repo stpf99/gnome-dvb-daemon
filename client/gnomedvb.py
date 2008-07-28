@@ -107,6 +107,9 @@ class DVBManagerClient(gobject.GObject):
     def get_device_group_members(self, group_id):
         return self.manager.GetDeviceGroupMembers(group_id)
         
+    def get_type_of_device_group(self, group_id):
+        return self.manager.GetTypeOfDeviceGroup(group_id)
+        
     def on_changed(self, group_id, change_type):
         self.emit("changed", group_id, change_type)
         
