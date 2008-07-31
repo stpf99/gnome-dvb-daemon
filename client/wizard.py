@@ -95,7 +95,7 @@ class InitialTuningDataPage(BasePage):
 		
 		for widget in self.get_children():
 			widget.destroy()
-		
+			
 		if info["type"] == "DVB-T":
 			self.setup_dvb_t()
 		elif info["type"] == "DVB-S":
@@ -106,6 +106,13 @@ class InitialTuningDataPage(BasePage):
 	def get_tuning_data(self):
 		return self.__tuning_data
 		
+	def _create_table(self):
+		self.table = gtk.Table(rows=4, columns=2)
+		self.table.set_row_spacings(6)
+		self.table.set_col_spacings(3)
+		self.table.show()
+		self.pack_start(self.table)
+		
 	def setup_dvb_t(self):
 		countries = { "at": "Austria", "au": "Australia", "be": "Belgium",
  	        "ch": "Switzerland", "cz": "Czech Republic", "de": "Germany",
@@ -115,11 +122,7 @@ class InitialTuningDataPage(BasePage):
  	        "pl": "Poland", "se": "Sweden", "sk": "Slovakia", "tw": "Taiwan",
  	        "uk": "United Kingdom" }
 	
-		self.table = gtk.Table(rows=4, columns=2)
-		self.table.set_row_spacings(6)
-		self.table.set_col_spacings(3)
-		self.table.show()
-		self.pack_start(self.table)
+		self._create_table()
 		
 		country = gtk.Label()
 		country.set_markup("<b>Country:</b>")
@@ -133,28 +136,28 @@ class InitialTuningDataPage(BasePage):
 			self.countries.append([name, code])
 	
 		self.country_combo = gtk.ComboBox(self.countries)
-		self.country_combo.connect('changed', self.on_country_changed)
+		self.country_combo.connect('changed', self.on_country_changed, "dvb-t")
 		cell = gtk.CellRendererText()
 		self.country_combo.pack_start(cell)
 		self.country_combo.add_attribute(cell, "text", 0)
 		self.country_combo.show()
 		self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
 		
-		self.antenna_label = gtk.Label()
-		self.antenna_label.set_markup("<b>Antenna:</b>")
-		self.antenna_label.hide()
-		self.table.attach(self.antenna_label, 0, 1, 1, 2, yoptions=0)
+		self.providers_label = gtk.Label()
+		self.providers_label.set_markup("<b>Antenna:</b>")
+		self.providers_label.hide()
+		self.table.attach(self.providers_label, 0, 1, 1, 2, yoptions=0)
 		
-		self.antennas = gtk.ListStore(str, str)
-		self.antennas.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		self.providers = gtk.ListStore(str, str)
+		self.providers.set_sort_column_id(0, gtk.SORT_ASCENDING)
 		
-		self.antenna_combo = gtk.ComboBox(self.antennas)
-		self.antenna_combo.connect('changed', self.on_antenna_changed)
+		self.providers_combo = gtk.ComboBox(self.providers)
+		self.providers_combo.connect('changed', self.on_providers_changed)
 		cell = gtk.CellRendererText()
-		self.antenna_combo.pack_start(cell)
-		self.antenna_combo.add_attribute(cell, "text", 0)
-		self.table.attach(self.antenna_combo, 1, 2, 1, 2, yoptions=0)
-		self.antenna_combo.hide()
+		self.providers_combo.pack_start(cell)
+		self.providers_combo.add_attribute(cell, "text", 0)
+		self.table.attach(self.providers_combo, 1, 2, 1, 2, yoptions=0)
+		self.providers_combo.hide()
 		
 	def setup_dvb_s(self):
 		hbox = gtk.HBox(spacing=6)
@@ -180,31 +183,72 @@ class InitialTuningDataPage(BasePage):
 		self.read_satellites()
 		
 	def setup_dvb_c(self):
-		pass
+		countries = { "at": "Austria", "be": "Belgium",
+ 	        "ch": "Switzerland", "de": "Germany", "fi": "Finland",
+ 	        "lu": "Luxemburg", "nl": "Netherlands", "se": "Sweden",
+ 	        "no": "Norway"
+ 	        }
+ 	   	
+		self._create_table()	
+ 	   	
+		country = gtk.Label()
+		country.set_markup("<b>Country:</b>")
+		country.show()
+		self.table.attach(country, 0, 1, 0, 1, yoptions=0)
 	
-	def on_country_changed(self, combo):
+		self.countries = gtk.ListStore(str, str)
+		self.countries.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		
+		for code, name in countries.items():
+			self.countries.append([name, code])
+	
+		self.country_combo = gtk.ComboBox(self.countries)
+		self.country_combo.connect('changed', self.on_country_changed, "dvb-c")
+		cell = gtk.CellRendererText()
+		self.country_combo.pack_start(cell)
+		self.country_combo.add_attribute(cell, "text", 0)
+		self.country_combo.show()
+		self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
+		
+		self.providers_label = gtk.Label()
+		self.providers_label.set_markup("<b>Providers:</b>")
+		self.providers_label.hide()
+		self.table.attach(self.providers_label, 0, 1, 1, 2, yoptions=0)
+		
+		self.providers = gtk.ListStore(str, str)
+		self.providers.set_sort_column_id(0, gtk.SORT_ASCENDING)
+		
+		self.providers_combo = gtk.ComboBox(self.providers)
+		self.providers_combo.connect('changed', self.on_providers_changed)
+		cell = gtk.CellRendererText()
+		self.providers_combo.pack_start(cell)
+		self.providers_combo.add_attribute(cell, "text", 0)
+		self.table.attach(self.providers_combo, 1, 2, 1, 2, yoptions=0)
+		self.providers_combo.hide()
+	
+	def on_country_changed(self, combo, directory):
 		aiter = combo.get_active_iter()
 		
 		if aiter != None:
 			selected_country = self.countries[aiter][1]
 	
-			self.antennas.clear()
+			self.providers.clear()
 			for d in DVB_APPS_DIRS:
 				if os.access(d, os.F_OK | os.R_OK):
-					for f in os.listdir(os.path.join(d, 'dvb-t')):
+					for f in os.listdir(os.path.join(d, directory)):
 						country, city = f.split('-', 1)
 					
 						if country == selected_country:
-							self.antennas.append([city, os.path.join(d, 'dvb-t', f)])
+							self.providers.append([city, os.path.join(d, directory, f)])
 		
-			self.antenna_label.show()
-			self.antenna_combo.show()
+			self.providers_label.show()
+			self.providers_combo.show()
 		
-	def on_antenna_changed(self, combo):
+	def on_providers_changed(self, combo):
 		aiter = combo.get_active_iter()
 		
 		if aiter != None:
-			self.__tuning_data = self.antennas[aiter][1]
+			self.__tuning_data = self.providers[aiter][1]
 			self.emit("finished")
 	
 	def read_satellites(self):
