@@ -105,23 +105,17 @@ class AlignedScrolledWindow (gtk.Alignment):
 
 class Frame (gtk.VBox):
 
-    def __init__(self, markup, child, buttonbox):
+    def __init__(self, markup, child):
         gtk.VBox.__init__(self, spacing=6)
     
         label = AlignedLabel(markup)
         label.show()
         self.pack_start(label, False, False, 0)
         
-        self.hbox = gtk.HBox(spacing=6)
-        self.hbox.show()
-        self.pack_start(self.hbox)
-        
         view = AlignedScrolledWindow(child)
         view.show()
-        self.hbox.pack_start(view)
+        self.pack_start(view)
         
-        self.hbox.pack_start(buttonbox, False, False, 0)
-
 
 class NewGroupDialog (gtk.Dialog):
 
@@ -137,6 +131,7 @@ class NewGroupDialog (gtk.Dialog):
         channels = AlignedLabel("<b>Channels File</b>")
         channels.show()
         self.vbox.pack_start(channels, False, False, 0)
+        self.vbox.set_spacing(6)
         
         channels_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
         channels_ali.set_padding(0, 0, 12, 0)
@@ -155,7 +150,6 @@ class NewGroupDialog (gtk.Dialog):
         channels_open.connect("clicked", self._on_channels_open_clicked)
         channels_open.show()
         channelsbox.pack_start(channels_open, False, False, 0)
-        
         
         recordings = AlignedLabel("<b>Recordings' Directory</b>")
         recordings.show()
@@ -241,6 +235,7 @@ class AddToGroupDialog (gtk.Dialog):
       
     def get_selected_group(self):
         return self.__selected_group   
+
          
 class DVBPreferences(gtk.Window):
 
@@ -255,11 +250,17 @@ class DVBPreferences(gtk.Window):
         self.connect('destroy-event', gtk.main_quit)
         self.set_title("Configure DVB")
         self.set_default_size(600, 450)
-        self.set_border_width(6)
+        
+        self.vbox_outer = gtk.VBox()
+        self.vbox_outer.show()
+        self.add(self.vbox_outer)
+        
+        self.__create_toolbar()
         
         self.vbox = gtk.VBox(spacing=12)
-        self.add(self.vbox)
+        self.vbox.set_border_width(6)
         self.vbox.show()
+        self.vbox_outer.pack_start(self.vbox)
         
         self.__create_registered_groups()
         self.__create_unassigned_devices()
@@ -282,6 +283,40 @@ class DVBPreferences(gtk.Window):
         
         self.devicegroupsview.expand_all()
         
+    def __create_toolbar(self):
+        toolbar = gtk.Toolbar()
+        toolbar.show()
+        self.vbox_outer.pack_start(toolbar, False)
+        
+        self.button_remove = gtk.ToolButton(gtk.STOCK_REMOVE)
+        self.button_remove.connect("clicked", self._on_button_remove_clicked)
+        self.button_remove.set_sensitive(False)
+        self.button_remove.set_tooltip_markup("Remove selected device")
+        self.button_remove.show()
+        toolbar.insert(self.button_remove, 0)
+        
+        sep = gtk.SeparatorToolItem()
+        sep.show()
+        toolbar.insert(sep, 1)
+        
+        new_image = gtk.image_new_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        new_image.show()
+        self.button_new = gtk.ToolButton(icon_widget=new_image, label="Create new group")
+        self.button_new.connect("clicked", self._on_button_new_clicked)
+        self.button_new.set_sensitive(False)
+        self.button_new.set_tooltip_markup("Create new group for selected device")
+        self.button_new.show()
+        toolbar.insert(self.button_new, 2)
+        
+        add_image = gtk.image_new_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        add_image.show()
+        self.button_add = gtk.ToolButton(icon_widget=add_image, label="Add to group")
+        self.button_add.connect("clicked", self._on_button_add_clicked)
+        self.button_add.set_sensitive(False)
+        self.button_add.set_tooltip_markup("Add selected device to existing group")
+        self.button_add.show()
+        toolbar.insert(self.button_add, 3)
+        
     def __create_registered_groups(self):
         self.groups_box = gtk.HBox(spacing=6)
         self.groups_box.show()
@@ -289,56 +324,25 @@ class DVBPreferences(gtk.Window):
     
         self.devicegroups = DeviceGroupsStore()
         self.devicegroupsview = DeviceGroupsView(self.devicegroups)
+        self.devicegroupsview.connect("focus-out-event", self._on_focus_out, [self.button_remove])
+        self.devicegroupsview.connect("focus-in-event", self._on_focus_in, [self.button_remove])
         self.devicegroupsview.get_selection().connect("changed", self._on_groups_selection_changed)
         self.devicegroupsview.show()
         
-        buttonbox = gtk.VButtonBox()
-        buttonbox.set_layout(gtk.BUTTONBOX_START)
-        buttonbox.show()
-        
-        self.button_remove = gtk.Button(stock=gtk.STOCK_REMOVE)
-        self.button_remove.connect("clicked", self._on_button_remove_clicked)
-        self.button_remove.set_tooltip_markup("Remove selected device")
-        self.button_remove.set_sensitive(False)
-        self.button_remove.show()
-        buttonbox.pack_start(self.button_remove)
-        
-        groups_frame = Frame("<b>Registered groups</b>", self.devicegroupsview,
-            buttonbox)
+        groups_frame = Frame("<b>Registered groups</b>", self.devicegroupsview)
         groups_frame.show()
         self.groups_box.pack_start(groups_frame)
-
+    
     def __create_unassigned_devices(self):
         self.unassigned_devices = UnassignedDevicesStore()
         self.unassigned_view = DeviceGroupsView(self.unassigned_devices)
+        self.unassigned_view.connect("focus-out-event", self._on_focus_out, [self.button_add, self.button_new])
+        self.unassigned_view.connect("focus-in-event", self._on_focus_in, [self.button_add, self.button_new])
         self.unassigned_view.get_selection().connect("changed",
             self._on_unassigned_selection_changed)
         self.unassigned_view.show()
         
-        buttonbox = gtk.VButtonBox()
-        buttonbox.set_layout(gtk.BUTTONBOX_START)
-        buttonbox.show()
-        
-        self.button_new = gtk.Button(label="Create new group")
-        self.button_new.connect("clicked", self._on_button_new_clicked)
-        new_image = gtk.image_new_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_BUTTON)
-        self.button_new.set_image(new_image)
-        self.button_new.set_tooltip_markup("Create new group for selected device")
-        self.button_new.set_sensitive(False)
-        self.button_new.show()
-        buttonbox.pack_start(self.button_new)
-        
-        self.button_add = gtk.Button(label="Add to group")
-        self.button_add.connect("clicked", self._on_button_add_clicked)
-        add_image = gtk.image_new_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_BUTTON)
-        self.button_add.set_image(add_image)
-        self.button_add.set_tooltip_markup("Add selected device to existing group")
-        self.button_add.set_sensitive(False)
-        self.button_add.show()
-        buttonbox.pack_start(self.button_add)
-        
-        unassigned_frame = Frame("<b>Unassigned devices</b>", self.unassigned_view,
-            buttonbox)
+        unassigned_frame = Frame("<b>Unassigned devices</b>", self.unassigned_view)
         unassigned_frame.show()
         self.vbox.pack_start(unassigned_frame)
         
@@ -378,14 +382,24 @@ class DVBPreferences(gtk.Window):
         
         if aiter != None:
             device = model[aiter][model.COL_DEVICE]
-            if isinstance(device, Device):
-                if self._model.remove_device_from_group(device):
-                    print "Success: remove device"
-                    
-                    # Add device to unassigned devices
-                    self.unassigned_devices.append([device])
-                else:
-                    print "Error: remove device"
+        
+            dialog = gtk.MessageDialog(parent=self,
+                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+            dialog.set_markup(
+                "Are you sure you want to remove device <b>%s</b> from <b>group %s</b>" % (device.name,
+                device.group))
+            response = dialog.run()
+            dialog.destroy()
+            if response == gtk.RESPONSE_YES:
+                if isinstance(device, Device):
+                    if self._model.remove_device_from_group(device):
+                        print "Success: remove device"
+                        
+                        # Add device to unassigned devices
+                        self.unassigned_devices.append([device])
+                    else:
+                        print "Error: remove device"
 
     def _on_button_new_clicked(self, button):
         model, aiter = self.unassigned_view.get_selection().get_selected()
@@ -461,7 +475,15 @@ class DVBPreferences(gtk.Window):
                              self.devicegroups.remove(child_iter)
                              return
                         child_iter = self.devicegroups.iter_next(child_iter)
-                    
+           
+    def _on_focus_out(self, treeview, event, widgets):
+        for w in widgets:
+            w.set_sensitive(False)
+            
+    def _on_focus_in(self, treeview, event, widgets):
+        for w in widgets:
+            w.set_sensitive(True)
+                        
 
 class DVBModel (gnomedvb.DVBManagerClient):
 
