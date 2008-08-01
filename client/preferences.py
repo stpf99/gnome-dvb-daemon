@@ -357,9 +357,13 @@ class DVBPreferences(gtk.Window):
     def _on_groups_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         
-        if aiter != None and \
-            isinstance(self.devicegroups[aiter][self.devicegroups.COL_DEVICE],
-                Device):
+        if aiter != None:
+            if isinstance(self.devicegroups[aiter][self.devicegroups.COL_DEVICE],
+                    Device):
+                self.button_remove.set_sensitive(True)
+            else:
+                self.button_remove.set_sensitive(False)
+        else:
             self.button_remove.set_sensitive(aiter != None)
 
     def _on_unassigned_selection_changed(self, treeselection):
