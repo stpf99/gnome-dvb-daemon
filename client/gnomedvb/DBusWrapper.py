@@ -6,6 +6,16 @@ import gobject
 import gst
 import re
 
+__all__= [
+    "get_adapter_info",
+    "get_dvb_devices",
+    "DVBManagerClient",
+    "DVBScannerClient",
+    "DVBRecordingsStoreClient",
+    "DVBRecorderClient",
+    "DVBChannelListClient",   
+]
+
 service = "org.gnome.DVB"
 manager_iface = "org.gnome.DVB.Manager"
 manager_path = "/org/gnome/DVB/Manager"

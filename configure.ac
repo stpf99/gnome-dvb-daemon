@@ -61,6 +61,10 @@ AC_SUBST(PYTHONDIR)
 AC_CONFIG_FILES([
 	Makefile
 	client/Makefile
+	client/gnomedvb/Makefile
+	client/gnomedvb/preferences/Makefile
+	client/gnomedvb/preferences/model/Makefile
+	client/gnomedvb/preferences/ui/Makefile
 	data/Makefile
 	po/Makefile.in])
 

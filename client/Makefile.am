@@ -1,3 +1,8 @@
-gnomedvbdir = $(pythondir)
-gnomedvb_PYTHON = \
-	gnomedvb.py
+SUBDIRS = \
+	gnomedvb
+	
+gnomedvbbindir = $(bindir)
+gnomedvbbin_SCRIPTS = dvb-preferences.py
+
+EXTRA_DIST = \
+	dvb-preferences.py

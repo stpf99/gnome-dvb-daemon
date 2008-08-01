@@ -44,3 +44,4 @@ depcomp
 po/POTFILES
 INSTALL
 compile
+dvb-daemon-*.tar.*
