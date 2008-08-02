@@ -1,6 +1,7 @@
 AC_INIT([dvb-daemon], [0.1.0], [marduk@k-d-w.org], [dvb-daemon])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
 
@@ -11,8 +12,6 @@ AC_PROG_LIBTOOL
 
 AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
-
-AM_PATH_PYTHON
 
 AH_TEMPLATE([GETTEXT_PACKAGE], [dvb-daemon])
 GETTEXT_PACKAGE=dvb-daemon
@@ -33,7 +32,7 @@ GEE_REQUIRED=0.1.4
 GCONF_REQUIRED=2.6.1
 
 PKG_CHECK_MODULES(DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
-							gio-2.0 >= $GIO_REQUIRED
+                            gio-2.0 >= $GIO_REQUIRED
                             gobject-2.0 >= $GLIB_REQUIRED
                             gstreamer-0.10 >= $GST_REQUIRED
                             dbus-glib-1 >= $DBUS_REQUIRED
@@ -46,17 +45,37 @@ dnl Expansions
 SHAMROCK_EXPAND_DATADIR
 SHAMROCK_EXPAND_LIBDIR
 
-dnl ****************************************************************************
+dnl *************************************
 dnl * Check for DBUS Services directory
-dnl ****************************************************************************
+dnl *************************************
 DBUS_REQUIRED_VERSION=1.1
 PKG_CHECK_MODULES(DBUS, dbus-1 >= $DBUS_REQUIRED_VERSION)
 DBUS_SERVICES_DIR="$expanded_datadir/dbus-1/services"
 AC_SUBST(DBUS_SERVICES_DIR)
 AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR", [DBus services directory])
 
+dnl *********
+dnl * GConf
+dnl *********
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+AM_GCONF_SOURCE_2
+
+dnl **********
+dnl * Python
+dnl **********
+PYTHON_REQUIRED=2.5
+AM_PATH_PYTHON($PYTHON_REQUIRED)
+
 AS_AC_EXPAND(PYTHONDIR, $pythondir)
 AC_SUBST(PYTHONDIR)
+
+dnl ******************
+dnl * Python modules
+dnl *****************
+AM_CHECK_PYMOD(gobject)
+AM_CHECK_PYMOD(gtk)
+AM_CHECK_PYMOD(dbus)
+AM_CHECK_PYMOD(gst)
 
 AC_CONFIG_FILES([
 	Makefile
