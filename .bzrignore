@@ -44,4 +44,7 @@ depcomp
 po/POTFILES
 INSTALL
 compile
-dvb-daemon-*.tar.*
+py-compile
+gnome-dvb-daemon
+data/org.gnome.DVB.service
+gnome-dvb-daemon-*.tar.*

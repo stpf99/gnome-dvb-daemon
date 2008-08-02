@@ -4,6 +4,6 @@
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
-PKG_NAME="Projekte"
+PKG_NAME="gnome-dvb-daemon"
 
 . gnome-autogen.sh

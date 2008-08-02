@@ -1,4 +1,4 @@
-AC_INIT([dvb-daemon], [0.1.0], [marduk@k-d-w.org], [dvb-daemon])
+AC_INIT([gnome-dvb-daemon], [0.1.0], [marduk@k-d-w.org], [gnome-dvb-daemon])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
@@ -13,8 +13,8 @@ AC_PROG_LIBTOOL
 AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
 
-AH_TEMPLATE([GETTEXT_PACKAGE], [dvb-daemon])
-GETTEXT_PACKAGE=dvb-daemon
+AH_TEMPLATE([GETTEXT_PACKAGE], [gnome-dvb-daemon])
+GETTEXT_PACKAGE=gnome-dvb-daemon
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT
@@ -31,15 +31,15 @@ DBUS_REQUIRED=0.74
 GEE_REQUIRED=0.1.4
 GCONF_REQUIRED=2.6.1
 
-PKG_CHECK_MODULES(DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
+PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             gio-2.0 >= $GIO_REQUIRED
                             gobject-2.0 >= $GLIB_REQUIRED
                             gstreamer-0.10 >= $GST_REQUIRED
                             dbus-glib-1 >= $DBUS_REQUIRED
                             gee-1.0 >= $GEE_REQUIRED
                             gconf-2.0 >= $GCONF_REQUIRED)
-AC_SUBST(DVB_DAEMON_CFLAGS)
-AC_SUBST(DVB_DAEMON_LIBS)
+AC_SUBST(GNOME_DVB_DAEMON_CFLAGS)
+AC_SUBST(GNOME_DVB_DAEMON_LIBS)
 
 dnl Expansions
 SHAMROCK_EXPAND_DATADIR

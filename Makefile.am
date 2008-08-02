@@ -12,17 +12,17 @@ AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	$(DVB_DAEMON_CFLAGS) \
+	$(GNOME_DVB_DAEMON_CFLAGS) \
 	-include $(CONFIG_HEADER) \
 	$(NULL)
 
 BUILT_SOURCES = \
-	src/dvb-daemon.vala.stamp
+	src/gnome-dvb-daemon.vala.stamp
 	$(NULL)
 
-bin_PROGRAMS = dvb-daemon
+bin_PROGRAMS = gnome-dvb-daemon
 
-dvb_daemon_VALASOURCES = \
+gnome_dvb_daemon_VALASOURCES = \
 	src/Cable/CableChannel.vala \
 	src/Cable/CableScanner.vala \
 	src/Satellite/SatelliteChannel.vala \
@@ -57,35 +57,35 @@ dvb_daemon_VALASOURCES = \
 	src/Utils.vala \
 	$(NULL)
 
-dvb_daemon_SOURCES = \
-	$(dvb_daemon_VALASOURCES:.vala=.c) \
-	$(dvb_daemon_VALASOURCES:.vala=.h) \
+gnome_dvb_daemon_SOURCES = \
+	$(gnome_dvb_daemon_VALASOURCES:.vala=.c) \
+	$(gnome_dvb_daemon_VALASOURCES:.vala=.h) \
 	$(NULL)
 
 vala_pkgs = \
-	--pkg gio-2.0 \
+    --pkg gio-2.0 \
     --pkg dbus-glib-1 \
     --pkg gstreamer-0.10 \
     --pkg gee-1.0 \
     --pkg gconf-2.0
 
-src/dvb-daemon.vala.stamp: $(dvb_daemon_VALASOURCES)
+src/gnome-dvb-daemon.vala.stamp: $(gnome_dvb_daemon_VALASOURCES)
 	$(VALAC) -C --thread --vapidir=$(top_srcdir)/vapi --pkg config $(vala_pkgs) --basedir $(top_srcdir) $^
 	touch $@
 
-dvb_daemon_LDFLAGS = \
+gnome_dvb_daemon_LDFLAGS = \
 	-Wl,--export-dynamic
 
-dvb_daemon_LDADD = \
-	$(DVB_DAEMON_LIBS) \
+gnome_dvb_daemon_LDADD = \
+	$(GNOME_DVB_DAEMON_LIBS) \
 	$(NULL)
 
 EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-update.in \
 	intltool-merge.in \
-	$(dvb_daemon_VALASOURCES) \
-	src/dvb-daemon.vala.stamp \
+	$(gnome_dvb_daemon_VALASOURCES) \
+	src/gnome-dvb-daemon.vala.stamp \
 	$(NULL)
 
 DISTCLEANFILES = \
