@@ -3,3 +3,6 @@
 client/gnomedvb/preferences/ui/DeviceGroupsView.py
 client/gnomedvb/preferences/ui/Dialogs.py
 client/gnomedvb/preferences/ui/Preferences.py
+client/gnomedvb/timers/ui/CalendarDialog.py
+client/gnomedvb/timers/ui/RecorderWindow.py
+client/gnomedvb/timers/ui/TimerDialog.py

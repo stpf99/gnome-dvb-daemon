@@ -91,6 +91,8 @@ AC_CONFIG_FILES([
 	client/gnomedvb/preferences/Makefile
 	client/gnomedvb/preferences/model/Makefile
 	client/gnomedvb/preferences/ui/Makefile
+	client/gnomedvb/timers/Makefile
+	client/gnomedvb/timers/ui/Makefile
 	data/Makefile
 	po/Makefile.in])
 
