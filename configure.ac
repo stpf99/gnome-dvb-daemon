@@ -93,6 +93,8 @@ AC_CONFIG_FILES([
 	client/gnomedvb/preferences/ui/Makefile
 	client/gnomedvb/timers/Makefile
 	client/gnomedvb/timers/ui/Makefile
+	client/gnomedvb/wizard/Makefile
+	client/gnomedvb/wizard/pages/Makefile
 	data/Makefile
 	po/Makefile.in])
 

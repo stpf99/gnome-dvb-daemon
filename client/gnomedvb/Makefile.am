@@ -1,6 +1,7 @@
 SUBDIRS = \
     preferences \
-    timers
+    timers \
+    wizard
     
 gnomedvbdir = $(pythondir)/gnomedvb
 gnomedvb_PYTHON = \
