@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import gtk
+from gettext import gettext as _
 from Frame import AlignedLabel
 
 __all__ = ["AddToGroupDialog", "NewGroupDialog"]
@@ -7,7 +8,7 @@ __all__ = ["AddToGroupDialog", "NewGroupDialog"]
 class AddToGroupDialog (gtk.Dialog):
 
     def __init__(self, parent, model, device_type):
-        gtk.Dialog.__init__(self, title="Add To Group",
+        gtk.Dialog.__init__(self, title=_("Add To Group"),
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
@@ -17,7 +18,7 @@ class AddToGroupDialog (gtk.Dialog):
         self.vbox.set_spacing(6)
                 
         label = gtk.Label()
-        label.set_markup("<b>Select a group:</b>")
+        label.set_markup(_("<b>Select a group:</b>"))
         label.show()
         self.vbox.pack_start(label, False, False, 0)
         
@@ -33,7 +34,7 @@ class AddToGroupDialog (gtk.Dialog):
                       
         for group_id in model.get_registered_device_groups():
             if model.get_type_of_device_group(group_id) == device_type:
-                group_name = "Group %d" % group_id
+                group_name = _("Group %d") % group_id
                 self.groups.append([group_name, group_id])
             
     def on_combo_changed(self, combo):
@@ -51,7 +52,7 @@ class AddToGroupDialog (gtk.Dialog):
 class NewGroupDialog (gtk.Dialog):
 
     def __init__(self, parent):
-        gtk.Dialog.__init__(self, title="Create Group",
+        gtk.Dialog.__init__(self, title=_("Create Group"),
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
@@ -59,7 +60,7 @@ class NewGroupDialog (gtk.Dialog):
         
         self.set_default_size(400, 150)
         
-        channels = AlignedLabel("<b>Channels File</b>")
+        channels = AlignedLabel(_("<b>Channels File</b>"))
         channels.show()
         self.vbox.pack_start(channels, False, False, 0)
         self.vbox.set_spacing(6)
@@ -82,7 +83,7 @@ class NewGroupDialog (gtk.Dialog):
         channels_open.show()
         channelsbox.pack_start(channels_open, False, False, 0)
         
-        recordings = AlignedLabel("<b>Recordings' Directory</b>")
+        recordings = AlignedLabel(_("<b>Recordings' Directory</b>"))
         recordings.show()
         self.vbox.pack_start(recordings, False, False, 0)
         
@@ -106,7 +107,7 @@ class NewGroupDialog (gtk.Dialog):
         recbox.pack_start(recordings_open, False, False, 0)
         
     def _on_channels_open_clicked(self, button):
-        dialog = gtk.FileChooserDialog (title = "Select File",
+        dialog = gtk.FileChooserDialog (title = _("Select File"),
             parent=self, action=gtk.FILE_CHOOSER_ACTION_OPEN,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                       gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
@@ -115,7 +116,7 @@ class NewGroupDialog (gtk.Dialog):
         dialog.destroy()
     
     def _on_recordings_open_clicked(self, button):
-        dialog = gtk.FileChooserDialog (title = "Select Directory",
+        dialog = gtk.FileChooserDialog (title = _("Select Directory"),
             parent=self, action=gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                       gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))

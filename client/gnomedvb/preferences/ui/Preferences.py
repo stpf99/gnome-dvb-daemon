@@ -3,6 +3,7 @@ import gtk
 from Frame import Frame
 from Dialogs import *
 from DeviceGroupsView import *
+from gettext import gettext as _
 from gnomedvb.preferences.model.Device import Device
 
 class Preferences(gtk.Window):
@@ -59,7 +60,7 @@ class Preferences(gtk.Window):
         self.button_remove = gtk.ToolButton(gtk.STOCK_REMOVE)
         self.button_remove.connect("clicked", self._on_button_remove_clicked)
         self.button_remove.set_sensitive(False)
-        self.button_remove.set_tooltip_markup("Remove selected device")
+        self.button_remove.set_tooltip_markup(_("Remove selected device"))
         self.button_remove.show()
         toolbar.insert(self.button_remove, 0)
         
@@ -69,19 +70,19 @@ class Preferences(gtk.Window):
         
         new_image = gtk.image_new_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_SMALL_TOOLBAR)
         new_image.show()
-        self.button_new = gtk.ToolButton(icon_widget=new_image, label="Create new group")
+        self.button_new = gtk.ToolButton(icon_widget=new_image, label=_("Create new group"))
         self.button_new.connect("clicked", self._on_button_new_clicked)
         self.button_new.set_sensitive(False)
-        self.button_new.set_tooltip_markup("Create new group for selected device")
+        self.button_new.set_tooltip_markup(_("Create new group for selected device"))
         self.button_new.show()
         toolbar.insert(self.button_new, 2)
         
         add_image = gtk.image_new_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_SMALL_TOOLBAR)
         add_image.show()
-        self.button_add = gtk.ToolButton(icon_widget=add_image, label="Add to group")
+        self.button_add = gtk.ToolButton(icon_widget=add_image, label=_("Add to group"))
         self.button_add.connect("clicked", self._on_button_add_clicked)
         self.button_add.set_sensitive(False)
-        self.button_add.set_tooltip_markup("Add selected device to existing group")
+        self.button_add.set_tooltip_markup(_("Add selected device to existing group"))
         self.button_add.show()
         toolbar.insert(self.button_add, 3)
         
@@ -97,7 +98,7 @@ class Preferences(gtk.Window):
         self.devicegroupsview.get_selection().connect("changed", self._on_groups_selection_changed)
         self.devicegroupsview.show()
         
-        groups_frame = Frame("<b>Registered groups</b>", self.devicegroupsview)
+        groups_frame = Frame(_("<b>Registered groups</b>"), self.devicegroupsview)
         groups_frame.show()
         self.groups_box.pack_start(groups_frame)
     
@@ -110,7 +111,7 @@ class Preferences(gtk.Window):
             self._on_unassigned_selection_changed)
         self.unassigned_view.show()
         
-        unassigned_frame = Frame("<b>Unassigned devices</b>", self.unassigned_view)
+        unassigned_frame = Frame(_("<b>Unassigned devices</b>"), self.unassigned_view)
         unassigned_frame.show()
         self.vbox.pack_start(unassigned_frame)
         
@@ -155,7 +156,7 @@ class Preferences(gtk.Window):
                 flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                 type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
             dialog.set_markup(
-                "Are you sure you want to remove device <b>%s</b> from <b>group %s</b>" % (device.name,
+                _("Are you sure you want to remove device <b>%s</b> from <b>group %s</b>") % (device.name,
                 device.group))
             response = dialog.run()
             dialog.destroy()

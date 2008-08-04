@@ -66,6 +66,12 @@ dnl **********
 PYTHON_REQUIRED=2.5
 AM_PATH_PYTHON($PYTHON_REQUIRED)
 
+AS_AC_EXPAND(DATADIR, $datarootdir)
+AC_SUBST(DATADIR)
+
+AS_AC_EXPAND(LIBDIR, $libdir)
+AC_SUBST(LIBDIR)
+
 AS_AC_EXPAND(PYTHONDIR, $pythondir)
 AC_SUBST(PYTHONDIR)
 
@@ -80,6 +86,7 @@ AM_CHECK_PYMOD(gst)
 AC_CONFIG_FILES([
 	Makefile
 	client/Makefile
+	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
 	client/gnomedvb/preferences/Makefile
 	client/gnomedvb/preferences/model/Makefile

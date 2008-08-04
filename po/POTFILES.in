@@ -1,3 +1,5 @@
 [encoding: UTF-8]
 # List of source files which contain translatable strings.
-src/Main.vala
+client/gnomedvb/preferences/ui/DeviceGroupsView.py
+client/gnomedvb/preferences/ui/Dialogs.py
+client/gnomedvb/preferences/ui/Preferences.py

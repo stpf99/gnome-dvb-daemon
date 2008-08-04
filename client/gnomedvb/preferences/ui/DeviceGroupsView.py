@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import gtk
 import gobject
+from gettext import gettext as _
 from gnomedvb.preferences.model.Device import Device
 
 __all__ = ["UnassignedDevicesStore", "DeviceGroupsStore", "DeviceGroupsView"]
@@ -36,7 +37,7 @@ class DeviceGroupsView (gtk.TreeView):
         #self.set_reorderable(True)
         
         cell_description = gtk.CellRendererText ()
-        column_description = gtk.TreeViewColumn ("Devices", cell_description)
+        column_description = gtk.TreeViewColumn (_("Devices"), cell_description)
         column_description.set_cell_data_func(cell_description, self.get_description_data)
         self.append_column(column_description)
         
@@ -44,11 +45,12 @@ class DeviceGroupsView (gtk.TreeView):
         device = model[aiter][model.COL_DEVICE]
         
         if isinstance(device, Device):
-            text = "<b>%s (%s)</b>\n" % (device.name, device.type)
-            text += "<small>Adapter: %d, Frontend: %d</small>" % (device.adapter,
+            # translators: first is device's name, second its type
+            text = _("<b>%s (%s)</b>\n") % (device.name, device.type)
+            text += _("<small>Adapter: %d, Frontend: %d</small>") % (device.adapter,
                 device.frontend)
         else:
-            text = "Group %d" % device
+            text = _("Group %d") % device
             
         cell.set_property("markup", text)
 
