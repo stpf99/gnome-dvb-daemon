@@ -8,7 +8,7 @@ from BasePage import BasePage
 class ChannelScanPage(BasePage):
 
 	__gsignals__ = {
-        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
     }
 
 	def __init__(self):
@@ -90,7 +90,15 @@ class ChannelScanPage(BasePage):
 		#scanner.connect ("frequency-scanned", self.__on_freq_scanned)
 		scanner.connect ("channel-added", self.__on_channel_added)
 		scanner.connect ("finished", self.__on_finished)
-		scanner.add_scanning_data_from_file (tuning_data)
+		
+		if isinstance(tuning_data, str):
+			scanner.add_scanning_data_from_file (tuning_data)
+		elif isinstance(tuning_data, list):
+			for data in tuning_data:
+				scanner.add_scanning_data(data)
+		else:
+			scanner.destroy()
+			return None
 		
 		scanner.run()
 		
@@ -103,5 +111,5 @@ class ChannelScanPage(BasePage):
 			self.radiochannels.append([name, freq])
 		
 	def __on_finished(self, scanner):
-		self.emit("finished")
+		self.emit("finished", True)
 

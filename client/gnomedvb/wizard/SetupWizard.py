@@ -69,6 +69,8 @@ class SetupWizard(gtk.Assistant):
 				page.set_name(self.__adapter_info["name"])
 				self.__scanner = page.start_scanning(self.__adapter_info["adapter"],
 					self.__adapter_info["frontend"], self.tuning_data_page.get_tuning_data ())
+				if self.__scanner == None:
+					print "Invalid scanning data"
 		elif isinstance(page, SaveChannelListPage):
 			page.set_scanner(self.__scanner)
 		elif isinstance(page, SummaryPage):
@@ -85,8 +87,8 @@ class SetupWizard(gtk.Assistant):
 		else:
 			self.set_page_complete(self.adapters_page, False)
 			
-	def on_scan_finished(self, page):
-		self.set_page_complete(page, True)
+	def on_scan_finished(self, page, state):
+		self.set_page_complete(page, state)
 			
 	def confirm_quit(self, *args):
 		if self.__ask_on_exit:

@@ -8,7 +8,7 @@ from BasePage import BasePage
 class SaveChannelListPage(BasePage):
 
 	__gsignals__ = {
-        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
     }
 
 	def __init__(self):
@@ -36,6 +36,6 @@ class SaveChannelListPage(BasePage):
 		filechooser.set_do_overwrite_confirmation(True)
 		if (filechooser.run() == gtk.RESPONSE_OK):
 			self.__scanner.write_channels_to_file(filechooser.get_filename())
-			self.emit("finished")
+			self.emit("finished", True)
 		filechooser.destroy()
 

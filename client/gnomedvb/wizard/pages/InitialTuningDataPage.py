@@ -13,14 +13,14 @@ DVB_APPS_DIRS = ("/usr/share/dvb",
 class InitialTuningDataPage(BasePage):
 	
 	__gsignals__ = {
-		    "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+		    "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
 	}
 
 	def __init__(self):
 		BasePage.__init__(self)
 		
 		self.__adapter_info = None
-		self.__tuning_data = []
+		self.__tuning_data = None
 		
 	def set_adapter_info(self, info):
 		self.__adapter_info = info
@@ -39,7 +39,7 @@ class InitialTuningDataPage(BasePage):
 		return self.__tuning_data
 		
 	def _create_table(self):
-		self.table = gtk.Table(rows=4, columns=2)
+		self.table = gtk.Table(rows=5, columns=2)
 		self.table.set_row_spacings(6)
 		self.table.set_col_spacings(3)
 		self.table.show()
@@ -90,6 +90,11 @@ class InitialTuningDataPage(BasePage):
 		self.providers_combo.add_attribute(cell, "text", 0)
 		self.table.attach(self.providers_combo, 1, 2, 1, 2, yoptions=0)
 		self.providers_combo.hide()
+		
+		checkbox = gtk.CheckButton(label=_("Scan all frequencies"))
+		checkbox.connect("toggled", self.on_scan_all_toggled)
+		checkbox.show()
+		self.table.attach(checkbox, 0, 1, 2, 3)
 		
 	def setup_dvb_s(self):
 		hbox = gtk.HBox(spacing=6)
@@ -181,7 +186,7 @@ class InitialTuningDataPage(BasePage):
 		
 		if aiter != None:
 			self.__tuning_data = self.providers[aiter][1]
-			self.emit("finished")
+			self.emit("finished", True)
 	
 	def read_satellites(self):
 		for d in DVB_APPS_DIRS:
@@ -194,5 +199,44 @@ class InitialTuningDataPage(BasePage):
 		
 		if aiter != None:
 			self.__tuning_data = self.satellites[aiter][1]
-			self.emit("finished")
+			self.emit("finished", True)
+	
+	def on_scan_all_toggled(self, checkbutton):
+		state = not checkbutton.get_active()
+		self.country_combo.set_sensitive(state)
+		self.providers_combo.set_sensitive(state)
+		self.add_brute_force_scan()
+		self.emit("finished", not state)
+	
+	def add_brute_force_scan(self):
+		self.__tuning_data = []
+		for chan in range(5, 13):
+			freq = 142500000 + chan * 7000000
+			for transmode in ["2k", "8k"]:
+				for guard in [0, 32, 16, 8, 4]:
+					self.__tuning_data.append(
+						[freq,
+						 4, # hierarchy: AUTO
+						 7, # bandwidth
+						 transmode,
+						 "NONE", # code-rate-hp
+						 "AUTO", # code-rate-lp
+						 "QAM64", # constellation
+						 guard, # guard interval
+						])
 
+		for chan in range(21, 70):
+			freq = 306000000 + chan* 8000000
+			for transmode in ["2k", "8k"]:
+				for guard in [32, 16, 8, 4]:
+					self.__tuning_data.append(
+						[freq,
+						 4, # hierarchy: AUTO
+						 8, # bandwidth
+						 transmode,
+						 "NONE", # code-rate-hp
+						 "AUTO", # code-rate-lp
+						 "QAM64", # constellation
+						 guard, # guard interval
+						])
+    
