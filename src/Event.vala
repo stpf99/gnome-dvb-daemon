@@ -8,6 +8,7 @@ namespace DVB {
     public class Event {
     
         public uint id;
+        /* Time is stored in UTC */
         public uint year;
         public uint month; 
         public uint hour;
@@ -28,6 +29,14 @@ namespace DVB {
             this.audio_components = new SList<AudioComponent> ();
             this.video_components = new SList<VideoComponent> ();
             this.teletext_components = new SList<TeletextComponent> ();
+            
+            this.year = 0;
+            this.month = 0; 
+            this.hour = 0;
+            this.day = 0;
+            this.minute = 0;
+            this.second = 0;
+            this.duration = 0;
         }
         
         public string serialize () {
@@ -45,12 +54,12 @@ namespace DVB {
             int64 current_time = (int64)time_t ();
             
             int64 end_timestamp = this.get_end_timestamp ();
-            
+            debug ("%u, Current: %s, End: %s", this.id, current_time.to_string(), end_timestamp.to_string());
             return (end_timestamp < current_time);
         }
         
         public string to_string () {
-            string text = "ID: %u\nDate: %u-%u-%u %u:%u:%u\n".printf (this.id,
+            string text = "ID: %u\nDate: %04u-%02u-%02u %02u:%02u:%02u\n".printf (this.id,
             this.year, this.month, this.day, this.hour, this.minute, this.second)
             + "Duration: %u\nName: %s\nDescription: %s\n".printf (
             this.duration, this.name, this.description);
@@ -61,13 +70,23 @@ namespace DVB {
             return text;
         }
         
+        /**
+         * @returns: UNIX time stamp
+         */
         private int64 get_end_timestamp () {
-            Time end_time = Utils.create_time ((int)this.year, (int)this.month,
+            Time end_time = Utils.create_utc_time ((int)this.year, (int)this.month,
                 (int)this.day, (int)this.hour, (int)this.minute,
                 (int)this.second);
+                
+            int64 before = (int64)end_time.mktime ();
+            
             end_time.second += (int)this.duration;
             
-            return (int64)end_time.mktime ();
+            int64 after = (int64)end_time.mktime ();
+            
+            assert (after > before && after - before == this.duration);
+            
+            return after;
         }
         
         /**

@@ -5,11 +5,11 @@ namespace DVB {
 
     public class EPGScanner : GLib.Object {
     
-        public DVB.DeviceGroup DeviceGroup {get; set;}
-        
         private static const int CHECK_EIT_INTERVAL = 120*60;
         // how long to wait for EIT data for each channel in seconds
         private static const int WAIT_FOR_EIT_DURATION = 10;
+        
+        public DVB.DeviceGroup DeviceGroup {get; set;}
         
         private Gst.Element? pipeline;
         private Queue<Channel> channels;
@@ -69,7 +69,7 @@ namespace DVB {
             bus.message += this.bus_watch_func;
             
             Timeout.add_seconds (WAIT_FOR_EIT_DURATION,
-                scan_new_frequency);
+                this.scan_new_frequency);
             
             return;
         }
@@ -84,7 +84,9 @@ namespace DVB {
             }
             
             Channel channel = this.channels.pop_head ();
-            debug ("Scanning frequency %u", channel.Frequency);
+            channel.Schedule.remove_expired_events ();
+            
+            debug ("Scanning channel %s", channel.to_string ());
             
             this.pipeline.set_state (Gst.State.READY);
             
@@ -122,71 +124,81 @@ namespace DVB {
         
         private void on_eit_structure (Gst.Structure structure) {
             Gst.Value events = structure.get_value ("events");
-            uint size = events.list_get_size ();
             
+            if (!(events.holds (Gst.Value.list_get_type ())))
+                return;
+            
+            uint size = events.list_get_size ();
             Gst.Value val;
             weak Gst.Structure event;
             // Iterate over events
             for (uint i=0; i<size; i++) {
                 val = events.list_get_value (i);
-                event = val.get_structure (); 
-                
-                var event_class = new Event ();
-                event_class.id = get_uint_val (event, "event-id");
-                event_class.year = get_uint_val (event, "year");
-                event_class.month = get_uint_val (event, "month");
-                event_class.day = get_uint_val (event, "day");
-                event_class.hour = get_uint_val (event, "hour");
-                event_class.minute = get_uint_val (event, "minute");
-                event_class.second = get_uint_val (event, "second");
-                event_class.duration = get_uint_val (event, "duration");
-                event_class.running_status = get_uint_val (event, "running-status");
-                event_class.name = event.get_string ("name"); 
-                event_class.description = event.get_string ("description");
-                
-                Gst.Value components = event.get_value ("components");
-                uint components_len = components.list_get_size ();
-                
-                Gst.Value comp_val;
-                weak Gst.Structure component;
-                for (uint j=0; j<components_len; j++) {
-                    comp_val = components.list_get_value (j);
-                    component = comp_val.get_structure ();
-                    
-                    if (component.get_name () == "audio") {
-                        var audio = new Event.AudioComponent ();
-                        audio.type = component.get_string ("type");
-                        
-                        event_class.audio_components.append (audio);
-                    } else if (component.get_name () == "video") {
-                        var video = new Event.VideoComponent ();
-                        
-                        bool highdef;
-                        component.get_boolean ("high-definition", out highdef);
-                        video.high_definition = highdef;
-                        
-                        video.aspect_ratio = component.get_string ("high-definition");
-                        
-                        int freq;
-                        component.get_int ("frequency", out freq);
-                        video.frequency = freq;
-                        
-                        event_class.video_components.append (video);
-                    } else if (component.get_name () == "teletext") {
-                        var teletext = new Event.TeletextComponent ();
-                        teletext.type = component.get_string ("type");
-                        
-                        event_class.teletext_components.append (teletext);
-                    }
-                }
+                event = val.get_structure ();
                 
                 uint sid = get_uint_val (structure, "service-id");
                 Channel channel = this.DeviceGroup.Channels.get (sid);
-                if (channel != null) {
-                    debug (event_class.to_string ());
-                    channel.Schedule.add (#event_class);
-                } else
+                if (channel == null) {
                     warning ("Could not find channel %u for this device", sid);
+                    return;
+                }
+                
+                uint event_id = get_uint_val (event, "event-id");
+                
+                if (!channel.Schedule.contains (event_id)) {
+                    var event_class = new Event ();
+                    event_class.id = event_id;
+                    event_class.year = get_uint_val (event, "year");
+                    event_class.month = get_uint_val (event, "month");
+                    event_class.day = get_uint_val (event, "day");
+                    event_class.hour = get_uint_val (event, "hour");
+                    event_class.minute = get_uint_val (event, "minute");
+                    event_class.second = get_uint_val (event, "second");
+                    event_class.duration = get_uint_val (event, "duration");
+                    event_class.running_status = get_uint_val (event, "running-status");
+                    event_class.name = event.get_string ("name"); 
+                    event_class.description = event.get_string ("description");
+                    
+                    Gst.Value components = event.get_value ("components");
+                    uint components_len = components.list_get_size ();
+                    
+                    Gst.Value comp_val;
+                    weak Gst.Structure component;
+                    for (uint j=0; j<components_len; j++) {
+                        comp_val = components.list_get_value (j);
+                        component = comp_val.get_structure ();
+                        
+                        if (component.get_name () == "audio") {
+                            var audio = new Event.AudioComponent ();
+                            audio.type = component.get_string ("type");
+                            
+                            event_class.audio_components.append (audio);
+                        } else if (component.get_name () == "video") {
+                            var video = new Event.VideoComponent ();
+                            
+                            bool highdef;
+                            component.get_boolean ("high-definition", out highdef);
+                            video.high_definition = highdef;
+                            
+                            video.aspect_ratio = component.get_string ("high-definition");
+                            
+                            int freq;
+                            component.get_int ("frequency", out freq);
+                            video.frequency = freq;
+                            
+                            event_class.video_components.append (video);
+                        } else if (component.get_name () == "teletext") {
+                            var teletext = new Event.TeletextComponent ();
+                            teletext.type = component.get_string ("type");
+                            
+                            event_class.teletext_components.append (teletext);
+                        }
+                    }
+                    
+                    debug ("Adding new event: %s", event_class.to_string ());
+                    channel.Schedule.add (#event_class);
+                   
+                }
             }
         }
         

@@ -17,17 +17,25 @@ namespace DVB {
         }
         
         public void remove_expired_events () {
-            SList<int> expired_events = new SList <int> ();
+            SList<weak SequenceIter<Event>> expired_events = new SList <weak SequenceIter<Event>> ();
             
             for (int i=0; i<this.events.get_length (); i++) {
                 weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
                 
                 Event e = this.events.get (iter);
-                if (e.has_expired ()) expired_events.prepend (i);
+                if (e.has_expired ()) {
+                    expired_events.prepend (iter);
+                } else {
+                    // events are sorted, all other events didn't expire, too
+                    break;
+                }
             }
             
-            foreach (int i in expired_events) {
-                weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
+            foreach (weak SequenceIter<Event> iter in expired_events) {
+                debug ("Removing expired event");
+                Event e = this.events.get (iter);
+                debug (e.to_string ());
+                this.event_id_map.remove (e.id);
                 this.events.remove (iter);
             }
         }
@@ -48,6 +56,11 @@ namespace DVB {
             
             assert (this.events.get_length () == this.event_id_map.size);
         }
+        
+        public bool contains (uint event_id) {
+            return this.event_id_map.contains (event_id);
+        }
+        
         /*
         public weak Event get_present_event () {
             return new Event ();
