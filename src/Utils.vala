@@ -67,10 +67,39 @@ namespace DVB.Utils {
         else return diff;
     }
     
+    /**
+     * Creates Time of local time
+     */
     public static Time create_time (int year, int month, int day, int hour,
         int minute, int second=0) {
+        
+        assert (year >= 1900 && month >= 1 && day >= 1 && hour >= 0 && minute >= 0
+            && second >= 0);
+        
         // Create Time with some initial value, otherwise time is wrong
         var t = Time.local (time_t ());
+        
+        t.year = year - 1900;
+        t.month = month - 1;
+        t.day = day;
+        t.hour = hour;
+        t.minute = minute;
+        t.second = second;
+        
+        return t;
+    }
+    
+    /**
+     * Creates Time of UTC time
+     */
+    public static Time create_utc_time (int year, int month, int day, int hour,
+        int minute, int second=0) {
+        
+        assert (year >= 1900 && month >= 1 && day >= 1 && hour >= 0 && minute >= 0
+            && second >= 0);
+        
+        // Create Time with some initial value, otherwise time is wrong
+        var t = Time.gm (time_t ());
         
         t.year = year - 1900;
         t.month = month - 1;
