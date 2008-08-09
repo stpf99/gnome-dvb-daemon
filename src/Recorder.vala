@@ -268,7 +268,7 @@ namespace DVB {
         
         protected Map<Timer, RecordingThread> active_recording_threads;
         // Maps timer id to timer
-        protected Map<uint32, Timer> active_timers;
+        protected Set<uint32> active_timers;
         
         private bool have_check_timers_timeout;
         private HashMap<uint32, Timer> timers;
@@ -276,7 +276,7 @@ namespace DVB {
         
         construct {
             this.active_recording_threads = new HashMap<Timer, RecordingThread> ();
-            this.active_timers = new HashMap<uint32, Timer> ();
+            this.active_timers = new HashSet<uint32> ();
             this.timers = new HashMap<uint, Timer> ();
             this.have_check_timers_timeout = false;
             RecordingsStore.get_instance ().restore_from_dir (
@@ -376,7 +376,7 @@ namespace DVB {
          */
         public bool DeleteTimer (uint32 timer_id) {
             if (this.IsTimerActive (timer_id)) {
-                Timer timer = this.active_timers.get (timer_id);
+                Timer timer = this.timers.get (timer_id);
                 this.stop_recording (timer);
                 return true;
             }
@@ -483,8 +483,8 @@ namespace DVB {
             uint32[] val = new uint32[this.active_timers.size];
             
             int i=0;
-            foreach (uint32 timer_id in this.active_timers.get_keys ()) {
-                Timer timer = this.active_timers.get (timer_id);
+            foreach (uint32 timer_id in this.active_timers) {
+                Timer timer = this.timers.get (timer_id);
                 val[i] = timer.Id;
                 i++;
             }
@@ -532,8 +532,8 @@ namespace DVB {
             RecordingThread recthread;
             // Check if there's already an active recording on the
             // same transport stream
-            foreach (uint32 timer_id in this.active_timers.get_keys ()) {
-                Timer other_timer = this.active_timers.get (timer_id);
+            foreach (uint32 timer_id in this.active_timers) {
+                Timer other_timer = this.timers.get (timer_id);
                 Channel other_channel =
                     this.DeviceGroup.Channels.get (timer.ChannelSid);
                 // FIXME
@@ -560,7 +560,7 @@ namespace DVB {
             }
             recthread.start_recording (timer, location);
             
-            this.active_timers.set (timer.Id, timer);
+            this.active_timers.add (timer.Id);
             this.active_recording_threads.set (timer, recthread);
             
             this.recording_started (timer.Id);
@@ -627,9 +627,9 @@ namespace DVB {
             
             SList<uint32> ended_recordings =
                 new SList<uint32> ();
-            foreach (uint32 timer_id in this.active_timers.get_keys ()) {
+            foreach (uint32 timer_id in this.active_timers) {
                 Timer timer =
-                    this.active_timers.get (timer_id);
+                    this.timers.get (timer_id);
                 if (timer.is_end_due()) {
                     this.stop_recording (timer);
                     ended_recordings.prepend (timer_id);
@@ -640,6 +640,7 @@ namespace DVB {
             for (int i=0; i<ended_recordings.length(); i++) {
                 uint32 timer_id = ended_recordings.nth_data (i);
                 this.active_timers.remove (timer_id);
+                this.timers.remove (timer_id);
                 this.changed (timer_id, ChangeType.DELETED);
             }
             
@@ -654,9 +655,11 @@ namespace DVB {
                     
                     debug ("Checking timer: %s", timer.to_string());
                     
-                    if (timer.is_start_due()) {
+                    // Check if we should start new recording and if we didn't
+                    // start it before
+                    if (timer.is_start_due()
+                            && !this.active_timers.contains (timer.Id)) {
                         this.start_recording (timer);
-                        removeable_items.prepend (key);
                     } else if (timer.has_expired()) {
                         debug ("Removing expired timer: %s", timer.to_string());
                         deleteable_items.prepend (key);
@@ -666,10 +669,6 @@ namespace DVB {
                 // Delete items from this.timers using this.DeleteTimer
                 for (int i=0; i<deleteable_items.length(); i++) {
                     this.DeleteTimer (deleteable_items.nth_data (i));
-                }
-                
-                for (int i=0; i<removeable_items.length(); i++) {
-                    this.timers.remove (removeable_items.nth_data (i));
                 }
                 
                 if (this.timers.size == 0 && this.active_timers.size == 0) {
