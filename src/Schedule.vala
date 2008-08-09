@@ -33,9 +33,9 @@ namespace DVB {
             
             foreach (weak SequenceIter<Event> iter in expired_events) {
                 debug ("Removing expired event");
-                Event e = this.events.get (iter);
-                debug (e.to_string ());
-                this.event_id_map.remove (e.id);
+                Event event = this.events.get (iter);
+                debug (event.to_string ());
+                this.event_id_map.remove (event.id);
                 this.events.remove (iter);
             }
         }
@@ -48,11 +48,19 @@ namespace DVB {
             return this.events.get (iter);
         }
         
+        /**
+         * When an event with the same id already exists, it's replaced
+         */
         public void add (Event# event) {
-            if (!this.event_id_map.contains (event.id)) {
-                weak SequenceIter<Event> iter = this.events.insert_sorted (event, Event.compare);
-                this.event_id_map.set (event.id, iter);
+            if (this.event_id_map.contains (event.id)) {
+                // Remove old event
+                weak SequenceIter<Event> iter = this.event_id_map.get (event.id);
+                
+                this.event_id_map.remove (event.id);
+                this.events.remove (iter);
             }
+            weak SequenceIter<Event> iter = this.events.insert_sorted (event, Event.compare);
+            this.event_id_map.set (event.id, iter);
             
             assert (this.events.get_length () == this.event_id_map.size);
         }

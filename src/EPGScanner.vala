@@ -145,64 +145,61 @@ namespace DVB {
                 
                 uint event_id = get_uint_val (event, "event-id");
                 
-                if (!channel.Schedule.contains (event_id)) {
-                    var event_class = new Event ();
-                    event_class.id = event_id;
-                    event_class.year = get_uint_val (event, "year");
-                    event_class.month = get_uint_val (event, "month");
-                    event_class.day = get_uint_val (event, "day");
-                    event_class.hour = get_uint_val (event, "hour");
-                    event_class.minute = get_uint_val (event, "minute");
-                    event_class.second = get_uint_val (event, "second");
-                    event_class.duration = get_uint_val (event, "duration");
-                    event_class.running_status = get_uint_val (event, "running-status");
-                    event_class.name = event.get_string ("name"); 
-                    event_class.description = event.get_string ("description");
-                    event_class.extended_description = event.get_string ("extended-text");
-                    bool free_ca;
-                    event.get_boolean ("free-ca-mode", out free_ca);
-                    event_class.free_ca_mode = free_ca;
+                var event_class = new Event ();
+                event_class.id = event_id;
+                event_class.year = get_uint_val (event, "year");
+                event_class.month = get_uint_val (event, "month");
+                event_class.day = get_uint_val (event, "day");
+                event_class.hour = get_uint_val (event, "hour");
+                event_class.minute = get_uint_val (event, "minute");
+                event_class.second = get_uint_val (event, "second");
+                event_class.duration = get_uint_val (event, "duration");
+                event_class.running_status = get_uint_val (event, "running-status");
+                event_class.name = event.get_string ("name"); 
+                event_class.description = event.get_string ("description");
+                event_class.extended_description = event.get_string ("extended-text");
+                bool free_ca;
+                event.get_boolean ("free-ca-mode", out free_ca);
+                event_class.free_ca_mode = free_ca;
+                
+                Gst.Value components = event.get_value ("components");
+                uint components_len = components.list_get_size ();
+                
+                Gst.Value comp_val;
+                weak Gst.Structure component;
+                for (uint j=0; j<components_len; j++) {
+                    comp_val = components.list_get_value (j);
+                    component = comp_val.get_structure ();
                     
-                    Gst.Value components = event.get_value ("components");
-                    uint components_len = components.list_get_size ();
-                    
-                    Gst.Value comp_val;
-                    weak Gst.Structure component;
-                    for (uint j=0; j<components_len; j++) {
-                        comp_val = components.list_get_value (j);
-                        component = comp_val.get_structure ();
+                    if (component.get_name () == "audio") {
+                        var audio = new Event.AudioComponent ();
+                        audio.type = component.get_string ("type");
                         
-                        if (component.get_name () == "audio") {
-                            var audio = new Event.AudioComponent ();
-                            audio.type = component.get_string ("type");
-                            
-                            event_class.audio_components.append (audio);
-                        } else if (component.get_name () == "video") {
-                            var video = new Event.VideoComponent ();
-                            
-                            bool highdef;
-                            component.get_boolean ("high-definition", out highdef);
-                            video.high_definition = highdef;
-                            
-                            video.aspect_ratio = component.get_string ("high-definition");
-                            
-                            int freq;
-                            component.get_int ("frequency", out freq);
-                            video.frequency = freq;
-                            
-                            event_class.video_components.append (video);
-                        } else if (component.get_name () == "teletext") {
-                            var teletext = new Event.TeletextComponent ();
-                            teletext.type = component.get_string ("type");
-                            
-                            event_class.teletext_components.append (teletext);
-                        }
+                        event_class.audio_components.append (audio);
+                    } else if (component.get_name () == "video") {
+                        var video = new Event.VideoComponent ();
+                        
+                        bool highdef;
+                        component.get_boolean ("high-definition", out highdef);
+                        video.high_definition = highdef;
+                        
+                        video.aspect_ratio = component.get_string ("high-definition");
+                        
+                        int freq;
+                        component.get_int ("frequency", out freq);
+                        video.frequency = freq;
+                        
+                        event_class.video_components.append (video);
+                    } else if (component.get_name () == "teletext") {
+                        var teletext = new Event.TeletextComponent ();
+                        teletext.type = component.get_string ("type");
+                        
+                        event_class.teletext_components.append (teletext);
                     }
-                    
-                    debug ("Adding new event: %s", event_class.to_string ());
-                    channel.Schedule.add (#event_class);
-                   
                 }
+                    
+                debug ("Adding new event: %s", event_class.to_string ());
+                channel.Schedule.add (#event_class);
             }
         }
         
