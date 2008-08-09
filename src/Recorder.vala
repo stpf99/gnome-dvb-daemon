@@ -376,6 +376,7 @@ namespace DVB {
          */
         public bool DeleteTimer (uint32 timer_id) {
             if (this.IsTimerActive (timer_id)) {
+                // Abort recording
                 Timer timer = this.timers.get (timer_id);
                 this.stop_recording (timer);
                 return true;
@@ -574,6 +575,11 @@ namespace DVB {
                 this.active_recording_threads.get (timer);
            
             recthread.stop_recording (timer);
+            
+            uint32 timer_id = timer.Id;
+            this.active_timers.remove (timer_id);
+            this.timers.remove (timer_id);
+            this.changed (timer_id, ChangeType.DELETED);
         }
         
         /**
@@ -625,23 +631,20 @@ namespace DVB {
         private bool check_timers () {
             debug ("Checking timers");
             
-            SList<uint32> ended_recordings =
-                new SList<uint32> ();
+            SList<Timer> ended_recordings =
+                new SList<Timer> ();
             foreach (uint32 timer_id in this.active_timers) {
                 Timer timer =
                     this.timers.get (timer_id);
                 if (timer.is_end_due()) {
-                    this.stop_recording (timer);
-                    ended_recordings.prepend (timer_id);
+                    ended_recordings.prepend (timer);
                 }
             }
             
             // Delete timers of recordings that have ended
             for (int i=0; i<ended_recordings.length(); i++) {
-                uint32 timer_id = ended_recordings.nth_data (i);
-                this.active_timers.remove (timer_id);
-                this.timers.remove (timer_id);
-                this.changed (timer_id, ChangeType.DELETED);
+                Timer timer = ended_recordings.nth_data (i);
+                this.stop_recording (timer);
             }
             
             bool val;
