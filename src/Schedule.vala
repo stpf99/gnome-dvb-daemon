@@ -61,10 +61,18 @@ namespace DVB {
             return this.event_id_map.contains (event_id);
         }
         
-        /*
-        public weak Event get_present_event () {
-            return new Event ();
-        }*/
+        public weak Event? get_running_event () {
+             for (int i=0; i<this.events.get_length (); i++) {
+                weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
+                
+                Event event = this.events.get (iter);
+                if (event.running_status == Event.RUNNING_STATUS_RUNNING) {
+                    return event;
+                }
+            }
+            
+            return null;
+        }
     
         /**
          * @returns: The event following the present event

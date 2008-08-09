@@ -6,6 +6,13 @@ namespace DVB {
      * Represents an EPG event (i.e. a show with all its information)
      */
     public class Event {
+        
+        // See EN 300 486 Table 6
+        public static const uint RUNNING_STATUS_UNDEFINED = 0;
+        public static const uint RUNNING_STATUS_NOT_RUNNING = 1;
+        public static const uint RUNNING_STATUS_STARTS_SOON = 2;
+        public static const uint RUNNING_STATUS_PAUSING = 3;
+        public static const uint RUNNING_STATUS_RUNNING = 4;
     
         public uint id;
         /* Time is stored in UTC */
@@ -20,6 +27,7 @@ namespace DVB {
         public bool free_ca_mode;
         public string name;
         public string description;
+        public string extended_description;
         /* Components */
         public SList<AudioComponent> audio_components;
         public SList<VideoComponent> video_components;

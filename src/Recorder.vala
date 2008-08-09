@@ -12,8 +12,6 @@ namespace DVB {
     public class RecordingThread : GLib.Object {
     
         private static const string DVBBASEBIN_NAME = "dvbbasebin";
-        // See EN 300 486 Table 6
-        private static const uint RUNNING_STATUS_RUNNING = 4;
         
         public signal void recording_stopped (Recording rec, Timer timer);
         public signal void recording_aborted ();
@@ -245,7 +243,7 @@ namespace DVB {
                         uint running;
                         event.get_uint ("running-status", out running);
                         
-                        if (running == RUNNING_STATUS_RUNNING) {
+                        if (running == Event.RUNNING_STATUS_RUNNING) {
                             debug ("Found running event for active recording");
                             rec.Name = event.get_string ("name"); 
                             rec.Description = event.get_string ("description");

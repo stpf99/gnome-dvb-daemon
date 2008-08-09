@@ -158,6 +158,10 @@ namespace DVB {
                     event_class.running_status = get_uint_val (event, "running-status");
                     event_class.name = event.get_string ("name"); 
                     event_class.description = event.get_string ("description");
+                    event_class.extended_description = event.get_string ("extended-text");
+                    bool free_ca;
+                    event.get_boolean ("free-ca-mode", out free_ca);
+                    event_class.free_ca_mode = free_ca;
                     
                     Gst.Value components = event.get_value ("components");
                     uint components_len = components.list_get_size ();
