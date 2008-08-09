@@ -12,21 +12,24 @@ namespace DVB {
     public class RecordingThread : GLib.Object {
     
         private static const string DVBBASEBIN_NAME = "dvbbasebin";
+        // See EN 300 486 Table 6
+        private static const uint RUNNING_STATUS_RUNNING = 4;
         
-        public signal void recording_stopped (Timer timer, string location);
+        public signal void recording_stopped (Recording rec, Timer timer);
         public signal void recording_aborted ();
     
         public Device device {get; construct;}
         public uint count {
-            get { return this.recordings; }
+            get { return this.recordings.size; }
         }
         
         private Element? pipeline;
         private string? sid;
-        private uint recordings;
+        
+        private Map<uint, Recording> recordings;
     
         construct {
-            this.recordings = 0;
+            this.recordings = new HashMap<uint, Recording> ();
         }
     
         public RecordingThread (Device device) {
@@ -39,6 +42,7 @@ namespace DVB {
                 this.pipeline.set_state (State.NULL);
             }
             this.pipeline = null;
+            this.recordings.clear ();
         }
         
         public void stop_recording (Timer timer) {
@@ -47,7 +51,7 @@ namespace DVB {
             string location;
             sink.get ("location", out location);
             
-            if (this.recordings == 1) {
+            if (this.count == 1) {
                 // No more active recordings
                 this.reset ();
             } else {
@@ -81,9 +85,19 @@ namespace DVB {
                 
                 dvbbasebin.set ("program-numbers", new_programs.str);
             }
-            this.recordings--;
             
-            this.recording_stopped (timer, location);
+            Recording rec = this.recordings.get (timer.Id);
+            rec.Length = Utils.difftime (Time.local (time_t ()),
+                rec.StartTime);
+            try {
+                rec.save_to_disk ();
+            } catch (Error e) {
+                critical ("Could not save recording: %s", e.message);
+            }
+            
+            this.recording_stopped (rec, timer);
+            
+            this.recordings.remove (timer.Id);
         }
         
         public void start_recording (Timer timer, File location) {
@@ -136,6 +150,17 @@ namespace DVB {
                     dvbbasebin.set ("program-numbers", "%s:%s".printf (programs, this.sid) );
                 }
             }
+            
+            Recording recording = new Recording ();
+            recording.Name = null;
+            recording.Description = null;
+            recording.Id = timer.Id;
+            recording.ChannelSid = timer.ChannelSid;
+            recording.StartTime =
+                timer.get_start_time_time ();
+            recording.Location = location;
+            
+            this.recordings.set (recording.Id, recording);
         }
         
         private bool add_new_filesink (string sink_name, string location) {
@@ -161,7 +186,6 @@ namespace DVB {
                     Pad sinkpad = sink.get_pad ("sink");
                     
                     pad.link (sinkpad);
-                    this.recordings++;
                 }
             }
             
@@ -171,10 +195,13 @@ namespace DVB {
         private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
             switch (message.type) {
                 case Gst.MessageType.ELEMENT:
-                    if (message.structure.get_name() == "dvb-read-failure") {
+                    string structure_name = message.structure.get_name();
+                    if (structure_name == "dvb-read-failure") {
                         critical ("Could not read from DVB device");
                         this.reset ();
                         this.recording_aborted ();
+                    } else if (structure_name == "eit") {
+                        this.on_eit_structure (message.structure);
                     }
                 break;
                 
@@ -192,6 +219,39 @@ namespace DVB {
                 
                 default:
                 break;
+            }
+        }
+        
+        private void on_eit_structure (Gst.Structure structure) {
+            Gst.Value events = structure.get_value ("events");
+            
+            if (!(events.holds (Gst.Value.list_get_type ())))
+                return;
+            
+            uint eit_sid;
+            structure.get_uint ("service-id", out eit_sid);
+                
+            uint size = events.list_get_size ();
+            Gst.Value val;
+            weak Gst.Structure event;
+            // Iterate over events
+            for (uint i=0; i<size; i++) {
+                val = events.list_get_value (i);
+                event = val.get_structure ();
+                
+                foreach (Recording rec in this.recordings.get_values ()) {
+                    // Check if name is not already set
+                    if (rec.Name == null && eit_sid == rec.ChannelSid) {
+                        uint running;
+                        event.get_uint ("running-status", out running);
+                        
+                        if (running == RUNNING_STATUS_RUNNING) {
+                            debug ("Found running event for active recording");
+                            rec.Name = event.get_string ("name"); 
+                            rec.Description = event.get_string ("description");
+                        }
+                    }
+                }
             }
         }
         
@@ -631,24 +691,9 @@ namespace DVB {
          * Add recording to RecordinsStore and let the world now
          */
         private void on_recording_stopped (RecordingThread recthread,
-                Timer timer, string location) {
-            Recording recording = new Recording ();
-            recording.Id = timer.Id;
-            recording.ChannelSid = timer.ChannelSid;
-            recording.StartTime =
-                timer.get_start_time_time ();
-            recording.Length = Utils.difftime (Time.local (time_t ()),
-                recording.StartTime);
-            recording.Location = File.new_for_path (location);
-        
-            debug ("Stopping recording of channel %u after %lli seconds",
-                timer.ChannelSid, recording.Length);
-            
-            try {
-                recording.save_to_disk ();
-            } catch (Error e) {
-                critical ("Could not save recording: %s", e.message);
-            }
+                Recording recording, Timer timer) {
+            debug ("Recording of channel %u stopped after %lli seconds",
+                recording.ChannelSid, recording.Length);
             
             RecordingsStore.get_instance().add (recording);
             
