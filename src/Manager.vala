@@ -23,12 +23,14 @@ namespace DVB {
         private HashMap<string, Scanner> scanners;
         // Maps device group id to Recorder
         private HashMap<uint, Recorder> recorders;
-        // Maps device grou to ChannelList
+        // Maps device group to ChannelList
         private HashMap<uint, ChannelList> channellists;
         // Maps device group id to Device
         private HashMap<uint, DeviceGroup> devices;
         // Maps device group id to EPGScanner
         private HashMap<uint, EPGScanner> epgscanners;
+        // Containss object paths to Schedule 
+        private HashSet<string> schedules;
         
         private uint device_group_counter;
         
@@ -39,6 +41,8 @@ namespace DVB {
             this.channellists = new HashMap<uint, ChannelList> ();
             this.devices = new HashMap<uint, DeviceGroup> ();
             this.epgscanners = new HashMap<uint, EPGScanner> ();
+            this.schedules = new HashSet<string> (GLib.str_hash,
+                GLib.str_equal);
             this.device_group_counter = 0;
         }
         
@@ -332,6 +336,33 @@ namespace DVB {
             }
             
             return groupdevs;
+        }
+        
+        public string GetSchedule (uint group_id, uint channel_sid) {
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get(group_id);
+                
+                if (devgroup.Channels.contains (channel_sid)) {
+                    string path = Constants.DBUS_SCHEDULE_PATH.printf (group_id, channel_sid);
+                    
+                    if (!this.schedules.contains (path)) {
+                        var conn = get_dbus_connection ();
+                        if (conn == null) return "";
+                        
+                        Schedule schedule = devgroup.Channels.get (channel_sid).Schedule;
+                        
+                        conn.register_object (
+                            path,
+                            schedule);
+                            
+                        this.schedules.add (path);
+                    }
+                    
+                    return path;
+                }
+            }
+        
+            return "";
         }
         
         /**

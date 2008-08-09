@@ -13,7 +13,8 @@ __all__= [
     "DVBScannerClient",
     "DVBRecordingsStoreClient",
     "DVBRecorderClient",
-    "DVBChannelListClient",   
+    "DVBChannelListClient",
+    "DVBScheduleClient",
 ]
 
 service = "org.gnome.DVB"
@@ -23,6 +24,7 @@ recstore_iface = "org.gnome.DVB.RecordingsStore"
 recstore_path = "/org/gnome/DVB/RecordingsStore"
 recorder_iface = "org.gnome.DVB.Recorder"
 channel_list_iface = "org.gnome.DVB.ChannelList"
+schedule_iface = "org.gnome.DVB.Schedule"
 sat_scanner_iface = "org.gnome.DVB.Scanner.Satellite"
 cable_scanner_iface = "org.gnome.DVB.Scanner.Cable"
 terrestrial_scanner_iface = "org.gnome.DVB.Scanner.Terrestrial"
@@ -119,6 +121,9 @@ class DVBManagerClient(gobject.GObject):
         
     def get_type_of_device_group(self, group_id):
         return self.manager.GetTypeOfDeviceGroup(group_id)
+        
+    def get_schedule(self, group_id, channel_sid):
+        return DVBSchedule(self.manager.GetSchedule(group_id, channel_sid))
         
     def on_changed(self, group_id, change_type):
         self.emit("changed", group_id, change_type)
@@ -327,6 +332,44 @@ class DVBChannelListClient:
     def is_radio_channel(self, cid):
         return self.channels.IsRadioChannel(cid)
         
+class DVBSchedule(gobject.GObject):
+
+    def __init__(self, object_path):
+        gobject.GObject.__init__(self)
+        
+        bus = dbus.SessionBus()
+        # Get proxy object
+        proxy = bus.get_object(service, object_path)
+        # Apply the correct interace to the proxy object
+        self.schedule = dbus.Interface(proxy, schedule_iface)
+        
+    def now_playing(self):
+        return self.schedule.NowPlaying()
+        
+    def next(self, eid):
+        return self.schedule.Next(eid)
+        
+    def get_name(self, eid):
+        return self.schedule.GetName(eid)
+        
+    def get_short_description(self, eid):
+        return self.schedule.GetShortDescription(eid)
+        
+    def get_extended_description(self, eid):
+        return self.schedule.GetExtendedDescription(eid)
+        
+    def get_duration(self, eid):
+        return self.schedule.GetDuration(eid)
+        
+    def get_local_start_time(self, eid):
+        return self.schedule.GetLocalStartTime(eid)
+        
+    def is_running(self, eid):
+        return self.schedule.IsRunning(eid)
+        
+    def is_scrambled(self, eid):
+        return self.schedule.IsScrambled(eid)
+        
 if __name__ == '__main__':
     loop = gobject.MainLoop()
     
@@ -375,6 +418,12 @@ if __name__ == '__main__':
             print "SID", channel_id
             print "Name", channellist.get_channel_name(channel_id)
             print "Network", channellist.get_channel_network(channel_id)
+            schedule = manager.get_schedule (group_id, channel_id)
+            event_now = schedule.now_playing()
+            print u"Now: %s" % schedule.get_name(event_now)
+            print u"\tDesc: %s" % schedule.get_short_description(event_now)
+            print u"\tDuration: %s" % schedule.get_duration(event_now)
+            print
         
     recstore = DVBRecordingsStoreClient()
     for rid in recstore.get_recordings():
