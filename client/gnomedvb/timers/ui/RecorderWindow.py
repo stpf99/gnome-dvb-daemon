@@ -11,7 +11,7 @@ class RecorderWindow(gtk.Window):
     COL_START,
     COL_DURATION) = range(4)
     
-    (COL_PATH,) = range(1)
+    (COL_NAME, COL_PATH,) = range(2)
 
     def __init__(self):
         gtk.Window.__init__(self)
@@ -19,7 +19,7 @@ class RecorderWindow(gtk.Window):
         self.recorders = {}
         
         self.set_title(_("Schedule Recordings"))
-        self.set_size_request(350, 200)
+        self.set_size_request(350, 400)
         self.set_border_width(3)
         self.connect("delete-event", gtk.main_quit)
         self.connect("destroy-event", gtk.main_quit)
@@ -34,14 +34,14 @@ class RecorderWindow(gtk.Window):
         recorders_label.set_markup(_("<b>Choose device group:</b>"))
         recorders_ali.add(recorders_label)
         
-        self.recorderslist = gtk.ListStore(int)
+        self.recorderslist = gtk.ListStore(str, int)
         
         self.recorderscombo = gtk.ComboBox(self.recorderslist)
         self.recorderscombo.connect("changed", self._on_recorderscombo_changed)
         
         cell_adapter = gtk.CellRendererText()
         self.recorderscombo.pack_start(cell_adapter)
-        self.recorderscombo.add_attribute(cell_adapter, "text", self.COL_PATH)
+        self.recorderscombo.add_attribute(cell_adapter, "text", self.COL_NAME)
         self.vbox.pack_start(self.recorderscombo, False)
         
         timers_ali = gtk.Alignment(0, 0.5)
@@ -52,6 +52,7 @@ class RecorderWindow(gtk.Window):
         timers_ali.add(timers_label)
         
         self.timerslist = gtk.ListStore(int, str, str, int)
+        self.timerslist.set_sort_column_id(self.COL_START, gtk.SORT_ASCENDING)
         
         self.timersview = gtk.TreeView(self.timerslist)
         self.timersview.get_selection().connect("changed",
@@ -87,6 +88,7 @@ class RecorderWindow(gtk.Window):
         
         self.scrolledwindow = gtk.ScrolledWindow()
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolledwindow.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         self.scrolledwindow.add(self.timersview)
         self.vbox.pack_start(self.scrolledwindow)
         
@@ -109,7 +111,8 @@ class RecorderWindow(gtk.Window):
         manager = gnomedvb.DVBManagerClient()
         
         for group_id in manager.get_registered_device_groups():
-            self.recorderslist.append([group_id])
+            group_name = _("Group %d") % group_id
+            self.recorderslist.append([group_name, group_id])
             self.recorders[group_id] = gnomedvb.DVBRecorderClient(group_id)
             
     def get_timers(self, recorder_path):
@@ -121,7 +124,7 @@ class RecorderWindow(gtk.Window):
             
     def _add_timer(self, rec, timer_id):
         start_list = rec.get_start_time(timer_id)
-        starttime = "%d-%d-%d %d:%d" % (start_list[0], start_list[1],
+        starttime = "%04d-%02d-%02d %02d:%02d" % (start_list[0], start_list[1],
                 start_list[2], start_list[3], start_list[4])
         duration = rec.get_duration(timer_id)
         channel = rec.get_channel_name(timer_id)
