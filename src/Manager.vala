@@ -27,6 +27,8 @@ namespace DVB {
         private HashMap<uint, ChannelList> channellists;
         // Maps device group id to Device
         private HashMap<uint, DeviceGroup> devices;
+        // Maps device group id to EPGScanner
+        private HashMap<uint, EPGScanner> epgscanners;
         
         private uint device_group_counter;
         
@@ -36,6 +38,7 @@ namespace DVB {
             this.recorders = new HashMap<uint, Recorder> ();
             this.channellists = new HashMap<uint, ChannelList> ();
             this.devices = new HashMap<uint, DeviceGroup> ();
+            this.epgscanners = new HashMap<uint, EPGScanner> ();
             this.device_group_counter = 0;
         }
         
@@ -363,6 +366,15 @@ namespace DVB {
                 return this.recorders.get (id);
             else
                 return null;
+        }
+        
+        public void create_and_start_epg_scanner (DeviceGroup devgroup) { 
+            debug ("Creating new EPG scanner for device group %u",
+                devgroup.Id);
+        
+            EPGScanner epgscanner = new EPGScanner (devgroup);
+            epgscanner.start ();
+            this.epgscanners.set (devgroup.Id, epgscanner);
         }
         
         private static Device? create_device (uint adapter, uint frontend,
