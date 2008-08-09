@@ -25,19 +25,24 @@ class TimerDialog(gtk.Dialog):
         label_channel.set_markup(_("<b>Channel:</b>"))
         table.attach(label_channel, 0, 1, 0, 1)
         
-        channel_ali = gtk.Alignment(0, 0.5)
-        table.attach(channel_ali, 1, 2, 0, 1)
-        
         self.channels = gtk.ListStore(str, int)
         self.channels.set_sort_column_id(0, gtk.SORT_ASCENDING)
         self._add_channels(device_group)
         
-        self.channelscombo = gtk.ComboBox(self.channels)
+        scrolledchannels = gtk.ScrolledWindow()
+        scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolledchannels.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        table.attach(scrolledchannels, 1, 2, 0, 1)
         
+        self.channelsview = gtk.TreeView(self.channels)
+        self.channelsview.set_headers_visible(False)
+        scrolledchannels.add(self.channelsview)
+        
+        col_name = gtk.TreeViewColumn(_("Channel"))
         cell_name = gtk.CellRendererText()
-        self.channelscombo.pack_start(cell_name)
-        self.channelscombo.add_attribute(cell_name, "text", 0)
-        channel_ali.add(self.channelscombo)
+        col_name.pack_start(cell_name)
+        col_name.add_attribute(cell_name, "text", 0)
+        self.channelsview.append_column(col_name)
                          
         label_start = gtk.Label()
         label_start.set_markup(_("<b>Start time:</b>"))
@@ -107,9 +112,9 @@ class TimerDialog(gtk.Dialog):
         return start
         
     def get_channel(self):
-        aiter = self.channelscombo.get_active_iter()
+        model, aiter = self.channelsview.get_selection().get_selected()
         if aiter != None:
-            return self.channels[aiter][1]
+            return model[aiter][1]
         else:
             return None
         
