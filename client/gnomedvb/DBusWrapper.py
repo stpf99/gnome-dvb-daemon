@@ -216,14 +216,6 @@ class DVBRecordingsStoreClient(gobject.GObject):
         return self.recstore.Delete(rid)
         
     def on_changed(self, rid, typeid):
-        if (typeid == 0):
-            print "Recording %d added" % rid
-        elif (typeid == 1):
-            print "Recording %d deleted" % rid
-        elif (typeid == 2):
-            print "Recording %d changed" % rid
-        else:
-            print "Unknown change type"
         self.emit("changed", rid, typeid)
         
 class DVBRecorderClient(gobject.GObject):
@@ -282,22 +274,12 @@ class DVBRecorderClient(gobject.GObject):
         return self.recorder.HasTimer(year, month, day, hour, minute, duration)
         
     def on_recording_started(self, timer_id):
-        print "Recording %d started" % timer_id
         self.emit("recording-started", timer_id)
         
     def on_recording_finished(self, timer_id):
-        print "Recording %d finished" % timer_id
         self.emit("recording-finished", timer_id)
          
     def on_changed(self, rid, typeid):
-        if (typeid == 0):
-            print "Timer %d added" % rid
-        elif (typeid == 1):
-            print "Timer %d deleted" % rid
-        elif (typeid == 2):
-            print "Timer %d changed" % rid
-        else:
-            print "Unknown change type"
         self.emit("changed", rid, typeid)
            
 class DVBChannelListClient:
