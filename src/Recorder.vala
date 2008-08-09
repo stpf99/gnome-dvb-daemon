@@ -49,10 +49,7 @@ namespace DVB {
             string location;
             sink.get ("location", out location);
             
-            if (this.count == 1) {
-                // No more active recordings
-                this.reset ();
-            } else {
+            if (this.count > 1) {
                 // Still have other recordings,
                 // just remove sid from program-numbers
             
@@ -96,6 +93,11 @@ namespace DVB {
             this.recording_stopped (rec, timer);
             
             this.recordings.remove (timer.Id);
+            
+            if (this.count == 0) {
+                // No more active recordings
+                this.reset ();
+            }
         }
         
         public void start_recording (Timer timer, File location) {
@@ -636,7 +638,9 @@ namespace DVB {
             
             // Delete timers of recordings that have ended
             for (int i=0; i<ended_recordings.length(); i++) {
-                this.active_timers.remove (ended_recordings.nth_data (i));
+                uint32 timer_id = ended_recordings.nth_data (i);
+                this.active_timers.remove (timer_id);
+                this.changed (timer_id, ChangeType.DELETED);
             }
             
             bool val;
