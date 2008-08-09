@@ -123,7 +123,7 @@ class DVBManagerClient(gobject.GObject):
         return self.manager.GetTypeOfDeviceGroup(group_id)
         
     def get_schedule(self, group_id, channel_sid):
-        return DVBSchedule(self.manager.GetSchedule(group_id, channel_sid))
+        return DVBScheduleClient(self.manager.GetSchedule(group_id, channel_sid))
         
     def on_changed(self, group_id, change_type):
         self.emit("changed", group_id, change_type)
@@ -332,7 +332,7 @@ class DVBChannelListClient:
     def is_radio_channel(self, cid):
         return self.channels.IsRadioChannel(cid)
         
-class DVBSchedule(gobject.GObject):
+class DVBScheduleClient(gobject.GObject):
 
     def __init__(self, object_path):
         gobject.GObject.__init__(self)
