@@ -70,11 +70,25 @@ namespace DVB {
             this.year, this.month, this.day, this.hour, this.minute, this.second)
             + "Duration: %u\nName: %s\nDescription: %s\n".printf (
             this.duration, this.name, this.description);
-            
+
             for (int i=0; i<this.audio_components.length (); i++) {
                 text += "%s ".printf(this.audio_components.nth_data (i).type);
             }
             return text;
+        }
+        
+        public Time get_local_start_time () {
+            Time utc_time = Utils.create_utc_time ((int)this.year, (int)this.month,
+                (int)this.day, (int)this.hour, (int)this.minute,
+                (int)this.second);
+            
+            Time local_time = Time.local (utc_time.mktime ());
+            // add daylight saving time
+            local_time.hour += local_time.isdst;
+            // normalize time
+            local_time.mktime ();
+            
+            return local_time;
         }
         
         /**

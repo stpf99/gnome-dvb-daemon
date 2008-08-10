@@ -404,6 +404,10 @@ if __name__ == '__main__':
             event_now = schedule.now_playing()
             print u"Now: %s" % schedule.get_name(event_now)
             print u"\tDesc: %s" % schedule.get_short_description(event_now)
+            time = schedule.get_local_start_time(event_now)
+            if len(time) == 6:
+                print u"\tStart: %04d-%02d-%02d %02d:%02d:%02d" % (time[0], time[1], time[2], time[3],
+                    time[4], time[5])
             print u"\tDuration: %s" % schedule.get_duration(event_now)
             print
         

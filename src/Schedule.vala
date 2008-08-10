@@ -152,6 +152,16 @@ namespace DVB {
             if (this.event_id_map.contains (event_id)) {
                 weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
                 Event event = this.events.get (iter);
+                Time local_time = event.get_local_start_time ();
+                uint[] time_array = new uint[6];
+                time_array[0] = local_time.year + 1900;
+                time_array[1] = local_time.month + 1;
+                time_array[2] = local_time.day;
+                time_array[3] = local_time.hour;
+                time_array[4] = local_time.minute;
+                time_array[5] = local_time.second;
+                
+                return time_array;
             }
             
             return new uint[] {};
