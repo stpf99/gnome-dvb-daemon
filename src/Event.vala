@@ -60,9 +60,8 @@ namespace DVB {
          */
         public bool has_expired () {
             int64 current_time = (int64)time_t ();
-            
             int64 end_timestamp = this.get_end_timestamp ();
-            debug ("%u, Current: %s, End: %s", this.id, current_time.to_string(), end_timestamp.to_string());
+            
             return (end_timestamp < current_time);
         }
         
