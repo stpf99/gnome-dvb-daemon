@@ -166,6 +166,8 @@ class RecorderWindow(gtk.Window):
                 dialog.destroy()
                 if response == gtk.RESPONSE_YES:
                     rec.delete_timer(timer_id)
+            else:
+                rec.delete_timer(timer_id)
         
     def _on_button_add_clicked(self, button):   
         device_group = self._get_active_device_group()
