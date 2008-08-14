@@ -34,6 +34,8 @@ namespace DVB {
         
         private uint device_group_counter;
         
+        private static Manager instance;
+        
         construct {
             this.scanners = new HashMap<string, Scanner> (GLib.str_hash,
                 GLib.str_equal, GLib.direct_equal);
@@ -44,6 +46,15 @@ namespace DVB {
             this.schedules = new HashSet<string> (GLib.str_hash,
                 GLib.str_equal);
             this.device_group_counter = 0;
+        }
+        
+        [DBus (visible = false)]
+        public static weak Manager get_instance () {
+            // TODO make thread-safe
+            if (instance == null) {
+                instance = new Manager ();
+            }
+            return instance;
         }
         
         /**
@@ -399,6 +410,12 @@ namespace DVB {
                 return null;
         }
         
+        [DBus (visible = false)]
+        public EPGScanner get_epg_scanner (DeviceGroup devgroup) {
+            return this.epgscanners.get (devgroup.Id);
+        }
+        
+        [DBus (visible = false)]
         public void create_and_start_epg_scanner (DeviceGroup devgroup) { 
             debug ("Creating new EPG scanner for device group %u",
                 devgroup.Id);

@@ -29,7 +29,7 @@ public class Main {
             if (request_name_result == DBus.RequestNameReply.PRIMARY_OWNER) {
                 debug ("Creating new Manager D-Bus service");
             
-                manager = new DVB.Manager ();
+                manager = DVB.Manager.get_instance ();
                                 
                 conn.register_object (
                     DVB.Constants.DBUS_MANAGER_PATH,
@@ -114,9 +114,13 @@ public class Main {
                         gconf.remove_timer_from_device_group (t.Id, device_group);
                 }
             }
+            
         }
         
         if (!start_recordings_store (max_id)) return -1;
+        
+    	var epgs = new DVB.EPGScanner (device_groups.get (0));
+    	epgs.start ();
         
         // Start GLib mainloop
         loop.run ();
