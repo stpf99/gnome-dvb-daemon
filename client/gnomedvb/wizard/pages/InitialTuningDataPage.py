@@ -22,6 +22,9 @@ class InitialTuningDataPage(BasePage):
 		self.__adapter_info = None
 		self.__tuning_data = None
 		
+	def get_page_title(self):
+		return _("Select tuning data")
+		
 	def set_adapter_info(self, info):
 		self.__adapter_info = info
 		
@@ -34,6 +37,8 @@ class InitialTuningDataPage(BasePage):
 			self.setup_dvb_s()
 		elif info["type"] == "DVB-C":
 			self.setup_dvb_c()
+		else:
+			self.setup_unknown(info["type"])
 			
 	def get_tuning_data(self):
 		return self.__tuning_data
@@ -44,6 +49,15 @@ class InitialTuningDataPage(BasePage):
 		self.table.set_col_spacings(3)
 		self.table.show()
 		self.pack_start(self.table)
+	
+	def setup_unknown(self, devtype):
+		label = gtk.Label()
+		label.set_line_wrap(True)
+		# translators: first %s is the DVB type, e.g. DVB-S
+		text = _("Sorry, but '%s' cards aren't supported.") % devtype
+		label.set_markup(text)
+		label.show()
+		self.pack_start(label)
 		
 	def setup_dvb_t(self):
 		countries = { "at": _("Austria"), "au": _("Australia"), "be": _("Belgium"),

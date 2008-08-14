@@ -25,7 +25,10 @@ class SaveChannelListPage(BasePage):
 		save_button = gtk.Button(stock=gtk.STOCK_SAVE)
 		save_button.connect("clicked", self.__on_save_button_clicked)
 		button_box.pack_start(save_button)
-		
+			
+	def get_page_title(self):
+		return _("Save channels")
+	
 	def set_scanner(self, scanner):
 		self.__scanner = scanner
 		

@@ -13,4 +13,10 @@ class IntroPage(BasePage):
 		label = gtk.Label(text)
 		label.set_line_wrap(True)
 		self.pack_start(label)
-
+    	
+	def get_page_title(self):
+		return _("Welcome")
+		
+	def get_page_type(self):
+		return gtk.ASSISTANT_PAGE_INTRO
+	

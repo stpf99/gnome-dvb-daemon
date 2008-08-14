@@ -79,6 +79,12 @@ class ChannelScanPage(BasePage):
 		self.progressbar = gtk.ProgressBar()
 		self.pack_start(self.progressbar, False)
 		
+	def get_page_title(self):
+		return _("Scanning for channels")
+		
+	def get_page_type(self):
+		return gtk.ASSISTANT_PAGE_PROGRESS
+		
 	def set_name(self, name):
 		self.label.set_text(_("Scanning for channels on device %s") % name)
 		

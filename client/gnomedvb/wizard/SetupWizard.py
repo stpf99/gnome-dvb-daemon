@@ -14,7 +14,7 @@ class SetupWizard(gtk.Assistant):
 
 	def __init__(self):
 		gtk.Assistant.__init__(self)
-		self.__ask_on_exit = True
+		self.__ask_on_exit = False
 		self.__adapter_info = None
 		self.__scanner = None
 		
@@ -26,45 +26,37 @@ class SetupWizard(gtk.Assistant):
 		
 		intro_page = IntroPage()
 		self.append_page(intro_page)
-		self.set_page_title(intro_page, _("Welcome"))
-		self.set_page_type(intro_page, gtk.ASSISTANT_PAGE_INTRO)
 		self.set_page_complete(intro_page, True)
 		
 		self.adapters_page = AdaptersPage()
+		self.adapters_page.connect("finished", self.on_adapter_page_finished)
 		self.append_page(self.adapters_page)
-		self.set_page_title(self.adapters_page, _("Setup adapter"))
-		self.set_page_type(self.adapters_page, gtk.ASSISTANT_PAGE_CONTENT)
-		
-		self.adapters_page.devicesview.get_selection().connect('changed',
-			self.on_device_selection_changed)
 		
 		self.tuning_data_page = InitialTuningDataPage()
 		self.tuning_data_page.connect("finished", self.on_scan_finished)
 		self.append_page(self.tuning_data_page)
-		self.set_page_title(self.tuning_data_page, _("Select tuning data"))
-		self.set_page_type(self.tuning_data_page, gtk.ASSISTANT_PAGE_CONTENT)
 		
 		scan_page = ChannelScanPage()
 		scan_page.connect("finished", self.on_scan_finished)
 		self.append_page(scan_page)
-		self.set_page_title(scan_page, _("Scanning for channels"))
-		self.set_page_type(scan_page, gtk.ASSISTANT_PAGE_PROGRESS)
 		
 		save_channels_page = SaveChannelListPage()
 		save_channels_page.connect("finished", self.on_scan_finished)
 		self.append_page(save_channels_page)
-		self.set_page_title(save_channels_page, _("Save channels"))
-		self.set_page_type(save_channels_page, gtk.ASSISTANT_PAGE_CONTENT)
 		
 		summary_page = SummaryPage()
 		self.append_page(summary_page)
-		self.set_page_title(summary_page, _("Setup finished"))
-		self.set_page_type(summary_page, gtk.ASSISTANT_PAGE_SUMMARY)
+		
+	def append_page(self, page):
+		gtk.Assistant.append_page(self, page)
+		self.set_page_title(page, page.get_page_title())
+		self.set_page_type(page, page.get_page_type())
 		
 	def on_prepare(self, assistant, page):
 		if isinstance(page, InitialTuningDataPage):
 			page.set_adapter_info(self.__adapter_info)
 		elif isinstance(page, ChannelScanPage):
+			self.__ask_on_exit = True
 			if self.__adapter_info["name"] != None:
 				page.set_name(self.__adapter_info["name"])
 				self.__scanner = page.start_scanning(self.__adapter_info["adapter"],
@@ -76,19 +68,13 @@ class SetupWizard(gtk.Assistant):
 		elif isinstance(page, SummaryPage):
 			self.__ask_on_exit = False
 		
-	def on_device_selection_changed(self, treeselection):
-		model, aiter = treeselection.get_selected()
-		if aiter != None:
-			self.__adapter_info = {"name": model[aiter][0],
-								   "type": model[aiter][1],
-								   "adapter": model[aiter][2],
-								   "frontend": model[aiter][3]}
-			self.set_page_complete(self.adapters_page, True)
-		else:
-			self.set_page_complete(self.adapters_page, False)
-			
 	def on_scan_finished(self, page, state):
 		self.set_page_complete(page, state)
+			
+	def on_adapter_page_finished(self, page, state):
+		if state:
+			self.__adapter_info = page.get_adapter_info()
+		self.on_scan_finished(page, state)
 			
 	def confirm_quit(self, *args):
 		if self.__ask_on_exit:
