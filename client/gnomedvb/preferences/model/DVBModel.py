@@ -25,8 +25,8 @@ class DVBModel (gnomedvb.DVBManagerClient):
         """
         devs = []
         for info in gnomedvb.get_dvb_devices():
-            dev = Device (0, info["name"], info["adapter"], info["frontend"],
-                info["type"])
+            dev = Device (0, "Unknown", info["adapter"], info["frontend"],
+                "Unknown")
             devs.append(dev)
         return devs
         
@@ -42,6 +42,9 @@ class DVBModel (gnomedvb.DVBManagerClient):
                 
         alldevs = set()
         for dev in self.get_all_devices():
+            info = gnomedvb.get_adapter_info(dev.adapter)
+            dev.name = info["name"]
+            dev.type = info["type"]
             alldevs.add(dev)
         
         return alldevs - registered
@@ -56,9 +59,10 @@ class DVBModel (gnomedvb.DVBManagerClient):
             match = self._adapter_pattern.search(device_path)
             if match != None:
                 adapter = int(match.group(1))
-                info = gnomedvb.get_adapter_info(adapter)
                 frontend = int(match.group(2))
-                dev = Device (group_id, info["name"], adapter, frontend, info["type"])
+                devtype = self.get_type_of_device_group(group_id)
+                devname = self.get_name_of_registered_device(adapter, frontend)
+                dev = Device (group_id, devname, adapter, frontend, devtype)
                 devices.append(dev)
         return devices
 

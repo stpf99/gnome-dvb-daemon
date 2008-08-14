@@ -230,8 +230,9 @@ class Preferences(gtk.Window):
             if group == group_id:
                 if change_type == 0:
                     # Added
-                    info = gnomedvb.get_adapter_info(adapter)
-                    device = Device (group_id, info["name"], adapter, frontend, info["type"])
+                    devtype = manager.get_type_of_device_group(group_id)
+                    devname = manager.get_name_of_registered_device(adapter, frontend)
+                    device = Device (group_id, devname, adapter, frontend, devtype)
                     dev_iter = self.devicegroups.append(aiter)
                     self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
                     break

@@ -72,7 +72,7 @@ def get_dvb_devices():
 	    match = re.search("adapter(\d+?)/frontend(\d+?)", dev_file)
 	    if match != None:
 		    adapter = int(match.group(1))
-		    info = get_adapter_info(adapter)
+		    info = {}
 		    info["adapter"] = adapter
 		    info["frontend"] = int(match.group(2))
 		    deviceslist.append(info)
@@ -121,6 +121,9 @@ class DVBManagerClient(gobject.GObject):
         
     def get_type_of_device_group(self, group_id):
         return self.manager.GetTypeOfDeviceGroup(group_id)
+        
+    def get_name_of_registered_device(self, adapter, frontend):
+        return self.manager.GetNameOfRegisteredDevice(adapter, frontend)
         
     def get_schedule(self, group_id, channel_sid):
         return DVBScheduleClient(self.manager.GetSchedule(group_id, channel_sid))
