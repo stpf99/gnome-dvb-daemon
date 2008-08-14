@@ -17,21 +17,23 @@ namespace DVB {
         public signal void recording_aborted ();
     
         public Device device {get; construct;}
+        public EPGScanner epgscanner {get; construct;}
         public uint count {
             get { return this.recordings.size; }
         }
         
         private Element? pipeline;
         private string? sid;
-        
+        // Maps timer id to Recording
         private Map<uint, Recording> recordings;
     
         construct {
             this.recordings = new HashMap<uint, Recording> ();
         }
     
-        public RecordingThread (Device device) {
+        public RecordingThread (Device device, EPGScanner epgscanner) {
             this.device = device;
+            this.epgscanner = epgscanner;
         }
         
         private void reset () {
@@ -78,7 +80,9 @@ namespace DVB {
                     new_programs.append (":" + new_programs_list.nth_data (i));
                 }
                 
+                this.pipeline.set_state (State.PAUSED);
                 dvbbasebin.set ("program-numbers", new_programs.str);
+                this.pipeline.set_state (State.PLAYING);
             }
             
             Recording rec = this.recordings.get (timer.Id);
@@ -90,14 +94,14 @@ namespace DVB {
                 critical ("Could not save recording: %s", e.message);
             }
             
-            this.recording_stopped (rec, timer);
-            
             this.recordings.remove (timer.Id);
             
             if (this.count == 0) {
                 // No more active recordings
                 this.reset ();
             }
+            
+            this.recording_stopped (rec, timer);
         }
         
         public void start_recording (Timer timer, File location) {
@@ -146,8 +150,10 @@ namespace DVB {
                 
                 if (this.add_new_filesink (sink_name, location.get_path ())) {
                     string programs;
+                    this.pipeline.set_state (State.PAUSED);
                     dvbbasebin.get ("program-numbers", out programs);
                     dvbbasebin.set ("program-numbers", "%s:%s".printf (programs, this.sid) );
+                    this.pipeline.set_state (State.PLAYING);
                 }
             }
             
@@ -223,33 +229,19 @@ namespace DVB {
         }
         
         private void on_eit_structure (Gst.Structure structure) {
-            Gst.Value events = structure.get_value ("events");
+            this.epgscanner.on_eit_structure (structure);
             
-            if (!(events.holds (Gst.Value.list_get_type ())))
-                return;
-            
-            uint eit_sid;
-            structure.get_uint ("service-id", out eit_sid);
-                
-            uint size = events.list_get_size ();
-            Gst.Value val;
-            weak Gst.Structure event;
-            // Iterate over events
-            for (uint i=0; i<size; i++) {
-                val = events.list_get_value (i);
-                event = val.get_structure ();
-                
-                foreach (Recording rec in this.recordings.get_values ()) {
-                    // Check if name is not already set
-                    if (rec.Name == null && eit_sid == rec.ChannelSid) {
-                        uint running;
-                        event.get_uint ("running-status", out running);
-                        
-                        if (running == Event.RUNNING_STATUS_RUNNING) {
-                            debug ("Found running event for active recording");
-                            rec.Name = event.get_string ("name"); 
-                            rec.Description = event.get_string ("description");
-                        }
+            // Find name and description for recordings
+            foreach (Recording rec in this.recordings.get_values ()) {
+                if (rec.Name == null) {
+                    Channel chan = this.device.Channels.get (rec.ChannelSid);
+                    Schedule sched = chan.Schedule;
+                    
+                    weak Event? event = sched.get_running_event ();
+                    if (event != null) {
+                        debug ("Found running event for active recording");
+                        rec.Name = event.name;
+                        rec.Description = event.description;
                     }
                 }
             }
@@ -267,11 +259,13 @@ namespace DVB {
         public DVB.DeviceGroup DeviceGroup { get; construct; }
         
         protected Map<Timer, RecordingThread> active_recording_threads;
-        // Maps timer id to timer
+        // Contains timer ids
         protected Set<uint32> active_timers;
         
         private bool have_check_timers_timeout;
+        // Maps timer id to timer
         private HashMap<uint32, Timer> timers;
+        
         private static const int CHECK_TIMERS_INTERVAL = 5;
         
         construct {
@@ -548,13 +542,18 @@ namespace DVB {
             if (create_new_thread) {
                 debug ("Creating new RecordingThread");
                 
+                // Stop epgscanner before starting recording
+                EPGScanner epgscanner = Manager.get_instance ().get_epg_scanner (
+                    this.DeviceGroup);
+                epgscanner.stop ();
+                
                 DVB.Device? free_device = this.DeviceGroup.get_next_free_device ();
                 if (free_device == null) {
                     critical ("All devices are busy");
                     return;
                 }
                 
-                recthread = new RecordingThread (free_device);
+                recthread = new RecordingThread (free_device, epgscanner);
                 recthread.recording_stopped += this.on_recording_stopped;
                 // FIXME
                 //recthread.recording_aborted += this.on_recording_aborted;
@@ -701,7 +700,13 @@ namespace DVB {
             
             RecordingsStore.get_instance().add (recording);
             
-            this.active_recording_threads.remove (timer);
+            if (recthread.count == 0) {
+                this.active_recording_threads.remove (timer);
+                // Start epgscanner again after recording ended
+                EPGScanner epgscanner = Manager.get_instance ().get_epg_scanner (
+                    this.DeviceGroup);
+                epgscanner.start ();
+            }
             
             this.recording_finished (recording.Id);
         }

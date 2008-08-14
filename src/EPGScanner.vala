@@ -13,9 +13,11 @@ namespace DVB {
         
         private Gst.Element? pipeline;
         private Queue<Channel> channels;
+        private uint? scan_event_id;
         
         construct {
             this.channels = new Queue<Channel> ();
+            this.scan_event_id = null;
         }
         
         /**
@@ -29,6 +31,11 @@ namespace DVB {
          * Stop collecting EPG data
          */
         public void stop () {
+            debug ("Stopping EPG scan for group %u", this.DeviceGroup.Id);
+            if (this.scan_event_id != null) {
+                Source.remove (this.scan_event_id);
+                this.scan_event_id = null;
+            }
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
             this.pipeline = null;
@@ -68,7 +75,7 @@ namespace DVB {
             bus.add_signal_watch ();
             bus.message += this.bus_watch_func;
             
-            Timeout.add_seconds (WAIT_FOR_EIT_DURATION,
+            this.scan_event_id = Timeout.add_seconds (WAIT_FOR_EIT_DURATION,
                 this.scan_new_frequency);
             
             return;
@@ -122,7 +129,7 @@ namespace DVB {
             }
         }
         
-        private void on_eit_structure (Gst.Structure structure) {
+        public void on_eit_structure (Gst.Structure structure) {
             Gst.Value events = structure.get_value ("events");
             
             if (!(events.holds (Gst.Value.list_get_type ())))
