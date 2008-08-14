@@ -19,67 +19,84 @@ namespace DVB {
         public void remove_expired_events () {
             SList<weak SequenceIter<Event>> expired_events = new SList <weak SequenceIter<Event>> ();
             
-            for (int i=0; i<this.events.get_length (); i++) {
-                weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
-                
-                Event e = this.events.get (iter);
-                if (e.has_expired ()) {
-                    expired_events.prepend (iter);
-                } else {
-                    // events are sorted, all other events didn't expire, too
-                    break;
+            lock (this.events) {
+                for (int i=0; i<this.events.get_length (); i++) {
+                    weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
+                    
+                    Event e = this.events.get (iter);
+                    if (e.has_expired ()) {
+                        expired_events.prepend (iter);
+                    } else {
+                        // events are sorted, all other events didn't expire, too
+                        break;
+                    }
                 }
-            }
-            
-            foreach (weak SequenceIter<Event> iter in expired_events) {
-                debug ("Removing expired event");
-                Event event = this.events.get (iter);
-                debug (event.to_string ());
-                this.event_id_map.remove (event.id);
-                this.events.remove (iter);
+                
+                foreach (weak SequenceIter<Event> iter in expired_events) {
+                    debug ("Removing expired event");
+                    Event event = this.events.get (iter);
+                    debug (event.to_string ());
+                    this.event_id_map.remove (event.id);
+                    this.events.remove (iter);
+                }
             }
         }
         
         public weak Event? get (uint event_id) {
-            if (!this.event_id_map.contains (event_id)) return null;
+            Event? val = null;
             
-            weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-        
-            return this.events.get (iter);
+            lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {            
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    val = this.events.get (iter);
+                }
+            }
+            
+            return val;
         }
         
         /**
          * When an event with the same id already exists, it's replaced
          */
         public void add (Event# event) {
-            if (this.event_id_map.contains (event.id)) {
-                // Remove old event
-                weak SequenceIter<Event> iter = this.event_id_map.get (event.id);
+            lock (this.events) {
+                if (this.event_id_map.contains (event.id)) {
+                    // Remove old event
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event.id);
+                    
+                    this.event_id_map.remove (event.id);
+                    this.events.remove (iter);
+                }
+                weak SequenceIter<Event> iter = this.events.insert_sorted (event, Event.compare);
+                this.event_id_map.set (event.id, iter);
                 
-                this.event_id_map.remove (event.id);
-                this.events.remove (iter);
+                assert (this.events.get_length () == this.event_id_map.size);
             }
-            weak SequenceIter<Event> iter = this.events.insert_sorted (event, Event.compare);
-            this.event_id_map.set (event.id, iter);
-            
-            assert (this.events.get_length () == this.event_id_map.size);
         }
         
         public bool contains (uint event_id) {
-            return this.event_id_map.contains (event_id);
+            bool val;
+            lock (this.events) {
+                val = this.event_id_map.contains (event_id);
+            }
+            return val;
         }
         
         public weak Event? get_running_event () {
-             for (int i=0; i<this.events.get_length (); i++) {
-                weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
-                
-                Event event = this.events.get (iter);
-                if (event.running_status == Event.RUNNING_STATUS_RUNNING) {
-                    return event;
+             Event? running_event = null;
+             lock (this.events) {
+                 for (int i=0; i<this.events.get_length (); i++) {
+                    weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
+                    
+                    Event event = this.events.get (iter);
+                    if (event.running_status == Event.RUNNING_STATUS_RUNNING) {
+                        running_event = event;
+                        break;
+                    }
                 }
             }
             
-            return null;
+            return running_event;
         }
        
         /*
@@ -96,95 +113,124 @@ namespace DVB {
         public uint32 Next (uint32 event_id) {
             weak Event? event = this.get_running_event ();
             
+            uint32 next_event = 0;
             if (event != null) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                weak SequenceIter<Event> next_iter = iter.next ();
-                // Check if a new event follows
-                if (iter != next_iter) {
-                    return this.events.get (next_iter).id;
+                lock (this.events) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    weak SequenceIter<Event> next_iter = iter.next ();
+                    // Check if a new event follows
+                    if (iter != next_iter) {
+                        next_event = this.events.get (next_iter).id;
+                    }
                 }
             }
             
-            return 0;
+            return next_event;
         }
         
         public string GetName (uint32 event_id) {
-            if (this.event_id_map.contains (event_id)) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                Event event = this.events.get (iter);
-                return event.name;
+            string name = "";
+
+            lock (this.events) {        
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    Event event = this.events.get (iter);
+                    name = event.name;
+                }
             }
         
-            return "";
+            return name;
         }
         
         public string GetShortDescription (uint32 event_id) {
-            if (this.event_id_map.contains (event_id)) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                Event event = this.events.get (iter);
-                return event.description;
+            string desc = "";
+            
+            lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    Event event = this.events.get (iter);
+                    desc = event.description;
+                }
             }
             
-            return "";   
+            return desc;
         }
         
         public string GetExtendedDescription (uint32 event_id) {
-            if (this.event_id_map.contains (event_id)) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                Event event = this.events.get (iter);
-                return event.extended_description;
+             string desc = "";
+            
+            lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    Event event = this.events.get (iter);
+                    desc = event.extended_description;
+                }
             }
             
-            return "";
+            return desc;
         }
         
         public uint GetDuration (uint32 event_id) {
-            if (this.event_id_map.contains (event_id)) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                Event event = this.events.get (iter);
-                return event.duration;
+            uint duration = 0;
+        
+            lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    Event event = this.events.get (iter);
+                    duration = event.duration;
+                }
             }
             
-            return 0;
+            return duration;
         }
         
         public uint[] GetLocalStartTime (uint32 event_id) {
-            if (this.event_id_map.contains (event_id)) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                Event event = this.events.get (iter);
-                Time local_time = event.get_local_start_time ();
-                uint[] time_array = new uint[6];
-                time_array[0] = local_time.year + 1900;
-                time_array[1] = local_time.month + 1;
-                time_array[2] = local_time.day;
-                time_array[3] = local_time.hour;
-                time_array[4] = local_time.minute;
-                time_array[5] = local_time.second;
-                
-                return time_array;
+            uint[] start = new uint[] {};
+        
+            lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    Event event = this.events.get (iter);
+                    Time local_time = event.get_local_start_time ();
+                    uint[] start = new uint[6];
+                    start[0] = local_time.year + 1900;
+                    start[1] = local_time.month + 1;
+                    start[2] = local_time.day;
+                    start[3] = local_time.hour;
+                    start[4] = local_time.minute;
+                    start[5] = local_time.second;
+                }
             }
             
-            return new uint[] {};
+            return start;
         }
         
         public bool IsRunning (uint32 event_id) {
-            if (this.event_id_map.contains (event_id)) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                Event event = this.events.get (iter);
-                return (event.running_status == Event.RUNNING_STATUS_RUNNING);
+            bool val = false;
+        
+            lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    Event event = this.events.get (iter);
+                    val = (event.running_status == Event.RUNNING_STATUS_RUNNING);
+                }
             }
             
-            return true;
+            return val;
         }
         
         public bool IsScrambled (uint32 event_id) {
-            if (this.event_id_map.contains (event_id)) {
-                weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                Event event = this.events.get (iter);
-                return (!event.free_ca_mode);
+            bool val = false;
+        
+            lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
+                    Event event = this.events.get (iter);
+                    val = (!event.free_ca_mode);
+                }
             }
             
-            return true;
+            return val;
         }
     }
 
