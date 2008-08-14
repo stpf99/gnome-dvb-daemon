@@ -119,9 +119,6 @@ public class Main {
         
         if (!start_recordings_store (max_id)) return -1;
         
-    	var epgs = new DVB.EPGScanner (device_groups.get (0));
-    	epgs.start ();
-        
         // Start GLib mainloop
         loop.run ();
         
