@@ -111,6 +111,15 @@ namespace DVB {
                     path,
                     scanner);
                     
+                // Stop epgscanner for device if there's any
+                Device? dev = this.get_registered_device (adapter, frontend);
+                if (dev != null) {
+                    EPGScanner epgscanner =
+                        this.get_epg_scanner (this.get_device_group_of_device (
+                            dev));
+                    epgscanner.stop ();
+                }
+                    
                 debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
                       adapter, frontend, dbusiface);
             }
@@ -358,18 +367,12 @@ namespace DVB {
          * is returned.
          */
         public string GetNameOfRegisteredDevice (uint adapter, uint frontend) {
-            Device fake_device = new Device (adapter, frontend, false);
-            foreach (uint group_id in this.devices.get_keys ()) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                if (devgroup.contains (fake_device)) {
-                    foreach (Device device in devgroup) {
-                        if (Device.equal (fake_device, device))
-                            return device.Name;
-                    }
-                }
-            }
+            Device? dev = this.get_registered_device (adapter, frontend);
             
-            return "Unknown";
+            if (dev == null)
+                return "Unknown";
+            else
+                return dev.Name;
         }
         
         public string GetSchedule (uint group_id, uint channel_sid) {
@@ -505,7 +508,44 @@ namespace DVB {
             
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             this.scanners.remove (path);
+            
+            // Start epgscanner for device again if there was one
+            DeviceGroup? devgroup = this.get_device_group_of_device (scanner.Device);
+            if (devgroup != null) {
+                EPGScanner epgscanner = this.get_epg_scanner (devgroup);
+                epgscanner.start ();
+            }
         }
+        
+        private Device? get_registered_device (uint adapter, uint frontend) {
+            Device fake_device = new Device (adapter, frontend, false);
+            foreach (uint group_id in this.devices.get_keys ()) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                if (devgroup.contains (fake_device)) {
+                    foreach (Device device in devgroup) {
+                        if (Device.equal (fake_device, device))
+                            return device;
+                    }
+                }
+            }
+            
+            return null;
+        }
+        
+        private DeviceGroup? get_device_group_of_device (Device device) {
+            foreach (uint group_id in this.devices.get_keys ()) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                if (devgroup.contains (device)) {
+                    foreach (Device grp_device in devgroup) {
+                        if (Device.equal (grp_device, device))
+                            return devgroup;
+                    }
+                }
+            }
+            
+            return null;
+        }
+        
     }
 
 }
