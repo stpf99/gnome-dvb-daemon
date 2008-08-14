@@ -16,6 +16,7 @@ namespace DVB {
         public uint Adapter { get; construct; }
         public uint Frontend { get; construct; }
         public AdapterType Type { get; construct; }
+        public string Name { get; construct; }
         public ChannelList Channels { get; set; }
         public File RecordingsDirectory { get; set; }
 
@@ -23,6 +24,7 @@ namespace DVB {
             this.Adapter = adapter;
             this.Frontend = frontend;
             this.Type = getAdapterType(adapter, get_type);
+            this.Name = getAdapterName(adapter);
         }
 
         public static Device new_full (uint adapter, uint frontend,
@@ -121,6 +123,41 @@ namespace DVB {
             else if (adapter_type == "DVB-S") return AdapterType.DVB_S;
             else if (adapter_type == "DVB-C") return AdapterType.DVB_C;
             else return AdapterType.UNKNOWN;
+        }
+        
+        private static weak string? getAdapterName (uint adapter) {
+            Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
+            dvbsrc.set ("adapter", adapter);
+            
+            Element pipeline = new Pipeline ("");
+            ((Bin)pipeline).add (dvbsrc);
+            pipeline.set_state (State.READY);
+            
+            weak Bus bus = pipeline.get_bus();
+            
+            weak string adapter_name = null;
+            
+            while (bus.have_pending()) {
+                weak Message msg = bus.pop();
+
+                if (msg.type == MessageType.ELEMENT && msg.src == dvbsrc) {
+                    weak Structure structure = msg.structure;
+
+                    if (structure.get_name() == "dvb-adapter") {
+                        adapter_name = structure.get_string("name");
+                        break;
+                    }
+                } else if (msg.type == MessageType.ERROR) {
+                    Error gerror;
+                    string debug;
+                    msg.parse_error (out gerror, out debug);
+                    critical ("%s %s", gerror.message, debug);
+                }
+            }
+               
+            pipeline.set_state(State.NULL);
+
+            return adapter_name;
         }
     }
     

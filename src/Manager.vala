@@ -349,6 +349,29 @@ namespace DVB {
             return groupdevs;
         }
         
+        /**
+         * @adapter: Adapter of device
+         * @frontend: Frontend of device
+         * @returns: The name of the device or "Unknown"
+         *
+         * The device must be part of group, otherwise "Unknown"
+         * is returned.
+         */
+        public string GetNameOfRegisteredDevice (uint adapter, uint frontend) {
+            Device fake_device = new Device (adapter, frontend, false);
+            foreach (uint group_id in this.devices.get_keys ()) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                if (devgroup.contains (fake_device)) {
+                    foreach (Device device in devgroup) {
+                        if (Device.equal (fake_device, device))
+                            return device.Name;
+                    }
+                }
+            }
+            
+            return "Unknown";
+        }
+        
         public string GetSchedule (uint group_id, uint channel_sid) {
             if (this.devices.contains (group_id)) {
                 DeviceGroup devgroup = this.devices.get(group_id);
