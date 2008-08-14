@@ -530,7 +530,7 @@ namespace DVB {
             foreach (uint32 timer_id in this.active_timers) {
                 Timer other_timer = this.timers.get (timer_id);
                 Channel other_channel =
-                    this.DeviceGroup.Channels.get (timer.ChannelSid);
+                    this.DeviceGroup.Channels.get (other_timer.ChannelSid);
                 // FIXME
                 if (other_channel.Frequency == channel.Frequency) {
                     debug ("Using already active RecordingThread");

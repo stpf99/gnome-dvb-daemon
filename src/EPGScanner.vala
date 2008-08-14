@@ -13,11 +13,11 @@ namespace DVB {
         
         private Gst.Element? pipeline;
         private Queue<Channel> channels;
-        private uint? scan_event_id;
+        private uint scan_event_id;
         
         construct {
             this.channels = new Queue<Channel> ();
-            this.scan_event_id = null;
+            this.scan_event_id = 0;
         }
         
         /**
@@ -32,9 +32,9 @@ namespace DVB {
          */
         public void stop () {
             debug ("Stopping EPG scan for group %u", this.DeviceGroup.Id);
-            if (this.scan_event_id != null) {
+            if (this.scan_event_id != 0) {
                 Source.remove (this.scan_event_id);
-                this.scan_event_id = null;
+                this.scan_event_id = 0;
             }
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
@@ -93,7 +93,7 @@ namespace DVB {
             Channel channel = this.channels.pop_head ();
             channel.Schedule.remove_expired_events ();
             
-            debug ("Scanning channel %s", channel.to_string ());
+            //debug ("Scanning channel %s", channel.to_string ());
             
             this.pipeline.set_state (Gst.State.READY);
             
@@ -205,7 +205,7 @@ namespace DVB {
                     }
                 }
                     
-                debug ("Adding new event: %s", event_class.to_string ());
+                //debug ("Adding new event: %s", event_class.to_string ());
                 channel.Schedule.add (#event_class);
             }
         }
