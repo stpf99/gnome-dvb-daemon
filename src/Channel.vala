@@ -19,7 +19,7 @@ namespace DVB {
         private DVB.Schedule schedule;
         
         construct {
-            this.schedule = new DVB.Schedule ();
+            this.schedule = new DVB.Schedule (this);
         }
         
         /**

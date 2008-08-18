@@ -30,6 +30,7 @@ GST_REQUIRED=0.10.19
 DBUS_REQUIRED=0.74
 GEE_REQUIRED=0.1.4
 GCONF_REQUIRED=2.6.1
+SQLITE_REQUIRED=3.4
 
 PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             gio-2.0 >= $GIO_REQUIRED
@@ -37,7 +38,8 @@ PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             gstreamer-0.10 >= $GST_REQUIRED
                             dbus-glib-1 >= $DBUS_REQUIRED
                             gee-1.0 >= $GEE_REQUIRED
-                            gconf-2.0 >= $GCONF_REQUIRED)
+                            gconf-2.0 >= $GCONF_REQUIRED
+                            sqlite3 >= $SQLITE_REQUIRED)
 AC_SUBST(GNOME_DVB_DAEMON_CFLAGS)
 AC_SUBST(GNOME_DVB_DAEMON_LIBS)
 

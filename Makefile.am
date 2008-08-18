@@ -38,6 +38,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Device.vala \
 	src/DeviceGroup.vala \
 	src/EPGScanner.vala \
+	src/EPGStore.vala \
 	src/Event.vala \
 	src/GConfStore.vala \
 	src/IDBusChannelList.vala \
@@ -67,7 +68,8 @@ vala_pkgs = \
     --pkg dbus-glib-1 \
     --pkg gstreamer-0.10 \
     --pkg gee-1.0 \
-    --pkg gconf-2.0
+    --pkg gconf-2.0 \
+    --pkg sqlite3
 
 src/gnome-dvb-daemon.vala.stamp: $(gnome_dvb_daemon_VALASOURCES)
 	$(VALAC) -C --thread --vapidir=$(top_srcdir)/vapi --pkg config $(vala_pkgs) --basedir $(top_srcdir) $^

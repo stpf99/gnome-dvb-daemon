@@ -8,12 +8,18 @@ namespace DVB {
      */
     public class Schedule : GLib.Object, IDBusSchedule {
     
+        public Channel channel {get; construct;}
+    
         private Sequence<Event> events;
         private HashMap<uint, weak SequenceIter<Event>> event_id_map;
         
         construct {
             this.events = new Sequence<Event> (null);
             this.event_id_map = new HashMap<uint, weak SequenceIter<Event>> ();
+        }
+        
+        public Schedule (Channel channel) {
+            this.channel = channel;
         }
         
         public void remove_expired_events () {
@@ -38,6 +44,8 @@ namespace DVB {
                     debug (event.to_string ());
                     this.event_id_map.remove (event.id);
                     this.events.remove (iter);
+                    EPGStore.get_instance ().remove_event (
+                        event, this.channel);
                 }
             }
         }
@@ -69,6 +77,8 @@ namespace DVB {
                 }
                 weak SequenceIter<Event> iter = this.events.insert_sorted (event, Event.compare);
                 this.event_id_map.set (event.id, iter);
+                EPGStore.get_instance ().add_event (
+                        event, this.channel);
                 
                 assert (this.events.get_length () == this.event_id_map.size);
             }

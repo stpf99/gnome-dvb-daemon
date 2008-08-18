@@ -97,8 +97,9 @@ public class Main {
         if (!start_manager ()) return -1;
         
         uint32 max_id = 0;
-        // Restore devices and timers
+        
         var gconf = DVB.GConfStore.get_instance ();
+        var epgstore = new DVB.EPGStore ();
         
         Gee.ArrayList<DVB.DeviceGroup> device_groups = gconf.get_all_device_groups ();
         foreach (DVB.DeviceGroup device_group in device_groups) {
@@ -107,6 +108,7 @@ public class Main {
                 DVB.Recorder rec = manager.get_recorder_for_device_group (device_group);
                 manager.create_and_start_epg_scanner (device_group);
             
+            	// Restore timers
                 Gee.ArrayList<DVB.Timer> timers = gconf.get_all_timers_of_device_group (device_group);
                 foreach (DVB.Timer t in timers) {
                     if (t.Id > max_id) max_id = t.Id;
@@ -115,6 +117,13 @@ public class Main {
                 }
             }
             
+            // Restore EPG events
+            foreach (DVB.Channel channel in device_group.Channels) {
+            	Gee.List<DVB.Event> events = epgstore.get_events (channel);
+            	foreach (DVB.Event event in events) {
+            		channel.Schedule.add (#event);
+            	}
+            }
         }
         
         if (!start_recordings_store (max_id)) return -1;
