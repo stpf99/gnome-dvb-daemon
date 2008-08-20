@@ -206,7 +206,7 @@ namespace DVB {
                 }
                     
                 //debug ("Adding new event: %s", event_class.to_string ());
-                channel.Schedule.add (#event_class);
+                channel.Schedule.add (event_class);
             }
         }
         

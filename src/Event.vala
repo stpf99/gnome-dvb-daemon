@@ -91,6 +91,14 @@ namespace DVB {
             return local_time;
         }
         
+        public Time get_utc_start_time () {
+            Time utc_time = Utils.create_utc_time ((int)this.year, (int)this.month,
+                (int)this.day, (int)this.hour, (int)this.minute,
+                (int)this.second);
+                
+            return utc_time;
+        }
+        
         /**
          * @returns: UNIX time stamp
          */

@@ -4,18 +4,42 @@ using Gee;
 namespace DVB {
 
     /**
+     * We don't want to hold the complete information about
+     * every event in memory. Just remember id and starttime
+     * so we can have a sorted list.
+     */
+    class EventElement {
+    
+        public uint id;
+        /* Time is stored in UTC */
+        public int64 starttime;
+    
+        public static int compare (EventElement* event1, EventElement* event2) {
+            if (event1 == null && event2 == null) return 0;
+            else if (event1 == null && event2 != null) return +1;
+            else if (event1 != null && event2 == null) return -1;
+        
+            if (event1->starttime < event2->starttime) return -1;
+            else if (event1->starttime > event2->starttime) return +1;
+            else return 0;
+        }
+    }
+
+    /**
      * Represents a series of events of a channel
      */
     public class Schedule : GLib.Object, IDBusSchedule {
     
         public Channel channel {get; construct;}
     
-        private Sequence<Event> events;
-        private HashMap<uint, weak SequenceIter<Event>> event_id_map;
+        private Sequence<EventElement> events;
+        private Map<uint, weak SequenceIter<EventElement>> event_id_map;
+        private EPGStore epgstore;
         
         construct {
-            this.events = new Sequence<Event> (null);
-            this.event_id_map = new HashMap<uint, weak SequenceIter<Event>> ();
+            this.events = new Sequence<EventElement> (null);
+            this.event_id_map = new HashMap<uint, weak Sequence<EventElement>> ();
+            this.epgstore = EPGStore.get_instance ();
         }
         
         public Schedule (Channel channel) {
@@ -23,14 +47,16 @@ namespace DVB {
         }
         
         public void remove_expired_events () {
-            SList<weak SequenceIter<Event>> expired_events = new SList <weak SequenceIter<Event>> ();
+            SList<weak SequenceIter<EventElement>> expired_events = new SList <weak SequenceIter<EventElement>> ();
             
             lock (this.events) {
                 for (int i=0; i<this.events.get_length (); i++) {
-                    weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
+                    weak SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     
-                    Event e = this.events.get (iter);
-                    if (e.has_expired ()) {
+                    EventElement element = this.events.get (iter);
+                    Event? e = this.get (element.id);
+                    if (e != null && e.has_expired ()) {
+                        debug (e.to_string ());
                         expired_events.prepend (iter);
                     } else {
                         // events are sorted, all other events didn't expire, too
@@ -38,47 +64,44 @@ namespace DVB {
                     }
                 }
                 
-                foreach (weak SequenceIter<Event> iter in expired_events) {
+                foreach (weak SequenceIter<EventElement> iter in expired_events) {
                     debug ("Removing expired event");
-                    Event event = this.events.get (iter);
-                    debug (event.to_string ());
-                    this.event_id_map.remove (event.id);
+                    EventElement element = this.events.get (iter);
+                    
+                    this.event_id_map.remove (element.id);
                     this.events.remove (iter);
-                    EPGStore.get_instance ().remove_event (
-                        event, this.channel);
+                    this.epgstore.remove_event (
+                        element.id, this.channel);
                 }
             }
         }
         
-        public weak Event? get (uint event_id) {
-            Event? val = null;
-            
-            lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {            
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    val = this.events.get (iter);
-                }
-            }
-            
-            return val;
+        public Event? get (uint event_id) {
+            return this.epgstore.get_event (event_id, this.channel);
         }
         
         /**
          * When an event with the same id already exists, it's replaced
          */
-        public void add (Event# event) {
+        public void add (Event event) {
             lock (this.events) {
                 if (this.event_id_map.contains (event.id)) {
                     // Remove old event
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event.id);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event.id);
                     
                     this.event_id_map.remove (event.id);
                     this.events.remove (iter);
                 }
-                weak SequenceIter<Event> iter = this.events.insert_sorted (event, Event.compare);
+                
+                EventElement element = new EventElement ();
+                element.id = event.id;
+                Time utc_starttime = event.get_utc_start_time ();
+                element.starttime = (int64)utc_starttime.mktime ();
+                
+                weak SequenceIter<EventElement> iter = this.events.insert_sorted (element, EventElement.compare);
                 this.event_id_map.set (event.id, iter);
-                EPGStore.get_instance ().add_event (
-                        event, this.channel);
+                
+                this.epgstore.add_event (event, this.channel);
                 
                 assert (this.events.get_length () == this.event_id_map.size);
             }
@@ -92,14 +115,16 @@ namespace DVB {
             return val;
         }
         
-        public weak Event? get_running_event () {
+        public Event? get_running_event () {
              Event? running_event = null;
              lock (this.events) {
                  for (int i=0; i<this.events.get_length (); i++) {
-                    weak SequenceIter<Event> iter = this.events.get_iter_at_pos (i);
+                    weak SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     
-                    Event event = this.events.get (iter);
-                    if (event.running_status == Event.RUNNING_STATUS_RUNNING) {
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
+                    if (event != null
+                            && event.running_status == Event.RUNNING_STATUS_RUNNING) {
                         running_event = event;
                         break;
                     }
@@ -115,19 +140,19 @@ namespace DVB {
         }*/
         
         public uint32 NowPlaying () {
-            weak Event? event = this.get_running_event ();
+            Event? event = this.get_running_event ();
             
             return (event == null) ? 0 : event.id;
         }
         
         public uint32 Next (uint32 event_id) {
-            weak Event? event = this.get_running_event ();
+            Event? event = this.get_running_event ();
             
             uint32 next_event = 0;
             if (event != null) {
                 lock (this.events) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    weak SequenceIter<Event> next_iter = iter.next ();
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    weak SequenceIter<EventElement> next_iter = iter.next ();
                     // Check if a new event follows
                     if (iter != next_iter) {
                         next_event = this.events.get (next_iter).id;
@@ -143,8 +168,9 @@ namespace DVB {
 
             lock (this.events) {        
                 if (this.event_id_map.contains (event_id)) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    Event event = this.events.get (iter);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
                     name = event.name;
                 }
             }
@@ -157,8 +183,9 @@ namespace DVB {
             
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    Event event = this.events.get (iter);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
                     desc = event.description;
                 }
             }
@@ -171,8 +198,9 @@ namespace DVB {
             
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    Event event = this.events.get (iter);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
                     desc = event.extended_description;
                 }
             }
@@ -185,8 +213,9 @@ namespace DVB {
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    Event event = this.events.get (iter);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
                     duration = event.duration;
                 }
             }
@@ -199,8 +228,9 @@ namespace DVB {
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    Event event = this.events.get (iter);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
                     Time local_time = event.get_local_start_time ();
                     uint[] start = new uint[6];
                     start[0] = local_time.year + 1900;
@@ -220,8 +250,9 @@ namespace DVB {
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    Event event = this.events.get (iter);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
                     val = (event.running_status == Event.RUNNING_STATUS_RUNNING);
                 }
             }
@@ -234,8 +265,9 @@ namespace DVB {
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
-                    weak SequenceIter<Event> iter = this.event_id_map.get (event_id);
-                    Event event = this.events.get (iter);
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get (element.id);
                     val = (!event.free_ca_mode);
                 }
             }

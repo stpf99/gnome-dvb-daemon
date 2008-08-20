@@ -7,7 +7,7 @@ namespace DVB {
     public class EPGStore : GLib.Object {
     
         private static const string CREATE_EVENTS_TABLE_STATEMENT = 
-        """CREATE TABLE events (sid INTEGER,
+            """CREATE TABLE events (sid INTEGER,
             event_id INTEGER,
             starttime JULIAN,
             duration INTEGER,
@@ -24,8 +24,11 @@ namespace DVB {
         private static const string DELETE_EVENT_STATEMENT = 
             "DELETE FROM events WHERE sid=? AND event_id=?";
             
-        private static const string SELECT_EVENTS_STATEMENT =
-            "SELECT * FROM events WHERE sid='%u'";
+        private static const string SELECT_ALL_EVENTS_STATEMENT =
+            """SELECT event_id, datetime(starttime),
+            duration, running_status, free_ca_mode, name,
+            description, extended_description
+            FROM events WHERE sid='%u'""";
             
         private static const string HAS_EVENT_STATEMENT =
             "SELECT COUNT(*) FROM events WHERE sid=? AND event_id=?";
@@ -36,13 +39,20 @@ namespace DVB {
             extended_description=? WHERE sid=? AND event_id=?""";
             
         private static const string TO_JULIAN_SQL =
-            "SELECT julianday(?, 'utc')";
+            "SELECT julianday(?)";
+            
+        private static const string SELECT_EVENT_SQL =
+            """SELECT event_id, datetime(starttime),
+            duration, running_status, free_ca_mode, name,
+            description, extended_description
+            FROM events WHERE sid=? AND event_id=?""";
             
         private Statement to_julian_statement;
         private Statement insert_event_statement;
         private Statement update_event_statement;
         private Statement delete_event_statement;
         private Statement has_event_statement;
+        private Statement select_event_statement;
          
         private static EPGStore instance;
         
@@ -61,6 +71,8 @@ namespace DVB {
                 out this.delete_event_statement);
             this.db.prepare (HAS_EVENT_STATEMENT, -1,
                 out this.has_event_statement);
+            this.db.prepare (SELECT_EVENT_SQL, -1,
+                out this.select_event_statement);
         }
         
         public static weak EPGStore get_instance () {
@@ -130,7 +142,24 @@ namespace DVB {
             return true;
         }
         
-        public bool remove_event (Event event, Channel channel) {
+        public Event? get_event (uint event_id, Channel channel) {
+            this.select_event_statement.reset ();
+            
+            if (this.select_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+                    || this.select_event_statement.bind_int (2, (int)event_id) != Sqlite.OK) {
+                this.print_last_error ();
+                return null;
+            }
+            
+            if (this.select_event_statement.step () != Sqlite.ROW) {
+                this.print_last_error ();
+                return null;
+            }
+            
+            return this.create_event_from_statement (this.select_event_statement);
+        }
+        
+        public bool remove_event (uint event_id, Channel channel) {
             if (this.db == null) {
                 critical ("SQLite error: No database connection");
                 return false;
@@ -139,7 +168,7 @@ namespace DVB {
             this.delete_event_statement.reset ();
             
             if (this.delete_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
-                    || this.delete_event_statement.bind_int (1, (int)event.id) != Sqlite.OK) {
+                    || this.delete_event_statement.bind_int (1, (int)event_id) != Sqlite.OK) {
                 this.print_last_error ();
                 return false;
             }
@@ -174,7 +203,7 @@ namespace DVB {
             
             if (this.db == null) return events;
             
-            string statement_str = SELECT_EVENTS_STATEMENT.printf (
+            string statement_str = SELECT_ALL_EVENTS_STATEMENT.printf (
                 channel.Sid);
             
             Statement statement;
@@ -184,28 +213,39 @@ namespace DVB {
             }
             
             while (statement.step () == Sqlite.ROW) {
-                var event = new Event ();
-                event.id = (uint)statement.column_int (1);
-                event.year = (uint)statement.column_int (2);
-                event.month = (uint)statement.column_int (3);
-                event.day = (uint)statement.column_int (4);
-                event.hour = (uint)statement.column_int (5);
-                event.minute = (uint)statement.column_int (6);
-                event.second = (uint)statement.column_int (7);
-                event.duration = (uint)statement.column_int (8);
-                event.running_status = (uint)statement.column_int (9);
-                event.free_ca_mode = (statement.column_int (10) == 1);
-                // Duplicate strings
-                event.name = "%s".printf (statement.column_text (11));
-                event.description = "%s".printf (statement.column_text (12));
-                event.extended_description = "%s".printf (statement.column_text (13));
-                // We don't save those
-                event.audio_components = null;
-                event.video_components = null;
-                event.teletext_components = null;
+                Event event = this.create_event_from_statement (statement);
+                events.add (event);
             }
             
             return events;
+        }
+        
+        private Event create_event_from_statement (Statement statement) {
+            var event = new Event ();
+            event.id = (uint)statement.column_int (0);
+            
+            weak string starttime = statement.column_text (1);
+            starttime.scanf ("%04u-%02u-%02u %02u:%02u:%02u",
+                &event.year,
+                &event.month,
+                &event.day,
+                &event.hour,
+                &event.minute,
+                &event.second);
+            
+            event.duration = (uint)statement.column_int (2);
+            event.running_status = (uint)statement.column_int (3);
+            event.free_ca_mode = (statement.column_int (4) == 1);
+            // Duplicate strings
+            event.name = "%s".printf (statement.column_text (5));
+            event.description = "%s".printf (statement.column_text (6));
+            event.extended_description = "%s".printf (statement.column_text (7));
+            // We don't save those
+            event.audio_components = null;
+            event.video_components = null;
+            event.teletext_components = null;
+            
+            return event;
         }
         
         private bool execute (string statement) {

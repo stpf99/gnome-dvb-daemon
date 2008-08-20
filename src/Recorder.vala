@@ -237,7 +237,7 @@ namespace DVB {
                     Channel chan = this.device.Channels.get (rec.ChannelSid);
                     Schedule sched = chan.Schedule;
                     
-                    weak Event? event = sched.get_running_event ();
+                    Event? event = sched.get_running_event ();
                     if (event != null) {
                         debug ("Found running event for active recording");
                         rec.Name = event.name;
