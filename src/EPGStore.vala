@@ -9,12 +9,7 @@ namespace DVB {
         private static const string CREATE_EVENTS_TABLE_STATEMENT = 
         """CREATE TABLE events (sid INTEGER,
             event_id INTEGER,
-            year INTEGER(4),
-            month INTEGER(2),
-            day INTEGER(2),
-            hour INTEGER(2),
-            minute INTEGER(2),
-            second INTEGER(2),
+            starttime JULIAN,
             duration INTEGER,
             running_status INTEGER(2),
             free_ca_mode INTEGER(1),
@@ -23,25 +18,31 @@ namespace DVB {
             extended_description TEXT,
             PRIMARY KEY (sid, event_id))""";
         
-        private static const string INSERT_EVENT_STATEMENT = 
-        """INSERT INTO events VALUES ('%u', '%u',
-            '%u', '%u', '%u', '%u', '%u', '%u',
-            '%u', '%u', '%d', '%s', '%s', '%s')""";
+        private static const string INSERT_EVENT_SQL = 
+            "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
         private static const string DELETE_EVENT_STATEMENT = 
-            "DELETE FROM events WHERE sid='%u' AND event_id='%u'";
+            "DELETE FROM events WHERE sid=? AND event_id=?";
             
         private static const string SELECT_EVENTS_STATEMENT =
             "SELECT * FROM events WHERE sid='%u'";
             
         private static const string HAS_EVENT_STATEMENT =
-            "SELECT COUNT(*) FROM events WHERE sid='%u' AND event_id='%u'";
+            "SELECT COUNT(*) FROM events WHERE sid=? AND event_id=?";
             
-        private static const string UPDATE_EVENT_STATEMENT =
-            """UPDATE events SET year='%u', month='%u', day='%u', hour='%u',
-            minute='%u', second='%u', duration='%u', running_status='%u',
-            free_ca_mode='%d', name='%s', description='%s',
-            extended_description='%s' WHERE sid='%u' AND event_id='%u'""";
+        private static const string UPDATE_EVENT_SQL =
+            """UPDATE events SET starttime=?, duration=?, running_status=?,
+            free_ca_mode=?, name=?, description=?,
+            extended_description=? WHERE sid=? AND event_id=?""";
+            
+        private static const string TO_JULIAN_SQL =
+            "SELECT julianday(?, 'utc')";
+            
+        private Statement to_julian_statement;
+        private Statement insert_event_statement;
+        private Statement update_event_statement;
+        private Statement delete_event_statement;
+        private Statement has_event_statement;
          
         private static EPGStore instance;
         
@@ -49,6 +50,17 @@ namespace DVB {
             
         construct {
             this.db = this.get_db_handler ();
+            
+            this.db.prepare (TO_JULIAN_SQL, -1,
+                out this.to_julian_statement);
+            this.db.prepare (INSERT_EVENT_SQL, -1,
+                out this.insert_event_statement);
+            this.db.prepare (UPDATE_EVENT_SQL, -1,
+                out this.update_event_statement);
+            this.db.prepare (DELETE_EVENT_STATEMENT, -1,
+                out this.delete_event_statement);
+            this.db.prepare (HAS_EVENT_STATEMENT, -1,
+                out this.has_event_statement);
         }
         
         public static weak EPGStore get_instance () {
@@ -70,24 +82,52 @@ namespace DVB {
             string name = escape (event.name);
             string desc = escape (event.description);
             string ext_desc = escape (event.extended_description);
-            
-            string statement;
-            if (this.contains_event (event, channel)) {
-                statement = UPDATE_EVENT_STATEMENT.printf (
-                    event.year, event.month, event.day, event.hour,
-                    event.minute, event.second, event.duration,
-                    event.running_status, free_ca_mode, name,
-                    desc, ext_desc, channel.Sid, event.id);
-            } else {
-                statement = INSERT_EVENT_STATEMENT.printf (
-                    channel.Sid, event.id,
-                    event.year, event.month, event.day, event.hour,
-                    event.minute, event.second, event.duration,
-                    event.running_status, free_ca_mode, name,
-                    desc, ext_desc);
-            }
+            double julian_start = this.to_julian (event.year, event.month,
+                event.day, event.hour, event.minute, event.second);
                 
-            return this.execute (statement);
+            // Check if start time got converted correctly
+            if (julian_start <= 0) return false;
+            
+            if (this.contains_event (event, channel)) {
+                this.update_event_statement.reset ();
+                
+                if (this.update_event_statement.bind_double (1, julian_start) != Sqlite.OK
+                        || this.update_event_statement.bind_int (2, (int)event.duration) != Sqlite.OK
+                        || this.update_event_statement.bind_int (3, (int)event.running_status) != Sqlite.OK
+                        || this.update_event_statement.bind_int (4, free_ca_mode) != Sqlite.OK
+                        || this.update_event_statement.bind_text (5, name) != Sqlite.OK
+                        || this.update_event_statement.bind_text (6, desc) != Sqlite.OK
+                        || this.update_event_statement.bind_text (7, ext_desc) != Sqlite.OK) {
+                    this.print_last_error ();
+                    return false;
+                }
+                
+                if (this.update_event_statement.step () != Sqlite.DONE) {
+                    this.print_last_error ();
+                    return false;
+                }
+            } else {
+                this.insert_event_statement.reset ();
+                
+                if (this.insert_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (2, (int)event.id) != Sqlite.OK
+                        || this.insert_event_statement.bind_double (3, julian_start) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (4, (int)event.duration) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (5, (int)event.running_status) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (6, free_ca_mode) != Sqlite.OK
+                        || this.insert_event_statement.bind_text (7, name) != Sqlite.OK
+                        || this.insert_event_statement.bind_text (8, desc) != Sqlite.OK
+                        || this.insert_event_statement.bind_text (5, ext_desc) != Sqlite.OK) {
+                    this.print_last_error ();
+                    return false;
+                }
+                
+                if (this.insert_event_statement.step () != Sqlite.DONE) {
+                    this.print_last_error ();
+                    return false;
+                }
+            }
+            return true;
         }
         
         public bool remove_event (Event event, Channel channel) {
@@ -96,25 +136,34 @@ namespace DVB {
                 return false;
             }
             
-            string statement = DELETE_EVENT_STATEMENT.printf (
-                channel.Sid, event.id);
+            this.delete_event_statement.reset ();
             
-            return this.execute (statement);
+            if (this.delete_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+                    || this.delete_event_statement.bind_int (1, (int)event.id) != Sqlite.OK) {
+                this.print_last_error ();
+                return false;
+            }
+            
+            if (this.delete_event_statement.step () != Sqlite.DONE) {
+                this.print_last_error ();
+                return false;
+            }
+            
+            return true;
         }
         
         public bool contains_event (Event event, Channel channel) {
-            string statement_str = HAS_EVENT_STATEMENT.printf (channel.Sid,
-                event.id);
-                
-            Statement statement;
-            if (this.db.prepare (statement_str, -1, out statement) != Sqlite.OK) {
+            this.has_event_statement.reset ();
+            
+            if (this.has_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+                    || this.has_event_statement.bind_int (2, (int)event.id) != Sqlite.OK) {
                 this.print_last_error ();
                 return false;
             }
             
             int c = 0;
-            while (statement.step () == Sqlite.ROW) {
-                c = statement.column_int (0);
+            while (this.has_event_statement.step () == Sqlite.ROW) {
+                c = this.has_event_statement.column_int (0);
             }
             
             return (c > 0);
@@ -175,6 +224,28 @@ namespace DVB {
                 this.db.errcode (), this.db.errmsg ());
         }
         
+        private double to_julian (uint year, uint month, uint day,
+                uint hour, uint minute, uint second) {
+            
+            this.to_julian_statement.reset ();
+            string datetime_str = "%04u-%02u-%02u %02u:%02u:%02u".printf (
+                year, month, day, hour, minute, second);
+            
+            if (this.to_julian_statement.bind_text (1, #datetime_str)
+                    != Sqlite.OK) {
+                this.print_last_error ();
+                return 0;       
+            }
+            
+            if (this.to_julian_statement.step () != Sqlite.ROW) {
+                this.print_last_error ();
+                return 0;
+            }
+            
+            return this.to_julian_statement.column_double (0);
+        }
+        
+                
         /**
          * Replace "'" with "''"
          */
