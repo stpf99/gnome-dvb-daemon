@@ -151,12 +151,16 @@ namespace DVB {
                 return null;
             }
             
-            if (this.select_event_statement.step () != Sqlite.ROW) {
+            int rc = this.select_event_statement.step ();
+            
+            if (rc != Sqlite.ROW && rc != Sqlite.DONE) {
                 this.print_last_error ();
                 return null;
             }
             
-            return this.create_event_from_statement (this.select_event_statement);
+            // ROW means there's data, DONE means there's none
+            if (rc == Sqlite.DONE) return null;
+            else return this.create_event_from_statement (this.select_event_statement);
         }
         
         public bool remove_event (uint event_id, Channel channel) {
@@ -168,7 +172,7 @@ namespace DVB {
             this.delete_event_statement.reset ();
             
             if (this.delete_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
-                    || this.delete_event_statement.bind_int (1, (int)event_id) != Sqlite.OK) {
+                    || this.delete_event_statement.bind_int (2, (int)event_id) != Sqlite.OK) {
                 this.print_last_error ();
                 return false;
             }
