@@ -59,7 +59,14 @@ namespace DVB {
          * Whether the event has started and ended in the past
          */
         public bool has_expired () {
-            int64 current_time = (int64)time_t ();
+            Time current_utc = Time.gm (time_t ());
+            // set day light saving time to undefined
+            // otherwise mktime will add an hour,
+            // because it converts respects dst
+            current_utc.isdst = -1;
+            
+            int64 current_time = (int64)current_utc.mktime ();
+           
             int64 end_timestamp = this.get_end_timestamp ();
             
             return (end_timestamp < current_time);

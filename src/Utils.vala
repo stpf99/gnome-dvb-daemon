@@ -107,6 +107,7 @@ namespace DVB.Utils {
         t.hour = hour;
         t.minute = minute;
         t.second = second;
+        t.isdst = -1; // undefined
         
         return t;
     }
