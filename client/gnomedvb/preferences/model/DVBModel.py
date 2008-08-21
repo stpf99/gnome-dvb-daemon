@@ -40,14 +40,15 @@ class DVBModel (gnomedvb.DVBManagerClient):
             for dev in group:
                 registered.add(dev)
                 
-        alldevs = set()
+        unregistered = set()
         for dev in self.get_all_devices():
-            info = gnomedvb.get_adapter_info(dev.adapter)
-            dev.name = info["name"]
-            dev.type = info["type"]
-            alldevs.add(dev)
+            if dev not in registered:
+                info = gnomedvb.get_adapter_info(dev.adapter)
+                dev.name = info["name"]
+                dev.type = info["type"]
+                unregistered.add(dev)
         
-        return alldevs - registered
+        return unregistered
         
     def remove_device_from_group(self, device):
         return gnomedvb.DVBManagerClient.remove_device_from_group(self, device.adapter,
