@@ -2,6 +2,7 @@
 import gobject
 import gnomedvb
 import gtk
+from gnomedvb.preferences.model.DVBModel import DVBModel
 from gettext import gettext as _
 from BasePage import BasePage
 		
@@ -75,11 +76,25 @@ class AdaptersPage(BasePage):
 		return self.__adapter_info
 		
 	def get_dvb_devices(self):
-		for info in gnomedvb.get_dvb_devices():
-			# TODO: Retrieve name and type
-			#if info["type"] in SUPPORTED_DVB_TYPES:
-			self.deviceslist.append(["name", "DVB-T",
-				info["adapter"], info["frontend"]])
+		model = DVBModel()
+		
+		devs = set()
+		
+		devgroups = model.get_registered_device_groups()
+		for group in devgroups.values():
+			for dev in group:
+				devs.add(dev)
+		
+		for dev in model.get_all_devices():
+			if dev not in devs:
+				info = gnomedvb.get_adapter_info(dev.adapter)
+				dev.name = info["name"]
+				dev.type = info["type"]
+				devs.add(dev)
+					
+		for dev in devs:
+			self.deviceslist.append([dev.name, dev.type,
+				dev.adapter, dev.frontend])
 	
 	def on_device_selection_changed(self, treeselection):
 		model, aiter = treeselection.get_selected()
