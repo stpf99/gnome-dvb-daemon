@@ -59,7 +59,10 @@ namespace DVB {
          * with those of the reference device.
          */
         public bool add (Device device) {
-            if (device.Type != this.Type) return false;
+            if (device.Type != this.Type) {
+                warning ("Cannot add device, because it is not of same type");
+                return false;
+            }
         
             // Set settings from reference device
             device.Channels = this.reference_device.Channels;
