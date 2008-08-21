@@ -96,7 +96,7 @@ namespace DVB {
             string ext_desc = escape (event.extended_description);
             double julian_start = this.to_julian (event.year, event.month,
                 event.day, event.hour, event.minute, event.second);
-                
+            
             // Check if start time got converted correctly
             if (julian_start <= 0) return false;
             
@@ -129,7 +129,7 @@ namespace DVB {
                         || this.insert_event_statement.bind_int (6, free_ca_mode) != Sqlite.OK
                         || this.insert_event_statement.bind_text (7, name) != Sqlite.OK
                         || this.insert_event_statement.bind_text (8, desc) != Sqlite.OK
-                        || this.insert_event_statement.bind_text (5, ext_desc) != Sqlite.OK) {
+                        || this.insert_event_statement.bind_text (9, ext_desc) != Sqlite.OK) {
                     this.print_last_error ();
                     return false;
                 }
