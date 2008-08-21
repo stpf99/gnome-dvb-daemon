@@ -20,11 +20,13 @@ namespace DVB {
         public ChannelList Channels { get; set; }
         public File RecordingsDirectory { get; set; }
 
-        public Device (uint adapter, uint frontend, bool get_type=true) {
+        public Device (uint adapter, uint frontend, bool get_type_and_name=true) {
             this.Adapter = adapter;
             this.Frontend = frontend;
-            this.Type = getAdapterType(adapter, get_type);
-            this.Name = getAdapterName(adapter);
+            // We can only assign values to properties in constructor
+            // as a work-around we forward get_type_and_name
+            this.Type = getAdapterType(adapter, get_type_and_name);
+            this.Name = getAdapterName(adapter, get_type_and_name);
         }
 
         public static Device new_full (uint adapter, uint frontend,
@@ -125,7 +127,9 @@ namespace DVB {
             else return AdapterType.UNKNOWN;
         }
         
-        private static weak string? getAdapterName (uint adapter) {
+        private static weak string? getAdapterName (uint adapter, bool get_name) {
+            if (!get_name) return null;
+        
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
             dvbsrc.set ("adapter", adapter);
             
