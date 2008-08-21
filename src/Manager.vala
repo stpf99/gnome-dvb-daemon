@@ -240,11 +240,18 @@ namespace DVB {
                 uint group_id) {
             
             if (this.devices.contains (group_id)) {
+                // When the device is already registered we
+                // might see some errors if the device is
+                // currently in use
                 Device device = new Device (adapter, frontend);
                     
                 if (device == null) return false;
                 
-                if (this.device_is_in_any_group (device)) return false;
+                if (this.device_is_in_any_group (device)) {
+                    debug ("Device with adapter %u, frontend %u is" + 
+                        "already part of a group", adapter, frontend);
+                    return false;
+                }
                     
                 debug ("Adding device with adapter %u, frontend %u to group %u",
                     adapter, frontend, group_id);
@@ -281,18 +288,30 @@ namespace DVB {
                 
                 if (devgroup.contains (dev)) {
                     if (devgroup.remove (dev)) {
+                        // Stop epgscanner, because it might use the
+                        // device we want to unregister
+                        EPGScanner epgscanner =
+                            this.get_epg_scanner (devgroup);
+                        epgscanner.stop ();
+                    
                         GConfStore.get_instance ().remove_device_from_group (
                             dev, devgroup);
                         this.group_changed (group_id, adapter, frontend,
                             ChangeType.DELETED);
                             
+                        // Group has no devices anymore, delete it
                         if (devgroup.size == 0) {
                             if (this.devices.remove (group_id)) {
+                                // Remove EPG scanner, too
+                                this.epgscanners.remove (devgroup.Id);
                                 GConfStore.get_instance ().remove_device_group (
                                     devgroup);
                                 this.changed (group_id, ChangeType.DELETED);
                             }
-                        }   
+                        } else {
+                            // We still have a device, start EPG scanner again
+                            epgscanner.start ();
+                        }
                             
                         return true;
                     }
