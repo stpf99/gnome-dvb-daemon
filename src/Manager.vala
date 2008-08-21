@@ -419,6 +419,8 @@ namespace DVB {
             string channels_path = this.GetChannelList (device.Id);
             if (channels_path == "") return false;
             
+            this.create_and_start_epg_scanner (device);
+            
             GConfStore.get_instance ().add_device_group (device);
             
             if (device.Id > device_group_counter)
