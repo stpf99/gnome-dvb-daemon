@@ -99,7 +99,6 @@ public class Main {
         uint32 max_id = 0;
         
         var gconf = DVB.GConfStore.get_instance ();
-        var epgstore = new DVB.EPGStore ();
         
         Gee.ArrayList<DVB.DeviceGroup> device_groups = gconf.get_all_device_groups ();
         foreach (DVB.DeviceGroup device_group in device_groups) {
@@ -115,14 +114,6 @@ public class Main {
                     if (rec.add_timer (t) == 0)
                         gconf.remove_timer_from_device_group (t.Id, device_group);
                 }
-            }
-            
-            // Restore EPG events
-            foreach (DVB.Channel channel in device_group.Channels) {
-            	Gee.List<DVB.Event> events = epgstore.get_events (channel);
-            	foreach (DVB.Event event in events) {
-            		channel.Schedule.add (#event);
-            	}
             }
         }
         

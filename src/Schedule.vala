@@ -40,6 +40,11 @@ namespace DVB {
             this.events = new Sequence<EventElement> (null);
             this.event_id_map = new HashMap<uint, weak Sequence<EventElement>> ();
             this.epgstore = EPGStore.get_instance ();
+            
+        	Gee.List<Event> events = this.epgstore.get_events (this.channel);
+        	foreach (Event event in events) {
+        		channel.Schedule.add (event);
+        	}
         }
         
         public Schedule (Channel channel) {
