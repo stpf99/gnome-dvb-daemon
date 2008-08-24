@@ -158,14 +158,20 @@ class RecorderWindow(gtk.Window):
                 dialog = gtk.MessageDialog(parent=self,
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
-                dialog.set_markup(_("Abort active recording?"))
+                dialog.set_markup(_("<big><span weight=\"bold\">Abort active recording?</span></big>"))
                 dialog.format_secondary_text(
                     _("The timer you selected belongs to a currently active recording.") + " " +
                     _("Deleting this timer will abort the recording."))
                 response = dialog.run()
                 dialog.destroy()
                 if response == gtk.RESPONSE_YES:
-                    rec.delete_timer(timer_id)
+                    if not rec.delete_timer(timer_id):
+                        error_dialog = gtk.MessageDialog(parent=self,
+                            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                        error_dialog.set_markup(_("<big><span weight=\"bold\">Timer could not be deleted</big></span>"))
+                        error_dialog.run()
+                        error_dialog.destroy()
             else:
                 rec.delete_timer(timer_id)
         
@@ -180,8 +186,19 @@ class RecorderWindow(gtk.Window):
             channel = d.get_channel()
             
             rec = self.recorders[device_group]
-            rec.add_timer (channel, start[0], start[1], start[2], start[3],
-                start[4], duration)
+            rec_id = rec.add_timer (channel, start[0], start[1], start[2],
+                start[3], start[4], duration)
+              
+            if rec_id == 0:
+                dialog = gtk.MessageDialog(parent=d,
+                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                dialog.set_markup (_("<big><span weight=\"bold\">Timer could not be created</span></big>"))
+                dialog.format_secondary_text(
+                    _("Make sure that the timer doesn't conflict with another one and doesn't start in the past.")
+                )
+                dialog.run()
+                dialog.destroy()
             
         d.destroy()
         
