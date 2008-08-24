@@ -17,7 +17,7 @@ class Preferences(gtk.Window):
         
         self.connect('delete-event', gtk.main_quit)
         self.connect('destroy-event', gtk.main_quit)
-        self.set_title("Configure DVB")
+        self.set_title(_("Configure DVB"))
         self.set_default_size(600, 450)
         
         self.vbox_outer = gtk.VBox()
