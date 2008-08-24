@@ -159,8 +159,9 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     weak SequenceIter<EventElement> next_iter = iter.next ();
                     // Check if a new event follows
-                    if (iter != next_iter) {
-                        next_event = this.events.get (next_iter).id;
+                    if (!next_iter.is_end ()) {
+                        EventElement element = this.events.get (next_iter);
+                        next_event = element.id;
                     }
                 }
             }
@@ -237,7 +238,7 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
                     Time local_time = event.get_local_start_time ();
-                    uint[] start = new uint[6];
+                    start = new uint[6];
                     start[0] = local_time.year + 1900;
                     start[1] = local_time.month + 1;
                     start[2] = local_time.day;
