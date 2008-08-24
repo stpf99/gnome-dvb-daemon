@@ -6,6 +6,7 @@ client/gnomedvb/preferences/ui/Preferences.py
 client/gnomedvb/timers/ui/CalendarDialog.py
 client/gnomedvb/timers/ui/RecorderWindow.py
 client/gnomedvb/timers/ui/TimerDialog.py
+client/gnomedvb/widgets/ChannelsView.py
 client/gnomedvb/wizard/pages/AdaptersPage.py
 client/gnomedvb/wizard/pages/ChannelScanPage.py
 client/gnomedvb/wizard/pages/InitialTuningDataPage.py

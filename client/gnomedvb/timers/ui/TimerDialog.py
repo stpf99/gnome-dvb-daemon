@@ -4,6 +4,8 @@ import gnomedvb
 import gtk
 from gettext import gettext as _
 from CalendarDialog import CalendarDialog
+from gnomedvb.widgets.ChannelsStore import ChannelsStore
+from gnomedvb.widgets.ChannelsView import ChannelsView
 
 class TimerDialog(gtk.Dialog):
 
@@ -25,25 +27,17 @@ class TimerDialog(gtk.Dialog):
         label_channel.set_markup(_("<b>Channel:</b>"))
         table.attach(label_channel, 0, 1, 0, 1)
         
-        self.channels = gtk.ListStore(str, int)
-        self.channels.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        self._add_channels(device_group)
+        self.channels = ChannelsStore(device_group)
         
         scrolledchannels = gtk.ScrolledWindow()
         scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrolledchannels.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         table.attach(scrolledchannels, 1, 2, 0, 1)
         
-        self.channelsview = gtk.TreeView(self.channels)
+        self.channelsview = ChannelsView(self.channels)
         self.channelsview.set_headers_visible(False)
         scrolledchannels.add(self.channelsview)
         
-        col_name = gtk.TreeViewColumn(_("Channel"))
-        cell_name = gtk.CellRendererText()
-        col_name.pack_start(cell_name)
-        col_name.add_attribute(cell_name, "text", 0)
-        self.channelsview.append_column(col_name)
-                         
         label_start = gtk.Label()
         label_start.set_markup(_("<b>Start time:</b>"))
         table.attach(label_start, 0, 1, 1, 2)
@@ -90,13 +84,7 @@ class TimerDialog(gtk.Dialog):
         self._set_default_time_and_date()
         
         table.show_all()
-        
-    def _add_channels(self, device_group):
-        channellist = gnomedvb.DVBChannelListClient(device_group)
-        for channel_id in channellist.get_channels():
-            name = channellist.get_channel_name(channel_id)
-            self.channels.append([name, channel_id])
-        
+      
     def get_duration(self):
         return self.duration.get_value_as_int()
         
