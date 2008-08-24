@@ -163,12 +163,17 @@ class Preferences(gtk.Window):
             if response == gtk.RESPONSE_YES:
                 if isinstance(device, Device):
                     if self._model.remove_device_from_group(device):
-                        print "Success: remove device"
-                        
+                        # "Success: remove device"
                         # Add device to unassigned devices
                         self.unassigned_devices.append([device])
                     else:
-                        print "Error: remove device"
+                        # "Error: remove device"
+                        error_dialog = gtk.MessageDialog(parent=self,
+                            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                        error_dialog.set_markup(_("<big><span weight=\"bold\">Device could not be removed from group</big></span>"))
+                        error_dialog.run()
+                        error_dialog.destroy()
 
     def _on_button_new_clicked(self, button):
         model, aiter = self.unassigned_view.get_selection().get_selected()
@@ -181,10 +186,19 @@ class Preferences(gtk.Window):
                 recdir = dialog.recordings_entry.get_text()
                 if self._model.add_device_to_new_group(device.adapter,
                         device.frontend, channels, recdir):
-                    print "Success: create group"
+                    # "Success: create group"
                     model.remove(aiter)
                 else:
-                    print "Error: create group"
+                    # "Error: create group"
+                    error_dialog = gtk.MessageDialog(parent=dialog,
+                        flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                        type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                    error_dialog.set_markup(_("<big><span weight=\"bold\">Group could not be created</big></span>"))
+                    error_dialog.format_secondary_text(
+                        _("Make sure that you selected the correct channels file and directory where recordings are stored and that both are readable.")
+                    )
+                    error_dialog.run()
+                    error_dialog.destroy()
             dialog.destroy()
             
     def _on_button_add_clicked(self, button):
@@ -197,10 +211,19 @@ class Preferences(gtk.Window):
                 group_id = dialog.get_selected_group()
                 if self._model.add_device_to_existing_group(device.adapter,
                     device.frontend, group_id):
-                    print "Success: add to group"
+                    # "Success: add to group"
                     model.remove(aiter)
                 else:
-                    print "Error: add to group"
+                    # "Error: add to group"
+                    error_dialog = gtk.MessageDialog(parent=dialog,
+                        flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                        type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                    error_dialog.set_markup(_("<big><span weight=\"bold\">Device could not be added to group</big></span>"))
+                    error_dialog.format_secondary_text(
+                        _("Make sure that the device isn't already assigned to a different group and that all devices in the group are of the same type.")
+                    )
+                    error_dialog.run()
+                    error_dialog.destroy()
                 
             dialog.destroy()
 
