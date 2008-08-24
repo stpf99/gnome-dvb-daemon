@@ -23,6 +23,7 @@ class SetupWizard(gtk.Assistant):
 		self.connect ('close', self.confirm_quit)
 		self.connect ('prepare', self.on_prepare)
 		self.set_default_size(500, 400)
+		self.set_title(_("Setup DVB"))
 		
 		intro_page = IntroPage()
 		self.append_page(intro_page)
