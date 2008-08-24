@@ -2,7 +2,7 @@
 import gobject
 import gnomedvb
 import gtk
-from gnomedvb.preferences.model.DVBModel import DVBModel
+from gnomedvb.widgets.DVBModel import DVBModel
 from gettext import gettext as _
 from BasePage import BasePage
 		

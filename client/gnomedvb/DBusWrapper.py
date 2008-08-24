@@ -365,7 +365,7 @@ if __name__ == '__main__':
     #a = [586000000, 0, 8, "8k", "2/3", "1/4", "QAM16", 4]
 
     manager = DVBManagerClient ()
-    manager.add_device_to_new_group (0, 0, channelsfile, recdir)
+    #manager.add_device_to_new_group (0, 0, channelsfile, recdir)
     #manager.add_device_to_existing_group (1, 0, 1)
     
     #pro7_sat = [12544000, "horizontal", 22000]

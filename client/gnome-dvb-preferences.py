@@ -3,7 +3,7 @@
 import gnomedvb
 import gtk
 from gnomedvb.preferences.ui.Preferences import Preferences
-from gnomedvb.preferences.model.DVBModel import DVBModel
+from gnomedvb.widgets.DVBModel import DVBModel
 
 gnomedvb.setup_i18n()
 

@@ -1,4 +1,4 @@
-SUBDIRS = model ui
+SUBDIRS = ui
 
 gnomedvbprefsdir = $(pythondir)/gnomedvb/preferences
 gnomedvbprefs_PYTHON = \

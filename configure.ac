@@ -91,10 +91,10 @@ AC_CONFIG_FILES([
 	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
 	client/gnomedvb/preferences/Makefile
-	client/gnomedvb/preferences/model/Makefile
 	client/gnomedvb/preferences/ui/Makefile
 	client/gnomedvb/timers/Makefile
 	client/gnomedvb/timers/ui/Makefile
+	client/gnomedvb/widgets/Makefile
 	client/gnomedvb/wizard/Makefile
 	client/gnomedvb/wizard/pages/Makefile
 	data/Makefile
