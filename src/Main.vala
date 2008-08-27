@@ -7,12 +7,15 @@ public class Main {
 
     private static bool has_debug;
     private static bool has_version;
+    private static bool disable_epg_scanner;
 
     const OptionEntry[] options =  {
         { "debug", 'd', 0, OptionArg.NONE, out has_debug,
 	    "Display debug statements on stdout", null},
 	    { "version", 0, 0, OptionArg.NONE, out has_version,
 	    "Display version number", null},
+	    { "disable-epg-scanner", 0, 0, OptionArg.NONE,
+	    out disable_epg_scanner, "Disable scanning for EPG data", null},
 	    { null }
     };
     
@@ -104,6 +107,10 @@ public class Main {
         foreach (DVB.DeviceGroup device_group in device_groups) {
             
             if (manager.add_device_group (device_group)) {
+            	if (!disable_epg_scanner) {
+            		manager.create_and_start_epg_scanner (device_group);
+            	}
+            
                 DVB.Recorder rec = manager.get_recorder_for_device_group (device_group);
             
             	// Restore timers

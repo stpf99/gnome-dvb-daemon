@@ -17,7 +17,7 @@ namespace DVB {
         public signal void recording_aborted ();
     
         public Device device {get; construct;}
-        public EPGScanner epgscanner {get; construct;}
+        public EPGScanner? epgscanner {get; construct;}
         public uint count {
             get { return this.recordings.size; }
         }
@@ -31,7 +31,7 @@ namespace DVB {
             this.recordings = new HashMap<uint, Recording> ();
         }
     
-        public RecordingThread (Device device, EPGScanner epgscanner) {
+        public RecordingThread (Device device, EPGScanner? epgscanner) {
             this.device = device;
             this.epgscanner = epgscanner;
         }
@@ -229,7 +229,8 @@ namespace DVB {
         }
         
         private void on_eit_structure (Gst.Structure structure) {
-            this.epgscanner.on_eit_structure (structure);
+            if (this.epgscanner != null)
+                this.epgscanner.on_eit_structure (structure);
             
             // Find name and description for recordings
             foreach (Recording rec in this.recordings.get_values ()) {
@@ -543,9 +544,9 @@ namespace DVB {
                 debug ("Creating new RecordingThread");
                 
                 // Stop epgscanner before starting recording
-                EPGScanner epgscanner = Manager.get_instance ().get_epg_scanner (
+                EPGScanner? epgscanner = Manager.get_instance ().get_epg_scanner (
                     this.DeviceGroup);
-                epgscanner.stop ();
+                if (epgscanner != null) epgscanner.stop ();
                 
                 DVB.Device? free_device = this.DeviceGroup.get_next_free_device ();
                 if (free_device == null) {
@@ -703,9 +704,9 @@ namespace DVB {
             if (recthread.count == 0) {
                 this.active_recording_threads.remove (timer);
                 // Start epgscanner again after recording ended
-                EPGScanner epgscanner = Manager.get_instance ().get_epg_scanner (
+                EPGScanner? epgscanner = Manager.get_instance ().get_epg_scanner (
                     this.DeviceGroup);
-                epgscanner.start ();
+                if (epgscanner != null) epgscanner.start ();
             }
             
             this.recording_finished (recording.Id);

@@ -114,10 +114,10 @@ namespace DVB {
                 // Stop epgscanner for device if there's any
                 Device? dev = this.get_registered_device (adapter, frontend);
                 if (dev != null) {
-                    EPGScanner epgscanner =
+                    EPGScanner? epgscanner =
                         this.get_epg_scanner (this.get_device_group_of_device (
                             dev));
-                    epgscanner.stop ();
+                    if (epgscanner != null) epgscanner.stop ();
                 }
                     
                 debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
@@ -290,9 +290,9 @@ namespace DVB {
                     if (devgroup.remove (dev)) {
                         // Stop epgscanner, because it might use the
                         // device we want to unregister
-                        EPGScanner epgscanner =
+                        EPGScanner? epgscanner =
                             this.get_epg_scanner (devgroup);
-                        epgscanner.stop ();
+                        if (epgscanner != null) epgscanner.stop ();
                     
                         GConfStore.get_instance ().remove_device_from_group (
                             dev, devgroup);
@@ -303,14 +303,15 @@ namespace DVB {
                         if (devgroup.size == 0) {
                             if (this.devices.remove (group_id)) {
                                 // Remove EPG scanner, too
-                                this.epgscanners.remove (devgroup.Id);
+                                if (epgscanner != null)
+                                    this.epgscanners.remove (devgroup.Id);
                                 GConfStore.get_instance ().remove_device_group (
                                     devgroup);
                                 this.changed (group_id, ChangeType.DELETED);
                             }
                         } else {
                             // We still have a device, start EPG scanner again
-                            epgscanner.start ();
+                            if (epgscanner != null) epgscanner.start ();
                         }
                             
                         return true;
@@ -438,8 +439,6 @@ namespace DVB {
             string channels_path = this.GetChannelList (device.Id);
             if (channels_path == "") return false;
             
-            this.create_and_start_epg_scanner (device);
-            
             GConfStore.get_instance ().add_device_group (device);
             
             if (device.Id > device_group_counter)
@@ -458,7 +457,7 @@ namespace DVB {
         }
         
         [DBus (visible = false)]
-        public EPGScanner get_epg_scanner (DeviceGroup devgroup) {
+        public EPGScanner? get_epg_scanner (DeviceGroup devgroup) {
             return this.epgscanners.get (devgroup.Id);
         }
         
@@ -467,7 +466,7 @@ namespace DVB {
             debug ("Creating new EPG scanner for device group %u",
                 devgroup.Id);
         
-            EPGScanner epgscanner = new EPGScanner (devgroup);
+            EPGScanner? epgscanner = new EPGScanner (devgroup);
             epgscanner.start ();
             this.epgscanners.set (devgroup.Id, epgscanner);
         }
@@ -533,8 +532,8 @@ namespace DVB {
             // Start epgscanner for device again if there was one
             DeviceGroup? devgroup = this.get_device_group_of_device (scanner.Device);
             if (devgroup != null) {
-                EPGScanner epgscanner = this.get_epg_scanner (devgroup);
-                epgscanner.start ();
+                EPGScanner? epgscanner = this.get_epg_scanner (devgroup);
+                if (epgscanner != null) epgscanner.start ();
             }
         }
         
