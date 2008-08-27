@@ -251,15 +251,15 @@ namespace DVB {
                 foreach (string base_path in dirs)  {
                     int gconf_id = this.client.get_int
                         (base_path + TIMER_ID_KEY);
-                    if (gconf_id < 0) continue;
+                    if (gconf_id <= 0) continue;
                     
                     int gconf_sid = this.client.get_int
                         (base_path + TIMER_CHANNEL_SID_KEY);
-                    if (gconf_sid < 0) continue;
+                    if (gconf_sid <= 0) continue;
                     
                     int gconf_year = this.client.get_int
                         (base_path + TIMER_YEAR_KEY);
-                    if (gconf_year < 0) continue;
+                    if (gconf_year <= 0) continue;
                     
                     int gconf_month = this.client.get_int
                         (base_path + TIMER_MONTH_KEY);
@@ -279,7 +279,7 @@ namespace DVB {
                     
                     int gconf_duration = this.client.get_int
                         (base_path + TIMER_DURATION_KEY);
-                    if (gconf_duration < 0) continue;
+                    if (gconf_duration <= 0) continue;
                     
                     timers.add (new Timer ((uint32)gconf_id, (uint)gconf_sid,
                                            gconf_year, gconf_month, gconf_day,
