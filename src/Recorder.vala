@@ -135,7 +135,17 @@ namespace DVB {
                 // don't use add_many because of problems with ownership transfer    
                 ((Bin) this.pipeline).add (dvbbasebin);
                 
-                if (this.add_new_filesink (sink_name, location.get_path ())) {
+                string queue_name = "queue_%u".printf (channel_sid);
+                Element? queue = this.add_new_queue (queue_name);
+                Element? filesink = this.add_new_filesink (sink_name,
+                    location.get_path ());
+                    
+                if (queue != null && filesink != null) {
+                    if (!queue.link (filesink)) {
+                        critical ("Could not link queue and filesink");
+                        return;
+                    }
+                    
                     debug ("Starting pipeline");
                     this.pipeline.set_state (State.PLAYING);
                 }
@@ -148,7 +158,17 @@ namespace DVB {
                     return;
                 }
                 
-                if (this.add_new_filesink (sink_name, location.get_path ())) {
+                string queue_name = "queue_%u".printf (channel_sid);
+                Element? queue = this.add_new_queue (queue_name);
+                Element? filesink = this.add_new_filesink (
+                    sink_name, location.get_path ());
+                    
+                if (queue != null && filesink != null) {
+                    if (!queue.link (filesink)) {
+                        critical ("Could not link queue and filesink");
+                        return;
+                    }
+                
                     string programs;
                     this.pipeline.set_state (State.PAUSED);
                     dvbbasebin.get ("program-numbers", out programs);
@@ -169,14 +189,30 @@ namespace DVB {
             this.recordings.set (recording.Id, recording);
         }
         
-        private bool add_new_filesink (string sink_name, string location) {
+        private Element? add_new_filesink (string sink_name, string location) {
             Element filesink = ElementFactory.make ("filesink", sink_name);
             filesink.set ("location", location);
             if (!((Bin) this.pipeline).add (filesink)) {
                 critical ("Could not add filesink sink %s", sink_name);
-                return false;
+                return null;
             }
-            return true;
+            debug ("Filesink %s added to pipeline", sink_name);
+            return filesink;
+        }
+        
+        private Element? add_new_queue (string queue_name) {
+            Element queue = ElementFactory.make ("queue", queue_name);
+            
+            queue.set ("max-size-buffers", 0);
+            //queue.set ("max-size-time", 0);
+            
+            if (!((Bin) this.pipeline).add (queue)) {
+                critical ("Could not add queue element to pipeline %s",
+                    queue_name);
+                return null;
+            }
+            debug ("Queue %s added to pipeline", queue_name);
+            return queue;
         }
         
         private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
@@ -184,14 +220,19 @@ namespace DVB {
             
             string program = "program_" + this.sid;
             if (pad.get_name() == program) {
-                string sink_name = "sink_" + this.sid;
+                string sink_name = "queue_" + this.sid;
                 Element sink = ((Bin) this.pipeline).get_by_name (sink_name);
                 if (sink == null) {
                     critical ("No element with name %s", sink_name);
                 } else {
                     Pad sinkpad = sink.get_pad ("sink");
                     
-                    pad.link (sinkpad);
+                    PadLinkReturn rc = pad.link (sinkpad);
+                    if (rc != PadLinkReturn.OK) {
+                        critical ("Could not link pads");
+                    }
+                    debug ("Src pad %s linked with sink pad %s",
+                        program, sink_name);
                 }
             }
             
