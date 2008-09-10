@@ -43,7 +43,11 @@ namespace DVB {
             
         	Gee.List<Event> events = this.epgstore.get_events (this.channel);
         	foreach (Event event in events) {
-        		this.add (event);
+        	    if (event.has_expired ()) {
+        	        this.epgstore.remove_event (event.id, this.channel);
+        	    } else {
+        		    this.add (event);
+        		}
         	}
         }
         
@@ -89,6 +93,8 @@ namespace DVB {
          * When an event with the same id already exists, it's replaced
          */
         public void add (Event event) {
+            if (event.has_expired ()) return;
+        
             lock (this.events) {
                 if (this.event_id_map.contains (event.id)) {
                     // Remove old event
