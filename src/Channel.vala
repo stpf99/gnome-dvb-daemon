@@ -4,7 +4,13 @@ namespace DVB {
 
     public abstract class Channel : GLib.Object {
 
-        public uint Sid {get; set;}
+        public uint Sid {
+            get { return this.sid; }
+            set {
+                this.sid = value;
+                this.schedule = new DVB.Schedule (this);
+            }
+        }
         public string Name {get; set;}
         public uint TransportStreamId {get; set;}
         public string Network {get; set;}
@@ -17,10 +23,7 @@ namespace DVB {
         }
         
         private DVB.Schedule schedule;
-        
-        construct {
-            this.schedule = new DVB.Schedule (this);
-        }
+        private uint sid;
         
         /**
          * @source: Either dvbbasebin or dvbsrc

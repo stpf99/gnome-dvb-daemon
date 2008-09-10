@@ -43,7 +43,7 @@ namespace DVB {
             
         	Gee.List<Event> events = this.epgstore.get_events (this.channel);
         	foreach (Event event in events) {
-        		channel.Schedule.add (event);
+        		this.add (event);
         	}
         }
         
