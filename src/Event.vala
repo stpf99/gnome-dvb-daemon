@@ -45,14 +45,7 @@ namespace DVB {
             this.minute = 0;
             this.second = 0;
             this.duration = 0;
-        }
-        
-        public string serialize () {
-            return "";
-        }
-        
-        public static Event deserialize () {
-            return new Event ();
+            this.running_status = RUNNING_STATUS_UNDEFINED;
         }
         
         /**
@@ -62,7 +55,7 @@ namespace DVB {
             Time current_utc = Time.gm (time_t ());
             // set day light saving time to undefined
             // otherwise mktime will add an hour,
-            // because it converts respects dst
+            // because it respects dst
             current_utc.isdst = -1;
             
             int64 current_time = (int64)current_utc.mktime ();
@@ -70,6 +63,22 @@ namespace DVB {
             int64 end_timestamp = this.get_end_timestamp ();
             
             return (end_timestamp < current_time);
+        }
+        
+        public bool is_running () {
+            Time time_now = Time.gm (time_t ());
+            Time time_start = this.get_utc_start_time ();
+            
+            int64 timestamp_now = (int64)cUtils.timegm (time_now);
+            int64 timestamp_start = (int64)cUtils.timegm (time_start);
+            
+            if (timestamp_now - timestamp_start >= 0) {
+                // Has started, check if it's still running
+                return (!this.has_expired ());
+            } else {
+                // Has not started, yet
+                return false;
+            }
         }
         
         public string to_string () {
@@ -85,15 +94,11 @@ namespace DVB {
         }
         
         public Time get_local_start_time () {
-            Time utc_time = Utils.create_utc_time ((int)this.year, (int)this.month,
-                (int)this.day, (int)this.hour, (int)this.minute,
-                (int)this.second);
+            // Initialize time zone and set values
+            Time utc_time = this.get_utc_start_time ();
             
-            Time local_time = Time.local (utc_time.mktime ());
-            // add daylight saving time
-            local_time.hour += local_time.isdst;
-            // normalize time
-            local_time.mktime ();
+            time_t utc_timestamp = cUtils.timegm (utc_time);
+            Time local_time = Time.local (utc_timestamp);
             
             return local_time;
         }

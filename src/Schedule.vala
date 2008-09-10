@@ -128,8 +128,7 @@ namespace DVB {
                     
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
-                    if (event != null
-                            && event.running_status == Event.RUNNING_STATUS_RUNNING) {
+                    if (event != null && event.is_running ()) {
                         running_event = event;
                         break;
                     }
@@ -151,12 +150,10 @@ namespace DVB {
         }
         
         public uint32 Next (uint32 event_id) {
-            Event? event = this.get_running_event ();
-            
             uint32 next_event = 0;
-            if (event != null) {
-                lock (this.events) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+            lock (this.events) {
+                weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                if (iter != null) {
                     weak SequenceIter<EventElement> next_iter = iter.next ();
                     // Check if a new event follows
                     if (!next_iter.is_end ()) {
@@ -259,7 +256,7 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
-                    val = (event.running_status == Event.RUNNING_STATUS_RUNNING);
+                    val = (event.is_running ());
                 }
             }
             

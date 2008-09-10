@@ -24,6 +24,22 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
+dnl *********************
+dnl * time.h and timegm
+dnl *********************
+AC_CHECK_HEADERS([time.h], have_time=yes, have_time=no)
+if test "x$have_time" = "xno"; then
+	AC_MSG_ERROR([Could not find time.h])
+fi
+
+AC_CHECK_FUNC([timegm], have_timegm=yes, have_timegm=no)
+if test "x$have_timegm" = "xno"; then
+	AC_MSG_ERROR([Could not find timegm function])
+fi
+
+dnl ******************
+dnl * Check for libs
+dnl ******************
 GLIB_REQUIRED=2.16.0
 GIO_REQUIRED=2.16.0
 GST_REQUIRED=0.10.19
@@ -43,7 +59,9 @@ PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
 AC_SUBST(GNOME_DVB_DAEMON_CFLAGS)
 AC_SUBST(GNOME_DVB_DAEMON_LIBS)
 
-dnl Expansions
+dnl **************
+dnl * Expansions
+dnl **************
 SHAMROCK_EXPAND_DATADIR
 SHAMROCK_EXPAND_LIBDIR
 

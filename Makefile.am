@@ -70,9 +70,13 @@ vala_pkgs = \
     --pkg gee-1.0 \
     --pkg gconf-2.0 \
     --pkg sqlite3
+    
+own_pkgs = \
+	--pkg config \
+	--pkg cutils
 
 src/gnome-dvb-daemon.vala.stamp: $(gnome_dvb_daemon_VALASOURCES)
-	$(VALAC) -C --thread --vapidir=$(top_srcdir)/vapi --pkg config $(vala_pkgs) --basedir $(top_srcdir) $^
+	$(VALAC) -C --thread --vapidir=$(top_srcdir)/vapi $(own_pkgs) $(vala_pkgs) --basedir $(top_srcdir) $^
 	touch $@
 
 gnome_dvb_daemon_LDFLAGS = \
