@@ -5,7 +5,9 @@ namespace DVB {
 
     public class EPGScanner : GLib.Object {
     
-        private static const int CHECK_EIT_INTERVAL = 120*60;
+        // how long to wait after all channels have been scanned
+        // before the next iteration is started
+        private static const int CHECK_EIT_INTERVAL = 15*60;
         // how long to wait for EIT data for each channel in seconds
         private static const int WAIT_FOR_EIT_DURATION = 10;
         
@@ -14,6 +16,7 @@ namespace DVB {
         private Gst.Element? pipeline;
         private Queue<Channel> channels;
         private uint scan_event_id;
+        private uint queue_scan_event_id;
         
         construct {
             this.channels = new Queue<Channel> ();
@@ -32,10 +35,21 @@ namespace DVB {
          */
         public void stop () {
             debug ("Stopping EPG scan for group %u", this.DeviceGroup.Id);
+            
+            // Remove timed scans 
             if (this.scan_event_id != 0) {
                 Source.remove (this.scan_event_id);
                 this.scan_event_id = 0;
             }
+            if (this.queue_scan_event_id != 0) {
+                Source.remove (this.queue_scan_event_id);
+                this.queue_scan_event_id = 0;
+            }
+            
+            this.reset ();
+        }
+            
+        private void reset () {
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
             this.pipeline = null;
@@ -45,7 +59,9 @@ namespace DVB {
         /**
          * Start collection EPG data for all channels
          */
-        public void start () {
+        public bool start () {
+            debug ("Starting EPG scan for group %u", this.DeviceGroup.Id);
+        
             // TODO scan all channels?
             HashSet<uint> unique_frequencies = new HashSet<uint> ();
             foreach (Channel c in this.DeviceGroup.Channels) {
@@ -57,7 +73,7 @@ namespace DVB {
             }
             
             DVB.Device? device = this.DeviceGroup.get_next_free_device ();
-            if (device == null) return;
+            if (device == null) return false;
         
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
@@ -68,7 +84,7 @@ namespace DVB {
                     + "! mpegtsparse ! fakesink silent=true");
             } catch (Error e) {
                 error (e.message);
-                return;
+                return false;
             }
             
             weak Gst.Bus bus = this.pipeline.get_bus ();
@@ -78,7 +94,7 @@ namespace DVB {
             this.scan_event_id = Timeout.add_seconds (WAIT_FOR_EIT_DURATION,
                 this.scan_new_frequency);
             
-            return;
+            return false;
         }
         
         /**
@@ -86,7 +102,12 @@ namespace DVB {
          */
         private bool scan_new_frequency () {
             if (this.channels.is_empty ()) {
-                this.stop ();
+                debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
+                
+                this.reset ();
+                // Time the next iteration
+                this.queue_scan_event_id = Timeout.add_seconds (
+                    CHECK_EIT_INTERVAL, this.start);
                 return false;
             }
             
