@@ -428,16 +428,14 @@ namespace DVB {
          * active timer recording is aborted.
          */
         public bool DeleteTimer (uint32 timer_id) {
-            if (this.IsTimerActive (timer_id)) {
-                // Abort recording
-                Timer timer = this.timers.get (timer_id);
-                this.stop_recording (timer);
-                return true;
-            }
-            
             bool val;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
+                    if (this.IsTimerActive (timer_id)) {
+                        // Abort recording
+                        Timer timer = this.timers.get (timer_id);
+                        this.stop_recording (timer);
+                    }
                     this.timers.remove (timer_id);
                     GConfStore.get_instance ().remove_timer_from_device_group (
                         timer_id, this.DeviceGroup);
