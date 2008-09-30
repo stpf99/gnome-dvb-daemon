@@ -158,8 +158,8 @@ namespace DVB {
         public uint32 Next (uint32 event_id) {
             uint32 next_event = 0;
             lock (this.events) {
-                weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                if (iter != null) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     weak SequenceIter<EventElement> next_iter = iter.next ();
                     // Check if a new event follows
                     if (!next_iter.is_end ()) {

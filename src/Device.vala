@@ -63,7 +63,7 @@ namespace DVB {
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
             
-            weak Bus bus = pipeline.get_bus();
+            Bus bus = pipeline.get_bus();
             
             bool busy_val = false;
             
@@ -97,7 +97,7 @@ namespace DVB {
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
             
-            weak Bus bus = pipeline.get_bus();
+            Bus bus = pipeline.get_bus();
             
             weak string adapter_type = null;
             
@@ -137,7 +137,7 @@ namespace DVB {
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
             
-            weak Bus bus = pipeline.get_bus();
+            Bus bus = pipeline.get_bus();
             
             weak string adapter_name = null;
             

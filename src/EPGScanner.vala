@@ -87,7 +87,7 @@ namespace DVB {
                 return false;
             }
             
-            weak Gst.Bus bus = this.pipeline.get_bus ();
+            Gst.Bus bus = this.pipeline.get_bus ();
             bus.add_signal_watch ();
             bus.message += this.bus_watch_func;
             
