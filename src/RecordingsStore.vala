@@ -39,6 +39,14 @@ namespace DVB {
                     critical ("Recording with id %u already available", id);
                     return false;
                 }
+                     
+                // Monitor the recording           
+                try {
+                    FileMonitor monitor = rec.Location.monitor_file (0, null);
+                    monitor.changed += this.on_recording_file_changed;
+                } catch (Error e) {
+                    warning (e.message);
+                }
                 
                 this.recordings.set (id, rec);
                 this.changed (id, ChangeType.ADDED);
@@ -180,6 +188,7 @@ namespace DVB {
             lock (this.recordings) {
                 if (!this.recordings.contains (rec_id)) val = false;
                 else {
+                    debug ("Deleting recording %u", rec_id);
                     var rec = this.recordings.get (rec_id);
                     try {
                         Utils.delete_dir_recursively (rec.Location.get_parent ());
@@ -284,6 +293,43 @@ namespace DVB {
                 } catch (Error e) {
                     critical (e.message);
                 }
+            }
+        }
+        
+        /**
+         * @location: Path to the .ts file of the recording
+         * @returns: TRUE on success
+         *
+         * Delete a recording by the path of the recording
+         */
+        private bool delete_recording_by_location (string location) {
+            uint32 rec_id = 0;
+            foreach (uint32 id  in this.recordings.get_keys ()) {
+                Recording rec = this.recordings.get (id);
+                if (rec.Location.get_path () == location) {
+                    rec_id = id;
+                    break;
+                }
+            }
+            
+            if (rec_id != 0) {
+                debug ("Deleting recording %u", rec_id);
+                this.recordings.remove (rec_id);
+                this.changed (rec_id, ChangeType.DELETED);
+                return true;
+            }
+            
+            return false;
+        }
+        
+        private void on_recording_file_changed (FileMonitor monitor,
+                File file, File? other_file, FileMonitorEvent event) {
+            if (event == FileMonitorEvent.DELETED) {
+                string location = file.get_path ();
+                debug ("%s has been deleted", location);
+                this.delete_recording_by_location (location);
+                
+                monitor.cancel ();
             }
         }
     
