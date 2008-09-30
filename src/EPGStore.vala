@@ -142,10 +142,10 @@ namespace DVB {
             return true;
         }
         
-        public Event? get_event (uint event_id, Channel channel) {
+        public Event? get_event (uint event_id, uint channel_sid) {
             this.select_event_statement.reset ();
             
-            if (this.select_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+            if (this.select_event_statement.bind_int (1, (int)channel_sid) != Sqlite.OK
                     || this.select_event_statement.bind_int (2, (int)event_id) != Sqlite.OK) {
                 this.print_last_error ();
                 return null;

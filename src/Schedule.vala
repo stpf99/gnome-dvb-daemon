@@ -86,7 +86,7 @@ namespace DVB {
         }
         
         public Event? get (uint event_id) {
-            return this.epgstore.get_event (event_id, this.channel);
+            return this.epgstore.get_event (event_id, this.channel.Sid);
         }
         
         /**

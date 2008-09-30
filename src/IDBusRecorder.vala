@@ -27,6 +27,15 @@ namespace DVB {
         public abstract uint32 AddTimer (uint channel,
             int start_year, int start_month, int start_day,
             int start_hour, int start_minute, uint duration);
+        
+        /**
+         * @event_id: id of the EPG event
+         * @channel_sid: SID of channel
+         * @returns: The new timer's id on success, or 0 if timer couldn't
+         * be created
+         */
+        public abstract uint32 AddTimerForEPGEvent (uint event_id,
+            uint channel_sid);
             
         /**
          * @timer_id: The id of the timer you want to delete

@@ -249,6 +249,9 @@ class DVBRecorderClient(gobject.GObject):
     def add_timer (self, channel, year, month, day, hour, minute, duration):
         return self.recorder.AddTimer(channel, year, month, day, hour, minute, duration)
         
+    def add_timer_for_epg_event(self, event_id, channel_sid):
+        return self.recorder.AddTimerForEPGEvent(event_id, channel_sid)
+        
     def delete_timer(self, tid):
         return self.recorder.DeleteTimer(tid)
         

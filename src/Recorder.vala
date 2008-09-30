@@ -404,6 +404,23 @@ namespace DVB {
         }
         
         /**
+         * @event_id: id of the EPG event
+         * @channel_sid: SID of channel
+         * @returns: The new timer's id on success, or 0 if timer couldn't
+         * be created
+         */
+        public uint32 AddTimerForEPGEvent (uint event_id, uint channel_sid) {
+            EPGStore epgstore = EPGStore.get_instance ();
+            Event? event = epgstore.get_event (event_id, channel_sid);
+            Time start = event.get_local_start_time ();
+            
+            return this.AddTimer (channel_sid,
+                start.year + 1900, start.month + 1,
+                start.day, start.hour, start.minute,
+                event.duration / 60);
+        }
+        
+        /**
          * @timer_id: The id of the timer you want to delete
          * @returns: TRUE on success
          *
