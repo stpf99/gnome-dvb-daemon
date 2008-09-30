@@ -108,6 +108,7 @@ class ScheduleWindow(gtk.Window):
         self.schedulestore = None
         
         self.scheduleview = ScheduleView()
+        self.scheduleview.connect("button-press-event", self._on_event_selected)
         
         scrolledschedule = gtk.ScrolledWindow()
         scrolledschedule.add(self.scheduleview)
@@ -126,6 +127,14 @@ class ScheduleWindow(gtk.Window):
     def _get_selected_group_id(self):
         aiter = self.devgroupscombo.get_active_iter()
         return self.devgroupslist[aiter][1]
+        
+    def _get_selected_channel_sid(self):
+        model, aiter = self.channelsview.get_selection().get_selected()
+        if aiter != None:
+            sid = model[aiter][model.COL_SID]
+            return sid
+        else:
+            return None
 
     def _on_devgroupscombo_changed(self, combo):
         group_id = self._get_selected_group_id()
@@ -139,6 +148,17 @@ class ScheduleWindow(gtk.Window):
             group_id = self._get_selected_group_id()
             self.schedulestore = ScheduleStore(self.manager.get_schedule(group_id, sid))
             self.scheduleview.set_model(self.schedulestore)
+            
+    def _on_event_selected(self, treeview, event):
+        if event.type == gtk.gdk._2BUTTON_PRESS:
+            model, aiter = treeview.get_selection().get_selected()
+            if aiter != None:
+                event_id = model[aiter][model.COL_EVENT_ID]
+                group_id = self._get_selected_group_id()
+                channel_sid = self._get_selected_channel_sid()
+                recorder = gnomedvb.DVBRecorderClient(group_id)
+                recorder.add_timer_for_epg_event(event_id, channel_sid)
+            
             
 if __name__ == '__main__':
     w = ScheduleWindow()
