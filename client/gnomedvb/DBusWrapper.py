@@ -331,6 +331,9 @@ class DVBScheduleClient(gobject.GObject):
         # Apply the correct interace to the proxy object
         self.schedule = dbus.Interface(proxy, schedule_iface)
         
+    def get_all_events(self):
+        return self.schedule.GetAllEvents()
+        
     def now_playing(self):
         return self.schedule.NowPlaying()
         

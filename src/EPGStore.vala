@@ -83,7 +83,7 @@ namespace DVB {
             return instance;
         }
         
-        public bool add_event (Event event, Channel channel) {
+        public bool add_or_update_event (Event event, Channel channel) {
             if (this.db == null) {
                 critical ("SQLite error: No database connection");
                 return false;

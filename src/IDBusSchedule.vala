@@ -5,6 +5,8 @@ namespace DVB {
     [DBus (name = "org.gnome.DVB.Schedule")]
     public interface IDBusSchedule : GLib.Object {
     
+        public abstract uint32[] GetAllEvents ();
+    
         /**
          * @returns: ID of currently running event
          */

@@ -46,7 +46,7 @@ namespace DVB {
         	    if (event.has_expired ()) {
         	        this.epgstore.remove_event (event.id, this.channel);
         	    } else {
-        		    this.add (event);
+        		    this.create_and_add_event_element (event);
         		}
         	}
         }
@@ -104,18 +104,25 @@ namespace DVB {
                     this.events.remove (iter);
                 }
                 
-                EventElement element = new EventElement ();
-                element.id = event.id;
-                Time utc_starttime = event.get_utc_start_time ();
-                element.starttime = (int64)utc_starttime.mktime ();
+                this.create_and_add_event_element (event);
                 
-                weak SequenceIter<EventElement> iter = this.events.insert_sorted (element, EventElement.compare);
-                this.event_id_map.set (event.id, iter);
-                
-                this.epgstore.add_event (event, this.channel);
-                
-                assert (this.events.get_length () == this.event_id_map.size);
+                this.epgstore.add_or_update_event (event, this.channel);
             }
+        }
+        
+        /**
+         * Create event element from @event and add it to list of events
+         */
+        private void create_and_add_event_element (Event event) {
+            EventElement element = new EventElement ();
+            element.id = event.id;
+            Time utc_starttime = event.get_utc_start_time ();
+            element.starttime = (int64)utc_starttime.mktime ();
+            
+            weak SequenceIter<EventElement> iter = this.events.insert_sorted (element, EventElement.compare);
+            this.event_id_map.set (event.id, iter);
+            
+            assert (this.events.get_length () == this.event_id_map.size);
         }
         
         public bool contains (uint event_id) {
@@ -148,6 +155,20 @@ namespace DVB {
         public weak Event get_event_around (Time time) {
             return new Event ();
         }*/
+        
+        public uint32[] GetAllEvents () {
+            uint32[] event_ids = new uint32[this.events.get_length ()];
+            
+            lock (this.events) {
+                 for (int i=0; i<this.events.get_length (); i++) {
+                    weak SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
+                    EventElement element = this.events.get (iter);
+                    event_ids[i] = element.id;
+                 }
+            }
+            
+            return event_ids;
+        }
         
         public uint32 NowPlaying () {
             Event? event = this.get_running_event ();
