@@ -1,4 +1,4 @@
-gnomedvbprefsmodeldir = $(pythondir)/gnomedvb/preferences/model
+gnomedvbprefsmodeldir = $(pythondir)/gnomedvb/widgets
 gnomedvbprefsmodel_PYTHON = \
     __init__.py \
     ChannelsStore.py \
