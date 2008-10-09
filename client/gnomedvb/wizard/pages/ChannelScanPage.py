@@ -93,7 +93,7 @@ class ChannelScanPage(BasePage):
 		
 		scanner = manager.get_scanner_for_device(adapter, frontend)
 		
-		#scanner.connect ("frequency-scanned", self.__on_freq_scanned)
+		scanner.connect ("frequency-scanned", self.__on_freq_scanned)
 		scanner.connect ("channel-added", self.__on_channel_added)
 		scanner.connect ("finished", self.__on_finished)
 		
@@ -118,4 +118,9 @@ class ChannelScanPage(BasePage):
 		
 	def __on_finished(self, scanner):
 		self.emit("finished", True)
+		
+	def __on_freq_scanned(self, scanner, freq):
+		queue_size = scanner.get_queue_size()
+		fraction = 1.0 - float(queue_size)/(len(str(queue_size))*10)
+		self.progressbar.set_fraction(fraction)
 
