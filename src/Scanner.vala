@@ -197,6 +197,12 @@ namespace DVB {
             this.locked = false;
             this.new_channels.clear ();
             
+            if (this.current_tuning_params != null) {
+                uint old_freq;
+                this.current_tuning_params.get_uint ("frequency", out old_freq);
+                this.frequency_scanned (old_freq);
+            }
+            
             if (this.frequencies.is_empty()) {
                 message("Finished scanning");
                 this.clear_and_reset_all ();
