@@ -67,7 +67,22 @@ namespace DVB {
         public string[] GetScannerForDevice (uint adapter, uint frontend) {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             
-            Device device = new Device (adapter, frontend);
+            Device device;
+            Device? reg_dev = this.get_registered_device (adapter, frontend);
+            
+            if (reg_dev == null) {
+                // Create new device
+                device = new Device (adapter, frontend);
+            } else {
+                // Stop epgscanner for device if there's any
+                EPGScanner? epgscanner =
+                    this.get_epg_scanner (this.get_device_group_of_device (
+                        reg_dev));
+                if (epgscanner != null) epgscanner.stop ();
+                
+                // Assign existing device
+                device = reg_dev;
+            }
                 
             string dbusiface;
             switch (device.Type) {
@@ -110,16 +125,7 @@ namespace DVB {
                 conn.register_object (
                     path,
                     scanner);
-                    
-                // Stop epgscanner for device if there's any
-                Device? dev = this.get_registered_device (adapter, frontend);
-                if (dev != null) {
-                    EPGScanner? epgscanner =
-                        this.get_epg_scanner (this.get_device_group_of_device (
-                            dev));
-                    if (epgscanner != null) epgscanner.stop ();
-                }
-                    
+                
                 debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
                       adapter, frontend, dbusiface);
             }
