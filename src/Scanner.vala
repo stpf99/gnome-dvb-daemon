@@ -500,8 +500,7 @@ namespace DVB {
                         
                         string type = (channel.AudioPID == 0) ? "Radio" : "TV";
                         this.channel_added (channel.Frequency, sid,
-                        channel.Name, channel.Network, type);
-                        debug (channel.to_string ());
+                            channel.Name, channel.Network, type);
                     } else
                         warning ("Could not find transport stream for channel %u",
                             sid);
