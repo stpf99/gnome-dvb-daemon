@@ -384,7 +384,7 @@ namespace DVB {
                     Gst.Value channel_val;
                     weak Gst.Structure channel_struct;
                     // Iterate over channels
-                    for (int j=0; i<channels_size; j++) {
+                    for (int j=0; j<channels_size; j++) {
                         channel_val = channels.list_get_value (j);
                         channel_struct = channel_val.get_structure ();
                         
