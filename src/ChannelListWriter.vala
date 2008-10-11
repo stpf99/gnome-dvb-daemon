@@ -112,7 +112,7 @@ namespace DVB {
             string buffer = "%u:%s:%d:%u".printf (channel.Frequency / 1000,
                                                   channel.Polarization,
                                                   channel.DiseqcSource,
-                                                  channel.SymbolRate / 1000);
+                                                  channel.SymbolRate);
             this.stream.write (buffer, buffer.size(), null);
         }
         
