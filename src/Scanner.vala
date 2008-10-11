@@ -144,6 +144,7 @@ namespace DVB {
         public void Destroy () {
             this.remove_check_for_lock_timeout ();
             this.clear_and_reset_all ();
+            this.channels.clear ();
             this.destroyed ();
         }
         
@@ -180,6 +181,7 @@ namespace DVB {
             this.scanned_frequencies.clear ();
             this.frequencies.clear ();
             this.current_tuning_params = null;
+            this.new_channels.clear ();
         }
         
         protected void add_structure_to_scan (Gst.Structure# structure) {
@@ -228,7 +230,6 @@ namespace DVB {
             
             this.check_for_lock_event_id =
                 Timeout.add_seconds (5, this.check_for_lock);
-            
         }
         
         /**
@@ -236,11 +237,11 @@ namespace DVB {
          * used tuning parameters
          */
         protected bool check_for_lock () {
-            if (!this.locked)
-                this.pipeline.set_state (Gst.State.READY);
-                
-            this.start_scan ();
             this.check_for_lock_event_id = 0;
+            if (!this.locked) {
+                this.pipeline.set_state (Gst.State.READY);
+                this.start_scan ();
+            }
             return false;
         }
         
