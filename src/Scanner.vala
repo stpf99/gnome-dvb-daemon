@@ -215,8 +215,8 @@ namespace DVB {
             
             this.current_tuning_params = this.frequencies.pop_head();
             
-            debug("Starting scan with params %s",
-                this.current_tuning_params.to_string());
+            string params = this.current_tuning_params.to_string();
+            debug("Starting scan with params %s", params);
             
             // Remember that we already scanned this frequency
             uint freq;
