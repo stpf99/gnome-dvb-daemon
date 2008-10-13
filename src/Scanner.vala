@@ -76,6 +76,7 @@ namespace DVB {
         // Contains SIDs
         private ArrayList<uint> new_channels;
         private uint check_for_lock_event_id;
+        private uint wait_for_tables_event_id;
         private bool nit_arrived;
         private bool sdt_arrived;
         private bool pat_arrived;
@@ -245,10 +246,26 @@ namespace DVB {
             return false;
         }
         
+        protected bool wait_for_tables () {
+            this.wait_for_tables_event_id = 0;
+            if (!(this.sdt_arrived && this.nit_arrived && this.pat_arrived)) {
+                this.pipeline.set_state (Gst.State.READY);
+                this.start_scan ();
+            }
+            return false;
+        }
+        
         protected void remove_check_for_lock_timeout () {
             if (this.check_for_lock_event_id != 0) {
                 Source.remove (this.check_for_lock_event_id);
                 this.check_for_lock_event_id = 0;
+            }
+        }
+        
+        protected void remove_wait_for_tables_timeout () {
+            if (this.wait_for_tables_event_id != 0) {
+                Source.remove (this.wait_for_tables_event_id);
+                this.wait_for_tables_event_id = 0;
             }
         }
         
@@ -265,6 +282,8 @@ namespace DVB {
             if (has_lock && !this.locked) {
                 debug("Got lock");
                 this.remove_check_for_lock_timeout ();
+                this.wait_for_tables_event_id =
+                    Timeout.add_seconds (5, this.wait_for_tables);
             }
         }
         
@@ -491,6 +510,8 @@ namespace DVB {
             }
             
             if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
+                this.remove_wait_for_tables_timeout ();
+                
                 foreach (uint sid in this.new_channels) {
                     DVB.Channel channel = this.Channels.get (sid);
                     if (this.transport_streams.contains (channel.TransportStreamId)) {
