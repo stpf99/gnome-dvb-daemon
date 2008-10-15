@@ -339,7 +339,7 @@ namespace DVB {
                     service = val.get_structure ();
                     
                     // Returns "service-%d"
-                    string name = service.get_name ();    
+                    string name = service.get_name ();
                     // Get the number at the end
                     int sid = name.substring (8, name.size()).to_int ();
                     
@@ -351,10 +351,15 @@ namespace DVB {
                     }
                     
                     Channel channel = this.Channels.get(sid);
-                     
-                    channel.Name = name;
+                    
+                    if (name.validate ()) {
+                        channel.Name = name;
+                    }
                     channel.TransportStreamId = tsid;
-                    channel.Network = service.get_string ("provider-name");
+                    string provider = service.get_string ("provider-name");
+                    if (provider.validate ()) {
+                        channel.Network = provider;
+                    }
                     
                     uint freq;
                     this.current_tuning_params.get_uint ("frequency", out freq);
@@ -425,7 +430,9 @@ namespace DVB {
                             structure.get_uint ("network-id", out nid);
                             name = "%u".printf (nid);
                         }
-                        dvb_channel.Network = name;
+                        if (name.validate ()) {
+                            dvb_channel.Network = name;
+                        }
                         
                         uint lcnumber;
                         channel_struct.get_uint ("logical-channel-number", out lcnumber);
