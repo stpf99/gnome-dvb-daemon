@@ -56,8 +56,6 @@ namespace DVB {
                 "constellation", typeof(string), constellation,
                 "guard-interval", typeof(uint), guard);
             
-            debug ("Adding scanning data: %s", tuning_params.to_string ());
-              
             base.add_structure_to_scan (#tuning_params);
         }
         

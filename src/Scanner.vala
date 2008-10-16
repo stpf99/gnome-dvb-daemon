@@ -215,13 +215,12 @@ namespace DVB {
             
             this.current_tuning_params = this.frequencies.pop_head();
             
-            string params = this.current_tuning_params.to_string();
-            debug("Starting scan with params %s", params);
-            
             // Remember that we already scanned this frequency
             uint freq;
             this.current_tuning_params.get_uint ("frequency", out freq);
             this.scanned_frequencies.add (this.get_scanned_item (freq));
+            
+            debug("Starting scanning frequency %u", freq);
             
             this.pipeline.set_state (Gst.State.READY);
             
