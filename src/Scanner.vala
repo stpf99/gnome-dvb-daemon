@@ -357,7 +357,7 @@ namespace DVB {
                     }
                     channel.TransportStreamId = tsid;
                     string provider = service.get_string ("provider-name");
-                    if (provider.validate ()) {
+                    if (provider != null && provider.validate ()) {
                         channel.Network = provider;
                     }
                     
