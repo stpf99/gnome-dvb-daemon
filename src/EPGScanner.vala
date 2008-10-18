@@ -183,9 +183,15 @@ namespace DVB {
                 event_class.second = get_uint_val (event, "second");
                 event_class.duration = get_uint_val (event, "duration");
                 event_class.running_status = get_uint_val (event, "running-status");
-                event_class.name = event.get_string ("name"); 
-                event_class.description = event.get_string ("description");
-                event_class.extended_description = event.get_string ("extended-text");
+                string name = event.get_string ("name");
+                if (name != null && name.validate ())
+                    event_class.name = name;
+                string desc = event.get_string ("description");
+                if (desc != null && desc.validate ())
+                    event_class.description = desc;
+                string ext_desc = event.get_string ("extended-text");
+                if (ext_desc != null && ext_desc.validate ())
+                    event_class.extended_description = ext_desc;
                 bool free_ca;
                 event.get_boolean ("free-ca-mode", out free_ca);
                 event_class.free_ca_mode = free_ca;
