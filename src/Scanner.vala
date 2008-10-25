@@ -495,6 +495,7 @@ namespace DVB {
                     case 0x01:
                     case 0x02:
                     case 0x1b: /* H.264 video stream */
+                        debug ("Video: %u, %u", pid, program_number);
                         dvb_channel.VideoPID = pid;
                     break;
                     case 0x03:
@@ -505,7 +506,7 @@ namespace DVB {
                     break;
                     default:
                         debug ("Other stream type: 0x%02x", stream_type);
-                        break;
+                    break;
                 }
             }
         }
@@ -548,7 +549,8 @@ namespace DVB {
                             this.transport_streams.get (channel.TransportStreamId),
                             channel);
                         
-                        string type = (channel.AudioPID == 0) ? "Radio" : "TV";
+                        string type = (channel.VideoPID == 0) ? "Radio" : "TV";
+                        debug ("Channel added: %s", channel.to_string ());
                         this.channel_added (channel.Frequency, sid,
                             channel.Name, channel.Network, type);
                     } else
