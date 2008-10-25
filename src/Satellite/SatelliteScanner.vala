@@ -114,8 +114,9 @@ namespace DVB {
         }
         
         protected override ScannedItem get_scanned_item (uint frequency) {
-            weak string pol =
-                base.current_tuning_params.get_string ("polarization");
+            // dup string because get_string returns weak string
+            string pol = "%s".printf (
+                base.current_tuning_params.get_string ("polarization"));
             return new ScannedSatteliteItem (frequency, pol);
         }
         
