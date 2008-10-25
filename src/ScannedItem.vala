@@ -17,10 +17,12 @@ namespace DVB {
         
         public static uint hash (ScannedItem* o) {
             uint hashval;
-            if (o is ScannedItem) {
+            // Most specific class first
+            if (o is ScannedSatteliteItem) {
+                hashval = 2 * PRIME + PRIME * o->Frequency
+                    + ((ScannedSatteliteItem)o).Polarization.hash ();
+            } else if (o is ScannedItem) {
                 hashval = o->Frequency;
-            } else if (o is ScannedSatteliteItem) {
-                hashval = 2 * PRIME + PRIME * o->Frequency + ((ScannedSatteliteItem)o).Polarization.hash ();
             } else {
                 hashval = 0;
             }
@@ -44,7 +46,7 @@ namespace DVB {
                 
                 return (item1.Frequency == item2.Frequency);
             } else {
-                warning ("Don't comparing ScannedItem instances");
+                critical ("Don't comparing ScannedItem instances");
                 return false;
             }
         }
@@ -59,5 +61,5 @@ namespace DVB {
             this.Polarization = polarization;
         }
     }
-    
+
 }
