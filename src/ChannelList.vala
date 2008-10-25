@@ -34,7 +34,7 @@ namespace DVB {
             return val;
         }
         
-        public void add (Channel# channel) {
+        public void add (Channel channel) {
             lock (this.channels) {
                 this.channels.set (channel.Sid, channel);
             }
