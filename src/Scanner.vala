@@ -144,6 +144,7 @@ namespace DVB {
          */
         public void Destroy () {
             this.remove_check_for_lock_timeout ();
+            this.remove_wait_for_tables_timeout ();
             this.clear_and_reset_all ();
             this.channels.clear ();
             this.destroyed ();
@@ -175,14 +176,26 @@ namespace DVB {
         }
         
         protected void clear_and_reset_all () {
-            if (this.pipeline != null)
+            if (this.pipeline != null) {
                 this.pipeline.set_state (Gst.State.NULL);
+                // Free pipeline
+                this.pipeline = null;
+            }
             
             this.transport_streams.clear ();
             this.scanned_frequencies.clear ();
-            this.frequencies.clear ();
+            this.clear_frequencies ();
             this.current_tuning_params = null;
             this.new_channels.clear ();
+        }
+        
+        protected void clear_frequencies () {
+            while (!this.frequencies.is_empty ()) {
+                Gst.Structure? s = this.frequencies.pop_head ();
+                // Force that gst_structure_free is called
+                s = null;
+            }
+            this.frequencies.clear ();
         }
         
         protected void add_structure_to_scan (Gst.Structure# structure) {
