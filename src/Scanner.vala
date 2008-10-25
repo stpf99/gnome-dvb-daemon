@@ -199,7 +199,17 @@ namespace DVB {
         }
         
         protected void add_structure_to_scan (Gst.Structure# structure) {
-            this.frequencies.push_tail (#structure);
+            if (structure == null) return;
+            
+            uint freq;
+            structure.get_uint ("frequency", out freq);
+            ScannedItem item = this.get_scanned_item (freq);
+            
+            if (!this.scanned_frequencies.contains (item)) {
+                debug ("Queueing new frequency %u", freq);
+                this.frequencies.push_tail (#structure);
+                this.scanned_frequencies.add (item);
+            }
         }
         
         /**
@@ -231,9 +241,9 @@ namespace DVB {
             // Remember that we already scanned this frequency
             uint freq;
             this.current_tuning_params.get_uint ("frequency", out freq);
-            this.scanned_frequencies.add (this.get_scanned_item (freq));
             
-            debug("Starting scanning frequency %u", freq);
+            debug("Starting scanning frequency %u (%u left)", freq,
+                this.frequencies.get_length ());
             
             this.pipeline.set_state (Gst.State.READY);
             
@@ -406,12 +416,8 @@ namespace DVB {
                     
                     uint freq;
                     delivery.get_uint ("frequency", out freq);
-                    
-                    ScannedItem item = this.get_scanned_item (freq);
-                    if (!this.scanned_frequencies.contains (item)) {
-                        debug ("Found new frequency %u", freq);
-                        this.add_structure_to_scan (delivery);
-                    }
+                    // Takes care of duplicates
+                    this.add_structure_to_scan (delivery);
                 }
                 
                 if (transport.has_field ("channels")) {
@@ -497,6 +503,9 @@ namespace DVB {
                     case 0x11:
                         dvb_channel.AudioPID = pid;
                     break;
+                    default:
+                        debug ("Other stream type: 0x%02x", stream_type);
+                        break;
                 }
             }
         }
@@ -554,7 +563,7 @@ namespace DVB {
             debug ("Adding new channel with SID %u", sid);
             Channel new_channel = this.get_new_channel ();
             new_channel.Sid = sid;
-            this.Channels.add (#new_channel);
+            this.Channels.add (new_channel);
             this.new_channels.add (sid);
         }
     }
