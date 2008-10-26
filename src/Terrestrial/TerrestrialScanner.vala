@@ -151,8 +151,10 @@ namespace DVB {
             dvbsrc.set ("trans-mode", get_transmission_mode_val (transmode));
         }
         
-        protected override ScannedItem get_scanned_item (uint frequency) {
-            return new ScannedItem (frequency);
+        protected override ScannedItem get_scanned_item (Gst.Structure structure) {
+            uint freq;
+            structure.get_uint ("frequency", out freq);
+            return new ScannedItem (freq);
         }
         
         protected override Channel get_new_channel () {

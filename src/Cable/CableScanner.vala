@@ -104,9 +104,11 @@ namespace DVB {
                 this.current_tuning_params.get_string ("inner-fec")));
         }
         
-        protected override ScannedItem get_scanned_item (uint frequency) {
+        protected override ScannedItem get_scanned_item (Gst.Structure structure) {
             // TODO
-            return new ScannedItem (frequency);
+            uint freq;
+            structure.get_uint ("frequency", out freq);
+            return new ScannedItem (freq);
         }
         
         protected override Channel get_new_channel () {

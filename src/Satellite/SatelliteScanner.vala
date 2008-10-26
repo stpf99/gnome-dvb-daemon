@@ -113,11 +113,14 @@ namespace DVB {
             dvbsrc.set ("code-rate-hp", code_rate);
         }
         
-        protected override ScannedItem get_scanned_item (uint frequency) {
+        protected override ScannedItem get_scanned_item (Gst.Structure structure) {
             // dup string because get_string returns weak string
             string pol = "%s".printf (
-                base.current_tuning_params.get_string ("polarization"));
-            return new ScannedSatteliteItem (frequency, pol);
+                structure.get_string ("polarization"));
+            
+            uint freq;
+            structure.get_uint ("frequency", out freq);
+            return new ScannedSatteliteItem (freq, pol);
         }
         
         protected override Channel get_new_channel () {

@@ -101,7 +101,7 @@ namespace DVB {
          * Use the frequency and possibly other data to
          * mark the tuning paramters as already used
          */
-        protected abstract ScannedItem get_scanned_item (uint frequency);
+        protected abstract ScannedItem get_scanned_item (Gst.Structure structure);
         
         /**
          * Return a new empty channel
@@ -200,12 +200,10 @@ namespace DVB {
         protected void add_structure_to_scan (Gst.Structure# structure) {
             if (structure == null) return;
             
-            uint freq;
-            structure.get_uint ("frequency", out freq);
-            ScannedItem item = this.get_scanned_item (freq);
+            ScannedItem item = this.get_scanned_item (structure);
             
             if (!this.scanned_frequencies.contains (item)) {
-                debug ("Queueing new frequency %u", freq);
+                debug ("Queueing new frequency %u", item.Frequency);
                 this.frequencies.push_tail (#structure);
                 this.scanned_frequencies.add (item);
             }
@@ -552,13 +550,19 @@ namespace DVB {
                             this.transport_streams.get (channel.TransportStreamId),
                             channel);
                         
-                        string type = (channel.VideoPID == 0) ? "Radio" : "TV";
-                        debug ("Channel added: %s", channel.to_string ());
-                        this.channel_added (channel.Frequency, sid,
-                            channel.Name, channel.Network, type);
-                    } else
+                        if (channel.is_valid ()) {
+                            string type = (channel.VideoPID == 0) ? "Radio" : "TV";
+                            debug ("Channel added: %s", channel.to_string ());
+                            this.channel_added (channel.Frequency, sid,
+                                channel.Name, channel.Network, type);
+                        } else {
+                            this.Channels.remove (sid);
+                        }
+                    } else {
                         warning ("Could not find transport stream for channel %u",
                             sid);
+                        this.Channels.remove (sid);
+                    }
                 }
                 this.start_scan ();
             }
