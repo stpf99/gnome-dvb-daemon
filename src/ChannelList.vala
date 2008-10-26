@@ -40,6 +40,12 @@ namespace DVB {
             }
         }
         
+        public void remove (uint sid) {
+            lock (this.channels) {
+                this.channels.remove (sid);
+            }
+        }
+        
         public bool contains (uint sid) {
             bool val;
             lock (this.channels) {
