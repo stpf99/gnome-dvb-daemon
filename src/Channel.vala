@@ -25,6 +25,11 @@ namespace DVB {
         private DVB.Schedule schedule;
         private uint sid;
         
+        public virtual bool is_valid () {
+            return (this.Name != null && this.Frequency != 0 && this.Sid != 0);
+        }
+        
+        
         /**
          * @source: Either dvbbasebin or dvbsrc
          *

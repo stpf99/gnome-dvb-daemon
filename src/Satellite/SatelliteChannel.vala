@@ -7,6 +7,11 @@ namespace DVB {
         public uint SymbolRate {get; set;}
         public int DiseqcSource {get; set;}
         
+        public override bool is_valid () {
+            return (base.is_valid ()
+                && (this.Polarization == "v" || this.Polarization == "h"));
+        }
+        
         public override void setup_dvb_source (Gst.Element source) {
             source.set ("frequency", this.Frequency);
             source.set ("polarity", this.Polarization);
@@ -21,4 +26,4 @@ namespace DVB {
         }
     }
 
-}    
+}
