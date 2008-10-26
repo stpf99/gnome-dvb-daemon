@@ -128,7 +128,6 @@ namespace DVB {
                 error (e.message);
                 return;
             }
-            this.prev_pids = BASE_PIDS;
             
             Gst.Bus bus = this.pipeline.get_bus();
             bus.add_signal_watch();
@@ -248,6 +247,11 @@ namespace DVB {
             this.pipeline.set_state (Gst.State.READY);
             
             this.prepare ();
+            
+            // Reset PIDs
+            Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
+            dvbsrc.set ("pids", BASE_PIDS);
+            this.prev_pids = BASE_PIDS;
             
             this.pipeline.set_state (Gst.State.PLAYING);
             
@@ -495,7 +499,6 @@ namespace DVB {
                     case 0x01:
                     case 0x02:
                     case 0x1b: /* H.264 video stream */
-                        debug ("Video: %u, %u", pid, program_number);
                         dvb_channel.VideoPID = pid;
                     break;
                     case 0x03:
