@@ -1,4 +1,4 @@
-AC_INIT([gnome-dvb-daemon], [0.1.0], [marduk@k-d-w.org], [gnome-dvb-daemon])
+AC_INIT([gnome-dvb-daemon], [0.1.1], [marduk@k-d-w.org], [gnome-dvb-daemon])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
