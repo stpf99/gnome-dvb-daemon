@@ -1,0 +1,23 @@
+=============
+Version 0.1.0
+=============
+
+This is the first release of GNOME dvb-daemon.
+With dvb-daemon you can easily setup your DVB cards,
+schedule recordings and browse EPG.
+
+The list of features includes:
+    - Recording with manually provided start time and duration
+    - Automatically distribute overlapping recordings between adapters of same group
+    - Scan for channels with initial tuning data
+    - Brute force scan for DVB-T
+    - Browse already recorded shows
+    - Browse EPG data
+    - UI to scan for channels
+    - UI to configure devices
+    - UI to create and delete timers
+    - Schedule recording from EPG
+    - Recognize when recorded show is deleted manually and not by the daemon
+    
+This is the first release, so things might fail. If that's the case for you
+please report any issues you encounter.

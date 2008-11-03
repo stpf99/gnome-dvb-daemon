@@ -1,0 +1,6 @@
+DVB Daemon is a daemon written in Vala to setup your DVB devices,
+record TV shows and browse EPG. It can be controlled direclty
+via its D-Bus interface or with UI applications
+that come with it.
+
+For more details please checkout http://live.gnome.org/DVBDaemon
