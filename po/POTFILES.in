@@ -14,3 +14,4 @@ client/gnomedvb/wizard/pages/IntroPage.py
 client/gnomedvb/wizard/pages/SaveChannelListPage.py
 client/gnomedvb/wizard/pages/SummaryPage.py
 client/gnomedvb/wizard/SetupWizard.py
+client/gnome-dvb-schedule.py
