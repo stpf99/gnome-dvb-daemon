@@ -187,6 +187,8 @@ namespace DVB {
                         EventElement element = this.events.get (next_iter);
                         next_event = element.id;
                     }
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
             
@@ -202,6 +204,8 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
                     name = event.name;
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
         
@@ -217,6 +221,8 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
                     desc = event.description;
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
             
@@ -232,6 +238,8 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
                     desc = event.extended_description;
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
             
@@ -247,6 +255,8 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
                     duration = event.duration;
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
             
@@ -269,6 +279,8 @@ namespace DVB {
                     start[3] = local_time.hour;
                     start[4] = local_time.minute;
                     start[5] = local_time.second;
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
             
@@ -284,6 +296,8 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
                     val = (event.is_running ());
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
             
@@ -299,6 +313,8 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
                     val = (!event.free_ca_mode);
+                } else {
+                    debug ("No event with id %u", event_id);
                 }
             }
             
