@@ -66,10 +66,11 @@ namespace DVB {
     public static DvbSrcBandwidth get_bandwidth_val (uint bandwidth) {
         DvbSrcBandwidth val;
         switch (bandwidth) {
-            case 0: val = DvbSrcBandwidth.BANDWIDTH_AUTO; break;
             case 6: val = DvbSrcBandwidth.BANDWIDTH_6_MHZ; break;
             case 7: val = DvbSrcBandwidth.BANDWIDTH_7_MHZ; break;
             case 8: val = DvbSrcBandwidth.BANDWIDTH_8_MHZ; break;
+            // 0
+            default: val = DvbSrcBandwidth.BANDWIDTH_AUTO; break;
         }
         return val;
     }

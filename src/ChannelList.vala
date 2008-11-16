@@ -15,14 +15,8 @@ namespace DVB {
          */
         protected HashMap<uint, Channel> channels;
         
-        private File? channelsfile;
-        
         construct {
             this.channels = new HashMap<uint, Channel> ();
-        }
-        
-        public ChannelList (File? channelsfile = null) {
-            this.channels_file = channelsfile;
         }
         
         public Channel? get (uint sid) {

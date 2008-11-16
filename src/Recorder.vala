@@ -581,7 +581,7 @@ namespace DVB {
             if (location == null) return;
             
             bool create_new_thread = true;
-            RecordingThread recthread;
+            RecordingThread recthread = null;
             // Check if there's already an active recording on the
             // same transport stream
             foreach (uint32 timer_id in this.active_timers) {
@@ -615,6 +615,12 @@ namespace DVB {
                 // FIXME
                 //recthread.recording_aborted += this.on_recording_aborted;
             }
+            
+            if (recthread == null) {
+                critical ("Could not create recording thread");
+                return;
+            }
+            
             recthread.start_recording (timer, location);
             
             this.active_timers.add (timer.Id);
@@ -706,8 +712,7 @@ namespace DVB {
             bool val;
             // Store items we want to delete in here
             SList<uint32> deleteable_items = new SList<uint32> ();
-            // Don't use this.DeleteTimer for them
-            SList<uint32> removeable_items = new SList<uint32> ();
+            
             lock (this.timers) {
                 foreach (uint32 key in this.timers.get_keys()) {
                     Timer timer = this.timers.get (key);

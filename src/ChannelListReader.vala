@@ -16,7 +16,7 @@ namespace DVB {
             string contents = Utils.read_file_contents (this.ChannelFile);
             if (contents == null) return null;
             
-            ChannelList channels = new ChannelList (this.ChannelFile);
+            ChannelList channels = new ChannelList ();
         
             foreach (string line in contents.split("\n")) {
                 if (line.size () > 0) {
@@ -32,7 +32,7 @@ namespace DVB {
         }
         
         private Channel? parse_line (string line) {
-            Channel c;
+            Channel c = null;
             switch (this.Type) {
                 case AdapterType.DVB_T:
                 c = parse_terrestrial_channel (line);
@@ -44,6 +44,10 @@ namespace DVB {
                 
                 case AdapterType.DVB_C:
                 c = parse_cable_channel (line);
+                break;
+                
+                default:
+                critical ("Unknown adapter type");
                 break;
             }
             return c;

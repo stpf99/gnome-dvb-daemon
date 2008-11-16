@@ -91,10 +91,8 @@ namespace DVB {
                 
                 uint freq = (uint)cols[1].to_int ();
                 
-                uint hierarchy;
-                if (cols[8].down () == "none") {
-                    hierarchy = 0;
-                } else if (cols[8] == "1") {
+                uint hierarchy = 0;
+                if (cols[8] == "1") {
                     hierarchy = 1;
                 } else if (cols[8] == "2") {
                     hierarchy = 2;

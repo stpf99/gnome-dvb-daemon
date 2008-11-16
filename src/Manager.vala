@@ -84,7 +84,7 @@ namespace DVB {
                 device = reg_dev;
             }
                 
-            string dbusiface;
+            string dbusiface = null;
             switch (device.Type) {
                 case AdapterType.DVB_T:
                 dbusiface = "org.gnome.DVB.Scanner.Terrestrial";
@@ -99,8 +99,13 @@ namespace DVB {
                 break;
             }
             
+            if (dbusiface == null) {
+                critical ("Unknown adapter type");
+                return new string[] {"", ""};
+            }
+                
             if (!this.scanners.contains (path)) {
-                Scanner scanner;
+                Scanner scanner = null;
                 switch (device.Type) {
                     case AdapterType.DVB_T:
                     scanner = new TerrestrialScanner (device);
@@ -113,6 +118,11 @@ namespace DVB {
                     case AdapterType.DVB_C:
                     scanner = new CableScanner (device);
                     break;
+                }
+                
+                if (scanner == null) {
+                    critical ("Unknown adapter type");
+                    return new string[] {"", ""};
                 }
                 
                 scanner.destroyed += this.on_scanner_destroyed;

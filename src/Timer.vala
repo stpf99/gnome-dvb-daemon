@@ -45,16 +45,16 @@ namespace DVB {
          * Whether the timer conflicts with the other one
          */
         public bool conflicts_with (Timer t2) {
-            int64 this_start = (int64)this.get_start_time_timestamp ();
-            int64 other_start = (int64)t2.get_start_time_timestamp ();
+            time_t this_start = this.get_start_time_timestamp ();
+            time_t other_start = t2.get_start_time_timestamp ();
             
             if (this_start <= other_start) {
                 // No conflict when this timer ends before other starts
-                int64 this_end = (int64)this.get_end_time_timestamp ();
+                time_t this_end = this.get_end_time_timestamp ();
                 return (this_end > other_start);
             } else {
                 // No conflict when other timer ends before this starts
-                int64 other_end = (int64)t2.get_end_time_timestamp ();
+                time_t other_end = t2.get_end_time_timestamp ();
                 return (other_end > this_start);
             }
         }
@@ -68,16 +68,16 @@ namespace DVB {
             
             Time other_time = Utils.create_time ((int)start_year, (int)start_month,
                 (int)start_day, (int)start_hour, (int)start_minute);
-            int64 other_start = (int64)other_time.mktime ();
+            time_t other_start = other_time.mktime ();
             
             if (this_start <= other_start) {
                 // No conflict when this timer ends before other starts
-                int64 this_end = (int64)this.get_end_time_timestamp ();
+                time_t this_end = this.get_end_time_timestamp ();
                 return (this_end > other_start);
             } else {
                 // No conflict when other timer ends before this starts
                 other_time.minute += (int)duration;
-                int64 other_end = (int64)other_time.mktime ();
+                time_t other_end = other_time.mktime ();
                 return (other_end > this_start);
             }
         }
@@ -140,8 +140,8 @@ namespace DVB {
          * Whether the timer ends in the past
          */
         public bool has_expired () {
-            int64 current_time = (int64)time_t ();
-            int64 end_time = (int64)this.get_end_time_timestamp ();
+            time_t current_time = time_t ();
+            time_t end_time = this.get_end_time_timestamp ();
             
             return (end_time < current_time);
         }
