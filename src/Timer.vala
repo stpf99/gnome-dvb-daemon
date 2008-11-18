@@ -146,55 +146,6 @@ namespace DVB {
             return (end_time < current_time);
         }
         
-        public string serialize () {
-            return "%u;%u;%s;%u-%u-%u %u:%u;%u\n".printf(
-                this.Id, this.ChannelSid, (this.Name == null) ? "" : this.Name,
-                this.Year, this.Month, this.Day, this.Hour, this.Minute,
-                this.Duration);
-        }
-        
-        public static Timer deserialize (string line) {
-            string[] fields = line.split (";");
-            
-            uint id, duration;
-            uint channel_sid;
-            int year, month, day, hour, minute;
-            string? name;
-        
-            int i = 0;
-            string field;
-            while ( (field = fields[i]) != null) {
-            
-                switch (i) {
-                    case 0:
-                        id = field.to_int ();
-                    break;
-                    
-                    case 1:
-                        channel_sid = (uint)field.to_int ();
-                    break;
-                    
-                    case 2:
-                        name = (field == "") ? null : field;
-                    break;
-                    
-                    case 3:
-                        field.scanf ("%d-%d-%d %d:%d", &year, &month, &day,
-                            &hour, &minute);
-                    break;
-                    
-                    case 4:
-                        duration = (uint)field.to_int ();
-                    break;
-                }
-            
-                i++;
-            }
-            
-            return new Timer (id, channel_sid, year, month, day, hour, minute,
-                duration, name);
-        }
-        
         public string to_string () {
             return "channel: %u, start: %u-%u-%u %u:%u, duration: %u".printf (
                 this.ChannelSid, this.Year, this.Month, this.Day, this.Hour,
