@@ -263,7 +263,7 @@ namespace DVB {
                         
                         case FileType.REGULAR:
                             if (childinfo.get_name () == "info.rec") {
-                                Recording rec;
+                                Recording rec = null;
                                 try {
                                     rec = Recording.deserialize (child);
                                 } catch (Error e) {
