@@ -78,29 +78,29 @@ namespace DVB {
                 } else if (i == 1) {
                     channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
-                    channel.Inversion = get_value_with_prefix (
+                    channel.Inversion = (DvbSrcInversion) get_value_with_prefix (
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                 } else if (i == 3) {
-                    channel.Bandwidth = get_value_with_prefix (
+                    channel.Bandwidth = (DvbSrcBandwidth) get_value_with_prefix (
                         typeof(DvbSrcBandwidth), val, "DVB_DVB_SRC_BANDWIDTH_");
                 } else if (i == 4) {
-                    channel.CodeRateHP = get_value_with_prefix (
+                    channel.CodeRateHP = (DvbSrcCodeRate) get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                 } else if (i == 5) {
-                    channel.CodeRateLP = get_value_with_prefix (
+                    channel.CodeRateLP = (DvbSrcCodeRate) get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                 } else if (i == 6) {
-                    channel.Constellation = get_value_with_prefix (
+                    channel.Constellation = (DvbSrcModulation) get_value_with_prefix (
                         typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
                 } else if (i == 7) {
-                    channel.TransmissionMode = get_value_with_prefix (
+                    channel.TransmissionMode = (DvbSrcTransmissionMode) get_value_with_prefix (
                         typeof(DvbSrcTransmissionMode), val,
                         "DVB_DVB_SRC_TRANSMISSION_MODE_");
                 } else if (i == 8) {
-                    channel.GuardInterval = get_value_with_prefix (
+                    channel.GuardInterval = (DvbSrcGuard) get_value_with_prefix (
                         typeof(DvbSrcGuard), val, "DVB_DVB_SRC_GUARD_");
                 } else if (i == 9) {
-                    channel.Hierarchy = get_value_with_prefix (
+                    channel.Hierarchy = (DvbSrcHierarchy) get_value_with_prefix (
                         typeof(DvbSrcHierarchy), val, "DVB_DVB_SRC_HIERARCHY_");
                 } else if (i == 10) {                
                     channel.VideoPID = (uint)val.to_int ();
@@ -184,15 +184,15 @@ namespace DVB {
                 } else if (i == 1) {
                     channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
-                    channel.Inversion = get_value_with_prefix (
+                    channel.Inversion = (DvbSrcInversion) get_value_with_prefix (
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                 } else if (i == 3) {
                     channel.SymbolRate = (uint)val.to_int ();
                 } else if (i == 4) {
-                    channel.CodeRate = get_value_with_prefix (
+                    channel.CodeRate = (DvbSrcCodeRate) get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                 } else if (i == 5) {
-                    channel.Modulation = get_value_with_prefix (
+                    channel.Modulation = (DvbSrcModulation) get_value_with_prefix (
                         typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
                 } else if (i == 6) {                
                     channel.VideoPID = (uint)val.to_int ();
