@@ -123,10 +123,16 @@ namespace DVB {
                     string group_dir = groupfile.get_basename ();
                     
                     uint group_id = (uint)(group_dir.split("_")[1]).to_int ();
-                    
-                    File recordings_dir = File.new_for_path (
-                        this.client.get_string (
-                            base_path + DEVICE_GROUP_RECORDINGS_DIR_KEY));
+
+                    string recdir = this.client.get_string (
+                            base_path + DEVICE_GROUP_RECORDINGS_DIR_KEY);
+                    if (recdir == null) {
+                        warning ("Could not retrieve location of recordings directory for group %u",
+                            group_id);
+                        continue;
+                    }
+                            
+                    File recordings_dir = File.new_for_path (recdir);
                 
                     int gconf_type =
                         this.client.get_int (base_path + DEVICE_GROUP_ADAPTER_TYPE_KEY);
@@ -138,9 +144,15 @@ namespace DVB {
                         default: continue;
                     }
                     
-                    File channels_file = File.new_for_path (
-                        this.client.get_string (
-                            base_path + DEVICE_GROUP_CHANNELS_FILE_KEY));
+                    string channelsfilepath = this.client.get_string (
+                            base_path + DEVICE_GROUP_CHANNELS_FILE_KEY);
+                    if (channelsfilepath == null) {
+                        warning ("Could not retrieve location of channels file for group %u",
+                            group_id);
+                        continue;
+                    }
+                            
+                    File channels_file = File.new_for_path (channelsfilepath);
                     
                     ChannelList channels;
                     try {
