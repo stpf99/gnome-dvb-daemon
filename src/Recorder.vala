@@ -687,7 +687,7 @@ namespace DVB {
                 return null;
             }
             
-            return dir.get_child ("001.ts");
+            return dir.get_child ("001.mpeg");
         }
         
         private bool check_timers () {
