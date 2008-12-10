@@ -72,7 +72,7 @@ AC_ARG_ENABLE(gstrtspserver,
 	AS_HELP_STRING([--enable-gstrtspserver], [Enable gst-rtsp-server support]),
 	ENABLE_GSTRTSPSERVER=$enableval,
 	ENABLE_GSTRTSPSERVER=no)
-AM_CONDITIONAL(ENABLE_GSTRTSPSERVER, test "x$ENABLE_GSTRTSPSERVER" = "xyes")
+AM_CONDITIONAL([ENABLE_GSTRTSPSERVER], test "x$ENABLE_GSTRTSPSERVER" = "xyes")
 
 if test x$ENABLE_GSTRTSPSERVER = xyes; then	
 	PKG_CHECK_MODULES(GST_RTSP_SERVER, gst-rtsp-server-0.10)

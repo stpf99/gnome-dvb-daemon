@@ -520,7 +520,7 @@ namespace DVB {
             return conn;
         }
         
-        private DeviceGroup? get_device_group_if_exists (uint group_id) {;
+        protected DeviceGroup? get_device_group_if_exists (uint group_id) {;
             if (this.devices.contains (group_id))
                 return this.devices.get (group_id);
             else

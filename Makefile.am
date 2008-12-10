@@ -7,14 +7,6 @@ SUBDIRS = \
 	data \
 	po \
 	$(NULL)
-	
-AM_CPPFLAGS = \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	$(GNOME_DVB_DAEMON_CFLAGS) \
-	-include $(CONFIG_HEADER) \
-	$(NULL)
 
 BUILT_SOURCES = \
 	src/gnome-dvb-daemon.vala.stamp
@@ -74,6 +66,21 @@ vala_pkgs = \
 own_pkgs = \
 	--pkg config \
 	--pkg cutils
+
+if ENABLE_GSTRTSPSERVER
+gnome_dvb_daemon_VALASOURCES += src/livetv/Server.vala
+vala_pkgs += --pkg gst-rtsp-server
+GNOME_DVB_DAEMON_CFLAGS += $(GST_RTSP_SERVER_CFLAGS)
+GNOME_DVB_DAEMON_LIBS += $(GST_RTSP_SERVER_LIBS)
+endif
+	
+AM_CPPFLAGS = \
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
+	$(GNOME_DVB_DAEMON_CFLAGS) \
+	-include $(CONFIG_HEADER) \
+	$(NULL)
 
 src/gnome-dvb-daemon.vala.stamp: $(gnome_dvb_daemon_VALASOURCES)
 	$(VALAC) -C --thread --vapidir=$(top_srcdir)/vapi $(own_pkgs) $(vala_pkgs) --basedir $(top_srcdir) $^
