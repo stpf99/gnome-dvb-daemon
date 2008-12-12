@@ -11,11 +11,11 @@ namespace DVB {
      */
     public class Server : Gst.RTSPServer {
     
-        private string sid;
+        private string? sid;
         private Gst.Bin dvbrtpbin;
         
-        public override weak Gst.Element? prepare_media (Gst.RTSPMedia media,
-                Gst.Bin bin) {
+        public override Gst.Element? prepare_media (Gst.RTSPMedia media,
+                Gst.Bin pipeline) {
           	uint sidnr = 0;
           	uint grpnr = 0;
           	
@@ -56,6 +56,10 @@ namespace DVB {
           	
           	// TODO redirect epg data to EPGScanner
           	
+            Gst.Bus bus = pipeline.get_bus();
+            bus.add_signal_watch();
+            bus.message += this.bus_watch_func;
+          	
           	Gst.Element dvbbasebin = Gst.ElementFactory.make ("dvbbasebin",
                     "dvbbasebin");
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
@@ -72,7 +76,7 @@ namespace DVB {
             dvbbasebin.set ("adapter", free_dev.Adapter);
             dvbbasebin.set ("frontend", free_dev.Frontend);
           	
-          	return dvbrtpbin;
+          	return this.dvbrtpbin;
         }
         
         private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
@@ -96,6 +100,31 @@ namespace DVB {
                     debug ("Src pad %s linked with sink pad %s",
                         program, sink_name);
                 }
+                
+                this.sid = null;
+            }
+        }
+        
+        private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
+            switch (message.type) {
+                case Gst.MessageType.ELEMENT:
+                    string structure_name = message.structure.get_name();
+                    debug (structure_name);
+                    /*
+                    if (structure_name == "eit") {
+                        this.epgscanner.on_eit_structure (structure);
+                    }
+                    */
+                    break;
+                case Gst.MessageType.STATE_CHANGED:
+                    int enumval;
+                    message.structure.get_enum ("new-state", typeof(Gst.State),
+                        out enumval);
+                    if (enumval == Gst.State.NULL) {
+                        debug ("Pipeline stopped");
+                        this.sid = null;
+                    }
+                    break;
             }
         }
 
