@@ -320,6 +320,9 @@ class DVBChannelListClient:
     def is_radio_channel(self, cid):
         return self.channels.IsRadioChannel(cid)
         
+    def get_channel_url(self, cid):
+        return self.channels.GetChannelURL(cid)
+        
 class DVBScheduleClient(gobject.GObject):
 
     def __init__(self, object_path):
@@ -409,6 +412,7 @@ if __name__ == '__main__':
             print "SID", channel_id
             print "Name", channellist.get_channel_name(channel_id)
             print "Network", channellist.get_channel_network(channel_id)
+            print "URL", channellist.get_channel_url(channel_id)
             schedule = manager.get_schedule (group_id, channel_id)
             event_now = schedule.now_playing()
             print u"Now: %s" % schedule.get_name(event_now)

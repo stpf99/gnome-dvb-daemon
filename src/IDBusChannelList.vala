@@ -44,6 +44,12 @@ namespace DVB {
          */
         public abstract bool IsRadioChannel (uint channel_id);
         
+        /**
+         * @channel_id: ID of channel
+         * @returns: URL to watch the channel
+         */
+        public abstract string GetChannelURL (uint channel_id);
+        
 	}
 
 }

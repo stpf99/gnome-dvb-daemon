@@ -9,6 +9,7 @@ namespace DVB {
         public int size {
             get { return this.channels.size; }
         }
+        public uint group_id {get; set;}
         
         /**
          * Maps channels' SID to the channels' data
@@ -173,6 +174,22 @@ namespace DVB {
             }
             
             return val;
+        }
+        
+        /**
+         * @channel_id: ID of channel
+         * @returns: URL to watch the channel
+         */
+        public string GetChannelURL (uint channel_id) {
+            string url = "";
+            lock (this.channels) {
+                if (this.channels.contains (channel_id)) {
+                    Channel channel = this.channels.get (channel_id);
+                    url = "rtsp://localhost:1554/%u/%u".printf (this.group_id, channel.Sid);   
+                }
+            }
+            
+            return url;
         }
     }
 
