@@ -191,10 +191,10 @@ namespace DVB {
                 debug ("Creating new Recorder for group %u",
                     group_id);
                 
-                DeviceGroup device = this.get_device_group_if_exists (group_id);
-                if (device == null) return "";
+                DeviceGroup devgroup = this.get_device_group_if_exists (group_id);
+                if (devgroup == null) return "";
                 
-                Recorder recorder = new Recorder (device);
+                Recorder recorder = new Recorder (devgroup);
                 
                 var conn = get_dbus_connection ();
                 if (conn == null) return "";
@@ -351,10 +351,10 @@ namespace DVB {
                 debug ("Creating new ChannelList D-Bus service for group %u",
                     group_id);
                 
-                DeviceGroup device = this.get_device_group_if_exists (group_id);
-                if (device == null) return "";
+                DeviceGroup devgroup = this.get_device_group_if_exists (group_id);
+                if (devgroup == null) return "";
                 
-                ChannelList channels = device.Channels;
+                ChannelList channels = devgroup.Channels;
                 
                 var conn = get_dbus_connection ();
                 if (conn == null) return "";
@@ -444,28 +444,28 @@ namespace DVB {
          * Register device, create Recorder and ChannelList D-Bus service
          */
         [DBus (visible = false)]
-        public bool add_device_group (DeviceGroup device) {
-            debug ("Adding device group %u with %d devices", device.Id,
-                device.size);
+        public bool add_device_group (DeviceGroup devgroup) {
+            debug ("Adding device group %u with %d devices", devgroup.Id,
+                devgroup.size);
         
-            this.devices.set (device.Id, device);
-            string rec_path = this.GetRecorder (device.Id);
+            this.devices.set (devgroup.Id, devgroup);
+            string rec_path = this.GetRecorder (devgroup.Id);
             if (rec_path == "") return false;
             
-            string channels_path = this.GetChannelList (device.Id);
+            string channels_path = this.GetChannelList (devgroup.Id);
             if (channels_path == "") return false;
             
-            GConfStore.get_instance ().add_device_group (device);
+            GConfStore.get_instance ().add_device_group (devgroup);
             
-            if (device.Id > device_group_counter)
-                device_group_counter = device.Id;
+            if (devgroup.Id > device_group_counter)
+                device_group_counter = devgroup.Id;
             
             return true;
         }
         
         [DBus (visible = false)]
-        public Recorder? get_recorder_for_device_group (DeviceGroup device) {
-            uint id = device.Id;
+        public Recorder? get_recorder_for_device_group (DeviceGroup devgroup) {
+            uint id = devgroup.Id;
             if (this.recorders.contains (id))
                 return this.recorders.get (id);
             else
