@@ -18,7 +18,7 @@ class ChannelsView(gtk.TreeView):
         col_name = gtk.TreeViewColumn(_("Channel"))
         cell_name = gtk.CellRendererText()
         col_name.pack_start(cell_name)
-        col_name.add_attribute(cell_name, "text", ChannelsStore.COL_NAME)
+        col_name.add_attribute(cell_name, "markup", ChannelsStore.COL_NAME)
         self.append_column(col_name)
         
     def set_model(self, model=None):
