@@ -6,7 +6,7 @@ from ChannelsStore import ChannelsStore
 
 class ChannelsView(gtk.TreeView):
 
-    def __init__(self, model=None):
+    def __init__(self, model=None, name_col=ChannelsStore.COL_NAME):
         """
         @type model: ChannelsStore
         """
@@ -18,7 +18,7 @@ class ChannelsView(gtk.TreeView):
         col_name = gtk.TreeViewColumn(_("Channel"))
         cell_name = gtk.CellRendererText()
         col_name.pack_start(cell_name)
-        col_name.add_attribute(cell_name, "markup", ChannelsStore.COL_NAME)
+        col_name.add_attribute(cell_name, "markup", name_col)
         self.append_column(col_name)
         
     def set_model(self, model=None):
