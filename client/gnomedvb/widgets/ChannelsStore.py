@@ -25,4 +25,30 @@ class ChannelsStore(gtk.ListStore):
         for channel_id in channellist.get_channels():
             name = channellist.get_channel_name(channel_id)
             self.append([name, channel_id])
+
+
+class ChannelsTreeStore(gtk.TreeStore):
+
+    (COL_GROUP_ID,
+     COL_NAME,
+     COL_SID,) = range(3)
+     
+    def __init__(self):
+        gtk.TreeStore.__init__(self, int, str, int)
+        
+        self.set_sort_column_id(self.COL_NAME,
+            gtk.SORT_ASCENDING)
+            
+        self._add_channels()
+            
+    def _add_channels(self):
+        manager = gnomedvb.DVBManagerClient ()
+        dev_groups = manager.get_registered_device_groups()
     
+        for group_id in dev_groups:
+            group_iter = self.append(None, [group_id, "Group %d" % group_id, 0])
+            channellist = gnomedvb.DVBChannelListClient(group_id)
+            for channel_id in channellist.get_channels():
+                name = channellist.get_channel_name(channel_id)
+                self.append(group_iter, [group_id, name, channel_id])
+         
