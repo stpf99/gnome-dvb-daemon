@@ -50,11 +50,6 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Utils.vala \
 	$(NULL)
 
-gnome_dvb_daemon_SOURCES = \
-	$(gnome_dvb_daemon_VALASOURCES:.vala=.c) \
-	$(gnome_dvb_daemon_VALASOURCES:.vala=.h) \
-	$(NULL)
-
 vala_pkgs = \
     --pkg gio-2.0 \
     --pkg dbus-glib-1 \
@@ -73,6 +68,11 @@ vala_pkgs += --pkg gst-rtsp-server-0.10
 GNOME_DVB_DAEMON_CFLAGS += $(GST_RTSP_SERVER_CFLAGS)
 GNOME_DVB_DAEMON_LIBS += $(GST_RTSP_SERVER_LIBS)
 endif
+
+gnome_dvb_daemon_SOURCES = \
+	$(gnome_dvb_daemon_VALASOURCES:.vala=.c) \
+	$(gnome_dvb_daemon_VALASOURCES:.vala=.h) \
+	$(NULL)
 	
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
