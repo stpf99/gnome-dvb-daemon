@@ -78,7 +78,7 @@ namespace DVB {
             foreach (string line in contents.split("\n")) {
                 if (line.has_prefix ("#")) continue;
                 
-                string[] cols = Regex.split_simple (" ", line);
+                string[] cols = Regex.split_simple ("\\s+", line);
                 
                 int cols_length = 0;
                 while (cols[cols_length] != null)
