@@ -69,7 +69,7 @@ own_pkgs = \
 
 if ENABLE_GSTRTSPSERVER
 gnome_dvb_daemon_VALASOURCES += src/livetv/Server.vala
-vala_pkgs += --pkg gst-rtsp-server
+vala_pkgs += --pkg gst-rtsp-server-0.10
 GNOME_DVB_DAEMON_CFLAGS += $(GST_RTSP_SERVER_CFLAGS)
 GNOME_DVB_DAEMON_LIBS += $(GST_RTSP_SERVER_LIBS)
 endif
