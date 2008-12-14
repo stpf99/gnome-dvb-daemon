@@ -13,6 +13,7 @@ namespace DVB {
     
         private string? sid;
         private Gst.Bin dvbrtpbin;
+        private EPGScanner? epgscanner;
         
         public override Gst.Element? prepare_media (Gst.RTSPMedia media,
                 Gst.Bin pipeline) {
@@ -31,14 +32,18 @@ namespace DVB {
           	    i++;
           	}
           	
-          	// TODO stop epg scanner
+          	Manager manager = Manager.get_instance();
           	
-          	DeviceGroup? devgrp =
-          	    Manager.get_instance().get_device_group_if_exists (grpnr);
+          	DeviceGroup? devgrp = 
+          	    manager.get_device_group_if_exists (grpnr);
           	if (devgrp == null) {
           	    warning ("Unknown group %u", grpnr);
           	    return null;
           	}
+          	
+          	// Stop EPG scanner
+          	this.epgscanner = manager.get_epg_scanner (devgrp);
+          	if (epgscanner != null) epgscanner.stop ();
           	
           	Device? free_dev = devgrp.get_next_free_device ();
           	if (free_dev == null) {
@@ -53,8 +58,6 @@ namespace DVB {
           	}
           	
           	this.sid = sidnr.to_string ();
-          	
-          	// TODO redirect epg data to EPGScanner
           	
             Gst.Bus bus = pipeline.get_bus();
             bus.add_signal_watch();
@@ -109,12 +112,9 @@ namespace DVB {
             switch (message.type) {
                 case Gst.MessageType.ELEMENT:
                     string structure_name = message.structure.get_name();
-                    debug (structure_name);
-                    /*
                     if (structure_name == "eit") {
-                        this.epgscanner.on_eit_structure (structure);
+                        this.epgscanner.on_eit_structure (message.structure);
                     }
-                    */
                     break;
                 case Gst.MessageType.STATE_CHANGED:
                     int enumval;
@@ -123,6 +123,10 @@ namespace DVB {
                     if (enumval == Gst.State.NULL) {
                         debug ("Pipeline stopped");
                         this.sid = null;
+                        // Start EPG scanner again
+                        if (this.epgscanner != null)
+                            this.epgscanner.start ();
+                        this.epgscanner = null;
                     }
                     break;
             }
