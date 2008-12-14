@@ -29,6 +29,17 @@ namespace DVB {
             return (this.Name != null && this.Frequency != 0 && this.Sid != 0);
         }
         
+        /**
+         * @returns: TRUE if both channels are part of the same
+         * transport stream (TS).
+         *
+         * Channels that are part of the same TS can be viewed/recorded
+         * at the same time with a single device.
+         */
+        public virtual bool on_same_transport_stream (Channel channel) {
+            return (this.Frequency == channel.Frequency);
+        }
+        
         
         /**
          * @source: Either dvbbasebin or dvbsrc

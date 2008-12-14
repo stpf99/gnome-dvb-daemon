@@ -588,8 +588,8 @@ namespace DVB {
                 Timer other_timer = this.timers.get (timer_id);
                 Channel other_channel =
                     this.DeviceGroup.Channels.get (other_timer.ChannelSid);
-                // FIXME
-                if (other_channel.Frequency == channel.Frequency) {
+                
+                if (channel.on_same_transport_stream (other_channel)) {
                     debug ("Using already active RecordingThread");
                     recthread = this.active_recording_threads.get (other_timer);
                     create_new_thread = false;
