@@ -206,6 +206,12 @@ class DVBRecordingsStoreClient(gobject.GObject):
     def get_location(self, rid):
         return self.recstore.GetLocation(rid)
         
+    def get_name(self, rid):
+        return self.recstore.GetName(rid)
+        
+    def get_description(self, rid):
+        return self.recstore.GetDescription(rid)
+        
     def get_length(self, rid):
         return self.recstore.GetLength(rid)
         
