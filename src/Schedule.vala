@@ -60,7 +60,7 @@ namespace DVB {
             
             lock (this.events) {
                 for (int i=0; i<this.events.get_length (); i++) {
-                    weak SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
+                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     
                     EventElement element = this.events.get (iter);
                     Event? e = this.get (element.id);
@@ -119,7 +119,7 @@ namespace DVB {
             Time utc_starttime = event.get_utc_start_time ();
             element.starttime = (int64)utc_starttime.mktime ();
             
-            weak SequenceIter<EventElement> iter = this.events.insert_sorted (element, EventElement.compare);
+            SequenceIter<EventElement> iter = this.events.insert_sorted (element, EventElement.compare);
             this.event_id_map.set (event.id, iter);
             
             assert (this.events.get_length () == this.event_id_map.size);
@@ -137,7 +137,7 @@ namespace DVB {
              Event? running_event = null;
              lock (this.events) {
                  for (int i=0; i<this.events.get_length (); i++) {
-                    weak SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
+                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
@@ -161,7 +161,7 @@ namespace DVB {
             
             lock (this.events) {
                  for (int i=0; i<this.events.get_length (); i++) {
-                    weak SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
+                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     EventElement element = this.events.get (iter);
                     event_ids[i] = element.id;
                  }
@@ -181,7 +181,7 @@ namespace DVB {
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    weak SequenceIter<EventElement> next_iter = iter.next ();
+                    SequenceIter<EventElement> next_iter = iter.next ();
                     // Check if a new event follows
                     if (!next_iter.is_end ()) {
                         EventElement element = this.events.get (next_iter);
