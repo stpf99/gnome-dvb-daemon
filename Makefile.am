@@ -48,6 +48,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Schedule.vala \
 	src/Timer.vala \
 	src/Utils.vala \
+	src/livetv/Server.vala \
 	$(NULL)
 
 vala_pkgs = \
@@ -56,18 +57,12 @@ vala_pkgs = \
     --pkg gstreamer-0.10 \
     --pkg gee-1.0 \
     --pkg gconf-2.0 \
-    --pkg sqlite3
+    --pkg sqlite3 \
+    --pkg gst-rtsp-server-0.10
     
 own_pkgs = \
 	--pkg config \
 	--pkg cutils
-
-if ENABLE_GSTRTSPSERVER
-gnome_dvb_daemon_VALASOURCES += src/livetv/Server.vala
-vala_pkgs += --pkg gst-rtsp-server-0.10
-GNOME_DVB_DAEMON_CFLAGS += $(GST_RTSP_SERVER_CFLAGS)
-GNOME_DVB_DAEMON_LIBS += $(GST_RTSP_SERVER_LIBS)
-endif
 
 gnome_dvb_daemon_SOURCES = \
 	$(gnome_dvb_daemon_VALASOURCES:.vala=.c) \

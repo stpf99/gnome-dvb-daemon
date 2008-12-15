@@ -1,6 +1,10 @@
 SUBDIRS = \
 	gnomedvb
 	
+if ENABLE_TOTEM
+SUBDIRS += totem-plugin
+endif
+	
 gnomedvbbindir = $(bindir)
 gnomedvbbin_SCRIPTS = \
 	gnome-dvb-preferences.py \

@@ -102,7 +102,7 @@ public class Main {
         uint32 max_id = 0;
         
         var gconf = DVB.GConfStore.get_instance ();
-        // Gst.RTSPServer server;
+        
         Gee.ArrayList<DVB.DeviceGroup> device_groups = gconf.get_all_device_groups ();
         foreach (DVB.DeviceGroup device_group in device_groups) {
             
@@ -125,10 +125,10 @@ public class Main {
         }
         
         if (!start_recordings_store (max_id)) return -1;
-        /*
-        server = new DVB.Server ()
+
+        Gst.RTSPServer server = new DVB.Server ();
         server.attach (null);
-        */
+	
         // Start GLib mainloop
         loop.run ();
         

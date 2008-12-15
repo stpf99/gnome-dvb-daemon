@@ -48,6 +48,7 @@ DBUS_REQUIRED=0.74
 GEE_REQUIRED=0.1.4
 GCONF_REQUIRED=2.6.1
 SQLITE_REQUIRED=3.4
+GST_RTSP_SERVER_REQUIRED=0.10
 
 PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             gio-2.0 >= $GIO_REQUIRED
@@ -56,7 +57,8 @@ PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             dbus-glib-1 >= $DBUS_REQUIRED
                             gee-1.0 >= $GEE_REQUIRED
                             gconf-2.0 >= $GCONF_REQUIRED
-                            sqlite3 >= $SQLITE_REQUIRED)
+                            sqlite3 >= $SQLITE_REQUIRED
+                            gst-rtsp-server-0.10 >= $GST_RTSP_SERVER_REQUIRED)
 AC_SUBST(GNOME_DVB_DAEMON_CFLAGS)
 AC_SUBST(GNOME_DVB_DAEMON_LIBS)
 
@@ -65,20 +67,28 @@ AG_GST_CHECK_MODULE_BAD([mpegtsparse])
 AG_GST_CHECK_MODULE_BAD([dvbbasebin])
 AG_GST_CHECK_MODULE_BAD([dvbsrc])
 
-dnl *******************
-dnl * gst-rtsp-server
-dnl *******************
-AC_ARG_ENABLE(gstrtspserver,
-	AS_HELP_STRING([--enable-gstrtspserver], [Enable gst-rtsp-server support]),
-	ENABLE_GSTRTSPSERVER=$enableval,
-	ENABLE_GSTRTSPSERVER=no)
-AM_CONDITIONAL([ENABLE_GSTRTSPSERVER], test "x$ENABLE_GSTRTSPSERVER" = "xyes")
+dnl ****************
+dnl * Totem plugin
+dnl ****************
+AC_ARG_ENABLE([totem-plugin],
+	AS_HELP_STRING([--enable-totem-plugin], [Install the Totem plugin]),
+	enable_totem="yes",
+	enable_totem="no")
+	
+AM_CONDITIONAL(ENABLE_TOTEM, test "x$enable_totem" = "xyes")
 
-if test x$ENABLE_GSTRTSPSERVER = xyes; then	
-	PKG_CHECK_MODULES(GST_RTSP_SERVER, gst-rtsp-server-0.10)
-	AC_SUBST(GST_RTSP_SERVER_CFLAGS)
-	AC_SUBST(GST_RTSP_SERVER_LIBS)
+AC_ARG_WITH([totem-plugin-dir],
+	AS_HELP_STRING([--with-totem-plugin-dir],
+		[Directory where Totem plugins are installed (default: LIBDIR/totem/plugins)]))
+
+if test "x$enable_totem" = "xyes"; then		
+	if test "x$with_totem_plugin_dir" = "x"; then
+		TOTEM_PLUGIN_DIR="$libdir/totem/plugins"
+	else
+		TOTEM_PLUGIN_DIR="$with_totem_plugin_dir"
+	fi
 fi
+AC_SUBST(TOTEM_PLUGIN_DIR)
 
 dnl **************
 dnl * Expansions
@@ -136,6 +146,7 @@ AC_CONFIG_FILES([
 	client/gnomedvb/widgets/Makefile
 	client/gnomedvb/wizard/Makefile
 	client/gnomedvb/wizard/pages/Makefile
+	client/totem-plugin/Makefile
 	data/Makefile
 	po/Makefile.in])
 
