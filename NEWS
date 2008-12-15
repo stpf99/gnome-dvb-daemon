@@ -1,4 +1,22 @@
 =============
+Version 0.1.1
+=============
+
+This is the first release that features live TV streaming
+via RTSP and a Totem plugin to watch live TV and recordings.
+
+- Made sure it compiles with latest Vala
+- Use .mpeg extension instead of .ts for recordings
+- Added GetChannelURL to ChannelList DBus interface
+- Accept any number of whitespaces between values in initial tuning data
+- Added	ChannelsTreeStore widget
+- Added live TV streaming support via RTSP
+- Added Totem plugin
+
+Translations:
+    - Swedish (Daniel Nylander)
+
+=============
 Version 0.1.0
 =============
 
