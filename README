@@ -1,6 +1,35 @@
 DVB Daemon is a daemon written in Vala to setup your DVB devices,
-record TV shows and browse EPG. It can be controlled direclty
+record and watch TV shows and browse EPG. It can be controlled direclty
 via its D-Bus interface or with UI applications
 that come with it.
+
+Requirements
+============
+
+Daemon:
+    - gst-plugins-bad from CVS (http://gstreamer.freedesktop.org/dev/)
+    - glib >= 2.16
+    - dbus-glib >= 0.74
+    - libgee >= 0.1.4
+    - gconf >= 2.6.1
+    - sqlite >= 3.4
+    - gst-rtsp-server branch from git repository at http://www.gnome.org/~sebp/git/gst-rtsp-server.git
+
+UI:
+    - Python >= 2.5
+    - python-gstreamer
+    - python-gtk >= 2.10
+    - python-dbus
+    - (Recommended) dvb-apps for initial tuning data
+    
+Configuration options
+=====================
+
+`--enable-totem-plugin`
+    Install the Totem plugin
+    
+`--with-totem-plugin-dir`
+    Location where the Totem plugin will be installed
+    (default: LIBDIR/totem/plugins)
 
 For more details please checkout http://live.gnome.org/DVBDaemon
