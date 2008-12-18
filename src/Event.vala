@@ -33,7 +33,7 @@ namespace DVB {
         public SList<VideoComponent> video_components;
         public SList<TeletextComponent> teletext_components;
         
-        construct {
+        public Event () {
             this.audio_components = new SList<AudioComponent> ();
             this.video_components = new SList<VideoComponent> ();
             this.teletext_components = new SList<TeletextComponent> ();
