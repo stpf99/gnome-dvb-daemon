@@ -193,16 +193,21 @@ namespace DVB {
         
         public void add_device_group (DeviceGroup dev_group) {
             string base_path = get_device_group_path (dev_group);
+            
+            assert (dev_group.Channels != null);
+            assert (dev_group.RecordingsDirectory != null);
                 
             try {
                 if (!this.client.dir_exists (base_path)) {
                     this.client.set_int (base_path + DEVICE_GROUP_ADAPTER_TYPE_KEY,
                         dev_group.Type);
-                    this.client.set_string (base_path + DEVICE_GROUP_CHANNELS_FILE_KEY,
-                        dev_group.Channels.channels_file.get_path ());
+                    if (!this.client.set_string (base_path + DEVICE_GROUP_CHANNELS_FILE_KEY,
+                        dev_group.Channels.channels_file.get_path ()))
+                            critical ("Could not save location of channels file in GConf");
 
-                    this.client.set_string (base_path + DEVICE_GROUP_RECORDINGS_DIR_KEY,
-                        dev_group.RecordingsDirectory.get_path ());
+                    if (!this.client.set_string (base_path + DEVICE_GROUP_RECORDINGS_DIR_KEY,
+                            dev_group.RecordingsDirectory.get_path ()))
+                        critical ("Could not save location of recordings in GConf");
                         
                     foreach (Device dev in dev_group) {
                         this.add_device_to_group (dev, dev_group);
@@ -230,10 +235,12 @@ namespace DVB {
             string base_path = get_device_group_path (devgroup) + get_device_path (dev);
         
             try {
-                this.client.set_int (base_path + DEVICE_ADAPTER_KEY,
-                    (int)dev.Adapter);
-                this.client.set_int (base_path + DEVICE_FRONTEND_KEY,
-                    (int)dev.Frontend);
+                if (!this.client.set_int (base_path + DEVICE_ADAPTER_KEY,
+                        (int)dev.Adapter))
+                    critical ("Could not save adapter in GConf");
+                if (!this.client.set_int (base_path + DEVICE_FRONTEND_KEY,
+                        (int)dev.Frontend))
+                    critical ("Could not save frontend in GConf");
             } catch (Error e) {
                 warning (e.message);
             }
@@ -312,22 +319,25 @@ namespace DVB {
                 TIMER_DIR_NAME.printf (timer.Id);
             try {
                 if (!this.client.dir_exists (base_path)) {
-                    this.client.set_int (base_path + TIMER_ID_KEY,
+                    bool ret = true;
+                    ret &= this.client.set_int (base_path + TIMER_ID_KEY,
                         (int)timer.Id);
-                    this.client.set_int (base_path + TIMER_CHANNEL_SID_KEY,
+                    ret &= this.client.set_int (base_path + TIMER_CHANNEL_SID_KEY,
                         (int)timer.ChannelSid);
-                    this.client.set_int (base_path + TIMER_YEAR_KEY,
+                    ret &= this.client.set_int (base_path + TIMER_YEAR_KEY,
                         (int)timer.Year);
-                    this.client.set_int (base_path + TIMER_MONTH_KEY,
+                    ret &= this.client.set_int (base_path + TIMER_MONTH_KEY,
                         (int)timer.Month);
-                    this.client.set_int (base_path + TIMER_DAY_KEY,
+                    ret &= this.client.set_int (base_path + TIMER_DAY_KEY,
                         (int)timer.Day);
-                    this.client.set_int (base_path + TIMER_HOUR_KEY,
+                    ret &= this.client.set_int (base_path + TIMER_HOUR_KEY,
                         (int)timer.Hour);
-                    this.client.set_int (base_path + TIMER_MINUTE_KEY,
+                    ret &= this.client.set_int (base_path + TIMER_MINUTE_KEY,
                         (int)timer.Minute);
-                    this.client.set_int (base_path + TIMER_DURATION_KEY,
+                    ret &= this.client.set_int (base_path + TIMER_DURATION_KEY,
                         (int)timer.Duration);
+                    if (!ret)
+                        critical ("Could not store timer in GConf");
                 }
             } catch (Error e) {
                 warning (e.message);
