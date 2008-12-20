@@ -5,7 +5,7 @@ namespace DVB {
 
     public class ChannelList : GLib.Object, Iterable<Channel>, IDBusChannelList {
         
-        public File channels_file {get; construct;}
+        public File? channels_file {get; construct;}
         public int size {
             get { return this.channels.size; }
         }
@@ -18,6 +18,10 @@ namespace DVB {
         
         construct {
             this.channels = new HashMap<uint, Channel> ();
+        }
+        
+        public ChannelList (File? channels=null) {
+            this.channels_file = channels;
         }
         
         public Channel? get (uint sid) {

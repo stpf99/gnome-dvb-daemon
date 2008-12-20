@@ -16,7 +16,7 @@ namespace DVB {
             string contents = Utils.read_file_contents (this.ChannelFile);
             if (contents == null) return null;
             
-            ChannelList channels = new ChannelList ();
+            ChannelList channels = new ChannelList (this.ChannelFile);
         
             foreach (string line in contents.split("\n")) {
                 if (line.size () > 0) {
