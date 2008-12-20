@@ -252,17 +252,6 @@ namespace DVB {
             return event;
         }
         
-        private bool execute (string statement) {
-            string errormsg;
-            int val = this.db.exec (statement, null, null, out errormsg);
-            
-            if (val != Sqlite.OK) {
-                critical ("SQLite error: %s\n%s", errormsg, statement);
-                return false;
-            }
-            return true;
-        }
-        
         private void print_last_error () {
             critical ("SQLite error: %d, %s",
                 this.db.errcode (), this.db.errmsg ());
@@ -339,7 +328,7 @@ namespace DVB {
             if (create_tables) {
                 string errormsg;
                 int val = db.exec (CREATE_EVENTS_TABLE_STATEMENT,
-                    null, null, out errormsg);
+                    null, out errormsg);
             
                 if (val != Sqlite.OK) {
                     critical ("SQLite error: %s", errormsg);
