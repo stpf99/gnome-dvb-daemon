@@ -365,7 +365,7 @@ namespace DVB {
                     // Returns "service-%d"
                     string name = service.get_name ();
                     // Get the number at the end
-                    int sid = name.substring (8, name.size()).to_int ();
+                    int sid = name.substring (8, name.size() - 8).to_int ();
                     
                     if (service.has_field ("name"))
                         name = service.get_string ("name");
@@ -383,6 +383,8 @@ namespace DVB {
                     string provider = service.get_string ("provider-name");
                     if (provider != null && provider.validate ()) {
                         channel.Network = provider;
+                    } else {
+                        channel.Network = "";
                     }
                     
                     uint freq;
@@ -452,6 +454,8 @@ namespace DVB {
                         }
                         if (name.validate ()) {
                             dvb_channel.Network = name;
+                        } else {
+                            dvb_channel.Network = "";
                         }
                         
                         uint lcnumber;
