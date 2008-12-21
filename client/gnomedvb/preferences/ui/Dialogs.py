@@ -32,10 +32,9 @@ class AddToGroupDialog (gtk.Dialog):
         combo.show()
         self.vbox.pack_start(combo)
                       
-        for group_id in model.get_registered_device_groups():
-            if model.get_type_of_device_group(group_id) == device_type:
-                group_name = _("Group %d") % group_id
-                self.groups.append([group_name, group_id])
+        for group in model.get_registered_device_groups():
+            if model.get_type_of_device_group(group["id"]) == device_type:
+                self.groups.append([group["name"], group["id"]])
             
     def on_combo_changed(self, combo):
         aiter = combo.get_active_iter()
@@ -59,6 +58,19 @@ class NewGroupDialog (gtk.Dialog):
                       gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
         
         self.set_default_size(400, 150)
+        
+        name = AlignedLabel(_("<b>Name</b>"))
+        name.show()
+        self.vbox.pack_start(name, False, False, 0)
+        
+        name_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
+        name_ali.set_padding(0, 0, 12, 0)
+        name_ali.show()
+        self.vbox.pack_start(name_ali)
+        
+        self.name_entry = gtk.Entry()
+        self.name_entry.show()
+        name_ali.add(self.name_entry)
         
         channels = AlignedLabel(_("<b>Channels File</b>"))
         channels.show()

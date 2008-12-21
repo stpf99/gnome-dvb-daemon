@@ -16,16 +16,16 @@ class UnassignedDevicesStore (gtk.ListStore):
 
 class DeviceGroupsStore (gtk.TreeStore):
 
-    (COL_DEVICE,) = range(1)
+    (COL_ID,COL_DEVICE,) = range(2)
 
     def __init__(self):
-        gtk.TreeStore.__init__(self, gobject.TYPE_PYOBJECT)
+        gtk.TreeStore.__init__(self, int, gobject.TYPE_PYOBJECT)
         
     def get_groups(self):
         groups = []
         for row in self:
             if not isinstance(row, Device):
-                groups.append((row[self.COL_DEVICE], row.iter))
+                groups.append((row[self.COL_ID], row.iter))
         return groups
  
     
@@ -50,7 +50,11 @@ class DeviceGroupsView (gtk.TreeView):
             text += _("<small>Adapter: %d, Frontend: %d</small>") % (device.adapter,
                 device.frontend)
         else:
-            text = _("Group %d") % device
+            if device == "":
+                group_id = model[aiter][model.COL_ID]
+                text = _("Group %d") % group_id
+            else:
+                text = device
             
         cell.set_property("markup", text)
 

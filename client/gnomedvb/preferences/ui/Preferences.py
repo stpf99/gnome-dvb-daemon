@@ -119,11 +119,12 @@ class Preferences(gtk.Window):
         for device in self._model.get_unregistered_devices():
             self.unassigned_devices.append([device])
         
-        for group_id, group in self._model.get_registered_device_groups().items():
+        for group in self._model.get_registered_device_groups():
             group_iter = self.devicegroups.append(None)
-            self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group_id)
+            self.devicegroups.set(group_iter, self.devicegroups.COL_ID, group["id"])
+            self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group["name"])
             
-            for device in group:
+            for device in group["devices"]:
                 dev_iter = self.devicegroups.append(group_iter)
                 self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
 
@@ -184,8 +185,9 @@ class Preferences(gtk.Window):
             if dialog.run() == gtk.RESPONSE_ACCEPT:
                 channels = dialog.channels_entry.get_text()
                 recdir = dialog.recordings_entry.get_text()
+                name = dialog.name_entry.get_text()
                 if self._model.add_device_to_new_group(device.adapter,
-                        device.frontend, channels, recdir):
+                        device.frontend, channels, recdir, name):
                     # "Success: create group"
                     model.remove(aiter)
                 else:
@@ -232,7 +234,9 @@ class Preferences(gtk.Window):
         if change_type == 0:
             # Added
             group_iter = self.devicegroups.append(None)
-            self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group_id)
+            group_name = manager.get_device_group_name(group_id)
+            self.devicegroups.set(group_iter, self.devicegroups.COL_ID, group_id)
+            self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group_name)
             for device in self._model.get_device_group_members(group_id):
                 dev_iter = self.devicegroups.append(group_iter)
                 self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
@@ -241,7 +245,7 @@ class Preferences(gtk.Window):
             aiter = self.devicegroups.get_iter_first()
             # Iterate over groups
             while aiter != None:
-                group = self.devicegroups[aiter][self.devicegroups.COL_DEVICE]
+                group = self.devicegroups[aiter][self.devicegroups.COL_ID]
                 if group == group_id:
                     self.devicegroups.remove(aiter)
                     return

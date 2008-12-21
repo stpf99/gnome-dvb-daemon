@@ -13,9 +13,11 @@ class DVBModel (gnomedvb.DVBManagerClient):
         """
         @returns: dict of list of Device
         """
-        groups = {}
+        groups = []
         for group_id in gnomedvb.DVBManagerClient.get_registered_device_groups(self):
-            groups[group_id] = self.get_device_group_members(group_id)
+            groups.append({"id": group_id,
+                "name": gnomedvb.DVBManagerClient.get_device_group_name(self, group_id),
+                "devices": self.get_device_group_members(group_id)})
             
         return groups
         
@@ -36,8 +38,8 @@ class DVBModel (gnomedvb.DVBManagerClient):
         """
         devgroups = self.get_registered_device_groups()
         registered = set()
-        for group in devgroups.values():
-            for dev in group:
+        for group in devgroups:
+            for dev in group["devices"]:
                 registered.add(dev)
                 
         unregistered = set()
