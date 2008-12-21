@@ -81,8 +81,8 @@ class AdaptersPage(BasePage):
 		devs = set()
 		
 		devgroups = model.get_registered_device_groups()
-		for group in devgroups.values():
-			for dev in group:
+		for group in devgroups:
+			for dev in group["devices"]:
 				devs.add(dev)
 		
 		for dev in model.get_all_devices():

@@ -121,7 +121,9 @@ class RecorderWindow(gtk.Window):
         manager = gnomedvb.DVBManagerClient()
         
         for group_id in manager.get_registered_device_groups():
-            group_name = _("Group %d") % group_id
+            group_name = manager.get_device_group_name(group_id)
+            if group_name == "":
+                group_name = _("Group %d") % group_id
             self.recorderslist.append([group_name, group_id])
             self.recorders[group_id] = gnomedvb.DVBRecorderClient(group_id)
             self.recorders[group_id].connect("changed", self._on_recorder_changed)
