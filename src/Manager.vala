@@ -214,6 +214,7 @@ namespace DVB {
          * @frontend: Number of the device's frontend
          * @channels_conf: Path to channels.conf for this device
          * @recordings_dir: Path where the recordings should be stored
+         * @name: Name of group
          * @returns: TRUE when the device has been registered successfully
          *
          * Creates a new DeviceGroup and new DVB device whereas the
@@ -222,7 +223,7 @@ namespace DVB {
          * of the reference device).
          */
         public bool AddDeviceToNewGroup (uint adapter, uint frontend,
-                string channels_conf, string recordings_dir) {
+                string channels_conf, string recordings_dir, string name) {
             
             Device device = this.create_device (adapter, frontend, channels_conf,
                 recordings_dir);
@@ -234,8 +235,10 @@ namespace DVB {
             
             device_group_counter++;
             
-            this.add_device_group (
-                new DeviceGroup (device_group_counter, device));
+            DeviceGroup devgroup = new DeviceGroup (device_group_counter, device);
+            devgroup.Name = name;
+            
+            this.add_device_group (devgroup);
             
             this.changed (device_group_counter, ChangeType.ADDED);
             
@@ -336,6 +339,20 @@ namespace DVB {
             }
             
             return false;
+        }
+        
+        /**
+         * @group_id: ID of device group
+         * @returns: Name of specified device group or
+         * empty string if group with given ID doesn't exist
+         */
+        public string GetDeviceGroupName (uint group_id) {
+            string val = "";
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                val = devgroup.Name;
+            }
+            return val;
         }
         
         /**

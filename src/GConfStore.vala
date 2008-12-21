@@ -47,7 +47,8 @@ namespace DVB {
         private static const string DEVICE_GROUP_DIR_NAME = "/group_%d";
         private static const string DEVICE_GROUP_CHANNELS_FILE_KEY = "/channels_file"; // string
         private static const string DEVICE_GROUP_ADAPTER_TYPE_KEY = "/adapter_type"; // int
-        private static const string DEVICE_GROUP_RECORDINGS_DIR_KEY = "/recordings_dir";
+        private static const string DEVICE_GROUP_RECORDINGS_DIR_KEY = "/recordings_dir"; // string
+        private static const string DEVICE_GROUP_NAME_KEY = "/name"; // string
     
         private static const string DEVICES_DIR_KEY = "/devices";
         private static const string DEVICE_DIR_NAME = "/device_%d_%d";
@@ -144,6 +145,12 @@ namespace DVB {
                         default: continue;
                     }
                     
+                    string name = this.client.get_string (
+                        base_path + DEVICE_GROUP_NAME_KEY);
+                    if (name == null) {
+                        warning ("Could not retrieve name of group %u", group_id);
+                    }
+                    
                     string channelsfilepath = this.client.get_string (
                             base_path + DEVICE_GROUP_CHANNELS_FILE_KEY);
                     if (channelsfilepath == null) {
@@ -175,6 +182,7 @@ namespace DVB {
                             dev.Channels = channels;
                             dev.RecordingsDirectory = recordings_dir;
                             new_group = new DeviceGroup (group_id, dev);
+                            new_group.Name = name;
                         } else
                             new_group.add (dev);
                     }
@@ -208,6 +216,12 @@ namespace DVB {
                     if (!this.client.set_string (base_path + DEVICE_GROUP_RECORDINGS_DIR_KEY,
                             dev_group.RecordingsDirectory.get_path ()))
                         critical ("Could not save location of recordings in GConf");
+                        
+                    if (dev_group.Name != null) {
+                        if (!this.client.set_string (base_path + DEVICE_GROUP_NAME_KEY,
+                                dev_group.Name))
+                            critical ("Could not save group name in GConf");
+                    }
                         
                     foreach (Device dev in dev_group) {
                         this.add_device_to_group (dev, dev_group);

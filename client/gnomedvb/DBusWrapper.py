@@ -107,8 +107,8 @@ class DVBManagerClient(gobject.GObject):
     def get_recorder(self, group_id):
         return self.manager.GetRecorder(group_id)
         
-    def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir):
-        return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir)
+    def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir, name):
+        return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir, name)
         
     def add_device_to_existing_group (self, adapter, frontend, group_id):
         return self.manager.AddDeviceToExistingGroup(adapter, frontend, group_id)
@@ -118,6 +118,9 @@ class DVBManagerClient(gobject.GObject):
         
     def get_device_group_members(self, group_id):
         return self.manager.GetDeviceGroupMembers(group_id)
+        
+    def get_device_group_name(self, group_id):
+        return self.manager.GetDeviceGroupName(group_id)
         
     def get_type_of_device_group(self, group_id):
         return self.manager.GetTypeOfDeviceGroup(group_id)

@@ -24,7 +24,8 @@ namespace DVB {
         }
         // All settings are copied from this one
         public Device reference_device {get; construct;}
-    
+        public string Name {get; set;}
+                
         private Set<Device> devices;
         
         construct {
