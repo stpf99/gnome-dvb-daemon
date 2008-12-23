@@ -14,6 +14,10 @@ class ChannelScanPage(BasePage):
 	def __init__(self):
 		BasePage.__init__(self)
 		
+		self._max_freqs = 0
+		self._scanned_freqs = 0
+		self._last_qsize = 0
+		
 		self.label = gtk.Label()
 		self.label.set_line_wrap(True)
 		self.pack_start(self.label)
@@ -119,8 +123,11 @@ class ChannelScanPage(BasePage):
 	def __on_finished(self, scanner):
 		self.emit("finished", True)
 		
-	def __on_freq_scanned(self, scanner, freq):
-		queue_size = scanner.get_queue_size()
-		fraction = 1.0 - float(queue_size)/(len(str(queue_size))*10)
+	def __on_freq_scanned(self, scanner, freq, qsize):
+		if qsize >= self._last_qsize:
+			self._max_freqs += qsize - self._last_qsize + 1
+		self._scanned_freqs += 1
+		fraction = float(self._scanned_freqs) / self._max_freqs
 		self.progressbar.set_fraction(fraction)
+		self._last_qsize = qsize
 
