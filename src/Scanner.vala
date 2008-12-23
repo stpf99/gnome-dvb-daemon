@@ -17,7 +17,7 @@ namespace DVB {
          * Emitted when a frequency has been scanned.
          * Whether a new channel has been found on that frequency or not.
          */
-        public signal void frequency_scanned (uint frequency);
+        public signal void frequency_scanned (uint frequency, uint freq_left);
         
         /**
          * @frequency: Frequency of the channel
@@ -169,10 +169,6 @@ namespace DVB {
             
             return ret;
         }
-         
-        public uint GetQueueSize () {
-            return this.frequencies.length;
-        }
         
         protected void clear_and_reset_all () {
             if (this.pipeline != null) {
@@ -223,7 +219,7 @@ namespace DVB {
             if (this.current_tuning_params != null) {
                 uint old_freq;
                 this.current_tuning_params.get_uint ("frequency", out old_freq);
-                this.frequency_scanned (old_freq);
+                this.frequency_scanned (old_freq, this.frequencies.length);
             }
             
             if (this.frequencies.is_empty()) {
