@@ -165,7 +165,6 @@ namespace DVB {
                     try {
                         channels = ChannelList.restore_from_file (
                             channels_file, type);
-                        channels.group_id = group_id;
                     } catch (Error e) {
                         warning (e.message);
                         continue;

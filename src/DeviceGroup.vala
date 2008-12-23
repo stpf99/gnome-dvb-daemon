@@ -40,6 +40,7 @@ namespace DVB {
         public DeviceGroup (uint id, Device reference_device) {
             this.Id = id;
             this.reference_device = reference_device;
+            this.reference_device.Channels.group_id = id;
         }
         
         /**
