@@ -113,7 +113,8 @@ namespace DVB {
                 case Gst.MessageType.ELEMENT:
                     string structure_name = message.structure.get_name();
                     if (structure_name == "eit") {
-                        this.epgscanner.on_eit_structure (message.structure);
+			if (this.epgscanner != null)
+                            this.epgscanner.on_eit_structure (message.structure);
                     }
                     break;
                 case Gst.MessageType.STATE_CHANGED:
