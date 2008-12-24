@@ -269,6 +269,11 @@ namespace DVB {
         protected bool wait_for_tables () {
             this.wait_for_tables_event_id = 0;
             if (!(this.sdt_arrived && this.nit_arrived && this.pat_arrived)) {
+                // We don't have all the information for those channels
+                // remove them
+                foreach (uint sid in this.new_channels) {
+                    this.channels.remove (sid);
+                }
                 this.pipeline.set_state (Gst.State.READY);
                 this.start_scan ();
             }
@@ -543,7 +548,7 @@ namespace DVB {
                 this.remove_wait_for_tables_timeout ();
                 
                 foreach (uint sid in this.new_channels) {
-                    DVB.Channel channel = this.Channels.get (sid);
+                    DVB.Channel channel = this.channels.get (sid);
                     if (this.transport_streams.contains (channel.TransportStreamId)) {
                         // add values from Gst.Structure to Channel
                         this.add_values_from_structure_to_channel (
@@ -556,12 +561,13 @@ namespace DVB {
                             this.channel_added (channel.Frequency, sid,
                                 channel.Name, channel.Network, type);
                         } else {
-                            this.Channels.remove (sid);
+                            warning ("Channel %u is not valid", sid);
+                            this.channels.remove (sid);
                         }
                     } else {
                         warning ("Could not find transport stream for channel %u",
                             sid);
-                        this.Channels.remove (sid);
+                        this.channels.remove (sid);
                     }
                 }
                 this.start_scan ();
@@ -572,7 +578,7 @@ namespace DVB {
             debug ("Adding new channel with SID %u", sid);
             Channel new_channel = this.get_new_channel ();
             new_channel.Sid = sid;
-            this.Channels.add (new_channel);
+            this.channels.add (new_channel);
             this.new_channels.add (sid);
         }
     }
