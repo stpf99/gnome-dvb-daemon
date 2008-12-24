@@ -104,6 +104,7 @@ class ChannelScanPage(BasePage):
 		except gobject.GError:
 			icon = None
 		
+		name = name.replace("&", "&amp;")
 		self.tvchannels.append([icon, name, freq])
 		
 	def __on_finished(self, scanner):
