@@ -93,14 +93,18 @@ class ChannelScanPage(BasePage):
 		
 		return scanner
 		
-	def __on_channel_added(self, scanner, freq, sid, name, network, channeltype):
+	def __on_channel_added(self, scanner, freq, sid, name, network, channeltype, scrambled):
 		try:
-			if channeltype == "TV":
-				icon = self._theme.load_icon("video-x-generic", 16,
+			if scrambled:
+				icon = self._theme.load_icon("emblem-readonly", 16,
 					gtk.ICON_LOOKUP_USE_BUILTIN)
-			elif channeltype == "Radio":
-				icon = self._theme.load_icon("audio-x-generic", 16,
-					gtk.ICON_LOOKUP_USE_BUILTIN)
+			else:
+				if channeltype == "TV":
+					icon = self._theme.load_icon("video-x-generic", 16,
+						gtk.ICON_LOOKUP_USE_BUILTIN)
+				elif channeltype == "Radio":
+					icon = self._theme.load_icon("audio-x-generic", 16,
+						gtk.ICON_LOOKUP_USE_BUILTIN)
 		except gobject.GError:
 			icon = None
 		
