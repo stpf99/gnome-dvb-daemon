@@ -18,6 +18,7 @@ namespace DVB {
         public uint VideoPID {get; set;}
         public uint AudioPID {get; set;}
         public uint Frequency {get; set;}
+        public bool Scrambled {get; set;}
         public DVB.Schedule Schedule {
             get { return this.schedule; }
         }
@@ -26,7 +27,8 @@ namespace DVB {
         private uint sid;
         
         public virtual bool is_valid () {
-            return (this.Name != null && this.Frequency != 0 && this.Sid != 0);
+            return (this.Name != null && this.Frequency != 0&& this.Sid != 0
+                && (this.VideoPID != 0 || this.AudioPID != 0));
         }
         
         /**
