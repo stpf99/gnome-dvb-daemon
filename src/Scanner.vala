@@ -25,11 +25,12 @@ namespace DVB {
          * @name: Name of the channel
          * @network: Name of network the channel is part of
          * @type: What type of channel this is (Radio or TV)
+         * @scrambled: Whether the channel is scrambled
          *
          * Emitted when a new channel has been found
          */
         public signal void channel_added (uint frequency, uint sid,
-            string name, string network, string type);
+            string name, string network, string type, bool scrambled);
         
         /**
          * Emitted when all frequencies have been scanned
@@ -88,7 +89,6 @@ namespace DVB {
                 new HashSet<ScannedItem> (ScannedItem.hash, ScannedItem.equal);
             this.new_channels = new ArrayList<uint> ();
             this.frequencies = new Queue<Gst.Structure> ();
-            this.channels = new ChannelList ();
             this.transport_streams = new HashMap<uint, Gst.Structure> ();
         }
         
@@ -117,6 +117,7 @@ namespace DVB {
          * Start the scanner
          */
         public void Run () {
+            this.channels = new ChannelList ();
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
                 this.pipeline = Gst.parse_launch(
@@ -146,6 +147,7 @@ namespace DVB {
             this.remove_wait_for_tables_timeout ();
             this.clear_and_reset_all ();
             this.channels.clear ();
+            this.channels = null;
             this.destroyed ();
         }
         
@@ -308,13 +310,15 @@ namespace DVB {
                 debug("Got lock");
                 this.remove_check_for_lock_timeout ();
                 this.wait_for_tables_event_id =
-                    Timeout.add_seconds (5, this.wait_for_tables);
+                    Timeout.add_seconds (10, this.wait_for_tables);
             }
         }
         
         protected void on_dvb_read_failure_structure () {
-            error("Read failure");
+            critical ("Read failure");
+            /*
             this.Destroy ();
+            */
         }
         
         protected void on_pat_structure (Gst.Structure structure) {
@@ -376,6 +380,14 @@ namespace DVB {
                     }
                     
                     Channel channel = this.Channels.get(sid);
+                    
+                    if (service.has_field ("scrambled")) {
+                        bool scrambled;
+                        service.get_boolean ("scrambled", out scrambled);
+                        channel.Scrambled = scrambled;
+                    } else {
+                        channel.Scrambled = false;
+                    }
                     
                     if (name.validate ()) {
                         channel.Name = name;
@@ -502,12 +514,14 @@ namespace DVB {
                     case 0x01:
                     case 0x02:
                     case 0x1b: /* H.264 video stream */
+                        debug ("Found video PID %u", pid);
                         dvb_channel.VideoPID = pid;
                     break;
                     case 0x03:
                     case 0x04:
                     case 0x0f:
                     case 0x11:
+                        debug ("Found audio PID %u", pid);
                         dvb_channel.AudioPID = pid;
                     break;
                     default:
@@ -559,13 +573,14 @@ namespace DVB {
                             string type = (channel.VideoPID == 0) ? "Radio" : "TV";
                             debug ("Channel added: %s", channel.to_string ());
                             this.channel_added (channel.Frequency, sid,
-                                channel.Name, channel.Network, type);
+                                channel.Name, channel.Network, type,
+                                channel.Scrambled);
                         } else {
-                            warning ("Channel %u is not valid", sid);
+                            debug ("Channel %u is not valid", sid);
                             this.channels.remove (sid);
                         }
                     } else {
-                        warning ("Could not find transport stream for channel %u",
+                        debug ("Could not find transport stream for channel %u",
                             sid);
                         this.channels.remove (sid);
                     }

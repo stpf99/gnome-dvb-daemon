@@ -8,7 +8,7 @@ namespace DVB {
         public abstract signal void frequency_scanned (uint frequency, uint freq_left);
         public abstract signal void finished ();
         public abstract signal void channel_added (uint frequency, uint sid,
-            string name, string network, string type);
+            string name, string network, string type, bool scrambled);
         
         public abstract void Run ();
         public abstract void Destroy ();

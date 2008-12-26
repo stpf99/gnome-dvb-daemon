@@ -142,7 +142,7 @@ class DVBScannerClient(gobject.GObject):
     __gsignals__ = {
         "finished":          (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
         "frequency-scanned": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
-        "channel-added":     (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, str, str, str]), 
+        "channel-added":     (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, str, str, str, bool]),
         "destroyed":         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
     }
 
@@ -178,8 +178,8 @@ class DVBScannerClient(gobject.GObject):
     def on_frequency_scanned(self, freq, freq_left):
         self.emit("frequency-scanned", freq, freq_left)
         
-    def on_channel_added(self, freq, sid, name, network, channeltype):
-        self.emit("channel-added", freq, sid, name, network, channeltype)
+    def on_channel_added(self, freq, sid, name, network, channeltype, scrambled):
+        self.emit("channel-added", freq, sid, name, network, channeltype, scrambled)
         
     def on_destroyed(self):
         self.emit("destroyed")
