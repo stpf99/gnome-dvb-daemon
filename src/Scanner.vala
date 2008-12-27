@@ -216,7 +216,6 @@ namespace DVB {
             this.sdt_arrived = false;
             this.pat_arrived = false;
             this.locked = false;
-            this.new_channels.clear ();
             
             if (this.current_tuning_params != null) {
                 uint old_freq;
@@ -226,6 +225,13 @@ namespace DVB {
             
             if (this.frequencies.is_empty()) {
                 message("Finished scanning");
+                // We don't have all the information for those channels
+                // remove them
+                debug ("%u channels still have missing TS",
+                    this.new_channels.size);
+                foreach (uint sid in this.new_channels) {
+                    this.channels.remove (sid);
+                }
                 this.clear_and_reset_all ();
                 this.finished ();
                 return;
@@ -271,11 +277,6 @@ namespace DVB {
         protected bool wait_for_tables () {
             this.wait_for_tables_event_id = 0;
             if (!(this.sdt_arrived && this.nit_arrived && this.pat_arrived)) {
-                // We don't have all the information for those channels
-                // remove them
-                foreach (uint sid in this.new_channels) {
-                    this.channels.remove (sid);
-                }
                 this.pipeline.set_state (Gst.State.READY);
                 this.start_scan ();
             }
@@ -354,56 +355,55 @@ namespace DVB {
             uint tsid;
             structure.get_uint ("transport-stream-id", out tsid);
             
-            bool actual_ts;
-            structure.get_boolean ("actual-transport-stream", out actual_ts);
-            if (actual_ts) {
-                Gst.Value services = structure.get_value ("services");
-                uint size = services.list_get_size ();
+            Gst.Value services = structure.get_value ("services");
+            uint size = services.list_get_size ();
+            
+            Gst.Value val;
+            weak Gst.Structure service;
+            // Iterate over services
+            for (uint i=0; i<size; i++) {
+                val = services.list_get_value (i);
+                service = val.get_structure ();
                 
-                Gst.Value val;
-                weak Gst.Structure service;
-                // Iterate over services
-                for (uint i=0; i<size; i++) {
-                    val = services.list_get_value (i);
-                    service = val.get_structure ();
-                    
-                    // Returns "service-%d"
-                    string name = service.get_name ();
-                    // Get the number at the end
-                    int sid = name.substring (8, name.size() - 8).to_int ();
-                    
-                    if (service.has_field ("name"))
-                        name = service.get_string ("name");
-                    
-                    if (!this.Channels.contains (sid)) {
-                        this.add_new_channel (sid);
-                    }
-                    
-                    Channel channel = this.Channels.get(sid);
-                    
-                    if (service.has_field ("scrambled")) {
-                        bool scrambled;
-                        service.get_boolean ("scrambled", out scrambled);
-                        channel.Scrambled = scrambled;
-                    } else {
-                        channel.Scrambled = false;
-                    }
-                    
-                    if (name.validate ()) {
-                        channel.Name = name;
-                    }
-                    channel.TransportStreamId = tsid;
-                    string provider = service.get_string ("provider-name");
-                    if (provider != null && provider.validate ()) {
-                        channel.Network = provider;
-                    } else {
-                        channel.Network = "";
-                    }
-                    
-                    uint freq;
-                    this.current_tuning_params.get_uint ("frequency", out freq);
-                    channel.Frequency = freq;
+                // Returns "service-%d"
+                string name = service.get_name ();
+                // Get the number at the end
+                int sid = name.substring (8, name.size() - 8).to_int ();
+                
+                if (service.has_field ("name"))
+                    name = service.get_string ("name");
+                
+                if (!this.Channels.contains (sid)) {
+                    this.add_new_channel (sid);
                 }
+                
+                Channel channel = this.Channels.get(sid);
+                
+                if (service.has_field ("scrambled")) {
+                    bool scrambled;
+                    service.get_boolean ("scrambled", out scrambled);
+                    channel.Scrambled = scrambled;
+                } else {
+                    channel.Scrambled = false;
+                }
+                
+                if (name.validate ()) {
+                    channel.Name = name;
+                } else {
+                    channel.Name = "[%04x]".printf (sid);
+                }
+                
+                channel.TransportStreamId = tsid;
+                string provider = service.get_string ("provider-name");
+                if (provider != null && provider.validate ()) {
+                    channel.Network = provider;
+                } else {
+                    channel.Network = "";
+                }
+                
+                uint freq;
+                this.current_tuning_params.get_uint ("frequency", out freq);
+                channel.Frequency = freq;
             }
         
             this.sdt_arrived = true;
@@ -412,6 +412,16 @@ namespace DVB {
         protected void on_nit_structure (Gst.Structure structure) {
             debug("Received NIT");
             
+            string name;
+            if (structure.has_field ("network-name")) {
+                name = structure.get_string ("network-name");
+            } else {
+                uint nid;
+                structure.get_uint ("network-id", out nid);
+                name = "%u".printf (nid);
+            }
+            debug ("Network name '%s'", name);
+                        
             Gst.Value transports = structure.get_value ("transports");
             uint size = transports.list_get_size ();
             Gst.Value val;
@@ -428,7 +438,8 @@ namespace DVB {
                     Gst.Value delivery_val = transport.get_value ("delivery");
                     weak Gst.Structure delivery =
                         delivery_val.get_structure ();
-                    
+                 
+                    debug ("Received TS %u", tsid);   
                     this.transport_streams.set (tsid, delivery);
                     
                     uint freq;
@@ -457,14 +468,6 @@ namespace DVB {
                         
                         Channel dvb_channel = this.Channels.get (sid);
                         
-                        string name;
-                        if (structure.has_name ("network-name")) {
-                            name = structure.get_string ("network-name");
-                        } else {
-                            uint nid;
-                            structure.get_uint ("network-id", out nid);
-                            name = "%u".printf (nid);
-                        }
                         if (name.validate ()) {
                             dvb_channel.Network = name;
                         } else {
@@ -561,12 +564,17 @@ namespace DVB {
             if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
                 this.remove_wait_for_tables_timeout ();
                 
+                ArrayList<uint> del_channels = new ArrayList<uint> ();
                 foreach (uint sid in this.new_channels) {
                     DVB.Channel channel = this.channels.get (sid);
-                    if (this.transport_streams.contains (channel.TransportStreamId)) {
+                    
+                    uint tsid = channel.TransportStreamId;
+                    debug ("Searching for TS %u for channel %u", tsid, sid);
+                    // Check if already came across the transport stream
+                    if (this.transport_streams.contains (tsid)) {
                         // add values from Gst.Structure to Channel
                         this.add_values_from_structure_to_channel (
-                            this.transport_streams.get (channel.TransportStreamId),
+                            this.transport_streams.get (tsid),
                             channel);
                         
                         if (channel.is_valid ()) {
@@ -579,12 +587,18 @@ namespace DVB {
                             debug ("Channel %u is not valid", sid);
                             this.channels.remove (sid);
                         }
-                    } else {
-                        debug ("Could not find transport stream for channel %u",
-                            sid);
-                        this.channels.remove (sid);
+                        
+                        // Mark channel for deletion of this.new_channels
+                        del_channels.add (sid);
                     }
                 }
+                
+                // Only remove those channels which transport streams
+                // were already received
+                foreach (uint sid in del_channels) {
+                    this.new_channels.remove (sid);
+                }
+                
                 this.start_scan ();
             }
         }
