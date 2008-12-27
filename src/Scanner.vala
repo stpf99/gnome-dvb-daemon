@@ -400,10 +400,6 @@ namespace DVB {
                 } else {
                     channel.Network = "";
                 }
-                
-                uint freq;
-                this.current_tuning_params.get_uint ("frequency", out freq);
-                channel.Frequency = freq;
             }
         
             this.sdt_arrived = true;
