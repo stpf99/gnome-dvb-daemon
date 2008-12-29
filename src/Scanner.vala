@@ -160,7 +160,7 @@ namespace DVB {
             bool ret = false;
             try {
                 var writer = new ChannelListWriter (File.new_for_path (path));
-                foreach (DVB.Channel c in this.Channels) {
+                foreach (DVB.Channel c in this.channels) {
                     writer.write (c);
                 }
                 writer.close ();
@@ -227,7 +227,7 @@ namespace DVB {
                 message("Finished scanning");
                 // We don't have all the information for those channels
                 // remove them
-                debug ("%u channels still have missing TS",
+                debug ("%u channels still have missing or invalid information",
                     this.new_channels.size);
                 foreach (uint sid in this.new_channels) {
                     this.channels.remove (sid);
@@ -316,7 +316,7 @@ namespace DVB {
         }
         
         protected void on_dvb_read_failure_structure () {
-            critical ("Read failure");
+            warning ("Read failure");
             /*
             this.Destroy ();
             */
@@ -373,11 +373,11 @@ namespace DVB {
                 if (service.has_field ("name"))
                     name = service.get_string ("name");
                 
-                if (!this.Channels.contains (sid)) {
+                if (!this.channels.contains (sid)) {
                     this.add_new_channel (sid);
                 }
                 
-                Channel channel = this.Channels.get(sid);
+                Channel channel = this.channels.get(sid);
                 
                 if (service.has_field ("scrambled")) {
                     bool scrambled;
@@ -389,8 +389,6 @@ namespace DVB {
                 
                 if (name.validate ()) {
                     channel.Name = name;
-                } else {
-                    channel.Name = "[%04x]".printf (sid);
                 }
                 
                 channel.TransportStreamId = tsid;
@@ -458,11 +456,11 @@ namespace DVB {
                         uint sid;
                         channel_struct.get_uint ("service-id", out sid);
                         
-                        if (!this.Channels.contains (sid)) {
+                        if (!this.channels.contains (sid)) {
                             this.add_new_channel (sid);
                         }
                         
-                        Channel dvb_channel = this.Channels.get (sid);
+                        Channel dvb_channel = this.channels.get (sid);
                         
                         if (name.validate ()) {
                             dvb_channel.Network = name;
@@ -486,11 +484,11 @@ namespace DVB {
             uint program_number;
             structure.get_uint ("program-number", out program_number);
             
-            if (!this.Channels.contains (program_number)) {
+            if (!this.channels.contains (program_number)) {
                 this.add_new_channel (program_number);
             }
             
-            Channel dvb_channel = this.Channels.get (program_number);
+            Channel dvb_channel = this.channels.get (program_number);
             
             Gst.Value streams = structure.get_value ("streams");
             uint size = streams.list_get_size ();
@@ -513,14 +511,16 @@ namespace DVB {
                     case 0x01:
                     case 0x02:
                     case 0x1b: /* H.264 video stream */
-                        debug ("Found video PID %u", pid);
+                        debug ("Found video PID %u for channel %u",
+                            pid, program_number);
                         dvb_channel.VideoPID = pid;
                     break;
                     case 0x03:
                     case 0x04:
                     case 0x0f:
                     case 0x11:
-                        debug ("Found audio PID %u", pid);
+                        debug ("Found audio PID %u for channel %u",
+                            pid, program_number);
                         dvb_channel.AudioPID = pid;
                     break;
                     default:
@@ -572,25 +572,22 @@ namespace DVB {
                         this.add_values_from_structure_to_channel (
                             this.transport_streams.get (tsid),
                             channel);
-                        
+                         
+                        // If this fails we may miss video or audio pid,
+                        // because we didn't came across the sdt, yet   
                         if (channel.is_valid ()) {
                             string type = (channel.VideoPID == 0) ? "Radio" : "TV";
                             debug ("Channel added: %s", channel.to_string ());
                             this.channel_added (channel.Frequency, sid,
                                 channel.Name, channel.Network, type,
                                 channel.Scrambled);
-                        } else {
-                            debug ("Channel %u is not valid", sid);
-                            this.channels.remove (sid);
+                            // Mark channel for deletion of this.new_channels
+                            del_channels.add (sid);
                         }
-                        
-                        // Mark channel for deletion of this.new_channels
-                        del_channels.add (sid);
                     }
                 }
                 
-                // Only remove those channels which transport streams
-                // were already received
+                // Only remove those channels we have all the information for
                 foreach (uint sid in del_channels) {
                     this.new_channels.remove (sid);
                 }
