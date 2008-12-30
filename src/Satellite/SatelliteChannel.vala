@@ -8,7 +8,7 @@ namespace DVB {
         public int DiseqcSource {get; set;}
         
         public override bool is_valid () {
-            return (base.is_valid ()
+            return (base.is_valid () && this.SymbolRate != 0
                 && (this.Polarization == "v" || this.Polarization == "h"));
         }
         
