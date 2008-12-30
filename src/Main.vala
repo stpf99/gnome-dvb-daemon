@@ -4,6 +4,8 @@ public class Main {
 
     private static DVB.Manager manager;
     private static DVB.RecordingsStore recstore;
+    private static DVB.SqliteConfigTimersStore store;
+    private static StaticRecMutex store_mutex = StaticRecMutex ();
 
     private static bool has_debug;
     private static bool has_version;
@@ -70,6 +72,24 @@ public class Main {
         return true;
     }
     
+    public static weak DVB.TimersStore get_timers_store () {
+    	store_mutex.lock ();
+    	if (store == null) {
+    		store = new DVB.SqliteConfigTimersStore ();
+    	}
+    	store_mutex.unlock ();
+    	return store;
+    }
+    
+    public static weak DVB.ConfigStore get_config_store () {
+    	store_mutex.lock ();
+    	if (store == null) {
+    		store = new DVB.SqliteConfigTimersStore ();
+    	}
+    	store_mutex.unlock ();
+    	return store;
+    }
+    
     public static int main (string[] args) {
         MainLoop loop;
         
@@ -101,9 +121,10 @@ public class Main {
         
         uint32 max_id = 0;
         
-        var gconf = DVB.GConfStore.get_instance ();
+        var timers_store = get_timers_store ();
+        var config_store = get_config_store ();
         
-        Gee.ArrayList<DVB.DeviceGroup> device_groups = gconf.get_all_device_groups ();
+        Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
         foreach (DVB.DeviceGroup device_group in device_groups) {
             
             if (manager.add_device_group (device_group)) {
@@ -114,11 +135,11 @@ public class Main {
                 DVB.Recorder rec = manager.get_recorder_for_device_group (device_group);
             
             	// Restore timers
-                Gee.ArrayList<DVB.Timer> timers = gconf.get_all_timers_of_device_group (device_group);
+                Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
                 foreach (DVB.Timer t in timers) {
                     if (t.Id > max_id) max_id = t.Id;
                     if (rec.add_timer (t) == 0)
-                        gconf.remove_timer_from_device_group (t.Id, device_group);
+                        timers_store.remove_timer_from_device_group (t.Id, device_group);
                 }
             }
             

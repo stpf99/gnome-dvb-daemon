@@ -33,7 +33,6 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/EPGScanner.vala \
 	src/EPGStore.vala \
 	src/Event.vala \
-	src/GConfStore.vala \
 	src/IDBusChannelList.vala \
 	src/IDBusRecorder.vala \
 	src/IDBusRecordingsStore.vala \
@@ -47,6 +46,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Scanner.vala \
 	src/ScannedItem.vala \
 	src/Schedule.vala \
+	src/SqliteConfigTimersStore.vala \
 	src/SqliteEPGStore.vala \
 	src/Timer.vala \
 	src/TimersStore.vala \
@@ -59,7 +59,6 @@ vala_pkgs = \
     --pkg dbus-glib-1 \
     --pkg gstreamer-0.10 \
     --pkg gee-1.0 \
-    --pkg gconf-2.0 \
     --pkg sqlite3 \
     --pkg gst-rtsp-server-0.10
     

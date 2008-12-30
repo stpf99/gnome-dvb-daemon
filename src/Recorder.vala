@@ -384,7 +384,7 @@ namespace DVB {
                 
                 if (!has_conflict) {
                     this.timers.set (new_timer.Id, new_timer);
-                    GConfStore.get_instance ().add_timer_to_device_group (new_timer,
+                    Main.get_timers_store ().add_timer_to_device_group (new_timer,
                         this.DeviceGroup);
                     this.changed (new_timer.Id, ChangeType.ADDED);
                                    
@@ -437,7 +437,7 @@ namespace DVB {
                         this.stop_recording (timer);
                     }
                     this.timers.remove (timer_id);
-                    GConfStore.get_instance ().remove_timer_from_device_group (
+                    Main.get_timers_store ().remove_timer_from_device_group (
                         timer_id, this.DeviceGroup);
                     this.changed (timer_id, ChangeType.DELETED);
                     val = true;

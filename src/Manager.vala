@@ -277,7 +277,7 @@ namespace DVB {
                     
                 DeviceGroup devgroup = this.devices.get (group_id);
                 if (devgroup.add (device)) {
-                    GConfStore.get_instance ().add_device_to_group (device,
+                    Main.get_config_store ().add_device_to_group (device,
                         devgroup);
                     
                     this.group_changed (group_id, adapter, frontend,
@@ -313,7 +313,7 @@ namespace DVB {
                             this.get_epg_scanner (devgroup);
                         if (epgscanner != null) epgscanner.stop ();
                     
-                        GConfStore.get_instance ().remove_device_from_group (
+                        Main.get_config_store ().remove_device_from_group (
                             dev, devgroup);
                         this.group_changed (group_id, adapter, frontend,
                             ChangeType.DELETED);
@@ -324,7 +324,7 @@ namespace DVB {
                                 // Remove EPG scanner, too
                                 if (epgscanner != null)
                                     this.epgscanners.remove (devgroup.Id);
-                                GConfStore.get_instance ().remove_device_group (
+                                Main.get_config_store ().remove_device_group (
                                     devgroup);
                                 this.changed (group_id, ChangeType.DELETED);
                             }
@@ -472,7 +472,7 @@ namespace DVB {
             string channels_path = this.GetChannelList (devgroup.Id);
             if (channels_path == "") return false;
             
-            GConfStore.get_instance ().add_device_group (devgroup);
+            Main.get_config_store ().add_device_group (devgroup);
             
             if (devgroup.Id > device_group_counter)
                 device_group_counter = devgroup.Id;
