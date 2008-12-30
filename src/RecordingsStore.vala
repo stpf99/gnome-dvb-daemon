@@ -107,6 +107,7 @@ namespace DVB {
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     val = this.recordings.get(rec_id).Name;
+                    if (val == null) val = "";
                 }
             }
            
@@ -123,6 +124,7 @@ namespace DVB {
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     val = this.recordings.get(rec_id).Description;
+                    if (val == null) val = "";
                 }
             }
            
