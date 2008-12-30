@@ -50,7 +50,8 @@ namespace DVB {
                 critical ("Unknown adapter type");
                 break;
             }
-            return c;
+            
+            return (c.is_valid ()) ? c : null;
         }
         
         /**
