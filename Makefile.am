@@ -26,6 +26,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/ChannelList.vala \
 	src/ChannelListReader.vala \
 	src/ChannelListWriter.vala \
+	src/ConfigStore.vala \
 	src/Constants.vala \
 	src/Device.vala \
 	src/DeviceGroup.vala \
@@ -48,6 +49,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Schedule.vala \
 	src/SqliteEPGStore.vala \
 	src/Timer.vala \
+	src/TimersStore.vala \
 	src/Utils.vala \
 	src/livetv/Server.vala \
 	$(NULL)

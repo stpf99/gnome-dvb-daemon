@@ -39,7 +39,7 @@ namespace DVB {
      *             adapter_type
      *             recordings_dir
      */
-    public class GConfStore : GLib.Object {
+    public class GConfStore : GLib.Object, ConfigStore, TimersStore {
     
         public static const string BASE_DIR = "/apps/dvb-daemon";
         
