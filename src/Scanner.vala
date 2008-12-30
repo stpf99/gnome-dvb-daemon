@@ -388,7 +388,7 @@ namespace DVB {
                 }
                 
                 if (name.validate ()) {
-                    channel.Name = name;
+                    channel.Name = name.replace ("\\s", " ");
                 }
                 
                 channel.TransportStreamId = tsid;
