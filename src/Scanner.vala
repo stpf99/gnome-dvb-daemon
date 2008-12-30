@@ -521,7 +521,7 @@ namespace DVB {
                     case 0x11:
                         debug ("Found audio PID %u for channel %u",
                             pid, program_number);
-                        dvb_channel.AudioPID = pid;
+                        dvb_channel.AudioPIDs.add (pid);
                     break;
                     default:
                         debug ("Other stream type: 0x%02x", stream_type);
@@ -565,7 +565,6 @@ namespace DVB {
                     DVB.Channel channel = this.channels.get (sid);
                     
                     uint tsid = channel.TransportStreamId;
-                    debug ("Searching for TS %u for channel %u", tsid, sid);
                     // Check if already came across the transport stream
                     if (this.transport_streams.contains (tsid)) {
                         // add values from Gst.Structure to Channel
@@ -583,7 +582,13 @@ namespace DVB {
                                 channel.Scrambled);
                             // Mark channel for deletion of this.new_channels
                             del_channels.add (sid);
+                        } else {
+                            debug ("Channel %u is not valid: %s", sid,
+                                channel.to_string ());
                         }
+                    } else {
+                        debug ("TS %u for channel %u does not exist", tsid,
+                            sid);
                     }
                 }
                 

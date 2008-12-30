@@ -57,9 +57,15 @@ namespace DVB {
                 warning ("Unknown channel type");
             }
             
+            uint apid;
+            if (channel.AudioPIDs.size == 0)
+                apid = 0;
+            else
+                apid = channel.AudioPIDs.get (0);
+            
             // Write common data
             buffer = ":%u:%u:%u\n".printf (channel.VideoPID,
-                channel.AudioPID, channel.Sid);
+                apid, channel.Sid);
             this.stream.write (buffer, buffer.size(), null);
         }
         

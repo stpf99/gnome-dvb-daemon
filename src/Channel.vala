@@ -16,7 +16,7 @@ namespace DVB {
         public string Network {get; set;}
         public uint? LogicalChannelNumber {get; set;}
         public uint VideoPID {get; set;}
-        public uint AudioPID {get; set;}
+        public Gee.List<uint> AudioPIDs {get; set;}
         public uint Frequency {get; set;}
         public bool Scrambled {get; set;}
         public DVB.Schedule Schedule {
@@ -26,9 +26,27 @@ namespace DVB {
         private DVB.Schedule schedule;
         private uint sid;
         
+        construct {
+            this.AudioPIDs = new Gee.ArrayList<uint> ();
+        }
+        
+        public string get_audio_pids_string () {
+            StringBuilder apids = new StringBuilder ();
+            int i = 1;
+            foreach (uint pid in this.AudioPIDs) {
+                if (i == this.AudioPIDs.size)
+                    apids.append (pid.to_string ());
+                else
+                    apids.append ("%u,".printf (pid));
+                i++;
+            }
+            
+            return apids.str;
+        }
+        
         public virtual bool is_valid () {
             return (this.Name != null && this.Frequency != 0&& this.Sid != 0
-                && (this.VideoPID != 0 || this.AudioPID != 0));
+                && (this.VideoPID != 0 || this.AudioPIDs.size != 0));
         }
         
         /**

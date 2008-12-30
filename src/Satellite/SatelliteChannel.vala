@@ -20,9 +20,9 @@ namespace DVB {
         }
         
         public override string to_string () {
-            return "%s:%u:%s:%d:%u:%u:%u:%u".printf(base.Name, base.Frequency,
+            return "%s:%u:%s:%d:%u:%u:%s:%u".printf(base.Name, base.Frequency,
                 this.Polarization, this.DiseqcSource, this.SymbolRate,
-                base.VideoPID, base.AudioPID, base.Sid);
+                base.VideoPID, base.get_audio_pids_string (), base.Sid);
         }
     }
 

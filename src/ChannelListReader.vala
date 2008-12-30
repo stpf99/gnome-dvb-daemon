@@ -105,7 +105,7 @@ namespace DVB {
                 } else if (i == 10) {                
                     channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 11) {
-                    channel.AudioPID = (uint)val.to_int ();
+                    channel.AudioPIDs.add ((uint)val.to_int ());
                 } else if (i == 12) {
                     channel.Sid = (uint)val.to_int ();
                 }
@@ -150,7 +150,7 @@ namespace DVB {
                 } else if (i == 5) {                
                     channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 6) {
-                    channel.AudioPID = (uint)val.to_int ();
+                    channel.AudioPIDs.add ((uint)val.to_int ());
                 } else if (i == 7) {
                     channel.Sid = (uint)val.to_int ();
                 }
@@ -197,7 +197,7 @@ namespace DVB {
                 } else if (i == 6) {                
                     channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 7) {
-                    channel.AudioPID = (uint)val.to_int ();
+                    channel.AudioPIDs.add ((uint)val.to_int ());
                 } else if (i == 8) {
                     channel.Sid = (uint)val.to_int ();
                 }

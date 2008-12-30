@@ -17,7 +17,7 @@ namespace DVB {
         }
         
         public override string to_string () {
-            return "%s:%u:%s:%u:%s:%s:%u:%u:%u".printf(base.Name, base.Frequency,
+            return "%s:%u:%s:%u:%s:%s:%u:%s:%u".printf(base.Name, base.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
                                           this.Inversion),
                 this.SymbolRate,
@@ -25,7 +25,7 @@ namespace DVB {
                                           this.CodeRate),
                 Utils.get_nick_from_enum (typeof(DvbSrcModulation),
                                           this.Modulation),
-                base.VideoPID, base.AudioPID, base.Sid);
+                base.VideoPID, base.get_audio_pids_string (), base.Sid);
         }
     
     }
