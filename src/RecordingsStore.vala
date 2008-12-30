@@ -11,6 +11,7 @@ namespace DVB {
         private HashMap<uint32, Recording> recordings;
         private uint32 last_id;
         private static RecordingsStore instance;
+        private static StaticRecMutex instance_mutex = StaticRecMutex ();
         
         construct {
             this.recordings = new HashMap <uint32, Recording> ();
@@ -18,10 +19,11 @@ namespace DVB {
         }
         
         public static weak RecordingsStore get_instance () {
-            // TODO make thread-safe
+            instance_mutex.lock ();
             if (instance == null) {
                 instance = new RecordingsStore ();
             }
+            instance_mutex.unlock ();
             return instance;
         }
         

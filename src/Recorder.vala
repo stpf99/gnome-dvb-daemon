@@ -384,7 +384,7 @@ namespace DVB {
                 
                 if (!has_conflict) {
                     this.timers.set (new_timer.Id, new_timer);
-                    Main.get_timers_store ().add_timer_to_device_group (new_timer,
+                    Factory.get_timers_store ().add_timer_to_device_group (new_timer,
                         this.DeviceGroup);
                     this.changed (new_timer.Id, ChangeType.ADDED);
                                    
@@ -410,7 +410,7 @@ namespace DVB {
          * be created
          */
         public uint32 AddTimerForEPGEvent (uint event_id, uint channel_sid) {
-            EPGStore epgstore = EPGStore.get_instance ();
+            EPGStore epgstore = Factory.get_epg_store ();
             Event? event = epgstore.get_event (event_id, channel_sid);
             Time start = event.get_local_start_time ();
             
@@ -437,7 +437,7 @@ namespace DVB {
                         this.stop_recording (timer);
                     }
                     this.timers.remove (timer_id);
-                    Main.get_timers_store ().remove_timer_from_device_group (
+                    Factory.get_timers_store ().remove_timer_from_device_group (
                         timer_id, this.DeviceGroup);
                     this.changed (timer_id, ChangeType.DELETED);
                     val = true;

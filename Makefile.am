@@ -33,6 +33,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/EPGScanner.vala \
 	src/EPGStore.vala \
 	src/Event.vala \
+	src/Factory.vala \
 	src/IDBusChannelList.vala \
 	src/IDBusRecorder.vala \
 	src/IDBusRecordingsStore.vala \

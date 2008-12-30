@@ -4,9 +4,6 @@ public class Main {
 
     private static DVB.Manager manager;
     private static DVB.RecordingsStore recstore;
-    private static DVB.SqliteConfigTimersStore store;
-    private static StaticRecMutex store_mutex = StaticRecMutex ();
-
     private static bool has_debug;
     private static bool has_version;
     private static bool disable_epg_scanner;
@@ -72,24 +69,6 @@ public class Main {
         return true;
     }
     
-    public static weak DVB.TimersStore get_timers_store () {
-    	store_mutex.lock ();
-    	if (store == null) {
-    		store = new DVB.SqliteConfigTimersStore ();
-    	}
-    	store_mutex.unlock ();
-    	return store;
-    }
-    
-    public static weak DVB.ConfigStore get_config_store () {
-    	store_mutex.lock ();
-    	if (store == null) {
-    		store = new DVB.SqliteConfigTimersStore ();
-    	}
-    	store_mutex.unlock ();
-    	return store;
-    }
-    
     public static int main (string[] args) {
         MainLoop loop;
         
@@ -121,8 +100,8 @@ public class Main {
         
         uint32 max_id = 0;
         
-        var timers_store = get_timers_store ();
-        var config_store = get_config_store ();
+        var timers_store = DVB.Factory.get_timers_store ();
+        var config_store = DVB.Factory.get_config_store ();
         
         Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
         foreach (DVB.DeviceGroup device_group in device_groups) {

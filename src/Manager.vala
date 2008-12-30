@@ -35,6 +35,7 @@ namespace DVB {
         private uint device_group_counter;
         
         private static Manager instance;
+        private static StaticRecMutex instance_mutex = StaticRecMutex ();
         
         construct {
             this.scanners = new HashMap<string, Scanner> (GLib.str_hash,
@@ -50,10 +51,11 @@ namespace DVB {
         
         [DBus (visible = false)]
         public static weak Manager get_instance () {
-            // TODO make thread-safe
+            instance_mutex.lock ();
             if (instance == null) {
                 instance = new Manager ();
             }
+            instance_mutex.unlock ();
             return instance;
         }
         
@@ -277,7 +279,7 @@ namespace DVB {
                     
                 DeviceGroup devgroup = this.devices.get (group_id);
                 if (devgroup.add (device)) {
-                    Main.get_config_store ().add_device_to_group (device,
+                    Factory.get_config_store ().add_device_to_group (device,
                         devgroup);
                     
                     this.group_changed (group_id, adapter, frontend,
@@ -313,7 +315,7 @@ namespace DVB {
                             this.get_epg_scanner (devgroup);
                         if (epgscanner != null) epgscanner.stop ();
                     
-                        Main.get_config_store ().remove_device_from_group (
+                        Factory.get_config_store ().remove_device_from_group (
                             dev, devgroup);
                         this.group_changed (group_id, adapter, frontend,
                             ChangeType.DELETED);
@@ -324,7 +326,7 @@ namespace DVB {
                                 // Remove EPG scanner, too
                                 if (epgscanner != null)
                                     this.epgscanners.remove (devgroup.Id);
-                                Main.get_config_store ().remove_device_group (
+                                Factory.get_config_store ().remove_device_group (
                                     devgroup);
                                 this.changed (group_id, ChangeType.DELETED);
                             }
@@ -472,7 +474,7 @@ namespace DVB {
             string channels_path = this.GetChannelList (devgroup.Id);
             if (channels_path == "") return false;
             
-            Main.get_config_store ().add_device_group (devgroup);
+            Factory.get_config_store ().add_device_group (devgroup);
             
             if (devgroup.Id > device_group_counter)
                 device_group_counter = devgroup.Id;
