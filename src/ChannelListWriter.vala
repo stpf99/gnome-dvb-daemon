@@ -149,7 +149,7 @@ namespace DVB {
                                                              int val, string prefix) {
             string name = Utils.get_name_by_value_from_enum (enumtype,
                                                              val);
-            return name.substring (prefix.size (), name.size ());
+            return name.substring (prefix.size (), name.size () - prefix.size ());
         }
         
     }
