@@ -59,6 +59,39 @@ namespace DVB {
             return instance;
         }
         
+        [DBus (visible = false)]
+        public static void shutdown () {
+            instance_mutex.lock ();
+            Manager m = instance;
+            
+            if (instance != null) {
+                foreach (Scanner scanner in m.scanners.get_values ()) {
+                    debug ("Stopping scanner");
+                    scanner.Destroy ();
+                }
+                m.scanners.clear ();
+                
+                foreach (Recorder rec in m.recorders.get_values ()) {
+                    debug ("Stopping recorder");
+                    rec.stop ();
+                }
+                m.recorders.clear ();
+                
+                foreach (EPGScanner escanner in m.epgscanners.get_values ()) {
+                    debug ("Stopping EPG scanner");
+                    escanner.stop ();
+                }
+                m.epgscanners.clear ();
+           
+                m.schedules.clear ();
+                m.channellists.clear ();
+                m.devices.clear ();
+                
+                instance = null;
+            }
+            instance_mutex.unlock ();
+        }
+        
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
