@@ -570,6 +570,13 @@ namespace DVB {
             return val;
         }
         
+        public void stop () {
+            foreach (uint32 timer_id in this.active_timers) {
+                Timer timer = this.timers.get (timer_id);
+                this.stop_recording (timer);
+            }
+        }
+        
         /**
          * Start recording of specified timer
          */
