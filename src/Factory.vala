@@ -37,6 +37,16 @@ namespace DVB {
         	return epgstore;
         }
         
+        public static void shutdown () {
+            store_mutex.lock ();
+            store = null;
+            store_mutex.unlock ();
+            
+            epgstore_mutex.lock ();
+            epgstore = null;
+            epgstore_mutex.unlock ();
+        }
+        
     }
     
 }
