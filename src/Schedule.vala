@@ -34,7 +34,7 @@ namespace DVB {
     
         private Sequence<EventElement> events;
         private Map<uint, weak SequenceIter<EventElement>> event_id_map;
-        private EPGStore epgstore;
+        private weak EPGStore epgstore;
         
         construct {
             this.events = new Sequence<EventElement> (null);

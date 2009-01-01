@@ -119,8 +119,8 @@ public class Main {
         
         uint32 max_id = 0;
         
-        var timers_store = DVB.Factory.get_timers_store ();
-        var config_store = DVB.Factory.get_config_store ();
+        weak DVB.TimersStore timers_store = DVB.Factory.get_timers_store ();
+        weak DVB.ConfigStore config_store = DVB.Factory.get_config_store ();
         
         Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
         foreach (DVB.DeviceGroup device_group in device_groups) {
