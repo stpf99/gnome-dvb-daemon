@@ -1,5 +1,6 @@
 using GLib;
 
+[Compact]
 public class Main {
 
     private static DVB.Manager manager;
@@ -7,6 +8,8 @@ public class Main {
     private static bool has_debug;
     private static bool has_version;
     private static bool disable_epg_scanner;
+    private static MainLoop mainloop;
+    private static Gst.RTSPServer server;
 
     const OptionEntry[] options =  {
         { "debug", 'd', 0, OptionArg.NONE, out has_debug,
@@ -69,12 +72,28 @@ public class Main {
         return true;
     }
     
+    private static void on_exit (int signum) {
+    	message ("Exiting");
+    	
+    	server = null;
+    	
+    	DVB.Manager.shutdown ();
+    	DVB.Factory.shutdown ();
+    	DVB.RecordingsStore.shutdown ();
+    	
+    	recstore = null;
+    	manager = null;
+    	
+    	mainloop.quit ();
+    }
+    
     public static int main (string[] args) {
-        MainLoop loop;
-        
-	    OptionContext context = new OptionContext ("- record TV shows using one or more DVB adapters");
-	    context.add_main_entries (options, null);
-	    context.add_group (Gst.init_get_option_group ());
+    	cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
+    	cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
+    
+		OptionContext context = new OptionContext ("- record and watch TV shows using one or more DVB adapters");
+		context.add_main_entries (options, null);
+		context.add_group (Gst.init_get_option_group ());
 	    
 	    try {
 	        context.parse (ref args);
@@ -91,7 +110,7 @@ public class Main {
 	    }
         
         // Creating a GLib main loop with a default context
-        loop = new MainLoop (null, false);
+        mainloop = new MainLoop (null, false);
 
         // Initializing GStreamer
         Gst.init (ref args);
@@ -123,14 +142,16 @@ public class Main {
             }
             
         }
+        timers_store = null;
+        config_store = null;
         
         if (!start_recordings_store (max_id)) return -1;
 
-        Gst.RTSPServer server = new DVB.Server ();
+        server = new DVB.Server ();
         server.attach (null);
 	
         // Start GLib mainloop
-        loop.run ();
+        mainloop.run ();
         
         return 0;
     }
