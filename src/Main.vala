@@ -3,7 +3,7 @@ using GLib;
 [Compact]
 public class Main {
 
-    private static DVB.Manager manager;
+    private static weak DVB.Manager manager;
     private static DVB.RecordingsStore recstore;
     private static bool has_debug;
     private static bool has_version;
