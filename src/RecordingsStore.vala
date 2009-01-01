@@ -27,6 +27,16 @@ namespace DVB {
             return instance;
         }
         
+        public static void shutdown () {
+            instance_mutex.lock ();
+            RecordingsStore rs = instance;
+            if (rs != null) {
+                rs.recordings.clear ();
+                instance = null;
+            }
+            instance_mutex.unlock ();
+        }
+        
         public void update_last_id (uint32 new_last_id) {
             lock (this.last_id) {
                 if (new_last_id > this.last_id)
