@@ -13,12 +13,12 @@ public class Main {
 
     const OptionEntry[] options =  {
         { "debug", 'd', 0, OptionArg.NONE, out has_debug,
-	    "Display debug statements on stdout", null},
-	    { "version", 0, 0, OptionArg.NONE, out has_version,
-	    "Display version number", null},
-	    { "disable-epg-scanner", 0, 0, OptionArg.NONE,
-	    out disable_epg_scanner, "Disable scanning for EPG data", null},
-	    { null }
+        "Display debug statements on stdout", null},
+        { "version", 0, 0, OptionArg.NONE, out has_version,
+        "Display version number", null},
+        { "disable-epg-scanner", 0, 0, OptionArg.NONE,
+        out disable_epg_scanner, "Disable scanning for EPG data", null},
+        { null }
     };
     
     private static bool start_manager () {
@@ -73,41 +73,41 @@ public class Main {
     }
     
     private static void on_exit (int signum) {
-    	message ("Exiting");
-    	
-    	server = null;
-    	
-    	DVB.Manager.shutdown ();
-    	DVB.Factory.shutdown ();
-    	DVB.RecordingsStore.shutdown ();
-    	
-    	recstore = null;
-    	manager = null;
-    	
-    	mainloop.quit ();
+        message ("Exiting");
+        
+        server = null;
+        
+        DVB.Manager.shutdown ();
+        DVB.Factory.shutdown ();
+        DVB.RecordingsStore.shutdown ();
+        
+        recstore = null;
+        manager = null;
+        
+        mainloop.quit ();
     }
     
     public static int main (string[] args) {
-    	cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
-    	cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
+        cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
+        cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
     
-		OptionContext context = new OptionContext ("- record and watch TV shows using one or more DVB adapters");
-		context.add_main_entries (options, null);
-		context.add_group (Gst.init_get_option_group ());
-	    
-	    try {
-	        context.parse (ref args);
-	    } catch (OptionError e) {
-	        stderr.printf ("%s\n", e.message);
-			stderr.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
-	        return 1;
-	    }
-	    
-	    if (has_version) {
-	    	stdout.printf (Config.PACKAGE_NAME);
-			stdout.printf (" %s\n", Config.PACKAGE_VERSION);
-	        return 0;
-	    }
+        OptionContext context = new OptionContext ("- record and watch TV shows using one or more DVB adapters");
+        context.add_main_entries (options, null);
+        context.add_group (Gst.init_get_option_group ());
+        
+        try {
+            context.parse (ref args);
+        } catch (OptionError e) {
+            stderr.printf ("%s\n", e.message);
+            stderr.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+            return 1;
+        }
+        
+        if (has_version) {
+            stdout.printf (Config.PACKAGE_NAME);
+            stdout.printf (" %s\n", Config.PACKAGE_VERSION);
+            return 0;
+        }
         
         // Creating a GLib main loop with a default context
         mainloop = new MainLoop (null, false);
@@ -126,13 +126,13 @@ public class Main {
         foreach (DVB.DeviceGroup device_group in device_groups) {
             
             if (manager.add_device_group (device_group)) {
-            	if (!disable_epg_scanner) {
-            		manager.create_and_start_epg_scanner (device_group);
-            	}
+                if (!disable_epg_scanner) {
+                    manager.create_and_start_epg_scanner (device_group);
+                }
             
                 DVB.Recorder rec = manager.get_recorder_for_device_group (device_group);
             
-            	// Restore timers
+                // Restore timers
                 Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
                 foreach (DVB.Timer t in timers) {
                     if (t.Id > max_id) max_id = t.Id;
@@ -149,7 +149,7 @@ public class Main {
 
         server = new DVB.Server ();
         server.attach (null);
-	
+    
         // Start GLib mainloop
         mainloop.run ();
         
