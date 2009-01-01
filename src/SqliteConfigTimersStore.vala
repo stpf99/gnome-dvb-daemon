@@ -81,7 +81,7 @@ namespace DVB {
         private Statement contains_timer_statement;
         
         construct {
-            this.db = this.get_db_handler ();
+            this.db = get_db_handler ();
             
             this.db.prepare (SELECT_DEVICES, -1,
                 out this.select_devices_statement);
@@ -348,7 +348,7 @@ namespace DVB {
                 this.db.errcode (), this.db.errmsg ());
         }
         
-        private Database? get_db_handler () {
+        private static Database? get_db_handler () {
             File config_dir = File.new_for_path (
                 Environment.get_user_config_dir ());
             File config_cache = config_dir.get_child ("gnome-dvb-daemon");

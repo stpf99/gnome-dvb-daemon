@@ -57,7 +57,7 @@ namespace DVB {
         private Database db;
             
         construct {
-            this.db = this.get_db_handler ();
+            this.db = get_db_handler ();
             
             this.db.prepare (TO_JULIAN_SQL, -1,
                 out this.to_julian_statement);
@@ -297,7 +297,7 @@ namespace DVB {
             return escaped_str;
         }
         
-        private Database? get_db_handler () {
+        private static Database? get_db_handler () {
             File cache_dir = File.new_for_path (
                 Environment.get_user_cache_dir ());
             File our_cache = cache_dir.get_child ("gnome-dvb-daemon");
