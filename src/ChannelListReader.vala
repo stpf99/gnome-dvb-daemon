@@ -22,7 +22,7 @@ namespace DVB {
                 if (line.size () > 0) {
                     Channel c = this.parse_line (line);
                     if (c != null)
-                        channels.add (#c);
+                        channels.add (c);
                     else
                         warning("Could not parse channel");
                 }
