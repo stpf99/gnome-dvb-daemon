@@ -10,6 +10,9 @@ namespace DVB {
         private static const int CHECK_EIT_INTERVAL = 15*60;
         // how long to wait for EIT data for each channel in seconds
         private static const int WAIT_FOR_EIT_DURATION = 10;
+        // pids: 0=pat, 16=nit, 17=sdt, 18=eit
+        private static const string PIPELINE_TEMPLATE =
+        "dvbsrc name=dvbsrc adapter=%u frontend=%u pids=0:16:17:18 stats-reporting-interval=0 ! mpegtsparse ! fakesink silent=true";
         
         public DVB.DeviceGroup DeviceGroup {get; set;}
         
@@ -74,14 +77,10 @@ namespace DVB {
             
             DVB.Device? device = this.DeviceGroup.get_next_free_device ();
             if (device == null) return false;
-        
-            // pids: 0=pat, 16=nit, 17=sdt, 18=eit
+            
             try {
-                this.pipeline = Gst.parse_launch (
-                    "dvbsrc name=dvbsrc adapter=%u frontend=%u ".printf(
-                    device.Adapter, device.Frontend)
-                    + "pids=0:16:17:18 stats-reporting-interval=0 "
-                    + "! mpegtsparse ! fakesink silent=true");
+                this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
+                    device.Adapter, device.Frontend));
             } catch (Error e) {
                 error (e.message);
                 return false;
