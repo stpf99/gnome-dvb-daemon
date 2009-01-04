@@ -11,7 +11,6 @@ Daemon:
     - glib >= 2.16
     - dbus-glib >= 0.74
     - libgee >= 0.1.4
-    - gconf >= 2.6.1
     - sqlite >= 3.4
     - gst-rtsp-server branch from git repository at http://www.gnome.org/~sebp/git/gst-rtsp-server.git
 
