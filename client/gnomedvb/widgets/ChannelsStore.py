@@ -46,7 +46,8 @@ class ChannelsTreeStore(gtk.TreeStore):
         dev_groups = manager.get_registered_device_groups()
     
         for group_id in dev_groups:
-            group_iter = self.append(None, [group_id, "Group %d" % group_id, 0])
+            group_name = manager.get_device_group_name(group_id)
+            group_iter = self.append(None, [group_id, group_name, 0])
             channellist = gnomedvb.DVBChannelListClient(group_id)
             for channel_id in channellist.get_channels():
                 name = channellist.get_channel_name(channel_id)
