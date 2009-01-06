@@ -56,6 +56,12 @@ namespace DVB {
             if (this.pipeline != null)
                 this.pipeline.set_state (Gst.State.NULL);
             this.pipeline = null;
+            
+            // clear doesn't unref for us so we do this instead
+            Channel c;
+            while ((c = this.channels.pop_head ()) != null) {
+                // Vala unref's Channel instances for us
+            }
             this.channels.clear ();
         }
         

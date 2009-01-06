@@ -30,7 +30,8 @@ namespace DVB {
      */
     public class Schedule : GLib.Object, IDBusSchedule {
     
-        public Channel channel {get; construct;}
+        // Use weak to avoid ref cycle
+        public weak Channel channel {get; construct;}
     
         private Sequence<EventElement> events;
         private Map<uint, weak SequenceIter<EventElement>> event_id_map;
