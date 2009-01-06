@@ -53,9 +53,11 @@ namespace DVB {
         }
             
         private void reset () {
-            if (this.pipeline != null)
-                this.pipeline.set_state (Gst.State.NULL);
-            this.pipeline = null;
+            lock (this.pipeline) {
+                if (this.pipeline != null)
+                    this.pipeline.set_state (Gst.State.NULL);
+                this.pipeline = null;
+            }
             
             // clear doesn't unref for us so we do this instead
             Channel c;
@@ -84,17 +86,19 @@ namespace DVB {
             DVB.Device? device = this.DeviceGroup.get_next_free_device ();
             if (device == null) return false;
             
-            try {
-                this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
-                    device.Adapter, device.Frontend));
-            } catch (Error e) {
-                error (e.message);
-                return false;
+            lock (this.pipeline) {
+                try {
+                    this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
+                        device.Adapter, device.Frontend));
+                } catch (Error e) {
+                    error (e.message);
+                    return false;
+                }
+                
+                Gst.Bus bus = this.pipeline.get_bus ();
+                bus.add_signal_watch ();
+                bus.message += this.bus_watch_func;
             }
-            
-            Gst.Bus bus = this.pipeline.get_bus ();
-            bus.add_signal_watch ();
-            bus.message += this.bus_watch_func;
             
             this.scan_event_id = Timeout.add_seconds (WAIT_FOR_EIT_DURATION,
                 this.scan_new_frequency);
@@ -121,12 +125,13 @@ namespace DVB {
             
             //debug ("Scanning channel %s", channel.to_string ());
             
-            this.pipeline.set_state (Gst.State.READY);
-            
-            Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
-            channel.setup_dvb_source (dvbsrc);
-            
-            this.pipeline.set_state (Gst.State.PLAYING);
+            lock (this.pipeline) {
+                this.pipeline.set_state (Gst.State.READY);
+                Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
+                channel.setup_dvb_source (dvbsrc);
+                
+                this.pipeline.set_state (Gst.State.PLAYING);
+            }
             
             return true;
         }
