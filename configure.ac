@@ -65,6 +65,7 @@ AG_GST_CHECK_GST_INSPECT
 AG_GST_CHECK_MODULE_BAD([mpegtsparse])
 AG_GST_CHECK_MODULE_BAD([dvbbasebin])
 AG_GST_CHECK_MODULE_BAD([dvbsrc])
+AG_GST_CHECK_MODULE_GOOD([rtpmp2tpay])
 
 dnl ****************
 dnl * Totem plugin

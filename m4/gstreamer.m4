@@ -39,3 +39,19 @@ It should be part of gst-plugins-bad. Please install it.
 		])
 	fi
 ])
+
+AC_DEFUN([AG_GST_CHECK_MODULE_GOOD],
+[
+	base_element="[$1]"
+	
+    AC_MSG_CHECKING([GStreamer 0.10 $base_element plugin])
+	if $GST_INSPECT $base_element >/dev/null 2>/dev/null; then
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_RESULT([no])
+		AC_MSG_ERROR([
+Cannot find required GStreamer-0.10 plugin '$base_element'.
+It should be part of gst-plugins-good. Please install it.
+		])
+	fi
+])
