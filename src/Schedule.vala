@@ -8,7 +8,7 @@ namespace DVB {
      * every event in memory. Just remember id and starttime
      * so we can have a sorted list.
      */
-    class EventElement {
+    class EventElement : GLib.Object {
     
         public uint id;
         /* Time is stored in UTC */
@@ -23,6 +23,12 @@ namespace DVB {
             else if (event1->starttime > event2->starttime) return +1;
             else return 0;
         }
+        
+        public static void destroy (void* data) {
+            EventElement e = (EventElement) data;
+            g_object_unref (e);
+        }
+        
     }
 
     /**
@@ -38,7 +44,7 @@ namespace DVB {
         private weak EPGStore epgstore;
         
         construct {
-            this.events = new Sequence<EventElement> (null);
+            this.events = new Sequence<EventElement> (EventElement.destroy);
             this.event_id_map = new HashMap<uint, weak Sequence<EventElement>> ();
             this.epgstore = Factory.get_epg_store ();
             
