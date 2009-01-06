@@ -56,6 +56,10 @@ namespace DVB {
         
         public bool is_busy () {
             Element dvbsrc = ElementFactory.make ("dvbsrc", "text_dvbsrc");
+            if (dvbsrc == null) {
+                critical ("Could not create dvbsrc element");
+                return true;
+            }
             dvbsrc.set ("adapter", this.Adapter);
             dvbsrc.set ("frontend", this.Frontend);
             
@@ -91,6 +95,10 @@ namespace DVB {
             if (!get_type) return AdapterType.UNKNOWN;
         
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
+            if (dvbsrc == null) {
+                critical ("Could not create dvbsrc element");
+                return AdapterType.UNKNOWN;
+            }
             dvbsrc.set ("adapter", adapter);
             
             Element pipeline = new Pipeline ("");
@@ -131,6 +139,10 @@ namespace DVB {
             if (!get_name) return null;
         
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
+            if (dvbsrc == null) {
+                critical ("Could not create dvbsrc element");
+                return null;
+            }
             dvbsrc.set ("adapter", adapter);
             
             Element pipeline = new Pipeline ("");

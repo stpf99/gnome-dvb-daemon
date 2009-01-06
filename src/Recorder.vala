@@ -117,6 +117,10 @@ namespace DVB {
             
                 Gst.Element dvbbasebin = ElementFactory.make ("dvbbasebin",
                     DVBBASEBIN_NAME);
+                if (dvbbasebin == null) {
+                    critical ("Could not create dvbbasebin element");
+                    return;
+                }
                 DVB.Channel channel = this.device.Channels.get (
                     channel_sid);
                 channel.setup_dvb_source (dvbbasebin);
@@ -191,6 +195,10 @@ namespace DVB {
         
         private Element? add_new_filesink (string sink_name, string location) {
             Element filesink = ElementFactory.make ("filesink", sink_name);
+            if (filesink == null) {
+                critical ("Could not create filesink element");
+                return null;
+            }
             filesink.set ("location", location);
             if (!((Bin) this.pipeline).add (filesink)) {
                 critical ("Could not add filesink sink %s", sink_name);
@@ -202,7 +210,10 @@ namespace DVB {
         
         private Element? add_new_queue (string queue_name) {
             Element queue = ElementFactory.make ("queue", queue_name);
-            
+            if (queue == null) {
+                critical ("Could not create queue element");
+                return null;
+            }
             queue.set ("max-size-buffers", 0);
             //queue.set ("max-size-time", 0);
             

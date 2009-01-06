@@ -65,11 +65,19 @@ namespace DVB {
           	
           	Gst.Element dvbbasebin = Gst.ElementFactory.make ("dvbbasebin",
                     "dvbbasebin");
+            if (dvbbasebin == null) {
+                critical ("Could not create dvbbasebin element");
+                return null;
+            }
             dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
             channel.setup_dvb_source (dvbbasebin);
             
             Gst.Element payload = Gst.ElementFactory.make ("rtpmp2tpay",
                 "pay0");
+            if (payload == null) {
+                critical ("Could not create rtpmp2tpay element");
+                return null;   
+            }
             
             this.dvbrtpbin = new Gst.Bin ("dvbrtpbin");
             this.dvbrtpbin.add (dvbbasebin);
