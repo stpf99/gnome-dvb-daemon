@@ -38,6 +38,14 @@ if test "x$have_timegm" = "xno"; then
 	AC_MSG_ERROR([Could not find timegm function])
 fi
 
+dnl ***********
+dnl * signal.h
+dnl ***********
+AC_CHECK_HEADERS([signal.h], have_signal=yes, have_signal=no)
+if test "x$have_signal" = "xno"; then
+	AC_MSG_ERROR([Could not find signal.h])
+fi
+
 dnl ******************
 dnl * Check for libs
 dnl ******************
