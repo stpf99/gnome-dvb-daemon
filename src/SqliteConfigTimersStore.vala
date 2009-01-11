@@ -68,7 +68,6 @@ namespace DVB {
         private static const string CONTAINS_TIMER =
         "SELECT COUNT(*) FROM timers WHERE timer_id=?";
         
-        private Database db;
         private Statement select_devices_statement;
         private Statement delete_group_statement;
         private Statement insert_group_statement;
@@ -79,6 +78,10 @@ namespace DVB {
         private Statement insert_timer_statement;
         private Statement contains_group_statement;
         private Statement contains_timer_statement;
+        
+        // Database must be the last parameter, because the statements
+        // MUST be finalized first before the database is closed
+        private Database db;
         
         construct {
             this.db = get_db_handler ();

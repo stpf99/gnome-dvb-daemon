@@ -54,6 +54,8 @@ namespace DVB {
         private Statement has_event_statement;
         private Statement select_event_statement;
         
+        // Database must be the last parameter, because the statements
+        // MUST be finalized first before the database is closed
         private Database db;
             
         construct {
