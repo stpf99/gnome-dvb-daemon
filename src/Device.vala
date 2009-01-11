@@ -72,7 +72,7 @@ namespace DVB {
             bool busy_val = false;
             
             while (bus.have_pending()) {
-                weak Message msg = bus.pop();
+                Message msg = bus.pop();
 
                 if (msg.type == MessageType.ERROR && msg.src == dvbsrc) {
                     Error gerror;
@@ -110,7 +110,7 @@ namespace DVB {
             weak string adapter_type = null;
             
             while (bus.have_pending()) {
-                weak Message msg = bus.pop();
+                Message msg = bus.pop();
 
                 if (msg.type == MessageType.ELEMENT && msg.src == dvbsrc) {
                     weak Structure structure = msg.structure;
@@ -154,7 +154,7 @@ namespace DVB {
             weak string adapter_name = null;
             
             while (bus.have_pending()) {
-                weak Message msg = bus.pop();
+                Message msg = bus.pop();
 
                 if (msg.type == MessageType.ELEMENT && msg.src == dvbsrc) {
                     weak Structure structure = msg.structure;
