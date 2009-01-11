@@ -54,9 +54,12 @@ namespace DVB {
             
         private void reset () {
             lock (this.pipeline) {
-                if (this.pipeline != null)
+                if (this.pipeline != null) {
+                    Gst.Bus bus = this.pipeline.get_bus ();
+                    bus.remove_signal_watch ();
                     this.pipeline.set_state (Gst.State.NULL);
-                this.pipeline = null;
+                    this.pipeline = null;
+                }
             }
             
             // clear doesn't unref for us so we do this instead

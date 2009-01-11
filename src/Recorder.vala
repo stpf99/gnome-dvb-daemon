@@ -39,6 +39,8 @@ namespace DVB {
         private void reset () {
             if (this.pipeline != null) {
                 debug ("Stopping pipeline");
+                Gst.Bus bus = this.pipeline.get_bus ();
+                bus.remove_signal_watch ();
                 this.pipeline.set_state (State.NULL);
             }
             this.pipeline = null;
