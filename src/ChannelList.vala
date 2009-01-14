@@ -142,8 +142,10 @@ namespace DVB {
             string val = "";
             
             lock (this.channels) {
-                if (this.channels.contains (channel_id))
-                    val = this.channels.get (channel_id).Name;   
+                if (this.channels.contains (channel_id)) {
+                    string name = this.channels.get (channel_id).Name;
+                    if (name != null) val = name;
+                }
             }
             
             return val;
@@ -158,8 +160,10 @@ namespace DVB {
         public string GetChannelNetwork (uint channel_id) {
             string val = "";
             lock (this.channels) {
-                if (this.channels.contains (channel_id))
-                    val = this.channels.get (channel_id).Network;   
+                if (this.channels.contains (channel_id)) {
+                    string network = this.channels.get (channel_id).Network;
+                    if (network != null) val = network;
+                }
             }
             
             return val;
