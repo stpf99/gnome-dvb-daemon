@@ -174,6 +174,8 @@ namespace DVB {
         
         protected void clear_and_reset_all () {
             if (this.pipeline != null) {
+                Gst.Bus bus = this.pipeline.get_bus ();
+                bus.remove_signal_watch ();
                 this.pipeline.set_state (Gst.State.NULL);
                 // Free pipeline
                 this.pipeline = null;
