@@ -193,6 +193,8 @@ namespace DVB {
             recording.Location = location;
             
             this.recordings.set (recording.Id, recording);
+            
+            RecordingsStore.get_instance().add (recording);
         }
         
         private Element? add_new_filesink (string sink_name, string location) {
@@ -296,7 +298,8 @@ namespace DVB {
                     if (event != null) {
                         debug ("Found running event for active recording");
                         rec.Name = event.name;
-                        rec.Description = event.description;
+                        rec.Description = "%s\n%s".printf (event.description,
+                            event.extended_description);
                     }
                 }
             }
@@ -783,8 +786,6 @@ namespace DVB {
                 Recording recording, Timer timer) {
             debug ("Recording of channel %u stopped after %lli seconds",
                 recording.ChannelSid, recording.Length);
-            
-            RecordingsStore.get_instance().add (recording);
             
             if (recthread.count == 0) {
                 this.active_recording_threads.remove (timer);
