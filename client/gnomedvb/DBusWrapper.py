@@ -436,5 +436,7 @@ if __name__ == '__main__':
         print "Start", recstore.get_start_time(rid)
         print recstore.get_start_timestamp(rid)
         print "Length", recstore.get_length(rid)    
+        print "Name", recstore.get_name (rid)
+        print "Desc", recstore.get_description(rid)
     
     loop.run()
