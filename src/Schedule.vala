@@ -210,7 +210,8 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
-                    name = event.name;
+                    if (event.name != null)
+                        name = event.name;
                 } else {
                     debug ("No event with id %u", event_id);
                 }
@@ -227,7 +228,8 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
-                    desc = event.description;
+                    if (event.description != null)
+                        desc = event.description;
                 } else {
                     debug ("No event with id %u", event_id);
                 }
@@ -244,7 +246,8 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get (element.id);
-                    desc = event.extended_description;
+                    if (event.extended_description != null)
+                        desc = event.extended_description;
                 } else {
                     debug ("No event with id %u", event_id);
                 }
