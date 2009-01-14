@@ -51,12 +51,12 @@ namespace DVB {
         
         public string serialize () {
             uint[] started = this.get_start ();
-            return "%u\n%u\n%s\n%s\n%s\n%u-%u-%u %u:%u\n%lld".printf (
-                this.Id, this.ChannelSid, this.Location.get_path (),
-                (this.Name == null) ? "" : this.Name,
-                (this.Description == null) ? "" : this.Description,
+            return "%u\n%u\n%s\n%u-%u-%u %u:%u\n%lld\n%s\n%s".printf (
+                this.Id, this.ChannelSid, this.Location.get_path (),                
                 started[0], started[1], started[2], started[3],
-                started[4], this.Length
+                started[4], this.Length,
+                (this.Name == null) ? "" : this.Name,
+                (this.Description == null) ? "" : this.Description
             );
         }
         
@@ -66,7 +66,7 @@ namespace DVB {
             
             if (contents == null) return null;
         
-            string [] fields = contents.split ("\n");
+            string [] fields = contents.split ("\n", 7);
             
             var rec = new Recording ();
             
@@ -87,15 +87,7 @@ namespace DVB {
                         else rec.Location = File.new_for_path (field);
                     break;
                     
-                    case 3:
-                        rec.Name = (field == "") ? null : field;
-                    break;
-                    
-                    case 4:
-                        rec.Description = field;
-                    break;
-                    
-                    case 5: {
+                    case 3: {
                         int year = 0;
                         int month = 0;
                         int day = 0;
@@ -103,15 +95,23 @@ namespace DVB {
                         int minute = 0;
                         field.scanf ("%d-%d-%d %d:%d", &year, &month, &day,
                             &hour, &minute);
-                        rec.StartTime = Utils.create_time (year, month, day, hour, minute);
+                        if (year >= 1900 && month >= 1 && day >= 1 && hour >= 0
+                                && minute >= 0) {
+                            rec.StartTime = Utils.create_time (year, month, day, hour, minute);
+                        }
                     break;
                     }
                     
-                    case 6:
+                    case 4:
                         rec.Length = (int64)field.to_int ();
                     break;
                     
+                    case 5:
+                        rec.Name = (field == "") ? null : field;
+                    break;
+                    
                     default:
+                        rec.Description = field;
                     break;
                 }            
             
