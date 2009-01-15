@@ -107,7 +107,7 @@ namespace DVB {
             
             Bus bus = pipeline.get_bus();
             
-            weak string adapter_type = null;
+            string adapter_type = null;
             
             while (bus.have_pending()) {
                 Message msg = bus.pop();
@@ -116,7 +116,7 @@ namespace DVB {
                     weak Structure structure = msg.structure;
 
                     if (structure.get_name() == "dvb-adapter") {
-                        adapter_type = structure.get_string("type");
+                        adapter_type = "%s".printf (structure.get_string("type"));
                         break;
                     }
                 } else if (msg.type == MessageType.ERROR) {
@@ -135,7 +135,7 @@ namespace DVB {
             else return AdapterType.UNKNOWN;
         }
         
-        private static weak string? getAdapterName (uint adapter, bool get_name) {
+        private static string? getAdapterName (uint adapter, bool get_name) {
             if (!get_name) return null;
         
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
@@ -151,7 +151,7 @@ namespace DVB {
             
             Bus bus = pipeline.get_bus();
             
-            weak string adapter_name = null;
+            string adapter_name = null;
             
             while (bus.have_pending()) {
                 Message msg = bus.pop();
@@ -160,7 +160,7 @@ namespace DVB {
                     weak Structure structure = msg.structure;
 
                     if (structure.get_name() == "dvb-adapter") {
-                        adapter_name = structure.get_string("name");
+                        adapter_name = "%s".printf (structure.get_string("name"));
                         break;
                     }
                 } else if (msg.type == MessageType.ERROR) {
