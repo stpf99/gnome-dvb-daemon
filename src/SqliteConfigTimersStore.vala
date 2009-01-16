@@ -181,6 +181,9 @@ namespace DVB {
                 DeviceGroup group = new DeviceGroup ((uint)group_id, ref_dev);
                 group.Name = statement.column_text (4);
                 
+                for (int i=1; i<devs.size; i++)
+                    group.add (devs.get (i));
+                
                 groups.add (group);
             }
             
