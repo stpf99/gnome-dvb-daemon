@@ -125,7 +125,7 @@ namespace DVB {
                     + "pids=%s stats-reporting-interval=0 ".printf (BASE_PIDS)
                     + "! mpegtsparse ! fakesink silent=true");
             } catch (Error e) {
-                error (e.message);
+                error ("Could not create pipeline: %s", e.message);
                 return;
             }
             
@@ -165,7 +165,7 @@ namespace DVB {
                 writer.close ();
                 ret = true;
             } catch (IOError e) {
-                critical (e.message);
+                critical ("Could not write channels file: %s", e.message);
             }
             
             return ret;

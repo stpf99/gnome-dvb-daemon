@@ -40,7 +40,7 @@ namespace DVB.Utils {
         try {
             regex = new Regex ("\\W", 0, 0);
         } catch (RegexError e) {
-            error (e.message);
+            error ("RegexError: %s", e.message);
             return text;
         }
         
@@ -48,7 +48,7 @@ namespace DVB.Utils {
         try {
             new_text = regex.replace_literal (text, text.size(), 0, "_", 0);
         } catch (RegexError e) {
-            error (e.message);
+            error ("RegexError: %s", e.message);
             return text;
         }
         
@@ -122,7 +122,7 @@ namespace DVB.Utils {
         try {
             info = file.query_info (attrs, 0, null);
         } catch (Error e) {
-            critical (e.message);
+            critical ("Could not retrieve attributes: %s", e.message);
             return null;
         }
         
@@ -140,7 +140,7 @@ namespace DVB.Utils {
         try {
             stream = file.read (null);
         } catch (IOError e) {
-            critical (e.message);
+            critical ("Could not read file: %s", e.message);
             return null;
         }
     

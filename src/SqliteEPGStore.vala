@@ -283,7 +283,7 @@ namespace DVB {
                     RegexCompileFlags.MULTILINE,
                     0);
             } catch (RegexError e) {
-                warning (e.message);
+                warning ("RegexError: %s", e.message);
                 return text;
             }
             
@@ -292,7 +292,7 @@ namespace DVB {
                 escaped_str = regex.replace_literal (text, text.size (),
                     0, "''", 0);
             } catch (RegexError e) {
-                warning (e.message);
+                warning ("RegexError: %s", e.message);
                 return text;
             }
             
@@ -309,7 +309,7 @@ namespace DVB {
                 try {
                     Utils.mkdirs (our_cache);
                 } catch (Error e) {
-                    critical (e.message);
+                    critical ("Could not create directory: %s", e.message);
                     return null;
                 }
             }

@@ -72,7 +72,6 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? e = this.get (element.id);
                     if (e != null && e.has_expired ()) {
-                        debug (e.to_string ());
                         expired_events.prepend (iter);
                     } else {
                         // events are sorted, all other events didn't expire, too

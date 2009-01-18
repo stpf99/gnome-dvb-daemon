@@ -94,7 +94,7 @@ namespace DVB {
                     this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
                         device.Adapter, device.Frontend));
                 } catch (Error e) {
-                    error (e.message);
+                    error ("Could not create pipeline: %s", e.message);
                     return false;
                 }
                 

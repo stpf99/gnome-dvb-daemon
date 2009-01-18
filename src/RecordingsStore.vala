@@ -57,7 +57,7 @@ namespace DVB {
                     FileMonitor monitor = rec.Location.monitor_file (0, null);
                     monitor.changed += this.on_recording_file_changed;
                 } catch (Error e) {
-                    warning (e.message);
+                    warning ("Could not create FileMonitor: %s", e.message);
                 }
                 
                 this.recordings.set (id, rec);
@@ -209,7 +209,7 @@ namespace DVB {
                         this.recordings.remove (rec_id);
                         val = true;
                     } catch (Error e) {
-                        critical (e.message);
+                        critical ("Could not delete recording: %s", e.message);
                         val = false;
                     }
                     this.changed (rec_id, ChangeType.DELETED);
@@ -238,7 +238,7 @@ namespace DVB {
             try {
                 info = recordingsbasedir.query_info (attrs, 0, null);
             } catch (Error e) {
-                critical (e.message);
+                critical ("Could not retrieve attributes: %s", e.message);
                 return;
             }
            
@@ -257,7 +257,7 @@ namespace DVB {
                 files = recordingsbasedir.enumerate_children (
                     attrs, 0, null);
             } catch (Error e) {
-                critical (e.message);
+                critical ("Could not read directory: %s", e.message);
                 return;
             }
             
@@ -281,10 +281,13 @@ namespace DVB {
                                 try {
                                     rec = Recording.deserialize (child);
                                 } catch (Error e) {
-                                    critical (e.message);
+                                    critical (
+                                        "Could not deserialize recording: %s",
+                                        e.message);
                                 }
                                 if (rec != null) {
-                                    debug ("Restored recording from %s", child.get_path ());
+                                    debug ("Restored recording from %s",
+                                        child.get_path ());
                                     lock (this.recordings) {
                                         this.add (rec);
                                     }
@@ -305,7 +308,7 @@ namespace DVB {
                 try {
                     files.close (null);
                 } catch (Error e) {
-                    critical (e.message);
+                    critical ("Could not close file: %s", e.message);
                 }
             }
         }

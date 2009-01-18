@@ -52,7 +52,7 @@ namespace DVB {
             try {
                 contents = Utils.read_file_contents (datafile);
             } catch (Error e) {
-                critical (e.message);
+                critical ("Could not read %s: %s", e.message, path);
             }
             
             if (contents == null) return false;

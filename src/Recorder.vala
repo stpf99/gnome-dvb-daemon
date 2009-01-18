@@ -272,8 +272,7 @@ namespace DVB {
                     string debug_text;
                     message.parse_error (out gerror, out debug_text);
                     
-                    critical (gerror.message);
-                    critical (debug_text);
+                    critical ("Error tuning: %s; %s", gerror.message, debug_text);
                         
                     this.reset ();
                     this.recording_aborted ();
@@ -688,7 +687,8 @@ namespace DVB {
                 try {
                     Utils.mkdirs (dir);
                 } catch (Error e) {
-                    error (e.message);
+                    error ("Could not create directory %s: %s",
+                        dir.get_path (), e.message);
                     return null;
                 }
             }
@@ -699,7 +699,7 @@ namespace DVB {
             try {
                 info = dir.query_info (attributes, 0, null);
             } catch (Error e) {
-                critical (e.message);
+                critical ("Could not retrieve attributes: %s", e.message);
                 return null;
             }
             

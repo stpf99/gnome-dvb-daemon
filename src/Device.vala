@@ -79,8 +79,7 @@ namespace DVB {
                     string debug_text;
                     msg.parse_error (out gerror, out debug_text);
                     
-                    debug (gerror.message);
-                    debug (debug_text);
+                    debug ("Error tuning: %s; %s", gerror.message, debug_text);
                     
                     busy_val = true;
                 }

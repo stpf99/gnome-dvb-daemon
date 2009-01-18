@@ -552,7 +552,8 @@ namespace DVB {
             try {
                 channels = DVB.ChannelList.restore_from_file (channelsfile, device.Type);
             } catch (Error e) {
-                critical (e.message);
+                critical ("Could not create channels list from %s: %s",
+                    channels_conf, e.message);
                 return null;
             }
             
@@ -566,7 +567,7 @@ namespace DVB {
             try {
                 conn = DBus.Bus.get (DBus.BusType.SESSION);
             } catch (Error e) {
-                error(e.message);
+                error("Could not get D-Bus session bus: %s", e.message);
                 return null;
             }
             return conn;
@@ -591,11 +592,11 @@ namespace DVB {
             uint adapter = scanner.Device.Adapter;
             uint frontend = scanner.Device.Frontend;
             
-            debug ("Destroying scanner for adapter %u, frontend %u", adapter,
-                frontend);
-            
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             this.scanners.remove (path);
+            
+            debug ("Destroying scanner for adapter %u, frontend %u (%s)", adapter,
+                frontend, path);
             
             // Start epgscanner for device again if there was one
             DeviceGroup? devgroup = this.get_device_group_of_device (scanner.Device);

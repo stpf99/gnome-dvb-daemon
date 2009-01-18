@@ -364,7 +364,7 @@ namespace DVB {
                 try {
                     Utils.mkdirs (config_cache);
                 } catch (Error e) {
-                    critical (e.message);
+                    critical ("Could not create directory: %s", e.message);
                     return null;
                 }
             }
