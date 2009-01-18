@@ -72,7 +72,7 @@ namespace DVB {
         
         protected HashMap<uint, Gst.Structure> transport_streams;
         
-        private static const string BASE_PIDS = "0:16:17:18";
+        private static const string BASE_PIDS = "16:17:18";
         
         // Contains SIDs
         private ArrayList<uint> new_channels;
@@ -82,7 +82,6 @@ namespace DVB {
         private bool sdt_arrived;
         private bool pat_arrived;
         private bool locked;
-        private string prev_pids;
         
         construct {
             this.scanned_frequencies =
@@ -214,6 +213,11 @@ namespace DVB {
          * and start scanning with them
          */
         protected void start_scan () {
+            bool all_tables = (this.sdt_arrived && this.nit_arrived && this.pat_arrived);
+            debug ("Received all tables: %s (pat: %s, sdt: %s, nit: %s)",
+                all_tables.to_string (), this.pat_arrived.to_string (),
+                this.sdt_arrived.to_string (), this.nit_arrived.to_string ());
+
             this.nit_arrived = false;
             this.sdt_arrived = false;
             this.pat_arrived = false;
@@ -255,7 +259,6 @@ namespace DVB {
             // Reset PIDs
             Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
             dvbsrc.set ("pids", BASE_PIDS);
-            this.prev_pids = BASE_PIDS;
             
             this.pipeline.set_state (Gst.State.PLAYING);
             
@@ -327,6 +330,12 @@ namespace DVB {
         protected void on_pat_structure (Gst.Structure structure) {
             debug("Received PAT");
         
+            Set<uint> pid_set = new HashSet<uint> ();
+            // add BASE_PIDS
+            pid_set.add (16);
+            pid_set.add (17);
+            pid_set.add (18);
+            
             Gst.Value programs = structure.get_value ("programs");
             uint size = programs.list_get_size ();
             Gst.Value val;
@@ -342,11 +351,19 @@ namespace DVB {
                 uint pmt;
                 program.get_uint ("pid", out pmt);
                 
-                // We want to parse the pmt as well
-                Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
-                this.prev_pids = "%s:%u".printf (prev_pids, pmt);
-                dvbsrc.set ("pids", this.prev_pids);
+                pid_set.add (pmt);
             }
+            
+            StringBuilder new_pids = new StringBuilder ();
+            foreach (uint pid in pid_set) {
+                new_pids.append ("%u:".printf (pid));
+            }
+            string pids = new_pids.str.substring (0, new_pids.len - 1);
+            
+            debug ("Setting %d pids: %s", pid_set.size, pids);
+            // We want to parse the pmt as well
+            Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
+            dvbsrc.set ("pids", pids);
             
             this.pat_arrived = true;
         }
