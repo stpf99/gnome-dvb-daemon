@@ -19,7 +19,7 @@ class ScheduleWindow(gtk.Window):
         self.connect('delete-event', gtk.main_quit)
         self.connect('destroy-event', gtk.main_quit)
         self.set_title(_("Program guide"))
-        self.set_default_size(500, 400)
+        self.set_default_size(600, 500)
         self.set_border_width(3)
         
         self.hbox = gtk.HBox(spacing=6)
@@ -68,7 +68,7 @@ class ScheduleWindow(gtk.Window):
         
     def get_device_groups(self):
         for group_id in self.manager.get_registered_device_groups():
-            group_name = _("Group %d") % group_id
+            group_name = self.manager.get_device_group_name(group_id)
             self.devgroupslist.append([group_name, group_id])
             self.channellists[group_id] = gnomedvb.DVBChannelListClient(group_id)
             
