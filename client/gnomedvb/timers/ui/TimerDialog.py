@@ -43,17 +43,22 @@ class TimerDialog(gtk.Dialog):
         table.attach(label_start, 0, 1, 1, 2)
         
         hbox = gtk.HBox(spacing=3)
-        table.attach(hbox, 1, 2, 1, 2)
+        table.attach(hbox, 1, 2, 1, 2, yoptions=0)
         
         self.entry = gtk.Entry()
         self.entry.set_editable(False)
         self.entry.set_width_chars(10)
         hbox.pack_start(self.entry)
         
+        calendar_button = gtk.Button(_("Pick date"))
+        calendar_button.connect("clicked", self._on_calendar_button_clicked)
+        hbox.pack_start(calendar_button)
+        
         self.hour = gtk.SpinButton()
         self.hour.set_range(0, 23)
         self.hour.set_increments(1, 3)
         self.hour.set_wrap(True)
+        self.hour.set_width_chars(2)
         hbox.pack_start(self.hour)
         
         hour_minute_seperator = gtk.Label(":")
@@ -63,23 +68,27 @@ class TimerDialog(gtk.Dialog):
         self.minute.set_range(0, 59)
         self.minute.set_increments(1, 15)
         self.minute.set_wrap(True)
+        self.minute.set_width_chars(2)
         hbox.pack_start(self.minute)
-        
-        calendar_button = gtk.Button(_("Pick date"))
-        calendar_button.connect("clicked", self._on_calendar_button_clicked)
-        hbox.pack_start(calendar_button)
         
         label_duration = gtk.Label()
         label_duration.set_markup(_("<b>Duration:</b>"))
         table.attach(label_duration, 0, 1, 2, 3)
         
-        ali = gtk.Alignment(0, 0.5)
-        table.attach(ali, 1, 2, 2, 3)
+        duration_hbox = gtk.HBox(spacing=3)
+        table.attach(duration_hbox, 1, 2, 2, 3)
         
         self.duration = gtk.SpinButton()
         self.duration.set_range(1, 65535)
         self.duration.set_increments(1, 10)
-        ali.add(self.duration)
+        self.duration.set_width_chars(3)
+        duration_hbox.pack_start(self.duration, False)
+        
+        ali = gtk.Alignment(0, 0.5)
+        duration_hbox.pack_start(ali)
+        
+        minutes_label = gtk.Label(_("Minutes"))
+        ali.add(minutes_label)
         
         self._set_default_time_and_date()
         
