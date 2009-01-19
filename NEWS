@@ -1,4 +1,32 @@
 =============
+Version 0.1.2
+=============
+
+This release mostly fixes bugs and memory leaks.
+Therefore, scanning for channels works much better.
+Furthermore, the program guide looks much nicer now.
+
+- Added GetDeviceGroupName method to Manager DBus interface.
+- Added parameter name to AddDeviceToNewGroup method.
+- Added name field to dialog to create new group.
+- Added freq_left parameter to frquency_scanned signal.
+- Removed GetQueueSize method from Scanner interface.
+- Fixed bug	#565247: Progressbar while scanning channels doesn't work correctly
+- Use only one TreeView in ChannelScanPage and display channel type as icon.
+- If channel is	scrambled display emblem-readonly icon in scanner
+- Retrieve network name	correctly.
+- Fixed a couple of bugs in the Scanner that caused the output to change on each scan.
+- GConfStore got replaced with SqliteConfigTimersStore which stores everything in a Sqlite DB.
+- Dropped gconf dependency.
+- Fixed crash when returning NULL string over DBus
+- Cleanup correctly when process is aborted
+- Add recording to RecordingsStore when	recording begins.
+- Use event's short and extended description as	Recording's description
+- In serialized recording save name and	description in as last two items
+- Minor UI tweaks in new timer dialog
+- Improved epg browser to look much nicer
+
+=============
 Version 0.1.1
 =============
 
