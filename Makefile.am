@@ -52,7 +52,8 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Timer.vala \
 	src/TimersStore.vala \
 	src/Utils.vala \
-	src/livetv/Server.vala \
+	src/rtsp/MediaFactory.vala \
+	src/rtsp/MediaMapping.vala \
 	$(NULL)
 
 vala_pkgs = \

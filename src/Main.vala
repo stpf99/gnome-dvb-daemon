@@ -147,7 +147,8 @@ public class Main {
         
         if (!start_recordings_store (max_id)) return -1;
 
-        server = new DVB.Server ();
+        server = new Gst.RTSPServer ();
+        server.set_media_mapping (new DVB.MediaMapping ());
         server.attach (null);
     
         // Start GLib mainloop

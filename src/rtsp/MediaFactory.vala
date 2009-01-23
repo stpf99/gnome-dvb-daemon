@@ -2,25 +2,17 @@ using GLib;
 
 namespace DVB {
 
-    /**
-     * RTSP Server
-     *
-     * It listens on port 1554.
-     * E.g. http://localhost:1554/3/514
-     * will open the channel with sid 514 of device group 3
-     */
-    public class Server : Gst.RTSPServer {
-    
+    public class MediaFactory : Gst.RTSPMediaFactory {
+        
         private string? sid;
         private Gst.Bin dvbrtpbin;
         private EPGScanner? epgscanner;
         
-        public override Gst.Element? prepare_media (Gst.RTSPMedia media,
-                Gst.Bin pipeline) {
-          	uint sidnr = 0;
+        public override Gst.Element? get_element (Gst.RTSPUrl url) {
+            uint sidnr = 0;
           	uint grpnr = 0;
           	
-          	string[] path_elements = media.url.abspath.split ("/");
+          	string[] path_elements = url.abspath.split ("/");
           	int i = 0;
           	string elem;
           	while ((elem = path_elements[i]) != null) {
@@ -58,11 +50,12 @@ namespace DVB {
           	}
           	
           	this.sid = sidnr.to_string ();
-          	
+          	/*
+          	FIXME: We need a way to get to the pipeline
             Gst.Bus bus = pipeline.get_bus();
             bus.add_signal_watch();
             bus.message += this.bus_watch_func;
-          	
+          	*/
           	Gst.Element dvbbasebin = Gst.ElementFactory.make ("dvbbasebin",
                     "dvbbasebin");
             if (dvbbasebin == null) {
@@ -140,7 +133,7 @@ namespace DVB {
                     break;
             }
         }
-
+        
     }
-   
+
 }
