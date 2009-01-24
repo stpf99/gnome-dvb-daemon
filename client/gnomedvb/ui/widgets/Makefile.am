@@ -1,10 +1,7 @@
-gnomedvbprefsmodeldir = $(pythondir)/gnomedvb/widgets
+gnomedvbprefsmodeldir = $(pythondir)/gnomedvb/ui/widgets
 gnomedvbprefsmodel_PYTHON = \
     __init__.py \
     ChannelsStore.py \
     ChannelsView.py \
-    Device.py \
-    DVBModel.py \
-    EditTimersDialog.py \
     ScheduleStore.py \
     ScheduleView.py

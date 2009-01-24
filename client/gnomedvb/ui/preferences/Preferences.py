@@ -4,7 +4,7 @@ from Frame import Frame
 from Dialogs import *
 from DeviceGroupsView import *
 from gettext import gettext as _
-from gnomedvb.widgets.Device import Device
+from gnomedvb.Device import Device
 
 class Preferences(gtk.Dialog):
 

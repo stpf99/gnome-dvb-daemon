@@ -1,4 +1,4 @@
-gnomedvbwizardpagesdir = $(pythondir)/gnomedvb/wizard/pages
+gnomedvbwizardpagesdir = $(pythondir)/gnomedvb/ui/wizard/pages
 gnomedvbwizardpages_PYTHON = \
     __init__.py \
     AdaptersPage.py \

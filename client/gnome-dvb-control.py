@@ -3,13 +3,13 @@
 import gtk
 import gnomedvb
 from gettext import gettext as _
-from gnomedvb.widgets.ChannelsStore import ChannelsStore
-from gnomedvb.widgets.ChannelsView import ChannelsView
-from gnomedvb.widgets.ScheduleStore import ScheduleStore
-from gnomedvb.widgets.ScheduleView import ScheduleView
-from gnomedvb.preferences.ui.Preferences import Preferences
-from gnomedvb.widgets.DVBModel import DVBModel
-from gnomedvb.widgets.EditTimersDialog import EditTimersDialog
+from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
+from gnomedvb.ui.widgets.ChannelsView import ChannelsView
+from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
+from gnomedvb.ui.widgets.ScheduleView import ScheduleView
+from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
+from gnomedvb.ui.preferences.Preferences import Preferences
+from gnomedvb.DVBModel import DVBModel
 
 class ScheduleWindow(gtk.Window):
 

@@ -2,7 +2,7 @@
 import gtk
 import gobject
 from gettext import gettext as _
-from gnomedvb.widgets.Device import Device
+from gnomedvb.Device import Device
 
 __all__ = ["UnassignedDevicesStore", "DeviceGroupsStore", "DeviceGroupsView"]
 

@@ -2,7 +2,7 @@
 import gtk
 from gettext import gettext as _
 import gnomedvb
-from gnomedvb.timers.ui.TimerDialog import TimerDialog
+from gnomedvb.ui.timers.TimerDialog import TimerDialog
 
 class EditTimersDialog(gtk.Dialog):
 

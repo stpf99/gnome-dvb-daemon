@@ -1,20 +1,20 @@
 [encoding: UTF-8]
 # List of source files which contain translatable strings.
-client/gnomedvb/preferences/ui/DeviceGroupsView.py
-client/gnomedvb/preferences/ui/Dialogs.py
-client/gnomedvb/preferences/ui/Preferences.py
-client/gnomedvb/timers/ui/CalendarDialog.py
-client/gnomedvb/timers/ui/TimerDialog.py
-client/gnomedvb/widgets/ChannelsView.py
-client/gnomedvb/widgets/EditTimersDialog.py
-client/gnomedvb/widgets/ScheduleView.py
-client/gnomedvb/wizard/pages/AdaptersPage.py
-client/gnomedvb/wizard/pages/ChannelScanPage.py
-client/gnomedvb/wizard/pages/InitialTuningDataPage.py
-client/gnomedvb/wizard/pages/IntroPage.py
-client/gnomedvb/wizard/pages/SaveChannelListPage.py
-client/gnomedvb/wizard/pages/SummaryPage.py
-client/gnomedvb/wizard/SetupWizard.py
+client/gnomedvb/ui/preferences/DeviceGroupsView.py
+client/gnomedvb/ui/preferences/Dialogs.py
+client/gnomedvb/ui/preferences/Preferences.py
+client/gnomedvb/ui/timers/CalendarDialog.py
+client/gnomedvb/ui/timers/EditTimersDialog.py
+client/gnomedvb/ui/timers/TimerDialog.py
+client/gnomedvb/ui/widgets/ChannelsView.py
+client/gnomedvb/ui/widgets/ScheduleView.py
+client/gnomedvb/ui/wizard/pages/AdaptersPage.py
+client/gnomedvb/ui/wizard/pages/ChannelScanPage.py
+client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py
+client/gnomedvb/ui/wizard/pages/IntroPage.py
+client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py
+client/gnomedvb/ui/wizard/pages/SummaryPage.py
+client/gnomedvb/ui/wizard/SetupWizard.py
 client/gnome-dvb-control.py
 client/totem-plugin/dvb-daemon.py
 client/totem-plugin/dvb-daemon.totem-plugin.in

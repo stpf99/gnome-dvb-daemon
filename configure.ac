@@ -147,13 +147,12 @@ AC_CONFIG_FILES([
 	client/Makefile
 	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
-	client/gnomedvb/preferences/Makefile
-	client/gnomedvb/preferences/ui/Makefile
-	client/gnomedvb/timers/Makefile
-	client/gnomedvb/timers/ui/Makefile
-	client/gnomedvb/widgets/Makefile
-	client/gnomedvb/wizard/Makefile
-	client/gnomedvb/wizard/pages/Makefile
+	client/gnomedvb/ui/preferences/Makefile
+	client/gnomedvb/ui/timers/Makefile
+	client/gnomedvb/ui/Makefile
+	client/gnomedvb/ui/widgets/Makefile
+	client/gnomedvb/ui/wizard/Makefile
+	client/gnomedvb/ui/wizard/pages/Makefile
 	client/totem-plugin/Makefile
 	data/Makefile
 	po/Makefile.in])

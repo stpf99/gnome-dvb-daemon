@@ -1,13 +1,12 @@
 SUBDIRS = \
-    preferences \
-    timers \
-    widgets \
-    wizard
+	ui
     
 gnomedvbdir = $(pythondir)/gnomedvb
 gnomedvb_PYTHON = \
     __init__.py \
     DBusWrapper.py \
+    Device.py \
+    DVBModel.py \
     defs.py
     
 DISTCLEANFILES = \

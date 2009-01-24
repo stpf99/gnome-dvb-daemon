@@ -1,4 +1,4 @@
-gnomedvbprefsuidir = $(pythondir)/gnomedvb/preferences/ui
+gnomedvbprefsuidir = $(pythondir)/gnomedvb/ui/preferences
 gnomedvbprefsui_PYTHON = \
     __init__.py \
     DeviceGroupsView.py \
