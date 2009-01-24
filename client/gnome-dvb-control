@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import gtk
+import gnomedvb
 from gnomedvb.ui.controlcenter.ControlCenterWindow import ControlCenterWindow
 from gnomedvb.DVBModel import DVBModel
-                   
-if __name__ == '__main__':
-    model = DVBModel()
-    w = ControlCenterWindow(model)
-    w.show_all()
 
-    gtk.main()
-    
-        
+gnomedvb.setup_i18n()
+
+model = DVBModel()
+w = ControlCenterWindow(model)
+w.show_all()
+
+gtk.main()
         
