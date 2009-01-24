@@ -1,4 +1,5 @@
 SUBDIRS = \
+    controlcenter \
     preferences \
     timers \
     widgets \

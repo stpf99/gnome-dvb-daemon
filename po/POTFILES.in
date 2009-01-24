@@ -1,5 +1,6 @@
 [encoding: UTF-8]
 # List of source files which contain translatable strings.
+client/gnomedvb/ui/controlcenter/ControlCenterWindow.py
 client/gnomedvb/ui/preferences/DeviceGroupsView.py
 client/gnomedvb/ui/preferences/Dialogs.py
 client/gnomedvb/ui/preferences/Preferences.py
@@ -15,6 +16,5 @@ client/gnomedvb/ui/wizard/pages/IntroPage.py
 client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py
 client/gnomedvb/ui/wizard/pages/SummaryPage.py
 client/gnomedvb/ui/wizard/SetupWizard.py
-client/gnome-dvb-control.py
 client/totem-plugin/dvb-daemon.py
 client/totem-plugin/dvb-daemon.totem-plugin.in

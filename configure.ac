@@ -147,6 +147,7 @@ AC_CONFIG_FILES([
 	client/Makefile
 	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
+	client/gnomedvb/ui/controlcenter/Makefile
 	client/gnomedvb/ui/preferences/Makefile
 	client/gnomedvb/ui/timers/Makefile
 	client/gnomedvb/ui/Makefile
