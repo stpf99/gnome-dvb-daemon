@@ -5,5 +5,6 @@ gnomedvbprefsmodel_PYTHON = \
     ChannelsView.py \
     Device.py \
     DVBModel.py \
+    EditTimersDialog.py \
     ScheduleStore.py \
     ScheduleView.py

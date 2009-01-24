@@ -10,12 +10,20 @@ from gnomedvb.widgets.ChannelsView import ChannelsView
 class TimerDialog(gtk.Dialog):
 
     def __init__(self, parent, device_group):
+        """
+        @param parent: Parent window
+        @type parent: gtk.Window
+        @param device_group: ID of device group
+        @type device_group: int
+        """
         gtk.Dialog.__init__(self, title=_("Timer"), parent=parent,
                 flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                  gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
         
+        self.device_group = device_group
         self._start_date = None
+        self.connect("response", self._on_response)
         
         table = gtk.Table(rows=3, columns=2)
         table.set_row_spacings(6)
@@ -82,6 +90,7 @@ class TimerDialog(gtk.Dialog):
         self.duration.set_range(1, 65535)
         self.duration.set_increments(1, 10)
         self.duration.set_width_chars(3)
+        self.duration.set_value(60)
         duration_hbox.pack_start(self.duration, False)
         
         ali = gtk.Alignment(0, 0.5)
@@ -133,4 +142,25 @@ class TimerDialog(gtk.Dialog):
             self._set_date(date[0], date[1]+1, date[2])
         
         d.destroy()
+        
+    def _on_response(self, dialog, response_id):
+        if (response_id == gtk.RESPONSE_ACCEPT):
+            duration = self.get_duration()
+            start = self.get_start_time()
+            channel = self.get_channel()
+            
+            recorder = gnomedvb.DVBRecorderClient(self.device_group)
+            rec_id = recorder.add_timer (channel, start[0], start[1], start[2],
+                start[3], start[4], duration)
+              
+            if rec_id == 0:
+                dialog = gtk.MessageDialog(parent=self,
+                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                dialog.set_markup (_("<big><span weight=\"bold\">Timer could not be created</span></big>"))
+                dialog.format_secondary_text(
+                    _("Make sure that the timer doesn't conflict with another one and doesn't start in the past.")
+                )
+                dialog.run()
+                dialog.destroy()
 

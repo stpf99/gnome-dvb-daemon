@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import gnomedvb
 import gtk
 from gettext import gettext as _
-from TimerDialog import TimerDialog
+import gnomedvb
+from gnomedvb.timers.ui.TimerDialog import TimerDialog
 
-class RecorderWindow(gtk.Window):
+class EditTimersDialog(gtk.Dialog):
 
     (COL_ID,
     COL_CHANNEL,
@@ -12,39 +12,23 @@ class RecorderWindow(gtk.Window):
     COL_DURATION,
     COL_ACTIVE,) = range(5)
     
-    (COL_NAME,
-    COL_PATH,) = range(2)
-
-    def __init__(self):
-        gtk.Window.__init__(self)
+    def __init__(self, device_group, parent=None):
+        """
+        @param device_group: ID of device group
+        @type device_group: int
+        @param parent: Parent window
+        @type parent: gtk.Window
+        """
+        gtk.Dialog.__init__(self, title=_("Scheduled Recordings"),
+            parent=parent,
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
         
-        self.recorders = {}
+        self.device_group = device_group
+        self.set_recorder(device_group)
         
-        self.set_title(_("Schedule Recordings"))
+        self.vbox.set_spacing(6)
         self.set_size_request(350, 400)
-        self.set_border_width(3)
-        self.connect("delete-event", gtk.main_quit)
-        self.connect("destroy-event", gtk.main_quit)
-        
-        self.vbox = gtk.VBox(spacing=6)
-        self.add(self.vbox)
-        
-        recorders_ali = gtk.Alignment(0, 0.5)
-        self.vbox.pack_start(recorders_ali, False)
-        
-        recorders_label = gtk.Label()
-        recorders_label.set_markup(_("<b>Choose device group:</b>"))
-        recorders_ali.add(recorders_label)
-        
-        self.recorderslist = gtk.ListStore(str, int)
-        
-        self.recorderscombo = gtk.ComboBox(self.recorderslist)
-        self.recorderscombo.connect("changed", self._on_recorderscombo_changed)
-        
-        cell_adapter = gtk.CellRendererText()
-        self.recorderscombo.pack_start(cell_adapter)
-        self.recorderscombo.add_attribute(cell_adapter, "text", self.COL_NAME)
-        self.vbox.pack_start(self.recorderscombo, False)
         
         timers_ali = gtk.Alignment(0, 0.5)
         self.vbox.pack_start(timers_ali, False)
@@ -90,7 +74,7 @@ class RecorderWindow(gtk.Window):
         self.timersview.append_column(col_starttime)
         
         cell_duration = gtk.CellRendererText()
-        col_duration = gtk.TreeViewColumn(_("Duration in minutes"))
+        col_duration = gtk.TreeViewColumn(_("Duration"))
         col_duration.pack_start(cell_duration)
         col_duration.add_attribute(cell_duration, "text", self.COL_DURATION )
         
@@ -105,7 +89,6 @@ class RecorderWindow(gtk.Window):
         self.buttonbox = gtk.HButtonBox()
         self.button_add = gtk.Button(stock=gtk.STOCK_ADD)
         self.button_add.connect("clicked", self._on_button_add_clicked)
-        self.button_add.set_sensitive(False)
         self.buttonbox.pack_start(self.button_add)
 
         self.button_delete = gtk.Button(stock=gtk.STOCK_DELETE)
@@ -115,34 +98,27 @@ class RecorderWindow(gtk.Window):
         
         self.vbox.pack_start(self.buttonbox, False, False, 0)
         
-        self.get_device_groups()
+        self.get_timers()
         
-    def get_device_groups(self):
-        manager = gnomedvb.DVBManagerClient()
+        self.show_all()
         
-        for group_id in manager.get_registered_device_groups():
-            group_name = manager.get_device_group_name(group_id)
-            if group_name == "":
-                group_name = _("Group %d") % group_id
-            self.recorderslist.append([group_name, group_id])
-            self.recorders[group_id] = gnomedvb.DVBRecorderClient(group_id)
-            self.recorders[group_id].connect("changed", self._on_recorder_changed)
-            self.recorders[group_id].connect("recording-started", self._set_recording_state, True)
-            self.recorders[group_id].connect("recording-finished", self._set_recording_state, False)
+    def set_recorder(self, group_id):
+        self.recorder = gnomedvb.DVBRecorderClient(group_id)
+        self.recorder.connect("changed", self._on_recorder_changed)
+        self.recorder.connect("recording-started", self._set_recording_state, True)
+        self.recorder.connect("recording-finished", self._set_recording_state, False)
             
-    def get_timers(self, recorder_path):
-        rec = self.recorders[recorder_path]
-        
-        for timer_id in rec.get_timers():
-            self._add_timer(rec, timer_id)
+    def get_timers(self):
+        for timer_id in self.recorder.get_timers():
+            self._add_timer(timer_id)
             
-    def _add_timer(self, rec, timer_id):
-        start_list = rec.get_start_time(timer_id)
+    def _add_timer(self, timer_id):
+        start_list = self.recorder.get_start_time(timer_id)
         starttime = "%04d-%02d-%02d %02d:%02d" % (start_list[0], start_list[1],
                 start_list[2], start_list[3], start_list[4])
-        duration = rec.get_duration(timer_id)
-        channel = rec.get_channel_name(timer_id)
-        active = rec.is_timer_active(timer_id)
+        duration = self.recorder.get_duration(timer_id)
+        channel = self.recorder.get_channel_name(timer_id)
+        active = self.recorder.is_timer_active(timer_id)
         
         self.timerslist.append([timer_id, channel, starttime, duration, active])
 
@@ -154,9 +130,8 @@ class RecorderWindow(gtk.Window):
     def _on_button_delete_clicked(self, button):
         model, aiter = self.timersview.get_selection().get_selected()
         if aiter != None:
-            rec = self.recorders[self._get_active_device_group()]
             timer_id = model[aiter][self.COL_ID]
-            if rec.is_timer_active(timer_id):
+            if self.recorder.is_timer_active(timer_id):
                 dialog = gtk.MessageDialog(parent=self,
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
@@ -167,7 +142,7 @@ class RecorderWindow(gtk.Window):
                 response = dialog.run()
                 dialog.destroy()
                 if response == gtk.RESPONSE_YES:
-                    if not rec.delete_timer(timer_id):
+                    if not self.recorder.delete_timer(timer_id):
                         error_dialog = gtk.MessageDialog(parent=self,
                             flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                             type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
@@ -175,57 +150,30 @@ class RecorderWindow(gtk.Window):
                         error_dialog.run()
                         error_dialog.destroy()
             else:
-                rec.delete_timer(timer_id)
+                self.recorder.delete_timer(timer_id)
         
-    def _on_button_add_clicked(self, button):   
-        device_group = self._get_active_device_group()
-        
-        d = TimerDialog(self, device_group)
-        if (d.run() == gtk.RESPONSE_ACCEPT):
-            
-            duration = d.get_duration()
-            start = d.get_start_time()
-            channel = d.get_channel()
-            
-            rec = self.recorders[device_group]
-            rec_id = rec.add_timer (channel, start[0], start[1], start[2],
-                start[3], start[4], duration)
-              
-            if rec_id == 0:
-                dialog = gtk.MessageDialog(parent=d,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                dialog.set_markup (_("<big><span weight=\"bold\">Timer could not be created</span></big>"))
-                dialog.format_secondary_text(
-                    _("Make sure that the timer doesn't conflict with another one and doesn't start in the past.")
-                )
-                dialog.run()
-                dialog.destroy()
-            
+    def _on_button_add_clicked(self, button):
+        d = TimerDialog(self, self.device_group)
+        d.run()
         d.destroy()
-        
-    def _get_active_device_group(self):
-        aiter = self.recorderscombo.get_active_iter()
-        return self.recorderslist[aiter][self.COL_PATH]
-        
+     
     def _on_recorderscombo_changed(self, combo):
         self.timerslist.clear()
         self.get_timers(self._get_active_device_group())
         self.button_add.set_sensitive(True)
         
     def _on_recorder_changed(self, recorder, timer_id, typeid):
-        group_id = self._get_active_device_group()
-        if recorder == self.recorders[group_id]:
+        if recorder == self.recorder:
             if (typeid == 0):
                 # Timer added
-                self._add_timer(recorder, timer_id)
+                self._add_timer(timer_id)
             elif (typeid == 1):
                 # Timer deleted
                 self._remove_timer(timer_id)
             elif (typeid == 2):
                 # Timer changed
                 self._remove_timer(timer_id)
-                self._add_timer(recorder, timer_id)
+                self._add_timer(timer_id)
             
     def _on_timers_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()

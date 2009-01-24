@@ -6,47 +6,29 @@ from DeviceGroupsView import *
 from gettext import gettext as _
 from gnomedvb.widgets.Device import Device
 
-class Preferences(gtk.Window):
+class Preferences(gtk.Dialog):
 
-    def __init__(self, model):
-        gtk.Window.__init__(self)
+    def __init__(self, model, parent=None):
+        gtk.Dialog.__init__(self, title=_("Configure DVB"),
+            parent=parent,
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
         
         self._model = model
         self._model.connect("changed", self._on_manager_changed)
         self._model.connect("group-changed", self._on_group_changed)
         
-        self.connect('delete-event', gtk.main_quit)
-        self.connect('destroy-event', gtk.main_quit)
-        self.set_title(_("Configure DVB"))
         self.set_default_size(600, 450)
-        
-        self.vbox_outer = gtk.VBox()
-        self.vbox_outer.show()
-        self.add(self.vbox_outer)
         
         self.__create_toolbar()
         
-        self.vbox = gtk.VBox(spacing=12)
-        self.vbox.set_border_width(6)
-        self.vbox.show()
-        self.vbox_outer.pack_start(self.vbox)
+        self.vbox_main = gtk.VBox(spacing=12)
+        self.vbox_main.set_border_width(6)
+        self.vbox_main.show()
+        self.vbox.pack_start(self.vbox_main)
         
         self.__create_registered_groups()
         self.__create_unassigned_devices()
-        
-        buttonbox = gtk.HButtonBox()
-        buttonbox.set_layout(gtk.BUTTONBOX_END)
-        buttonbox.show()
-        self.vbox.pack_end(buttonbox, False, False, 0)
-        
-        close_button = gtk.Button(stock=gtk.STOCK_CLOSE)
-        close_button.connect('clicked', gtk.main_quit)
-        buttonbox.pack_start(close_button)
-        close_button.show()
-        
-        separator = gtk.HSeparator()
-        separator.show()
-        self.vbox.pack_end(separator, False, False, 0)
         
         self._fill()
         
@@ -55,7 +37,7 @@ class Preferences(gtk.Window):
     def __create_toolbar(self):
         toolbar = gtk.Toolbar()
         toolbar.show()
-        self.vbox_outer.pack_start(toolbar, False)
+        self.vbox.pack_start(toolbar, False)
         
         self.button_remove = gtk.ToolButton(gtk.STOCK_REMOVE)
         self.button_remove.connect("clicked", self._on_button_remove_clicked)
@@ -89,7 +71,7 @@ class Preferences(gtk.Window):
     def __create_registered_groups(self):
         self.groups_box = gtk.HBox(spacing=6)
         self.groups_box.show()
-        self.vbox.pack_start(self.groups_box)
+        self.vbox_main.pack_start(self.groups_box)
     
         self.devicegroups = DeviceGroupsStore()
         self.devicegroupsview = DeviceGroupsView(self.devicegroups)
@@ -113,7 +95,7 @@ class Preferences(gtk.Window):
         
         unassigned_frame = Frame(_("<b>Unassigned devices</b>"), self.unassigned_view)
         unassigned_frame.show()
-        self.vbox.pack_start(unassigned_frame)
+        self.vbox_main.pack_start(unassigned_frame)
         
     def _fill(self):
         for device in self._model.get_unregistered_devices():
