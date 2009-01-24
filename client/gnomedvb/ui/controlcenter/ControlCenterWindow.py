@@ -19,7 +19,7 @@ class ControlCenterWindow(gtk.Window):
         
         self.connect('delete-event', gtk.main_quit)
         self.connect('destroy-event', gtk.main_quit)
-        self.set_title(_("Program guide"))
+        self.set_title(_("DVB Control Center"))
         self.set_default_size(800, 500)
         self.set_border_width(3)
         
