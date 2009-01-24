@@ -7,9 +7,9 @@ endif
 	
 gnomedvbbindir = $(bindir)
 gnomedvbbin_SCRIPTS = \
-	gnome-dvb-control.py \
-	gnome-dvb-setup.py
+	gnome-dvb-control \
+	gnome-dvb-setup
 
 EXTRA_DIST = \
-	gnome-dvb-control.py \
-	gnome-dvb-setup.py
+	gnome-dvb-control \
+	gnome-dvb-setup
