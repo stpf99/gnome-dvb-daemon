@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import gtk
+import pango
 from gettext import gettext as _
 import gnomedvb
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
@@ -65,19 +66,35 @@ class ControlCenterWindow(gtk.Window):
         scrolledchannels = gtk.ScrolledWindow()
         scrolledchannels.add(self.channelsview)
         scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrolledchannels.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        scrolledchannels.set_shadow_type(gtk.SHADOW_IN)
         self.vbox_left.pack_start(scrolledchannels)
         
         self.schedulestore = None
+                
+        self.help_eventbox = gtk.EventBox()
+        self.help_eventbox.modify_bg(gtk.STATE_NORMAL, self.help_eventbox.style.base[gtk.STATE_NORMAL])
+                
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_IN)
+        self.help_eventbox.add(frame)
+        
+        self.helpview = gtk.Label()
+        helptext = _("Choose a device group and channel on the left to view the program guide")
+        self.helpview.set_markup("<span foreground='grey50'>%s</span>" % helptext)
+        self.helpview.set_ellipsize(pango.ELLIPSIZE_END)
+        self.helpview.set_alignment(0.50, 0.50)
+        frame.add(self.helpview)
+        self.hpaned.pack2(self.help_eventbox)
         
         self.scheduleview = ScheduleView()
         self.scheduleview.connect("button-press-event", self._on_event_selected)
+        self.scheduleview.show()
         
-        scrolledschedule = gtk.ScrolledWindow()
-        scrolledschedule.add(self.scheduleview)
-        scrolledschedule.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrolledschedule.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.hpaned.pack2(scrolledschedule)
+        self.scrolledschedule = gtk.ScrolledWindow()
+        self.scrolledschedule.add(self.scheduleview)
+        self.scrolledschedule.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolledschedule.set_shadow_type(gtk.SHADOW_IN)
+        self.scrolledschedule.show()
         
         self.get_device_groups()
         
@@ -219,11 +236,22 @@ class ControlCenterWindow(gtk.Window):
         
     def _on_channel_selected(self, treeselection):
         model, aiter = treeselection.get_selected()
+        child = self.hpaned.get_child2()
         if aiter != None:
             sid = model[aiter][model.COL_SID]
             group_id = self._get_selected_group_id()
             self.schedulestore = ScheduleStore(self.manager.get_schedule(group_id, sid))
             self.scheduleview.set_model(self.schedulestore)
+            
+            # Display schedule if it isn't already displayed
+            if child != self.scrolledschedule:
+                self.hpaned.remove(child)
+                self.hpaned.pack2(self.scrolledschedule)
+        else:
+            # Display help message if it isn't already displayed
+            if child != self.help_eventbox:
+                self.hpaned.remove(child)
+                self.hpaned.pack2(self.help_eventbox)
             
     def _on_event_selected(self, treeview, event):
         if event.type == gtk.gdk._2BUTTON_PRESS:
@@ -269,3 +297,4 @@ class ControlCenterWindow(gtk.Window):
 
     def _on_about_clicked(self, action):
         pass
+    
