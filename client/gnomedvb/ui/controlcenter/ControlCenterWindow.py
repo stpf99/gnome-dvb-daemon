@@ -140,8 +140,8 @@ class ControlCenterWindow(gtk.Window):
         
         actiongroup = gtk.ActionGroup('Timers')
         actiongroup.add_actions([
-            ('EditTimers', gtk.STOCK_SAVE, _('_Manage'), None,
-             _('Create and edit timers'), self._on_button_display_timers_clicked),
+            ('EditTimers', None, _('_Manage'), None,
+             _('Manage timers'), self._on_button_display_timers_clicked),
             ('Quit', gtk.STOCK_QUIT, _('_Quit'), None,
              _('Quit the Program'), gtk.main_quit)])
         uimanager.insert_action_group(actiongroup, 1)
@@ -177,6 +177,15 @@ class ControlCenterWindow(gtk.Window):
         # Add a UI description
         uimanager.add_ui_from_string(ui)
         
+        icon_theme = gtk.icon_theme_get_default()
+        
+        pixbuf = icon_theme.load_icon("stock_timer", gtk.ICON_SIZE_MENU, gtk.ICON_LOOKUP_USE_BUILTIN)
+        timers_image = gtk.image_new_from_pixbuf(pixbuf)
+        timers_image.show()
+        
+        timersitem = uimanager.get_widget('/MenuBar/Timers/EditTimers')
+        timersitem.set_image(timers_image)
+        
         # Create a MenuBar
         menubar = uimanager.get_widget('/MenuBar')
         menubar.show()
@@ -187,12 +196,16 @@ class ControlCenterWindow(gtk.Window):
         self.toolbar.show()
         self.vbox_outer.pack_start(self.toolbar, False)
         
-        edit_image = gtk.image_new_from_stock(gtk.STOCK_SAVE, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        edit_image.show()
-        self.button_display_timers = gtk.ToolButton(icon_widget=edit_image, label=_("Timers"))
+        icon_theme = gtk.icon_theme_get_default()
+        
+        pixbuf = icon_theme.load_icon("stock_timer", gtk.ICON_SIZE_LARGE_TOOLBAR, gtk.ICON_LOOKUP_USE_BUILTIN)
+        timers_image = gtk.image_new_from_pixbuf(pixbuf)
+        timers_image.show()
+        
+        self.button_display_timers = gtk.ToolButton(icon_widget=timers_image, label=_("Timers"))
         self.button_display_timers.set_sensitive(False)
         self.button_display_timers.connect("clicked", self._on_button_display_timers_clicked)
-        self.button_display_timers.set_tooltip_markup(_("View and add scheduled recordings"))
+        self.button_display_timers.set_tooltip_markup(_("Manage timers"))
         self.button_display_timers.show()
         self.toolbar.insert(self.button_display_timers, 0)
         
