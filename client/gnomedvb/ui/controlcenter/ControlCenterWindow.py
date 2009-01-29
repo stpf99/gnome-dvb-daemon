@@ -113,6 +113,9 @@ class ControlCenterWindow(gtk.Window):
             <menuitem action="Preferences"/>
           </menu>
           <menu action="View">
+            <menuitem action="PrevDay"/>
+            <menuitem action="NextDay"/>
+            <separator/>
             <menuitem action="Channels"/>
             <menuitem action="Toolbar"/>
           </menu>
@@ -154,6 +157,12 @@ class ControlCenterWindow(gtk.Window):
         uimanager.insert_action_group(actiongroup, 2)
         
         actiongroup = gtk.ActionGroup('View')
+        actiongroup.add_actions([
+            ('PrevDay', None, _('Previous Day'), '<Control>B',
+             _('Go to previous day'), self._on_button_prev_day_clicked),
+            ('NextDay', None, _('Next Day'), '<Control>N',
+             _('Go to next day'), self._on_button_next_day_clicked),
+        ])
         actiongroup.add_toggle_actions([
             ('Channels', None, _('Channels'), None,
              _('View/Hide channels'), self._on_view_channels_clicked),
@@ -186,6 +195,18 @@ class ControlCenterWindow(gtk.Window):
         timersitem = uimanager.get_widget('/MenuBar/Timers/EditTimers')
         timersitem.set_image(timers_image)
         
+        self.prev_day_menuitem = uimanager.get_widget('/MenuBar/View/PrevDay')
+        prev_image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_MENU)
+        prev_image.show()
+        self.prev_day_menuitem.set_image(prev_image)
+        self.prev_day_menuitem.set_sensitive(False)
+        
+        self.next_day_menuitem = uimanager.get_widget('/MenuBar/View/NextDay')
+        next_image = gtk.image_new_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_MENU)
+        next_image.show()
+        self.next_day_menuitem.set_image(next_image)
+        self.next_day_menuitem.set_sensitive(False)
+        
         # Create a MenuBar
         menubar = uimanager.get_widget('/MenuBar')
         menubar.show()
@@ -213,11 +234,23 @@ class ControlCenterWindow(gtk.Window):
         sep.show()
         self.toolbar.insert(sep, 1)
         
-        self.button_prefs = gtk.ToolButton(gtk.STOCK_PREFERENCES)
-        self.button_prefs.connect("clicked", self._on_button_prefs_clicked)
-        self.button_prefs.set_tooltip_markup(_("Manage devices"))
-        self.button_prefs.show()
-        self.toolbar.insert(self.button_prefs, 2)
+        prev_image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        prev_image.show()
+        self.button_prev_day = gtk.ToolButton(icon_widget=prev_image, label=_("Previous Day"))
+        self.button_prev_day.connect("clicked", self._on_button_prev_day_clicked)
+        self.button_prev_day.set_tooltip_markup(_("Go to previous day"))
+        self.button_prev_day.set_sensitive(False)
+        self.button_prev_day.show()
+        self.toolbar.insert(self.button_prev_day, 2)
+        
+        next_image = gtk.image_new_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        next_image.show()
+        self.button_next_day = gtk.ToolButton(icon_widget=next_image, label=_("Next Day"))
+        self.button_next_day.connect("clicked", self._on_button_next_day_clicked)
+        self.button_next_day.set_tooltip_markup(_("Go to next day"))
+        self.button_next_day.set_sensitive(False)
+        self.button_next_day.show()
+        self.toolbar.insert(self.button_next_day, 3)
          
     def get_device_groups(self):
         for group in self.manager.get_registered_device_groups():
@@ -260,11 +293,23 @@ class ControlCenterWindow(gtk.Window):
             if child != self.scrolledschedule:
                 self.hpaned.remove(child)
                 self.hpaned.pack2(self.scrolledschedule)
+                self._set_previous_day_sensitive(True)
+                self._set_next_day_sensitive(True)
         else:
             # Display help message if it isn't already displayed
             if child != self.help_eventbox:
                 self.hpaned.remove(child)
                 self.hpaned.pack2(self.help_eventbox)
+                self._set_previous_day_sensitive(False)
+                self._set_next_day_sensitive(False)
+                
+    def _set_next_day_sensitive(self, val):
+        self.button_next_day.set_sensitive(val)
+        self.next_day_menuitem.set_sensitive(val)
+        
+    def _set_previous_day_sensitive(self, val):
+        self.button_prev_day.set_sensitive(val)
+        self.prev_day_menuitem.set_sensitive(val)
             
     def _on_event_selected(self, treeview, event):
         if event.type == gtk.gdk._2BUTTON_PRESS:
@@ -288,7 +333,39 @@ class ControlCenterWindow(gtk.Window):
             edit = EditTimersDialog(group_id, self)
             edit.run()
             edit.destroy()
-        
+   
+    def _on_button_prev_day_clicked(self, button):
+        if self.schedulestore != None:
+            model, aiter = self.scheduleview.get_selection().get_selected()
+            if aiter == None:
+                path, col, x, y = self.scheduleview.get_path_at_pos(1, 1)
+                aiter = model.get_iter(path)
+                
+            day_iter = self.schedulestore.get_previous_day_iter(aiter)
+            if day_iter == None:
+                self._set_previous_day_sensitive(False)
+            else:
+                self._set_next_day_sensitive(True)
+                day_path = model.get_path(day_iter)
+                self.scheduleview.scroll_to_cell(day_path, use_align=True)
+                self.scheduleview.set_cursor(day_path)
+            
+    def _on_button_next_day_clicked(self, button):
+        if self.schedulestore != None:
+            model, aiter = self.scheduleview.get_selection().get_selected()
+            if aiter == None:
+                path, col, x, y = self.scheduleview.get_path_at_pos(1, 1)
+                aiter = model.get_iter(path)
+            
+            day_iter = self.schedulestore.get_next_day_iter(aiter)
+            if day_iter == None:
+                self._set_next_day_sensitive(False)
+            else:
+                self._set_previous_day_sensitive(True)
+                day_path = model.get_path(day_iter)
+                self.scheduleview.scroll_to_cell(day_path, use_align=True)
+                self.scheduleview.set_cursor(day_path)
+    
     def _on_button_prefs_clicked(self, button):
         prefs = Preferences(self.manager, self)
         prefs.run()
