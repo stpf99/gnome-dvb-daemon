@@ -96,7 +96,7 @@ class TimerDialog(gtk.Dialog):
         ali = gtk.Alignment(0, 0.5)
         duration_hbox.pack_start(ali)
         
-        minutes_label = gtk.Label(_("Minutes"))
+        minutes_label = gtk.Label(_("minutes"))
         ali.add(minutes_label)
         
         self._set_default_time_and_date()
