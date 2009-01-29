@@ -71,4 +71,57 @@ class ScheduleStore(gtk.ListStore):
             start_arr[3], start_arr[4],
             duration, name, short_desc, ext_desc, event_id])
         
+    def get_next_day_iter(self, aiter):
+        """
+        Get the iter pointing to the row that represents
+        the next day after the row C{aiter} points to.
+        If C{aiter} is C{None} the first iter is used
+        as reference. C{None} is returned if there's
+        no next day.
+        """
+        if aiter == None:
+            aiter = self.get_iter_first ()
+        
+        # If the selected row marks a new day
+        # we still want the following day
+        aiter = self.iter_next (aiter)
+            
+        while (aiter != None):
+            row = self[aiter]
+            if row[self.COL_EVENT_ID] == self.NEW_DAY:
+                return row.iter
+            aiter = self.iter_next (aiter)
+                
+        return None
+        
+    def get_previous_day_iter(self, aiter):
+        """
+        Get the iter pointing to the row that represents
+        the day before the day that the row C{aiter} points
+        to belongs. C{None} is returned if there's no previous
+        day.
+        """
+        if aiter == None:
+            return None
+        
+        path0 = self.get_path(aiter)[0]
+        
+        if path0 == 0:
+            return None
+        
+        # If the selected row marks a new day
+        # we still want the previous day
+        # therefore we have to come across 2 new days
+        day_seen = 0
+        
+        while path0 >= 0:
+            aiter = self.get_iter((path0,))
+            row = self[aiter]
+            if row[self.COL_EVENT_ID] == self.NEW_DAY:
+                day_seen += 1
+                if day_seen == 2:
+                    return row.iter
+            path0 -= 1
+        
+        return None
 
