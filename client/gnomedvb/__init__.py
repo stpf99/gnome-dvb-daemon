@@ -19,9 +19,6 @@ INFOS = {
     "website-label" : _("GNOME DVB Daemon Website"),
 }
 
-gtk.about_dialog_set_email_hook(lambda about, mail: launch_default_for_uri("mailto:%s" % mail))
-gtk.about_dialog_set_url_hook(lambda about, url: launch_default_for_uri(url))
-
 def setup_i18n():
     # Setup i18n
     gettext.bindtextdomain(gnomedvb.defs.PACKAGE,

@@ -7,6 +7,9 @@ from gnomedvb.DVBModel import DVBModel
 
 gnomedvb.setup_i18n()
 
+gtk.about_dialog_set_email_hook(lambda about, mail: gnomedvb.launch_default_for_uri("mailto:%s" % mail))
+gtk.about_dialog_set_url_hook(lambda about, url: gnomedvb.launch_default_for_uri(url))
+
 model = DVBModel()
 w = ControlCenterWindow(model)
 w.show_all()
