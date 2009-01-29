@@ -19,7 +19,7 @@ class EditTimersDialog(gtk.Dialog):
         @param parent: Parent window
         @type parent: gtk.Window
         """
-        gtk.Dialog.__init__(self, title=_("Scheduled Recordings"),
+        gtk.Dialog.__init__(self, title=_("Timers"),
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
@@ -29,13 +29,6 @@ class EditTimersDialog(gtk.Dialog):
         
         self.vbox.set_spacing(6)
         self.set_size_request(350, 400)
-        
-        timers_ali = gtk.Alignment(0, 0.5)
-        self.vbox.pack_start(timers_ali, False)
-        
-        timers_label = gtk.Label()
-        timers_label.set_markup(_("<b>Scheduled recordings:</b>"))
-        timers_ali.add(timers_label)
         
         self.timerslist = gtk.ListStore(int, str, str, int, bool)
         self.timerslist.set_sort_column_id(self.COL_START, gtk.SORT_ASCENDING)
