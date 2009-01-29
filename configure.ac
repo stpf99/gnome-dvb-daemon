@@ -140,6 +140,7 @@ dnl *****************
 AM_CHECK_PYMOD(gobject)
 AM_CHECK_PYMOD(gtk)
 AM_CHECK_PYMOD(dbus)
+AM_CHECK_PYMOD(gio)
 AM_CHECK_PYMOD(gst)
 
 AC_CONFIG_FILES([
