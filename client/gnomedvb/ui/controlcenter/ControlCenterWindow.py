@@ -309,5 +309,15 @@ class ControlCenterWindow(gtk.Window):
                 self.toolbar.hide()
 
     def _on_about_clicked(self, action):
-        pass
+        about = gtk.AboutDialog()
+        #translators: These appear in the About dialog, usual format applies.
+        about.set_translator_credits( _("translator-credits") )
+        
+        for prop, val in gnomedvb.INFOS.items():
+            about.set_property(prop, val)
+
+        about.set_screen(self.get_screen())
+        about.run()
+        about.destroy()
+        
     
