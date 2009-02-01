@@ -18,6 +18,7 @@ class ControlCenterWindow(gtk.Window):
         
         self.channellists = {}
         self.manager = model
+        self.manager.connect('changed', self._on_manager_changed)
         
         self.connect('delete-event', gtk.main_quit)
         self.connect('destroy-event', gtk.main_quit)
@@ -255,8 +256,41 @@ class ControlCenterWindow(gtk.Window):
          
     def get_device_groups(self):
         for group in self.manager.get_registered_device_groups():
-            self.devgroupslist.append([group["name"], group["id"]])
-            self.channellists[group["id"]] = gnomedvb.DVBChannelListClient(group["id"])
+            self._append_group(group)
+            
+    def _append_group(self, group):
+        self.devgroupslist.append([group["name"], group["id"]])
+        self.channellists[group["id"]] = gnomedvb.DVBChannelListClient(group["id"])
+        
+    def _remove_group(self, group_id):
+        aiter = None
+        for row in self.devgroupslist:
+            if row[1] == group_id:
+                aiter = row.iter
+                
+        if aiter != None:
+            if self._get_selected_group_id() == group_id:
+                # Select no group
+                self.devgroupscombo.set_active(-1)
+                
+            self.devgroupslist.remove(aiter)
+            del self.channellists[group_id]
+            
+    def _reset_ui(self):
+        self.channelsstore = None
+        self.channelsview.set_model(None)
+        self.schedulestore = None
+        self.scheduleview.set_model(None)
+        self._display_help_message()
+
+    def _on_manager_changed(self, manager, group_id, change_type):
+        if change_type == 0:
+            # added
+            group = self.manager.get_device_group(group_id)
+            self._append_group(group)
+        elif change_type == 1:
+            # deleted
+            self._remove_group(group_id)
             
     def _get_selected_group_id(self):
         aiter = self.devgroupscombo.get_active_iter()
@@ -280,6 +314,8 @@ class ControlCenterWindow(gtk.Window):
             
             self.channelsstore = ChannelsStore(group_id)
             self.channelsview.set_model(self.channelsstore)
+        else:
+            self._reset_ui()
         
     def _on_channel_selected(self, treeselection):
         model, aiter = treeselection.get_selected()
@@ -299,10 +335,14 @@ class ControlCenterWindow(gtk.Window):
         else:
             # Display help message if it isn't already displayed
             if child != self.help_eventbox:
-                self.hpaned.remove(child)
-                self.hpaned.pack2(self.help_eventbox)
-                self._set_previous_day_sensitive(False)
-                self._set_next_day_sensitive(False)
+                self._display_help_message()
+                
+    def _display_help_message(self):
+        child = self.hpaned.get_child2()
+        self.hpaned.remove(child)
+        self.hpaned.pack2(self.help_eventbox)
+        self._set_previous_day_sensitive(False)
+        self._set_next_day_sensitive(False)
                 
     def _set_next_day_sensitive(self, val):
         self.button_next_day.set_sensitive(val)
