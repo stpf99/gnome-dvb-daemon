@@ -8,6 +8,7 @@ from gnomedvb.ui.widgets.ChannelsView import ChannelsView
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
+from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
 from gnomedvb.ui.preferences.Preferences import Preferences
 
 class ControlCenterWindow(gtk.Window):
@@ -324,8 +325,13 @@ class ControlCenterWindow(gtk.Window):
                     group_id = self._get_selected_group_id()
                     channel_sid = self._get_selected_channel_sid()
                     recorder = gnomedvb.DVBRecorderClient(group_id)
-                    recorder.add_timer_for_epg_event(event_id, channel_sid)
+                    rec_id = recorder.add_timer_for_epg_event(event_id, channel_sid)
                 dialog.destroy()
+                
+                if rec_id == 0:
+                    dialog = NoTimerCreatedDialog(self)
+                    dialog.run()
+                    dialog.destroy()
         
     def _on_button_display_timers_clicked(self, button):
         group_id = self._get_selected_group_id()
