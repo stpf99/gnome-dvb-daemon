@@ -194,8 +194,9 @@ class ControlCenterWindow(gtk.Window):
         timers_image = gtk.image_new_from_pixbuf(pixbuf)
         timers_image.show()
         
-        timersitem = uimanager.get_widget('/MenuBar/Timers/EditTimers')
-        timersitem.set_image(timers_image)
+        self.timersitem = uimanager.get_widget('/MenuBar/Timers/EditTimers')
+        self.timersitem.set_image(timers_image)
+        self.timersitem.set_sensitive(False)
         
         self.prev_day_menuitem = uimanager.get_widget('/MenuBar/View/PrevDay')
         prev_image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_MENU)
@@ -282,6 +283,8 @@ class ControlCenterWindow(gtk.Window):
         self.schedulestore = None
         self.scheduleview.set_model(None)
         self._display_help_message()
+        self.button_display_timers.set_sensitive(False)
+        self.timersitem.set_sensitive(False)
 
     def _on_manager_changed(self, manager, group_id, change_type):
         if change_type == 0:
@@ -311,6 +314,7 @@ class ControlCenterWindow(gtk.Window):
         group_id = self._get_selected_group_id()
         if group_id != None:
             self.button_display_timers.set_sensitive(True)
+            self.timersitem.set_sensitive(True)
             
             self.channelsstore = ChannelsStore(group_id)
             self.channelsview.set_model(self.channelsstore)
