@@ -1,4 +1,19 @@
 =============
+Version 0.1.3
+=============
+
+In this release all UI clients have been merged into
+gnome-dvb-control (previously gnome-dvb-schedule).
+In addition, dvb-daemon works with gst-rtsp-server 0.10.1.
+
+- Adjusted to changes of gst-rtsp-server in main branch
+- Integrated gnome-dvb-timers and gnmome-dvb-preferences into new gnome-dvb-control (previously gnome-dvb-schedule).
+- Display help message if no channel is selected
+- Removed Preferences ToolButton.
+- Added ToolButton and MenuItem for 'Previous Day' and 'Next Day' 
+- Show error message when timer for epg event could not be created
+
+=============
 Version 0.1.2
 =============
 
