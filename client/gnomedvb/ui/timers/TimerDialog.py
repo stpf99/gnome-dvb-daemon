@@ -154,13 +154,19 @@ class TimerDialog(gtk.Dialog):
                 start[3], start[4], duration)
               
             if rec_id == 0:
-                dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                dialog.set_markup (_("<big><span weight=\"bold\">Timer could not be created</span></big>"))
-                dialog.format_secondary_text(
-                    _("Make sure that the timer doesn't conflict with another one and doesn't start in the past.")
-                )
+                dialog = NoTimerCreatedDialog(self)
                 dialog.run()
                 dialog.destroy()
+
+               
+class NoTimerCreatedDialog(gtk.MessageDialog):
+
+    def __init__(self, parent_window):
+        gtk.MessageDialog.__init__(self, parent=parent_window,
+            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+        self.set_markup ("<big><span weight=\"bold\">%s</span></big>" % _("Timer could not be created"))
+        self.format_secondary_text(
+            _("Make sure that the timer doesn't conflict with another one and doesn't start in the past.")
+        )
 
