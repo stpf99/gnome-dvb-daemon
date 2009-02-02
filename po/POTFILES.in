@@ -1,5 +1,6 @@
 [encoding: UTF-8]
 # List of source files which contain translatable strings.
+client/gnomedvb/__init__.py
 client/gnomedvb/ui/controlcenter/ControlCenterWindow.py
 client/gnomedvb/ui/preferences/DeviceGroupsView.py
 client/gnomedvb/ui/preferences/Dialogs.py
