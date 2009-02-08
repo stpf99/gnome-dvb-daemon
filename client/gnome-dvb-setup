@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import gnomedvb
 import gtk
-from gnomedvb.wizard.SetupWizard import SetupWizard
+from gnomedvb.ui.wizard.SetupWizard import SetupWizard
 
 gnomedvb.setup_i18n()
 
