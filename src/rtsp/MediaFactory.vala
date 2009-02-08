@@ -34,7 +34,7 @@ namespace DVB {
           	}
           	
           	// Stop EPG scanner
-          	this.epgscanner = manager.get_epg_scanner (devgrp);
+          	this.epgscanner = devgrp.epgscanner;
           	if (epgscanner != null) epgscanner.stop ();
           	
           	Device? free_dev = devgrp.get_next_free_device ();

@@ -21,16 +21,17 @@ namespace DVB {
 
         // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
-        // Maps device group id to Recorder
-        private HashMap<uint, Recorder> recorders;
-        // Maps device group to ChannelList
-        private HashMap<uint, ChannelList> channellists;
+        
         // Maps device group id to Device
         private HashMap<uint, DeviceGroup> devices;
-        // Maps device group id to EPGScanner
-        private HashMap<uint, EPGScanner> epgscanners;
+        
         // Containss object paths to Schedule 
         private HashSet<string> schedules;
+        
+        // Contains group ids
+        private HashSet<uint> recorders;
+        private HashSet<uint> channellists;
+        private HashSet<uint> epgscanners;
         
         private uint device_group_counter;
         
@@ -40,12 +41,12 @@ namespace DVB {
         construct {
             this.scanners = new HashMap<string, Scanner> (GLib.str_hash,
                 GLib.str_equal, GLib.direct_equal);
-            this.recorders = new HashMap<uint, Recorder> ();
-            this.channellists = new HashMap<uint, ChannelList> ();
             this.devices = new HashMap<uint, DeviceGroup> ();
-            this.epgscanners = new HashMap<uint, EPGScanner> ();
             this.schedules = new HashSet<string> (GLib.str_hash,
                 GLib.str_equal);
+            this.recorders = new HashSet<uint> ();
+            this.channellists = new HashSet<uint> ();
+            this.epgscanners = new HashSet<uint> ();
             this.device_group_counter = 0;
         }
         
@@ -71,20 +72,14 @@ namespace DVB {
                 }
                 m.scanners.clear ();
                 
-                foreach (Recorder rec in m.recorders.get_values ()) {
-                    debug ("Stopping recorder");
-                    rec.stop ();
-                }
-                m.recorders.clear ();
-                
-                foreach (EPGScanner escanner in m.epgscanners.get_values ()) {
-                    debug ("Stopping EPG scanner");
-                    escanner.stop ();
-                }
-                m.epgscanners.clear ();
-           
                 m.schedules.clear ();
+                m.recorders.clear ();
                 m.channellists.clear ();
+                m.epgscanners.clear ();
+                
+                foreach (DeviceGroup devgrp in m.devices.get_values ()) {
+                    devgrp.destroy ();
+                }
                 m.devices.clear ();
                 
                 instance = null;
@@ -111,8 +106,8 @@ namespace DVB {
             } else {
                 // Stop epgscanner for device if there's any
                 EPGScanner? epgscanner =
-                    this.get_epg_scanner (this.get_device_group_of_device (
-                        reg_dev));
+                    this.get_device_group_of_device (
+                        reg_dev).epgscanner;
                 if (epgscanner != null) epgscanner.stop ();
                 
                 // Assign existing device
@@ -223,13 +218,13 @@ namespace DVB {
             string path = Constants.DBUS_RECORDER_PATH.printf (group_id);
         
             if (!this.recorders.contains (group_id)) {
-                debug ("Creating new Recorder for group %u",
+                debug ("Creating new Recorder D-Bus service for group %u",
                     group_id);
                 
                 DeviceGroup devgroup = this.get_device_group_if_exists (group_id);
                 if (devgroup == null) return "";
                 
-                Recorder recorder = new Recorder (devgroup);
+                Recorder recorder = devgroup.recorder;
                 
                 var conn = get_dbus_connection ();
                 if (conn == null) return "";
@@ -238,7 +233,7 @@ namespace DVB {
                     path,
                     recorder);
                     
-                this.recorders.set (group_id, recorder);
+                this.recorders.add (group_id);
             }
             
             return path;
@@ -345,7 +340,7 @@ namespace DVB {
                         // Stop epgscanner, because it might use the
                         // device we want to unregister
                         EPGScanner? epgscanner =
-                            this.get_epg_scanner (devgroup);
+                            devgroup.epgscanner;
                         if (epgscanner != null) epgscanner.stop ();
                     
                         Factory.get_config_store ().remove_device_from_group (
@@ -355,14 +350,7 @@ namespace DVB {
                             
                         // Group has no devices anymore, delete it
                         if (devgroup.size == 0) {
-                            if (this.devices.remove (group_id)) {
-                                // Remove EPG scanner, too
-                                if (epgscanner != null)
-                                    this.epgscanners.remove (devgroup.Id);
-                                Factory.get_config_store ().remove_device_group (
-                                    devgroup);
-                                this.changed (group_id, ChangeType.DELETED);
-                            }
+                            this.remove_group (devgroup);
                         } else {
                             // We still have a device, start EPG scanner again
                             if (epgscanner != null) epgscanner.start ();
@@ -415,7 +403,7 @@ namespace DVB {
                     path,
                     channels);
                     
-                this.channellists.set (group_id, channels);
+                this.channellists.add (group_id);
             }
             
             return path;
@@ -515,30 +503,6 @@ namespace DVB {
             return true;
         }
         
-        [DBus (visible = false)]
-        public Recorder? get_recorder_for_device_group (DeviceGroup devgroup) {
-            uint id = devgroup.Id;
-            if (this.recorders.contains (id))
-                return this.recorders.get (id);
-            else
-                return null;
-        }
-        
-        [DBus (visible = false)]
-        public EPGScanner? get_epg_scanner (DeviceGroup devgroup) {
-            return this.epgscanners.get (devgroup.Id);
-        }
-        
-        [DBus (visible = false)]
-        public void create_and_start_epg_scanner (DeviceGroup devgroup) { 
-            debug ("Creating new EPG scanner for device group %u",
-                devgroup.Id);
-        
-            EPGScanner? epgscanner = new EPGScanner (devgroup);
-            epgscanner.start ();
-            this.epgscanners.set (devgroup.Id, epgscanner);
-        }
-        
         private static Device? create_device (uint adapter, uint frontend,
                 string channels_conf, string recordings_dir) {
             // TODO Check if adapter and frontend exists
@@ -601,7 +565,7 @@ namespace DVB {
             // Start epgscanner for device again if there was one
             DeviceGroup? devgroup = this.get_device_group_of_device (scanner.Device);
             if (devgroup != null) {
-                EPGScanner? epgscanner = this.get_epg_scanner (devgroup);
+                EPGScanner? epgscanner = devgroup.epgscanner;
                 if (epgscanner != null) epgscanner.start ();
             }
         }
@@ -633,6 +597,27 @@ namespace DVB {
             }
             
             return null;
+        }
+        
+        private void remove_group (DeviceGroup devgroup) {
+            uint group_id = devgroup.Id;
+            if (this.devices.remove (group_id)) {
+                this.recorders.remove (group_id);
+                this.channellists.remove (group_id);
+                this.epgscanners.remove (group_id);
+                
+                EPGScanner? epgscanner = devgroup.epgscanner;
+                // Remove EPG scanner, too
+                if (epgscanner != null)
+                    this.epgscanners.remove (group_id);
+                    
+                devgroup.destroy ();
+                
+                Factory.get_config_store ().remove_device_group (
+                    devgroup);
+                
+                this.changed (group_id, ChangeType.DELETED);
+            }
         }
         
     }

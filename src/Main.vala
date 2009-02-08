@@ -127,10 +127,10 @@ public class Main {
             
             if (manager.add_device_group (device_group)) {
                 if (!disable_epg_scanner) {
-                    manager.create_and_start_epg_scanner (device_group);
+                    device_group.epgscanner.start ();
                 }
             
-                DVB.Recorder rec = manager.get_recorder_for_device_group (device_group);
+                DVB.Recorder rec = device_group.recorder;
             
                 // Restore timers
                 Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);

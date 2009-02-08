@@ -626,8 +626,7 @@ namespace DVB {
                 debug ("Creating new RecordingThread");
                 
                 // Stop epgscanner before starting recording
-                EPGScanner? epgscanner = Manager.get_instance ().get_epg_scanner (
-                    this.DeviceGroup);
+                EPGScanner? epgscanner = this.DeviceGroup.epgscanner;
                 if (epgscanner != null) epgscanner.stop ();
                 
                 DVB.Device? free_device = this.DeviceGroup.get_next_free_device ();
@@ -790,8 +789,7 @@ namespace DVB {
             if (recthread.count == 0) {
                 this.active_recording_threads.remove (timer);
                 // Start epgscanner again after recording ended
-                EPGScanner? epgscanner = Manager.get_instance ().get_epg_scanner (
-                    this.DeviceGroup);
+                EPGScanner? epgscanner = this.DeviceGroup.epgscanner;
                 if (epgscanner != null) epgscanner.start ();
             }
             

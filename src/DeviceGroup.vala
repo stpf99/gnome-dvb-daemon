@@ -22,15 +22,24 @@ namespace DVB {
         public AdapterType Type {
             get { return this.reference_device.Type; }
         }
-        // All settings are copied from this one
-        public Device reference_device {get; construct;}
+        public Recorder recorder {
+            get { return this._recorder; }
+        }
+        public EPGScanner epgscanner {
+            get { return this._epgscanner; }
+        }
         public string Name {get; set;}
                 
+        // All settings are copied from this one
+        public Device reference_device {get; construct;}
+        
         private Set<Device> devices;
+        private Recorder _recorder;
+        private EPGScanner? _epgscanner;
         
         construct {
             this.devices = new HashSet<Device> (Device.hash, Device.equal);
-            this.add (this.reference_device);
+            this.devices.add (this.reference_device);
         }
         
         /**
@@ -41,6 +50,14 @@ namespace DVB {
             this.Id = id;
             this.reference_device = reference_device;
             this.reference_device.Channels.group_id = id;
+            this._epgscanner = new EPGScanner (this);
+            this._recorder = new Recorder (this);
+        }
+        
+        public void destroy () {
+            debug ("Destroying group %u", this.Id);
+            this._epgscanner.stop ();
+            this._recorder.stop ();
         }
         
         /**
