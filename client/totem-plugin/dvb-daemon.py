@@ -57,7 +57,8 @@ class DVBDaemonPlugin(totem.Plugin):
                 else:
                     channellist = gnomedvb.DVBChannelListClient(group_id)
                     url = channellist.get_channel_url(sid)
-                self.totem_object.action_set_mrl_and_play(url)
+                self.totem_object.action_remote(totem.REMOTE_COMMAND_REPLACE, url)
+                self.totem_object.action_remote(totem.REMOTE_COMMAND_PLAY, url)
                 
     def _add_recording(self, rid):
         name = self.recstore.get_name(rid)
