@@ -7,8 +7,8 @@ pygst.require("0.10")
 import totem
 import gnomedvb
 
-from gnomedvb.widgets.ChannelsStore import ChannelsTreeStore
-from gnomedvb.widgets.ChannelsView import ChannelsView
+from gnomedvb.ui.widgets.ChannelsStore import ChannelsTreeStore
+from gnomedvb.ui.widgets.ChannelsView import ChannelsView
 
 class DVBDaemonPlugin(totem.Plugin):
 
