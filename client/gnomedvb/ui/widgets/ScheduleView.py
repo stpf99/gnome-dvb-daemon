@@ -13,7 +13,11 @@ class ScheduleView(gtk.TreeView):
             gtk.TreeView.__init__(self)
         
         self.set_property("headers-visible", False)
-        self.set_property("rules-hint", True)
+        
+        cell_rec = gtk.CellRendererPixbuf()
+        col_rec = gtk.TreeViewColumn("Recording", cell_rec)
+        col_rec.set_cell_data_func(cell_rec, self._get_rec_data)
+        self.append_column(col_rec)
         
         cell_time = gtk.CellRendererText()
         col_time = gtk.TreeViewColumn("Time", cell_time)
@@ -41,6 +45,7 @@ class ScheduleView(gtk.TreeView):
             
             duration = model[aiter][ScheduleStore.COL_DURATION]
             title = model[aiter][ScheduleStore.COL_TITLE]
+            
             short_desc = model[aiter][ScheduleStore.COL_SHORT_DESC]
             if len(short_desc) > 0:
                 short_desc += "\n"
@@ -67,4 +72,17 @@ class ScheduleView(gtk.TreeView):
             date = model.get_datetime(aiter)
             cell.set_property("text", date.strftime("%X"))
             cell.set_property ("cell-background-gdk", self.style.base[gtk.STATE_NORMAL])
+            
+    def _get_rec_data(self, column, cell, model, aiter):
+        event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
+        
+        if event_id == ScheduleStore.NEW_DAY:
+            cell.set_property ("cell-background-gdk", self.style.bg[gtk.STATE_NORMAL])
+        else:
+            cell.set_property ("cell-background-gdk", self.style.base[gtk.STATE_NORMAL])
+    
+        if model[aiter][ScheduleStore.COL_RECORDED] > 1:
+            cell.set_property("icon-name", "stock_timer")
+        else:
+            cell.set_property("icon-name", None)
 

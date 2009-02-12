@@ -15,13 +15,15 @@ class ScheduleStore(gtk.ListStore):
      COL_TITLE,
      COL_SHORT_DESC,
      COL_EXTENDED_DESC,
-     COL_EVENT_ID,) = range(10)
+     COL_RECORDED,
+     COL_EVENT_ID,) = range(11)
      
     NEW_DAY = -1
 
     def __init__(self, schedule_client):
-        gtk.ListStore.__init__(self, int, int, int, int, int, int, str, str, str, int)
+        gtk.ListStore.__init__(self, int, int, int, int, int, int, str, str, str, int, int)
         self._client = schedule_client
+        self._recorder = gnomedvb.DVBRecorderClient(schedule_client.get_group_id())
         self._fill_all()
         
     def _fill_from_now(self):
@@ -67,9 +69,13 @@ class ScheduleStore(gtk.ListStore):
         # We want minutes
         duration = self._client.get_duration(event_id) / 60
         
+        rec = self._recorder.has_timer_for_event(event_id,
+            self._client.get_channel_sid())
+        
         return self.append([start_arr[0], start_arr[1], start_arr[2],
             start_arr[3], start_arr[4],
-            duration, name, short_desc, ext_desc, event_id])
+            duration, name, short_desc, ext_desc,
+            rec, event_id])
         
     def get_next_day_iter(self, aiter):
         """
