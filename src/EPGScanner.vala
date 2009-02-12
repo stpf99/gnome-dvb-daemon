@@ -20,10 +20,12 @@ namespace DVB {
         private Queue<Channel> channels;
         private uint scan_event_id;
         private uint queue_scan_event_id;
+        private bool do_stop;
         
         construct {
             this.channels = new Queue<Channel> ();
             this.scan_event_id = 0;
+            this.do_stop = false;
         }
         
         /**
@@ -49,7 +51,9 @@ namespace DVB {
                 this.queue_scan_event_id = 0;
             }
             
-            this.reset ();
+            /* Don't call reset directly here
+             or we get in a in-consistent state */
+            this.do_stop = true;
         }
             
         private void reset () {
@@ -113,7 +117,7 @@ namespace DVB {
          * Scan the next frequency for EPG data
          */
         private bool scan_new_frequency () {
-            if (this.channels.is_empty ()) {
+            if (this.channels.is_empty () || this.do_stop) {
                 debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
                 
                 this.reset ();
