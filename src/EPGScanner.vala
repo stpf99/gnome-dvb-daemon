@@ -40,7 +40,12 @@ namespace DVB {
          */
         public void stop () {
             debug ("Stopping EPG scan for group %u", this.DeviceGroup.Id);
+         
+            this.remove_timeouts ();
+            this.reset ();
+        }   
             
+        private void remove_timeouts () {
             // Remove timed scans 
             if (this.scan_event_id != 0) {
                 Source.remove (this.scan_event_id);
@@ -51,6 +56,10 @@ namespace DVB {
                 this.queue_scan_event_id = 0;
             }
             
+        }
+        
+        public void destroy () {
+            this.remove_timeouts ();
             /* Don't call reset directly here
              or we get in a in-consistent state */
             this.do_stop = true;

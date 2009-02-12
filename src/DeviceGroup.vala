@@ -56,7 +56,7 @@ namespace DVB {
         
         public void destroy () {
             debug ("Destroying group %u", this.Id);
-            this._epgscanner.stop ();
+            this._epgscanner.destroy ();
             this._recorder.stop ();
         }
         
