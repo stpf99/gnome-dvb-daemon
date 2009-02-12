@@ -3,22 +3,8 @@ using Gee;
 
 namespace DVB {
     
-    [DBus (name = "org.gnome.DVB.Manager")]
-    public class Manager : Object {
+    public class Manager : Object, IDBusManager {
         
-        /**
-         * @type: 0: added, 1: deleted, 2: updated
-         *
-         * Emitted when a group has been added or deleted
-         */
-        public signal void changed (uint group_id, uint change_type);
-        
-        /**
-         * Emitted when a device has been added or removed from a group
-         */
-        public signal void group_changed (uint group_id, uint adapter,
-            uint frontend, uint change_type);
-
         // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
         
@@ -50,7 +36,6 @@ namespace DVB {
             this.device_group_counter = 0;
         }
         
-        [DBus (visible = false)]
         public static weak Manager get_instance () {
             instance_mutex.lock ();
             if (instance == null) {
@@ -60,7 +45,6 @@ namespace DVB {
             return instance;
         }
         
-        [DBus (visible = false)]
         public static void shutdown () {
             instance_mutex.lock ();
             Manager m = instance;
@@ -483,7 +467,6 @@ namespace DVB {
          *
          * Register device, create Recorder and ChannelList D-Bus service
          */
-        [DBus (visible = false)]
         public bool add_device_group (DeviceGroup devgroup) {
             debug ("Adding device group %u with %d devices", devgroup.Id,
                 devgroup.size);
