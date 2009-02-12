@@ -129,7 +129,10 @@ class DVBManagerClient(gobject.GObject):
         return self.manager.GetNameOfRegisteredDevice(adapter, frontend)
         
     def get_schedule(self, group_id, channel_sid):
-        return DVBScheduleClient(self.manager.GetSchedule(group_id, channel_sid))
+        s = DVBScheduleClient(self.manager.GetSchedule(group_id, channel_sid))
+        s._group = group_id
+        s._sid = channel_sid
+        return s
         
     def on_changed(self, group_id, change_type):
         self.emit("changed", group_id, change_type)
@@ -285,6 +288,9 @@ class DVBRecorderClient(gobject.GObject):
     def has_timer(self, year, month, day, hour, minute, duration):
         return self.recorder.HasTimer(year, month, day, hour, minute, duration)
         
+    def has_timer_for_event(self, event_id, channel_sid):
+        return self.recorder.HasTimerForEvent(event_id, channel_sid)
+        
     def on_recording_started(self, timer_id):
         self.emit("recording-started", timer_id)
         
@@ -334,11 +340,20 @@ class DVBScheduleClient(gobject.GObject):
     def __init__(self, object_path):
         gobject.GObject.__init__(self)
         
+        self._group = 0
+        self._sid = 0
+        
         bus = dbus.SessionBus()
         # Get proxy object
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.schedule = dbus.Interface(proxy, schedule_iface)
+        
+    def get_group_id(self):
+        return self._group
+        
+    def get_channel_sid(self):
+        return self._sid
         
     def get_all_events(self):
         return self.schedule.GetAllEvents()
