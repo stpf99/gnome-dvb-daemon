@@ -42,6 +42,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Main.vala \
 	src/Manager.vala \
 	src/MpegTsEnums.vala \
+	src/OverlapType.vala \
 	src/Recorder.vala \
 	src/Recording.vala \
 	src/RecordingsStore.vala \

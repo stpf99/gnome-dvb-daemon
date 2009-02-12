@@ -60,28 +60,78 @@ namespace DVB {
         }
         
         /**
-         * Whether the timer is scheduled somewhere in the given timeframe
+         * @duration: in minutes
+         * @returns: The overlap between the timer and the given time range.
+         * The timer is the reference, i.e. if the time range is completely
+         * contained in the timer OverlapType.COMPLETE is returned.
+         *
+         * The given time range must be in local time.
          */
-        public bool is_in_range (uint start_year, uint start_month,
-        uint start_day, uint start_hour, uint start_minute, uint duration) {
-            int64 this_start = (int64)this.get_start_time_timestamp ();
+        public OverlapType get_overlap_local (uint start_year, uint start_month,
+                uint start_day, uint start_hour, uint start_minute,
+                uint duration) {
+            time_t this_start = this.get_start_time_timestamp ();
+            time_t this_end = this.get_end_time_timestamp ();
             
             Time other_time = Utils.create_time ((int)start_year, (int)start_month,
                 (int)start_day, (int)start_hour, (int)start_minute);
             time_t other_start = other_time.mktime ();
+            other_time.minute += (int)duration;
+            time_t other_end = other_time.mktime ();
+            
+            return get_overlap (this_start, this_end, other_start, other_end);
+        }   
+        
+        /**
+         * Same as get_overlap_local but the given time range is UTC time.
+         */
+        public OverlapType get_overlap_utc (uint start_year, uint start_month,
+                uint start_day, uint start_hour, uint start_minute,
+                uint duration) {
+            time_t this_start = this.get_start_time_timestamp ();
+            time_t this_end = this.get_end_time_timestamp ();
+            
+            Time other_time = Utils.create_time ((int)start_year, (int)start_month,
+                (int)start_day, (int)start_hour, (int)start_minute);
+            time_t other_start = cUtils.timegm (other_time);
+            other_time.minute += (int)duration;
+            time_t other_end = cUtils.timegm (other_time);
+                
+            return get_overlap (this_start, this_end, other_start, other_end);
+        }
+            
+        private static OverlapType get_overlap (time_t this_start, time_t this_end,
+                time_t other_start, time_t other_end) {
             
             if (this_start <= other_start) {
                 // No conflict when this timer ends before other starts
-                time_t this_end = this.get_end_time_timestamp ();
-                return (this_end > other_start);
+                if (this_end <= other_start) {
+                    // this starts before other and ends before other starts
+                    return OverlapType.NONE;
+                } else {
+                    if (this_end >= other_end)
+                        // this starts before other and ends after other
+                        return OverlapType.COMPLETE;
+                    else
+                        // this starts before other and ends before other
+                        return OverlapType.PARTIAL;
+                }   
             } else {
                 // No conflict when other timer ends before this starts
-                other_time.minute += (int)duration;
-                time_t other_end = other_time.mktime ();
-                return (other_end > this_start);
+                if (this_end <= other_end) {
+                    // this starts after other and ends before other
+                    return OverlapType.PARTIAL;
+                } else {
+                    if (this_start < other_end)
+                         // this starts before other ends and ends after other
+                        return OverlapType.PARTIAL;
+                    else
+                        // this starts after other ends and ends after other
+                        return OverlapType.NONE;
+                }
             }
         }
-        
+                
         public uint[] get_start_time () {
             uint[] start = new uint[] {
                 this.Year,

@@ -310,7 +310,7 @@ namespace DVB {
      * This class is responsible for managing upcoming recordings and
      * already recorded items for a single group of devices
      */
-    public class Recorder : GLib.Object, IDBusRecorder {
+    public class Recorder : GLib.Object, IDBusRecorder, Iterable<Timer> {
     
         /* Set in constructor of sub-classes */
         public DVB.DeviceGroup DeviceGroup { get; construct; }
@@ -336,6 +336,14 @@ namespace DVB {
         
         public Recorder (DVB.DeviceGroup dev) {
             this.DeviceGroup = dev;
+        }
+        
+        public Type get_element_type () {
+            return typeof(Timer);
+        }
+        
+        public Gee.Iterator<Timer> iterator () {
+            return this.timers.get_values().iterator ();
         }
         
         /**
@@ -574,18 +582,53 @@ namespace DVB {
          * @returns: TRUE if a timer is already scheduled in the given
          * period of time
          */
-        public bool HasTimer (uint start_year, uint start_month,
-        uint start_day, uint start_hour, uint start_minute, uint duration) {
+        public bool HasTimer (uint start_year, uint start_month, uint start_day,
+                uint start_hour, uint start_minute, uint duration) {
             bool val = false;
             lock (this.timers) {
                 foreach (uint32 key in this.timers.get_keys()) {
-                    if (this.timers.get(key).is_in_range (start_year, start_month,
-                    start_day, start_hour, start_minute, duration))
+                    OverlapType overlap = this.timers.get(key).get_overlap_local (
+                        start_year, start_month, start_day, start_hour,
+                        start_minute, duration);
+                    
+                    if (overlap == OverlapType.PARTIAL
+                            || overlap == OverlapType.COMPLETE) {
                         val = true;
                         break;
+                    }
                 }
             }
         
+            return val;
+        }
+        
+        public OverlapType HasTimerForEvent (uint event_id, uint channel_sid) {
+            weak EPGStore epgstore = Factory.get_epg_store ();
+            Event? event = epgstore.get_event (event_id, channel_sid);
+            if (event == null) {
+                debug ("Could not find event with id %u", event_id);
+                return OverlapType.UNKNOWN;
+            }
+            
+            OverlapType val= OverlapType.NONE;
+            lock (this.timers) {
+                foreach (uint32 key in this.timers.get_keys ()) {
+                    Timer timer = this.timers.get (key);
+                    
+                    if (timer.ChannelSid == channel_sid) {
+                        OverlapType overlap = timer.get_overlap_utc (
+                            event.year, event.month, event.day, event.hour,
+                            event.minute, event.duration/60);
+                        
+                        if (overlap == OverlapType.PARTIAL
+                                || overlap == OverlapType.COMPLETE) {
+                            val = overlap;
+                            break;
+                        }
+                    }
+                } 
+            }
+            
             return val;
         }
         

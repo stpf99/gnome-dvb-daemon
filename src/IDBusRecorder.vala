@@ -97,6 +97,11 @@ namespace DVB {
         public abstract bool HasTimer (uint start_year, uint start_month,
             uint start_day, uint start_hour, uint start_minute, uint duration);
         
+        /**
+         * Checks if a timer overlaps with the given event
+         */
+        public abstract OverlapType HasTimerForEvent (uint event_id, uint channel_sid);
+        
     }
 
 }
