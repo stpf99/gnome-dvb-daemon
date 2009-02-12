@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import gtk
 import pango
+import gobject
 from gettext import gettext as _
 import gnomedvb
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
@@ -10,6 +11,25 @@ from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
 from gnomedvb.ui.preferences.Preferences import Preferences
+
+class HelpBox(gtk.EventBox):
+
+    def __init__(self):
+        gtk.EventBox.__init__(self)
+        self.modify_bg(gtk.STATE_NORMAL, self.style.base[gtk.STATE_NORMAL])
+                
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_IN)
+        self.add(frame)
+        
+        self._helpview = gtk.Label()
+        self._helpview.set_ellipsize(pango.ELLIPSIZE_END)
+        self._helpview.set_alignment(0.50, 0.50)
+        frame.add(self._helpview)
+        
+    def set_markup(self, helptext):
+        self._helpview.set_markup("<span foreground='grey50'>%s</span>" % helptext)
+
 
 class ControlCenterWindow(gtk.Window):
 
@@ -49,6 +69,7 @@ class ControlCenterWindow(gtk.Window):
         self.vbox_left.pack_start(groups_label, False)
         
         self.devgroupslist = gtk.ListStore(str, int)
+        self.devgroupslist.connect("row-inserted", self._on_devgroupslist_inserted)
         
         self.devgroupscombo = gtk.ComboBox(self.devgroupslist)
         self.devgroupscombo.connect("changed", self._on_devgroupscombo_changed)
@@ -73,19 +94,9 @@ class ControlCenterWindow(gtk.Window):
         
         self.schedulestore = None
                 
-        self.help_eventbox = gtk.EventBox()
-        self.help_eventbox.modify_bg(gtk.STATE_NORMAL, self.help_eventbox.style.base[gtk.STATE_NORMAL])
-                
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_IN)
-        self.help_eventbox.add(frame)
-        
-        self.helpview = gtk.Label()
-        helptext = _("Choose a device group and channel on the left to view the program guide")
-        self.helpview.set_markup("<span foreground='grey50'>%s</span>" % helptext)
-        self.helpview.set_ellipsize(pango.ELLIPSIZE_END)
-        self.helpview.set_alignment(0.50, 0.50)
-        frame.add(self.helpview)
+        self.help_eventbox = HelpBox()
+        self.choose_group_text = _("Choose a device group and channel on the left to view the program guide")
+        self.create_group_text = _("No device groups are configured. Please go to preferences and create one.")
         self.hpaned.pack2(self.help_eventbox)
         
         self.scheduleview = ScheduleView()
@@ -99,10 +110,11 @@ class ControlCenterWindow(gtk.Window):
         self.scrolledschedule.show()
         
         self.get_device_groups()
-        
-        self.devgroupscombo.set_active(0)
-        self.channelsview.grab_focus()
-        
+        if len(self.devgroupslist) == 0:
+            self.help_eventbox.set_markup(self.create_group_text)
+        else:
+            self._select_first_group()
+      
     def __create_menu(self):
         ui = '''
         <menubar name="MenuBar">
@@ -258,7 +270,11 @@ class ControlCenterWindow(gtk.Window):
     def get_device_groups(self):
         for group in self.manager.get_registered_device_groups():
             self._append_group(group)
-            
+       
+    def _select_first_group(self):
+        self.devgroupscombo.set_active(0)
+        self.channelsview.grab_focus()
+           
     def _append_group(self, group):
         self.devgroupslist.append([group["name"], group["id"]])
         self.channellists[group["id"]] = gnomedvb.DVBChannelListClient(group["id"])
@@ -280,6 +296,9 @@ class ControlCenterWindow(gtk.Window):
     def _reset_ui(self):
         self.channelsstore = None
         self.channelsview.set_model(None)
+        self._reset_schedule_view()
+        
+    def _reset_schedule_view(self):
         self.schedulestore = None
         self.scheduleview.set_model(None)
         self._display_help_message()
@@ -318,9 +337,16 @@ class ControlCenterWindow(gtk.Window):
             
             self.channelsstore = ChannelsStore(group_id)
             self.channelsview.set_model(self.channelsstore)
+            
+            self._reset_schedule_view()
         else:
             self._reset_ui()
-        
+            
+    def _on_devgroupslist_inserted(self, model, path, aiter):
+        if len(model) == 1:
+            # Delay the call otherwise we get DBus errors
+            gobject.timeout_add(100, self._select_first_group)
+    
     def _on_channel_selected(self, treeselection):
         model, aiter = treeselection.get_selected()
         child = self.hpaned.get_child2()
@@ -347,6 +373,11 @@ class ControlCenterWindow(gtk.Window):
         self.hpaned.pack2(self.help_eventbox)
         self._set_previous_day_sensitive(False)
         self._set_next_day_sensitive(False)
+        
+        if len(self.devgroupslist) == 0:
+            self.help_eventbox.set_markup(self.create_group_text)
+        else:
+            self.help_eventbox.set_markup(self.choose_group_text)
                 
     def _set_next_day_sensitive(self, val):
         self.button_next_day.set_sensitive(val)
@@ -437,6 +468,7 @@ class ControlCenterWindow(gtk.Window):
 
     def _on_about_clicked(self, action):
         about = gtk.AboutDialog()
+        about.set_transient_for(self)
         #translators: These appear in the About dialog, usual format applies.
         about.set_translator_credits( _("translator-credits") )
         
