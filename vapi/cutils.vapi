@@ -25,4 +25,7 @@ namespace cUtils {
         public static SignalHandler connect (int signum, SignalHandler handler);
     }
 
+    [CCode (cname = "g_log_default_handler", cheader_filename = "glib.h")]
+    public static void log_default_handler (string? log_domain, GLib.LogLevelFlags log_levels, string message, void* data);
+
 }

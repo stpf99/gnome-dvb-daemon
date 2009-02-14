@@ -87,6 +87,12 @@ public class Main {
         mainloop.quit ();
     }
     
+    private static void log_func (string? log_domain, LogLevelFlags log_levels,
+            string message) {
+        if (has_debug)
+            cUtils.log_default_handler (log_domain, log_levels, message, null);
+    }
+    
     public static int main (string[] args) {
         cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
         cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
@@ -108,6 +114,10 @@ public class Main {
             stdout.printf (" %s\n", Config.PACKAGE_VERSION);
             return 0;
         }
+        
+        Log.set_handler (null, LogLevelFlags.LEVEL_DEBUG |
+            LogLevelFlags.FLAG_FATAL | LogLevelFlags.FLAG_RECURSION,
+            log_func);
         
         // Creating a GLib main loop with a default context
         mainloop = new MainLoop (null, false);
