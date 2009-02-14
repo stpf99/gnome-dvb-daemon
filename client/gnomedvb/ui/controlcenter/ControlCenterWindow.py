@@ -297,13 +297,12 @@ class ControlCenterWindow(gtk.Window):
         self.channelsstore = None
         self.channelsview.set_model(None)
         self._reset_schedule_view()
+        self._set_timers_sensitive(False)
         
     def _reset_schedule_view(self):
         self.schedulestore = None
         self.scheduleview.set_model(None)
         self._display_help_message()
-        self.button_display_timers.set_sensitive(False)
-        self.timersitem.set_sensitive(False)
 
     def _on_manager_changed(self, manager, group_id, change_type):
         if change_type == 0:
@@ -328,12 +327,11 @@ class ControlCenterWindow(gtk.Window):
             return sid
         else:
             return None
-
+    
     def _on_devgroupscombo_changed(self, combo):
         group_id = self._get_selected_group_id()
         if group_id != None:
-            self.button_display_timers.set_sensitive(True)
-            self.timersitem.set_sensitive(True)
+            self._set_timers_sensitive(True)
             
             self.channelsstore = ChannelsStore(group_id)
             self.channelsview.set_model(self.channelsstore)
@@ -386,7 +384,11 @@ class ControlCenterWindow(gtk.Window):
     def _set_previous_day_sensitive(self, val):
         self.button_prev_day.set_sensitive(val)
         self.prev_day_menuitem.set_sensitive(val)
-            
+             
+    def _set_timers_sensitive(self, val):
+        self.button_display_timers.set_sensitive(val)
+        self.timersitem.set_sensitive(val)
+       
     def _on_event_selected(self, treeview, event):
         if event.type == gtk.gdk._2BUTTON_PRESS:
             model, aiter = treeview.get_selection().get_selected()
