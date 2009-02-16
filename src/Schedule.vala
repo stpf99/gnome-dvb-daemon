@@ -70,7 +70,7 @@ namespace DVB {
                     SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     
                     EventElement element = this.events.get (iter);
-                    Event? e = this.get (element.id);
+                    Event? e = this.get_event (element.id);
                     if (e != null && e.has_expired ()) {
                         expired_events.prepend (iter);
                     } else {
@@ -91,7 +91,7 @@ namespace DVB {
             }
         }
         
-        public Event? get (uint event_id) {
+        public Event? get_event (uint event_id) {
             return this.epgstore.get_event (event_id, this.channel.Sid);
         }
         
@@ -146,7 +146,7 @@ namespace DVB {
                     SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     if (event != null && event.is_running ()) {
                         running_event = event;
                         break;
@@ -208,7 +208,7 @@ namespace DVB {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     if (event.name != null)
                         name = event.name;
                 } else {
@@ -226,7 +226,7 @@ namespace DVB {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     if (event.description != null)
                         desc = event.description;
                 } else {
@@ -244,7 +244,7 @@ namespace DVB {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     if (event.extended_description != null)
                         desc = event.extended_description;
                 } else {
@@ -262,7 +262,7 @@ namespace DVB {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     duration = event.duration;
                 } else {
                     debug ("No event with id %u", event_id);
@@ -279,7 +279,7 @@ namespace DVB {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     Time local_time = event.get_local_start_time ();
                     start = new uint[6];
                     start[0] = local_time.year + 1900;
@@ -303,7 +303,7 @@ namespace DVB {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     val = (event.is_running ());
                 } else {
                     debug ("No event with id %u", event_id);
@@ -320,7 +320,7 @@ namespace DVB {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
-                    Event? event = this.get (element.id);
+                    Event? event = this.get_event (element.id);
                     val = (!event.free_ca_mode);
                 } else {
                     debug ("No event with id %u", event_id);
