@@ -100,7 +100,7 @@ namespace DVB {
             string val = "";
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
-                    val = this.recordings.get(rec_id).Location.get_path ();
+                    val = this.recordings.get(rec_id).Location.get_uri ();
                 }
             }
            
