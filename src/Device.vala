@@ -3,10 +3,10 @@ using Gst;
 namespace DVB {
 
     public enum AdapterType {
+        UNKNOWN,
         DVB_T,
         DVB_S,
-        DVB_C,
-        UNKNOWN
+        DVB_C
     }
 
     public class Device : GLib.Object {
