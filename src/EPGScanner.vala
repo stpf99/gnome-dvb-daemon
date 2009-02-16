@@ -191,7 +191,7 @@ namespace DVB {
                 event = val.get_structure ();
                 
                 uint sid = get_uint_val (structure, "service-id");
-                Channel channel = this.DeviceGroup.Channels.get (sid);
+                Channel channel = this.DeviceGroup.Channels.get_channel (sid);
                 if (channel == null) {
                     warning ("Could not find channel %u for this device", sid);
                     return;

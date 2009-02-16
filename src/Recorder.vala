@@ -123,7 +123,7 @@ namespace DVB {
                     critical ("Could not create dvbbasebin element");
                     return;
                 }
-                DVB.Channel channel = this.device.Channels.get (
+                DVB.Channel channel = this.device.Channels.get_channel (
                     channel_sid);
                 channel.setup_dvb_source (dvbbasebin);
                 
@@ -290,7 +290,7 @@ namespace DVB {
             // Find name and description for recordings
             foreach (Recording rec in this.recordings.get_values ()) {
                 if (rec.Name == null) {
-                    Channel chan = this.device.Channels.get (rec.ChannelSid);
+                    Channel chan = this.device.Channels.get_channel (rec.ChannelSid);
                     Schedule sched = chan.Schedule;
                     
                     Event? event = sched.get_running_event ();
@@ -376,7 +376,7 @@ namespace DVB {
                 
             // TODO Get name for timer
             var new_timer = new Timer (timer_id,
-                                       this.DeviceGroup.Channels.get(channel).Sid,
+                                       this.DeviceGroup.Channels.get_channel (channel).Sid,
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);
@@ -549,7 +549,7 @@ namespace DVB {
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
-                    name = this.DeviceGroup.Channels.get (t.ChannelSid).Name;
+                    name = this.DeviceGroup.Channels.get_channel (t.ChannelSid).Name;
                 }
             }
             return name;
@@ -643,7 +643,7 @@ namespace DVB {
          * Start recording of specified timer
          */
         protected void start_recording (Timer timer) {
-            Channel channel = this.DeviceGroup.Channels.get (timer.ChannelSid);
+            Channel channel = this.DeviceGroup.Channels.get_channel (timer.ChannelSid);
             
             File? location = this.create_recording_dirs (channel,
                 timer.get_start_time ());
@@ -656,7 +656,7 @@ namespace DVB {
             foreach (uint32 timer_id in this.active_timers) {
                 Timer other_timer = this.timers.get (timer_id);
                 Channel other_channel =
-                    this.DeviceGroup.Channels.get (other_timer.ChannelSid);
+                    this.DeviceGroup.Channels.get_channel (other_timer.ChannelSid);
                 
                 if (channel.on_same_transport_stream (other_channel)) {
                     debug ("Using already active RecordingThread");

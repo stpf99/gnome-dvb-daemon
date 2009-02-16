@@ -446,7 +446,8 @@ namespace DVB {
                         var conn = get_dbus_connection ();
                         if (conn == null) return "";
                         
-                        Schedule schedule = devgroup.Channels.get (channel_sid).Schedule;
+                        Schedule schedule = devgroup.Channels.get_channel (
+                            channel_sid).Schedule;
                         
                         conn.register_object (
                             path,

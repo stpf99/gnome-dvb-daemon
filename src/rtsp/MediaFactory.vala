@@ -43,7 +43,7 @@ namespace DVB {
           	    return null;
           	}
           	
-          	Channel? channel = free_dev.Channels.get (sidnr);
+          	Channel? channel = free_dev.Channels.get_channel (sidnr);
           	if (channel == null) {
           	    warning ("No channel %u in group %u", sidnr, grpnr);
           	    return null;

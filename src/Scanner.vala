@@ -396,7 +396,7 @@ namespace DVB {
                     this.add_new_channel (sid);
                 }
                 
-                Channel channel = this.channels.get(sid);
+                Channel channel = this.channels.get_channel (sid);
                 
                 if (service.has_field ("scrambled")) {
                     bool scrambled;
@@ -479,7 +479,7 @@ namespace DVB {
                             this.add_new_channel (sid);
                         }
                         
-                        Channel dvb_channel = this.channels.get (sid);
+                        Channel dvb_channel = this.channels.get_channel (sid);
                         
                         if (name.validate ()) {
                             dvb_channel.Network = name;
@@ -507,7 +507,7 @@ namespace DVB {
                 this.add_new_channel (program_number);
             }
             
-            Channel dvb_channel = this.channels.get (program_number);
+            Channel dvb_channel = this.channels.get_channel (program_number);
             
             Gst.Value streams = structure.get_value ("streams");
             uint size = streams.list_get_size ();
@@ -581,7 +581,7 @@ namespace DVB {
                 
                 ArrayList<uint> del_channels = new ArrayList<uint> ();
                 foreach (uint sid in this.new_channels) {
-                    DVB.Channel channel = this.channels.get (sid);
+                    DVB.Channel channel = this.channels.get_channel (sid);
                     
                     uint tsid = channel.TransportStreamId;
                     // Check if already came across the transport stream

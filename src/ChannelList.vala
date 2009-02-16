@@ -24,7 +24,7 @@ namespace DVB {
             this.channels_file = channels;
         }
         
-        public Channel? get (uint sid) {
+        public Channel? get_channel (uint sid) {
             Channel? val = null;
             lock (this.channels) {
                 if (this.channels.contains (sid))
@@ -193,7 +193,8 @@ namespace DVB {
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
                     Channel channel = this.channels.get (channel_id);
-                    url = "rtsp://localhost:1554/%u/%u".printf (this.group_id, channel.Sid);   
+                    url = "rtsp://localhost:1554/%u/%u".printf (
+                        this.group_id, channel.Sid);   
                 }
             }
             
