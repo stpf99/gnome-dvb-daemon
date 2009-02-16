@@ -470,20 +470,27 @@ namespace DVB {
         public bool add_device_group (DeviceGroup devgroup) {
             debug ("Adding device group %u with %d devices", devgroup.Id,
                 devgroup.size);
-        
-            this.devices.set (devgroup.Id, devgroup);
-            string rec_path = this.GetRecorder (devgroup.Id);
-            if (rec_path == "") return false;
             
-            string channels_path = this.GetChannelList (devgroup.Id);
-            if (channels_path == "") return false;
-            
-            Factory.get_config_store ().add_device_group (devgroup);
+            bool success;
+            if (devgroup.Type != AdapterType.UNKNOWN) {
+                this.devices.set (devgroup.Id, devgroup);
+                string rec_path = this.GetRecorder (devgroup.Id);
+                
+                string channels_path = this.GetChannelList (devgroup.Id);
+                
+                Factory.get_config_store ().add_device_group (devgroup);
+                
+                success = (rec_path != "" && channels_path != "");
+            } else {
+                warning ("Not adding device group %u of unknown type",
+                    devgroup.Id);
+                success = false;
+            }
             
             if (devgroup.Id > device_group_counter)
                 device_group_counter = devgroup.Id;
             
-            return true;
+            return success;
         }
         
         private static Device? create_device (uint adapter, uint frontend,
