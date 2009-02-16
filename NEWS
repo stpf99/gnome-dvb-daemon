@@ -1,4 +1,26 @@
 =============
+Version 0.1.4
+=============
+
+This release fixes a couple of bugs and shows a timer icon
+in gnome-dvb-control if a recording overlaps with the event
+and a help message if no groups are configured.
+
+- Import correct module in gnome-dvb-setup
+- Fixed imports in Totem plugin
+- Use action_remote instead of set_mrl_and play in Totem plugin
+- Fixed problem when epg scanner was stopped during an active scan
+- Renamed Timer.is_in_range to get_overlap_local. It now returns the type of the overlap, too
+- Added HasTimerForEvent method to Recorder DBus interface
+- Display timer icon in the first column if a timer exists that overlaps with the event in gnome-dvb-control
+- Display help message if no devices are configured
+- Only print debug messages with --debug is provided
+- Mark timers button sensitive when group is selected
+- Don't add device groups of unknown type
+- Renamed get to get_event to avoid confusions with GObject's get method
+- Renamed get to get_channel to avoid confusions with GObject's get method
+
+=============
 Version 0.1.3
 =============
 
