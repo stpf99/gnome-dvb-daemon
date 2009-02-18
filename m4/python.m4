@@ -33,6 +33,9 @@ else
   AC_MSG_RESULT(no)
   ifelse([$4], [],, [$4
 ])dnl
+  AC_MSG_ERROR([
+  Cannot find Python module [$1]
+  ])
 fi
 ])
 
