@@ -490,6 +490,11 @@ namespace DVB {
             
             if (devgroup.Id > device_group_counter)
                 device_group_counter = devgroup.Id;
+                
+            
+            if (!Main.get_disable_epg_scanner ()) {
+                devgroup.epgscanner.start ();
+            }
             
             return success;
         }

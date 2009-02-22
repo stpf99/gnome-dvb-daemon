@@ -93,6 +93,10 @@ public class Main {
             cUtils.log_default_handler (log_domain, log_levels, message, null);
     }
     
+    public static bool get_disable_epg_scanner () {
+        return Main.disable_epg_scanner;
+    }
+    
     public static int main (string[] args) {
         cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
         cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
@@ -136,10 +140,6 @@ public class Main {
         foreach (DVB.DeviceGroup device_group in device_groups) {
             
             if (manager.add_device_group (device_group)) {
-                if (!disable_epg_scanner) {
-                    device_group.epgscanner.start ();
-                }
-            
                 DVB.Recorder rec = device_group.recorder;
             
                 // Restore timers
