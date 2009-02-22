@@ -148,9 +148,9 @@ namespace DVB {
                 int group_type = statement.column_int (1);
                 AdapterType type;
                 switch (group_type) {
-                    case 0: type = AdapterType.DVB_T; break;
-                    case 1: type = AdapterType.DVB_S; break;
-                    case 2: type = AdapterType.DVB_C; break;
+                    case 1: type = AdapterType.DVB_T; break;
+                    case 2: type = AdapterType.DVB_S; break;
+                    case 3: type = AdapterType.DVB_C; break;
                     default:
                     debug ("Group %d has unknown type %d",
                         group_id, group_type);
