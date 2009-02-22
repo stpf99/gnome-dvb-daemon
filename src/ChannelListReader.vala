@@ -52,7 +52,6 @@ namespace DVB {
             }
             
             if (c != null && c.is_valid ()) {
-                debug ("Channel: %s", c.to_string ());
                 return c;
             } else {
                 string val = (c == null) ? "(null)" : c.to_string ();
