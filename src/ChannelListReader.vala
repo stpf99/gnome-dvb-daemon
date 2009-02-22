@@ -24,7 +24,7 @@ namespace DVB {
                     if (c != null)
                         channels.add (c);
                     else
-                        warning("Could not parse channel");
+                        warning ("Could not parse channel");
                 }
             }
             
@@ -32,7 +32,7 @@ namespace DVB {
         }
         
         private Channel? parse_line (string line) {
-            Channel c = null;
+            Channel? c = null;
             switch (this.Type) {
                 case AdapterType.DVB_T:
                 c = parse_terrestrial_channel (line);
@@ -51,7 +51,13 @@ namespace DVB {
                 break;
             }
             
-            return (c.is_valid ()) ? c : null;
+            if (c != null && c.is_valid ()) {
+                return c;
+            } else {
+                string val = (c == null) ? "(null)" : c.to_string ();
+                warning ("Channel is not valid: %s", val);
+                return null;
+            }
         }
         
         /**
@@ -79,30 +85,45 @@ namespace DVB {
                 } else if (i == 1) {
                     channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
-                    channel.Inversion = (DvbSrcInversion) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
+                    if (eval != null)
+                        channel.Inversion = (DvbSrcInversion) eval;
                 } else if (i == 3) {
-                    channel.Bandwidth = (DvbSrcBandwidth) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcBandwidth), val, "DVB_DVB_SRC_BANDWIDTH_");
+                    if (eval != null)
+                        channel.Bandwidth = (DvbSrcBandwidth) eval;
                 } else if (i == 4) {
-                    channel.CodeRateHP = (DvbSrcCodeRate) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
+                    if (eval != null)
+                        channel.CodeRateHP = (DvbSrcCodeRate) eval;
                 } else if (i == 5) {
-                    channel.CodeRateLP = (DvbSrcCodeRate) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
+                    if (eval != null)
+                        channel.CodeRateLP = (DvbSrcCodeRate) eval;
                 } else if (i == 6) {
-                    channel.Constellation = (DvbSrcModulation) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
+                    if (eval != null)
+                        channel.Constellation = (DvbSrcModulation) eval;
                 } else if (i == 7) {
-                    channel.TransmissionMode = (DvbSrcTransmissionMode) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcTransmissionMode), val,
                         "DVB_DVB_SRC_TRANSMISSION_MODE_");
+                    if (eval != null)
+                        channel.TransmissionMode = (DvbSrcTransmissionMode) eval;
                 } else if (i == 8) {
-                    channel.GuardInterval = (DvbSrcGuard) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcGuard), val, "DVB_DVB_SRC_GUARD_");
+                    channel.GuardInterval = (DvbSrcGuard) eval;
                 } else if (i == 9) {
-                    channel.Hierarchy = (DvbSrcHierarchy) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcHierarchy), val, "DVB_DVB_SRC_HIERARCHY_");
+                    if (eval != null)
+                        channel.Hierarchy = (DvbSrcHierarchy) eval;
                 } else if (i == 10) {                
                     channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 11) {
@@ -185,16 +206,22 @@ namespace DVB {
                 } else if (i == 1) {
                     channel.Frequency = (uint)val.to_int ();
                 } else if (i == 2) {
-                    channel.Inversion = (DvbSrcInversion) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
+                    if (eval != null)
+                        channel.Inversion = (DvbSrcInversion) eval;
                 } else if (i == 3) {
                     channel.SymbolRate = (uint)val.to_int ();
                 } else if (i == 4) {
-                    channel.CodeRate = (DvbSrcCodeRate) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
+                    if (eval != null)
+                        channel.CodeRate = (DvbSrcCodeRate) eval;
                 } else if (i == 5) {
-                    channel.Modulation = (DvbSrcModulation) get_value_with_prefix (
+                    int? eval = get_value_with_prefix (
                         typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
+                    if (eval != null)
+                        channel.Modulation = (DvbSrcModulation) eval;
                 } else if (i == 6) {                
                     channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 7) {
@@ -209,7 +236,7 @@ namespace DVB {
             return channel;
         }
         
-        private static int get_value_with_prefix (GLib.Type enumtype, string name,
+        private static int? get_value_with_prefix (GLib.Type enumtype, string name,
                                                   string prefix) {
             return Utils.get_value_by_name_from_enum (enumtype, prefix + name);
         }

@@ -145,11 +145,13 @@ namespace DVB {
             this.stream.write (buffer, buffer.size(), null);
         }
         
-        private static string get_name_without_prefix (GLib.Type enumtype,
+        private static string? get_name_without_prefix (GLib.Type enumtype,
                                                              int val, string prefix) {
-            string name = Utils.get_name_by_value_from_enum (enumtype,
+            string? name = Utils.get_name_by_value_from_enum (enumtype,
                                                              val);
-            return name.substring (prefix.size (), name.size () - prefix.size ());
+            if (name == null) return null;
+            else return name.substring (prefix.size (),
+                name.size () - prefix.size ());
         }
         
     }
