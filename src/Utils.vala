@@ -4,7 +4,7 @@ namespace DVB.Utils {
 
     private const int BUFFER_SIZE = 4096;
 
-    public static weak string? get_nick_from_enum (GLib.Type enumtype, int val) {
+    public static unowned string? get_nick_from_enum (GLib.Type enumtype, int val) {
         EnumClass eclass = (EnumClass)enumtype.class_ref ();
         unowned EnumValue eval = eclass.get_value (val);
         
@@ -16,19 +16,20 @@ namespace DVB.Utils {
         }
     }
     
-    public static weak int? get_value_by_name_from_enum (GLib.Type enumtype, string name) {
+    public static bool get_value_by_name_from_enum (GLib.Type enumtype, string name, out int evalue) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
         unowned EnumValue eval = enumclass.get_value_by_name (name);
         
         if (eval == null) {
             critical ("Enum has no member named %s", name);
-            return null;
+            return false;
         } else {
-            return eval.value;
+            evalue = eval.value;
+            return true;
         }
     }
     
-    public static weak string? get_name_by_value_from_enum (GLib.Type enumtype, int val) {
+    public static unowned string? get_name_by_value_from_enum (GLib.Type enumtype, int val) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
         unowned EnumValue eval = enumclass.get_value (val);
         
