@@ -67,13 +67,14 @@ namespace DVB {
          * A line looks like
          * Das Erste:212500000:INVERSION_AUTO:BANDWIDTH_7_MHZ:FEC_3_4:FEC_1_2:QAM_16:TRANSMISSION_MODE_8K:GUARD_INTERVAL_1_4:HIERARCHY_NONE:513:514:32
          */
-        private static TerrestrialChannel parse_terrestrial_channel (string line) {
+        private static TerrestrialChannel? parse_terrestrial_channel (string line) {
             var channel = new TerrestrialChannel ();
             
             string[] fields = line.split(":");
             
             int i=0;
             string val;
+            bool failed = false;
             while ( (val = fields[i]) != null) {
                 if (i == 0) {
                     if (val.validate())
@@ -89,41 +90,74 @@ namespace DVB {
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                     if (eval != null)
                         channel.Inversion = (DvbSrcInversion) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 3) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcBandwidth), val, "DVB_DVB_SRC_BANDWIDTH_");
                     if (eval != null)
                         channel.Bandwidth = (DvbSrcBandwidth) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 4) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                     if (eval != null)
                         channel.CodeRateHP = (DvbSrcCodeRate) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 5) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                     if (eval != null)
                         channel.CodeRateLP = (DvbSrcCodeRate) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 6) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
                     if (eval != null)
                         channel.Constellation = (DvbSrcModulation) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 7) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcTransmissionMode), val,
                         "DVB_DVB_SRC_TRANSMISSION_MODE_");
                     if (eval != null)
                         channel.TransmissionMode = (DvbSrcTransmissionMode) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 8) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcGuard), val, "DVB_DVB_SRC_GUARD_");
-                    channel.GuardInterval = (DvbSrcGuard) eval;
+                    if (eval != null)
+                        channel.GuardInterval = (DvbSrcGuard) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 9) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcHierarchy), val, "DVB_DVB_SRC_HIERARCHY_");
                     if (eval != null)
                         channel.Hierarchy = (DvbSrcHierarchy) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 10) {                
                     channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 11) {
@@ -135,7 +169,8 @@ namespace DVB {
                 i++;
             }
             
-            return channel;
+            if (failed) return null;
+            else return channel;
         }
         
         /**
@@ -143,7 +178,7 @@ namespace DVB {
          * A line looks like
          * Das Erste:11836:h:0:27500:101:102:28106
          */
-        private static SatelliteChannel parse_satellite_channel (string line) {
+        private static SatelliteChannel? parse_satellite_channel (string line) {
             var channel = new SatelliteChannel ();
             
             string[] fields = line.split(":");
@@ -188,13 +223,14 @@ namespace DVB {
          * line looks like
          * ProSieben:330000000:INVERSION_AUTO:6900000:FEC_NONE:QAM_64:255:256:898
          */
-        private static CableChannel parse_cable_channel (string line) {
+        private static CableChannel? parse_cable_channel (string line) {
             var channel = new CableChannel ();
             
             string[] fields = line.split(":");
             
             int i=0;
             string val;
+            bool failed = false;
             while ( (val = fields[i]) != null) {
                 if (i == 0) {
                     if (val.validate())
@@ -210,6 +246,10 @@ namespace DVB {
                         typeof(DvbSrcInversion), val, "DVB_DVB_SRC_INVERSION_");
                     if (eval != null)
                         channel.Inversion = (DvbSrcInversion) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 3) {
                     channel.SymbolRate = (uint)val.to_int ();
                 } else if (i == 4) {
@@ -217,11 +257,19 @@ namespace DVB {
                         typeof(DvbSrcCodeRate), val, "DVB_DVB_SRC_CODE_RATE_");
                     if (eval != null)
                         channel.CodeRate = (DvbSrcCodeRate) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 5) {
                     int? eval = get_value_with_prefix (
                         typeof(DvbSrcModulation), val, "DVB_DVB_SRC_MODULATION_");
                     if (eval != null)
                         channel.Modulation = (DvbSrcModulation) eval;
+                    else {
+                        failed = true;
+                        break;
+                    }
                 } else if (i == 6) {                
                     channel.VideoPID = (uint)val.to_int ();
                 } else if (i == 7) {
@@ -233,7 +281,8 @@ namespace DVB {
                 i++;
             }
             
-            return channel;
+            if (failed) return null;
+            else return channel;
         }
         
         private static int? get_value_with_prefix (GLib.Type enumtype, string name,
