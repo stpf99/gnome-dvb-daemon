@@ -367,7 +367,7 @@ namespace DVB {
                 start_hour, start_minute, duration);
                 
             if (!this.DeviceGroup.Channels.contains (channel)) {
-                debug ("No channel %u for device group %u", channel,
+                warning ("No channel %u for device group %u", channel,
                     this.DeviceGroup.Id);
                 return 0;
             }
