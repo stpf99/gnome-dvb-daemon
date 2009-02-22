@@ -4,19 +4,40 @@ namespace DVB.Utils {
 
     private const int BUFFER_SIZE = 4096;
 
-    public static weak string get_nick_from_enum (GLib.Type enumtype, int val) {
-        EnumClass eclass = (EnumClass)enumtype.class_ref();
-        return eclass.get_value(val).value_nick;
+    public static weak string? get_nick_from_enum (GLib.Type enumtype, int val) {
+        EnumClass eclass = (EnumClass)enumtype.class_ref ();
+        unowned EnumValue eval = eclass.get_value (val);
+        
+        if (eval == null) {
+            critical ("Enum has no value %d", val);
+            return null;
+        } else {
+            return eval.value_nick;
+        }
     }
     
-    public static weak int get_value_by_name_from_enum (GLib.Type enumtype, string name) {
+    public static weak int? get_value_by_name_from_enum (GLib.Type enumtype, string name) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
-        return enumclass.get_value_by_name(name).value;
+        unowned EnumValue eval = enumclass.get_value_by_name (name);
+        
+        if (eval == null) {
+            critical ("Enum has no member named %s", name);
+            return null;
+        } else {
+            return eval.value;
+        }
     }
     
-    public static weak string get_name_by_value_from_enum (GLib.Type enumtype, int val) {
+    public static weak string? get_name_by_value_from_enum (GLib.Type enumtype, int val) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
-        return enumclass.get_value(val).value_name;
+        unowned EnumValue eval = enumclass.get_value (val);
+        
+        if (eval == null) {
+            critical ("Enum has no value %d", val);
+            return null;
+        } else {
+            return eval.value_name;
+        }
     }
     
     public static void mkdirs (File directory) throws Error {
