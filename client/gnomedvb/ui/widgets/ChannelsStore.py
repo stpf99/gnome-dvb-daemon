@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import gtk
 import gnomedvb
+from gnomedvb import global_error_handler
 
 class ChannelsStore(gtk.ListStore):
 
@@ -22,9 +23,13 @@ class ChannelsStore(gtk.ListStore):
         
     def _add_channels(self, device_group):
         channellist = gnomedvb.DVBChannelListClient(device_group)
-        for channel_id in channellist.get_channels():
-            name = channellist.get_channel_name(channel_id)
-            self.append([name, channel_id])
+        
+        def append_channel(channels):
+            for channel_id in channels:
+                name = channellist.get_channel_name(channel_id)
+                self.append([name, channel_id])
+        
+        channellist.get_channels(reply_handler=append_channel, error_handler=global_error_handler)
 
 
 class ChannelsTreeStore(gtk.TreeStore):
@@ -49,7 +54,6 @@ class ChannelsTreeStore(gtk.TreeStore):
             group_name = manager.get_device_group_name(group_id)
             group_iter = self.append(None, [group_id, group_name, 0])
             channellist = gnomedvb.DVBChannelListClient(group_id)
-            for channel_id in channellist.get_channels():
-                name = channellist.get_channel_name(channel_id)
-                self.append(group_iter, [group_id, name, channel_id])
+            append_channel = lambda channels: [self.append(group_iter, [group_id, channellist.get_channel_name(channel_id), channel_id]) for channel_id in channels]
+            channellist.get_channels(reply_handler=append_channel, error_handler=global_error_handler)
          

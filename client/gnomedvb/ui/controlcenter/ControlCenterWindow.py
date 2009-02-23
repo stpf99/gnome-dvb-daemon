@@ -270,6 +270,9 @@ class ControlCenterWindow(gtk.Window):
     def get_device_groups(self):
         for group in self.manager.get_registered_device_groups():
             self._append_group(group)
+            
+    def device_groups_reply(self, a):
+        print a
        
     def _select_first_group(self):
         self.devgroupscombo.set_active(0)

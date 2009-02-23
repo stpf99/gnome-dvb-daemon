@@ -2,6 +2,7 @@
 import gtk
 from gettext import gettext as _
 import gnomedvb
+from gnomedvb import global_error_handler
 from gnomedvb.ui.timers.TimerDialog import TimerDialog
 
 class EditTimersDialog(gtk.Dialog):
@@ -102,8 +103,10 @@ class EditTimersDialog(gtk.Dialog):
         self.recorder.connect("recording-finished", self._set_recording_state, False)
             
     def get_timers(self):
-        for timer_id in self.recorder.get_timers():
-            self._add_timer(timer_id)
+        def add_timer(timers):
+            for timer_id in timers:
+                self._add_timer(timer_id)
+        self.recorder.get_timers(reply_handler=add_timer, error_handler=global_error_handler)
             
     def _add_timer(self, timer_id):
         start_list = self.recorder.get_start_time(timer_id)

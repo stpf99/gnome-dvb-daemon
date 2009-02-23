@@ -3,6 +3,7 @@ import gtk
 import gnomedvb
 import datetime
 from cgi import escape
+from gnomedvb import global_error_handler
 
 class ScheduleStore(gtk.ListStore):
 
@@ -34,18 +35,21 @@ class ScheduleStore(gtk.ListStore):
             current = self._client.next(current)
             
     def _fill_all(self):
-        prev_date = (0,0,0,)
-        for event_id in self._client.get_all_events():
-            new_iter = self._append_event(event_id)
-            new_date = self.get_date(new_iter)
-            # Insert bogus entry to mark that a new day starts
-            if prev_date < new_date:
-                date_iter = self.insert_before(new_iter, None)
-                self.set(date_iter, self.COL_YEAR, new_date[0])
-                self.set(date_iter, self.COL_MONTH, new_date[1])
-                self.set(date_iter, self.COL_DAY, new_date[2])
-                self.set(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
-            prev_date = new_date
+        def append_event(events):
+            prev_date = (0,0,0,)
+            for event_id in events:
+                new_iter = self._append_event(event_id)
+                new_date = self.get_date(new_iter)
+                # Insert bogus entry to mark that a new day starts
+                if prev_date < new_date:
+                    date_iter = self.insert_before(new_iter, None)
+                    self.set(date_iter, self.COL_YEAR, new_date[0])
+                    self.set(date_iter, self.COL_MONTH, new_date[1])
+                    self.set(date_iter, self.COL_DAY, new_date[2])
+                    self.set(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
+                prev_date = new_date
+        
+        self._client.get_all_events(reply_handler=append_event, error_handler=global_error_handler)
         
     def get_date(self, aiter):
         return (self[aiter][self.COL_YEAR],

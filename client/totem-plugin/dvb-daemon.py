@@ -7,6 +7,7 @@ pygst.require("0.10")
 import totem
 import gnomedvb
 
+from gnomedvb import global_error_handler
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsTreeStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
 
@@ -33,8 +34,8 @@ class DVBDaemonPlugin(totem.Plugin):
         self.rec_iter = self.channels.append(None, [self.REC_GROUP_ID, _("Recordings"), 0])
         self.recstore = gnomedvb.DVBRecordingsStoreClient()
         self.recstore.connect("changed", self._on_recstore_changed)
-        for rid in self.recstore.get_recordings():
-            self._add_recording(rid)
+        add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
+        self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
         
         self.scrolledchannels.show_all()
 

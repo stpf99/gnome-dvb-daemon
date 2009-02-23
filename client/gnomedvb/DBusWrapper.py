@@ -5,8 +5,10 @@ import dbus.glib
 import gobject
 import gst
 import re
+import sys
 
 __all__= [
+    "global_error_handler",
     "get_adapter_info",
     "get_dvb_devices",
     "DVBManagerClient",
@@ -33,6 +35,11 @@ HAL_MANAGER_IFACE = "org.freedesktop.Hal.Manager"
 HAL_DEVICE_IFACE = "org.freedesktop.Hal.Device"
 HAL_MANAGER_PATH = "/org/freedesktop/Hal/Manager"
 HAL_SERVICE = "org.freedesktop.Hal"
+
+def _default_error_handler_func(e):
+    print >> sys.stderr, "Error: "+str(e)
+
+global_error_handler = _default_error_handler_func
 
 def get_adapter_info(adapter):
     dvbelement = gst.element_factory_make ("dvbsrc", "test_dvbsrc")
@@ -203,8 +210,8 @@ class DVBRecordingsStoreClient(gobject.GObject):
         self.recstore = dbus.Interface(proxy, recstore_iface)
         self.recstore.connect_to_signal ("Changed", self.on_changed)
         
-    def get_recordings(self):
-        return self.recstore.GetRecordings()
+    def get_recordings(self, **kwargs):
+        return self.recstore.GetRecordings(**kwargs)
         
     def get_location(self, rid):
         return self.recstore.GetLocation(rid)
@@ -264,8 +271,8 @@ class DVBRecorderClient(gobject.GObject):
     def delete_timer(self, tid):
         return self.recorder.DeleteTimer(tid)
         
-    def get_timers(self):
-        return self.recorder.GetTimers()
+    def get_timers(self, **kwargs):
+        return self.recorder.GetTimers(**kwargs)
         
     def get_start_time(self, tid):
         return self.recorder.GetStartTime(tid)
@@ -314,14 +321,14 @@ class DVBChannelListClient:
     def get_path(self):
         return self.object_path
         
-    def get_channels(self):
-        return self.channels.GetChannels()
+    def get_channels(self, **kwargs):
+        return self.channels.GetChannels(**kwargs)
         
-    def get_radio_channels(self):
-        return self.channels.GetRadioChannels()
+    def get_radio_channels(self, **kwargs):
+        return self.channels.GetRadioChannels(**kwargs)
         
-    def get_tv_channels(self):
-        return self.channels.GetTVChannels()
+    def get_tv_channels(self, **kwargs):
+        return self.channels.GetTVChannels(**kwargs)
         
     def get_channel_name(self, cid):
         return self.channels.GetChannelName(cid)
@@ -355,8 +362,8 @@ class DVBScheduleClient(gobject.GObject):
     def get_channel_sid(self):
         return self._sid
         
-    def get_all_events(self):
-        return self.schedule.GetAllEvents()
+    def get_all_events(self, **kwargs):
+        return self.schedule.GetAllEvents(**kwargs)
         
     def now_playing(self):
         return self.schedule.NowPlaying()
