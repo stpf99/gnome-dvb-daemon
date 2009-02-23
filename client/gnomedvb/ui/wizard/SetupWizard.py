@@ -37,9 +37,9 @@ class SetupWizard(gtk.Assistant):
 		self.tuning_data_page.connect("finished", self.on_scan_finished)
 		self.append_page(self.tuning_data_page)
 		
-		scan_page = ChannelScanPage()
-		scan_page.connect("finished", self.on_scan_finished)
-		self.append_page(scan_page)
+		self.scan_page = ChannelScanPage()
+		self.scan_page.connect("finished", self.on_scan_finished)
+		self.append_page(self.scan_page)
 		
 		save_channels_page = SaveChannelListPage()
 		save_channels_page.connect("finished", self.on_scan_finished)
@@ -60,12 +60,10 @@ class SetupWizard(gtk.Assistant):
 			self.__ask_on_exit = True
 			if self.__adapter_info["name"] != None:
 				page.set_name(self.__adapter_info["name"])
-				self.__scanner = page.start_scanning(self.__adapter_info["adapter"],
+				page.start_scanning(self.__adapter_info["adapter"],
 					self.__adapter_info["frontend"], self.tuning_data_page.get_tuning_data ())
-				if self.__scanner == None:
-					print "Invalid scanning data"
 		elif isinstance(page, SaveChannelListPage):
-			page.set_scanner(self.__scanner)
+			page.set_scanner(self.scan_page.get_scanner())
 		elif isinstance(page, SummaryPage):
 			self.__ask_on_exit = False
 		
@@ -78,6 +76,7 @@ class SetupWizard(gtk.Assistant):
 		self.on_scan_finished(page, state)
 			
 	def confirm_quit(self, *args):
+		scanner = self.scan_page.get_scanner()
 		if self.__ask_on_exit:
 			dialog = gtk.MessageDialog(parent=self,
 				flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -87,15 +86,15 @@ class SetupWizard(gtk.Assistant):
 			
 			response = dialog.run()
 			if response == gtk.RESPONSE_YES:
-				if self.__scanner != None:
-					self.__scanner.destroy()
+				if scanner != None:
+					scanner.destroy()
 				gtk.main_quit()
 			elif response == gtk.RESPONSE_NO:
 				dialog.destroy()
 		
 			return True
 		else:
-			if self.__scanner != None:
-				self.__scanner.destroy()
+			if scanner != None:
+				scanner.destroy()
 			gtk.main_quit()
 

@@ -4,6 +4,7 @@ import gtk
 import gobject
 from gettext import gettext as _
 from BasePage import BasePage
+from gnomedvb import global_error_handler
 
 class ChannelScanPage(BasePage):
 
@@ -14,6 +15,7 @@ class ChannelScanPage(BasePage):
 	def __init__(self):
 		BasePage.__init__(self)
 		
+		self._scanner = None
 		self._max_freqs = 0
 		self._scanned_freqs = 0
 		self._last_qsize = 0
@@ -62,6 +64,9 @@ class ChannelScanPage(BasePage):
 		self.progressbar = gtk.ProgressBar()
 		self.pack_start(self.progressbar, False)
 		
+	def get_scanner(self):
+		return self._scanner
+		
 	def get_page_title(self):
 		return _("Scanning for channels")
 		
@@ -72,26 +77,27 @@ class ChannelScanPage(BasePage):
 		self.label.set_text(_("Scanning for channels on device %s") % name)
 		
 	def start_scanning(self, adapter, frontend, tuning_data):
+		def data_loaded(success):
+			if success:
+				self._scanner.run()
+			else:
+				self._scanner.destroy()
+		
 		manager = gnomedvb.DVBManagerClient()
 		
-		scanner = manager.get_scanner_for_device(adapter, frontend)
+		self._scanner = manager.get_scanner_for_device(adapter, frontend)
 		
-		scanner.connect ("frequency-scanned", self.__on_freq_scanned)
-		scanner.connect ("channel-added", self.__on_channel_added)
-		scanner.connect ("finished", self.__on_finished)
+		self._scanner.connect ("frequency-scanned", self.__on_freq_scanned)
+		self._scanner.connect ("channel-added", self.__on_channel_added)
+		self._scanner.connect ("finished", self.__on_finished)
 		
 		if isinstance(tuning_data, str):
-			scanner.add_scanning_data_from_file (tuning_data)
+			self._scanner.add_scanning_data_from_file (tuning_data, reply_handler=data_loaded, error_handler=global_error_handler)
 		elif isinstance(tuning_data, list):
 			for data in tuning_data:
-				scanner.add_scanning_data(data)
+				self._scanner.add_scanning_data(data)
 		else:
-			scanner.destroy()
-			return None
-		
-		scanner.run()
-		
-		return scanner
+			self._scanner.destroy()
 		
 	def __on_channel_added(self, scanner, freq, sid, name, network, channeltype, scrambled):
 		try:

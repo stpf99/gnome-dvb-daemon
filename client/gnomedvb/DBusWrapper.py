@@ -170,8 +170,8 @@ class DVBScannerClient(gobject.GObject):
     def add_scanning_data(self, data):
         self.scanner.AddScanningData (*data)
         
-    def add_scanning_data_from_file(self, path):
-        return self.scanner.AddScanningDataFromFile(path)
+    def add_scanning_data_from_file(self, path, **kwargs):
+        return self.scanner.AddScanningDataFromFile(path, **kwargs)
         
     def run(self):
         self.scanner.Run()
