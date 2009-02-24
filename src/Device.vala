@@ -8,25 +8,30 @@ namespace DVB {
         DVB_S,
         DVB_C
     }
-
+    
     public class Device : GLib.Object {
     
         private static const int PRIME = 31;
 
         public uint Adapter { get; construct; }
         public uint Frontend { get; construct; }
-        public AdapterType Type { get; construct; }
-        public string Name { get; construct; }
+        public AdapterType Type {
+            get { return adapter_type; }
+        }
+        public string Name {
+            get { return adapter_name; }
+        }
         public ChannelList Channels { get; set; }
         public File RecordingsDirectory { get; set; }
+        
+        private string adapter_name;
+        private AdapterType adapter_type;
 
         public Device (uint adapter, uint frontend, bool get_type_and_name=true) {
             this.Adapter = adapter;
             this.Frontend = frontend;
-            // We can only assign values to properties in constructor
-            // as a work-around we forward get_type_and_name
-            this.Type = getAdapterType(adapter, get_type_and_name);
-            this.Name = getAdapterName(adapter, get_type_and_name);
+            
+            setAdapterTypeAndName(adapter, get_type_and_name);
         }
 
         public static Device new_full (uint adapter, uint frontend,
@@ -90,22 +95,23 @@ namespace DVB {
             return busy_val;
         }
 
-        private static AdapterType getAdapterType (uint adapter, bool get_type) {
-            if (!get_type) return AdapterType.UNKNOWN;
+        private bool setAdapterTypeAndName (uint adapter, bool get_type) {
+            if (!get_type) return true;
         
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
             if (dvbsrc == null) {
                 critical ("Could not create dvbsrc element");
-                return AdapterType.UNKNOWN;
+                return false;
             }
             dvbsrc.set ("adapter", adapter);
             
-            Element pipeline = new Pipeline ("");
+            Element pipeline = new Pipeline ("type_name");
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
             
             Bus bus = pipeline.get_bus();
             
+            bool success = false;
             string adapter_type = null;
             
             while (bus.have_pending()) {
@@ -116,6 +122,8 @@ namespace DVB {
 
                     if (structure.get_name() == "dvb-adapter") {
                         adapter_type = "%s".printf (structure.get_string("type"));
+                        this.adapter_name = "%s".printf (structure.get_string("name"));
+                        success = true;
                         break;
                     }
                 } else if (msg.type == MessageType.ERROR) {
@@ -128,51 +136,12 @@ namespace DVB {
                
             pipeline.set_state(State.NULL);
 
-            if (adapter_type == "DVB-T") return AdapterType.DVB_T;
-            else if (adapter_type == "DVB-S") return AdapterType.DVB_S;
-            else if (adapter_type == "DVB-C") return AdapterType.DVB_C;
-            else return AdapterType.UNKNOWN;
-        }
-        
-        private static string? getAdapterName (uint adapter, bool get_name) {
-            if (!get_name) return null;
-        
-            Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
-            if (dvbsrc == null) {
-                critical ("Could not create dvbsrc element");
-                return null;
-            }
-            dvbsrc.set ("adapter", adapter);
+            if (adapter_type == "DVB-T") this.adapter_type = AdapterType.DVB_T;
+            else if (adapter_type == "DVB-S") this.adapter_type = AdapterType.DVB_S;
+            else if (adapter_type == "DVB-C") this.adapter_type = AdapterType.DVB_C;
+            else this.adapter_type = AdapterType.UNKNOWN;
             
-            Element pipeline = new Pipeline ("");
-            ((Bin)pipeline).add (dvbsrc);
-            pipeline.set_state (State.READY);
-            
-            Bus bus = pipeline.get_bus();
-            
-            string adapter_name = null;
-            
-            while (bus.have_pending()) {
-                Message msg = bus.pop();
-
-                if (msg.type == MessageType.ELEMENT && msg.src == dvbsrc) {
-                    weak Structure structure = msg.structure;
-
-                    if (structure.get_name() == "dvb-adapter") {
-                        adapter_name = "%s".printf (structure.get_string("name"));
-                        break;
-                    }
-                } else if (msg.type == MessageType.ERROR) {
-                    Error gerror;
-                    string debug;
-                    msg.parse_error (out gerror, out debug);
-                    critical ("%s %s", gerror.message, debug);
-                }
-            }
-               
-            pipeline.set_state(State.NULL);
-
-            return adapter_name;
+            return success;
         }
     }
     
