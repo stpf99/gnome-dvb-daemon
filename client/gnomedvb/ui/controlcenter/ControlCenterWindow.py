@@ -127,6 +127,7 @@ class ControlCenterWindow(gtk.Window):
             <menuitem action="Preferences"/>
           </menu>
           <menu action="View">
+            <menuitem action="Refresh"/>
             <menuitem action="PrevDay"/>
             <menuitem action="NextDay"/>
             <separator/>
@@ -172,6 +173,8 @@ class ControlCenterWindow(gtk.Window):
         
         actiongroup = gtk.ActionGroup('View')
         actiongroup.add_actions([
+            ('Refresh', gtk.STOCK_REFRESH, _('Refresh'), None,
+             _('Refresh program guide'), self._on_refresh_clicked),
             ('PrevDay', None, _('Previous Day'), '<Control>B',
              _('Go to previous day'), self._on_button_prev_day_clicked),
             ('NextDay', None, _('Next Day'), '<Control>N',
@@ -209,6 +212,9 @@ class ControlCenterWindow(gtk.Window):
         self.timersitem = uimanager.get_widget('/MenuBar/Timers/EditTimers')
         self.timersitem.set_image(timers_image)
         self.timersitem.set_sensitive(False)
+        
+        self.refresh_menuitem = uimanager.get_widget('/MenuBar/View/Refresh')
+        self.refresh_menuitem.set_sensitive(False)
         
         self.prev_day_menuitem = uimanager.get_widget('/MenuBar/View/PrevDay')
         prev_image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_MENU)
@@ -249,6 +255,12 @@ class ControlCenterWindow(gtk.Window):
         sep.show()
         self.toolbar.insert(sep, 1)
         
+        self.refresh_button = gtk.ToolButton(gtk.STOCK_REFRESH)
+        self.refresh_button.connect("clicked", self._on_refresh_clicked)
+        self.refresh_button.set_tooltip_markup(_("Refresh program guide"))        
+        self.refresh_button.show()
+        self.toolbar.insert(self.refresh_button, 2)
+        
         prev_image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_LARGE_TOOLBAR)
         prev_image.show()
         self.button_prev_day = gtk.ToolButton(icon_widget=prev_image, label=_("Previous Day"))
@@ -256,7 +268,7 @@ class ControlCenterWindow(gtk.Window):
         self.button_prev_day.set_tooltip_markup(_("Go to previous day"))
         self.button_prev_day.set_sensitive(False)
         self.button_prev_day.show()
-        self.toolbar.insert(self.button_prev_day, 2)
+        self.toolbar.insert(self.button_prev_day, 3)
         
         next_image = gtk.image_new_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_LARGE_TOOLBAR)
         next_image.show()
@@ -265,7 +277,7 @@ class ControlCenterWindow(gtk.Window):
         self.button_next_day.set_tooltip_markup(_("Go to next day"))
         self.button_next_day.set_sensitive(False)
         self.button_next_day.show()
-        self.toolbar.insert(self.button_next_day, 3)
+        self.toolbar.insert(self.button_next_day, 4)
          
     def get_device_groups(self):
         for group in self.manager.get_registered_device_groups():
@@ -363,6 +375,7 @@ class ControlCenterWindow(gtk.Window):
                 self.hpaned.pack2(self.scrolledschedule)
                 self._set_previous_day_sensitive(True)
                 self._set_next_day_sensitive(True)
+                self._set_refresh_sensitive(True)
         else:
             # Display help message if it isn't already displayed
             if child != self.help_eventbox:
@@ -374,6 +387,7 @@ class ControlCenterWindow(gtk.Window):
         self.hpaned.pack2(self.help_eventbox)
         self._set_previous_day_sensitive(False)
         self._set_next_day_sensitive(False)
+        self._set_refresh_sensitive(False)
         
         if len(self.devgroupslist) == 0:
             self.help_eventbox.set_markup(self.create_group_text)
@@ -391,6 +405,10 @@ class ControlCenterWindow(gtk.Window):
     def _set_timers_sensitive(self, val):
         self.button_display_timers.set_sensitive(val)
         self.timersitem.set_sensitive(val)
+        
+    def _set_refresh_sensitive(self, val):
+       self.refresh_button.set_sensitive(val) 
+       self.refresh_menuitem.set_sensitive(val)
        
     def _on_event_selected(self, treeview, event):
         if event.type == gtk.gdk._2BUTTON_PRESS:
@@ -419,6 +437,9 @@ class ControlCenterWindow(gtk.Window):
             edit = EditTimersDialog(group_id, self)
             edit.run()
             edit.destroy()
+            
+    def _on_refresh_clicked(self, button):
+        self.schedulestore.reload_all()
    
     def _on_button_prev_day_clicked(self, button):
         if self.schedulestore != None:
