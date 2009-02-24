@@ -20,10 +20,11 @@ class InitialTuningDataPage(BasePage):
 		BasePage.__init__(self)
 		
 		self.__adapter_info = None
+		self.__page_title = None
 		self.__tuning_data = None
 		
 	def get_page_title(self):
-		return _("Select tuning data")
+		return self.__page_title
 		
 	def set_adapter_info(self, info):
 		self.__adapter_info = info
@@ -33,10 +34,13 @@ class InitialTuningDataPage(BasePage):
 			
 		if info["type"] == "DVB-T":
 			self.setup_dvb_t()
+			self.__page_title = _("Country and antenna selection")
 		elif info["type"] == "DVB-S":
 			self.setup_dvb_s()
+			self.__page_title = _("Country and antenna selection")
 		elif info["type"] == "DVB-C":
 			self.setup_dvb_c()
+			self.__page_title = _("Country and provider selection")
 		else:
 			self.setup_unknown(info["type"])
 			
@@ -91,7 +95,7 @@ class InitialTuningDataPage(BasePage):
 		
 		self.providers_label = gtk.Label()
 		self.providers_label.set_markup(_("<b>Antenna:</b>"))
-		self.providers_label.hide()
+		self.providers_label.show()
 		self.table.attach(self.providers_label, 0, 1, 1, 2, yoptions=0)
 		
 		self.providers = gtk.ListStore(str, str)
@@ -102,8 +106,9 @@ class InitialTuningDataPage(BasePage):
 		cell = gtk.CellRendererText()
 		self.providers_combo.pack_start(cell)
 		self.providers_combo.add_attribute(cell, "text", 0)
+		self.providers_combo.show()
 		self.table.attach(self.providers_combo, 1, 2, 1, 2, yoptions=0)
-		self.providers_combo.hide()
+		self.providers_combo.set_sensitive(False)
 		
 		checkbox = gtk.CheckButton(label=_("Scan all frequencies"))
 		checkbox.connect("toggled", self.on_scan_all_toggled)
@@ -163,7 +168,7 @@ class InitialTuningDataPage(BasePage):
 		
 		self.providers_label = gtk.Label()
 		self.providers_label.set_markup(_("<b>Providers:</b>"))
-		self.providers_label.hide()
+		self.providers_label.show()
 		self.table.attach(self.providers_label, 0, 1, 1, 2, yoptions=0)
 		
 		self.providers = gtk.ListStore(str, str)
@@ -174,8 +179,9 @@ class InitialTuningDataPage(BasePage):
 		cell = gtk.CellRendererText()
 		self.providers_combo.pack_start(cell)
 		self.providers_combo.add_attribute(cell, "text", 0)
+		self.providers_combo.show()
 		self.table.attach(self.providers_combo, 1, 2, 1, 2, yoptions=0)
-		self.providers_combo.hide()
+		self.providers_combo.set_sensitive(False)
 	
 	def on_country_changed(self, combo, directory):
 		aiter = combo.get_active_iter()
@@ -192,8 +198,8 @@ class InitialTuningDataPage(BasePage):
 						if country == selected_country:
 							self.providers.append([city, os.path.join(d, directory, f)])
 		
-			self.providers_label.show()
-			self.providers_combo.show()
+			self.providers_combo.set_sensitive(True)
+			self.emit("finished", False)
 		
 	def on_providers_changed(self, combo):
 		aiter = combo.get_active_iter()

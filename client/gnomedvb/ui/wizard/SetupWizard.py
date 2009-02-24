@@ -23,6 +23,7 @@ class SetupWizard(gtk.Assistant):
 		self.connect ('close', self.confirm_quit)
 		self.connect ('prepare', self.on_prepare)
 		self.set_default_size(500, 400)
+		self.set_border_width(4)
 		self.set_title(_("Setup DVB"))
 		
 		intro_page = IntroPage()
@@ -50,7 +51,6 @@ class SetupWizard(gtk.Assistant):
 		
 	def append_page(self, page):
 		gtk.Assistant.append_page(self, page)
-		self.set_page_title(page, page.get_page_title())
 		self.set_page_type(page, page.get_page_type())
 		
 	def on_prepare(self, assistant, page):
@@ -66,6 +66,8 @@ class SetupWizard(gtk.Assistant):
 			page.set_scanner(self.scan_page.get_scanner())
 		elif isinstance(page, SummaryPage):
 			self.__ask_on_exit = False
+	
+		self.set_page_title(page, page.get_page_title())
 		
 	def on_scan_finished(self, page, state):
 		self.set_page_complete(page, state)

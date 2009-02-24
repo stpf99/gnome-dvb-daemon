@@ -34,7 +34,7 @@ class AdaptersPage(BasePage):
 			
 			self.emit("finished", False)
 		else:
-			text = _("Select device you want to scan channels.")
+			text = _("Select device you want to search channels for.")
 			label.set_markup (text)
 		
 			self.devicesview = gtk.TreeView(self.deviceslist)
@@ -63,7 +63,7 @@ class AdaptersPage(BasePage):
 			self.emit("finished", True)
 		
 	def get_page_title(self):
-		return _("Setup adapter")
+		return _("Device selection")
 	
 	def get_selected_device(self):
 		model, aiter = self.devicesview.get_selection().get_selected()
