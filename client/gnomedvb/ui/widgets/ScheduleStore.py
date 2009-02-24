@@ -27,6 +27,10 @@ class ScheduleStore(gtk.ListStore):
         self._recorder = gnomedvb.DVBRecorderClient(schedule_client.get_group_id())
         self._fill_all()
         
+    def reload_all(self):
+        self.clear()
+        self._fill_all()
+        
     def _fill_from_now(self):
         current = self._client.now_playing()
         
