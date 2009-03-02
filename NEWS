@@ -1,4 +1,22 @@
 =============
+Version 0.1.5
+=============
+
+In this release the values in the channels.conf file are checked.
+In addition, a bug has been fixed where device groups weren't restored
+correctly and text and layout of the assistant were improved.
+
+- Start EPG scanner after group has been created
+- Added sanity checks when getting values, names and nicks from enums
+- Adjusted to changes in AdapterType enum. Fixes error when parsing channels.conf
+- Improved sanity checks for values in ChannelListWriter
+- Abort parsing line when converting enum failed
+- Made some of the DBus calls in clients async
+- Retrieve adapter type and name in a single pipeline
+- Improved the wording in the assistant to be HIG compliant
+- Added refresh button which reloads the program guide
+
+=============
 Version 0.1.4
 =============
 
