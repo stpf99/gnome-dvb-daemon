@@ -61,6 +61,13 @@ namespace DVB {
          */
         public abstract bool Delete (uint32 rec_id);
         
+        /**
+         * @rec_id: The id of the recording
+         * @returns: The channel's name or an empty string if
+         * rec_id doesn't exist
+         */
+        public abstract string GetChannelName (uint32 rec_id);
+        
     }
 
 }

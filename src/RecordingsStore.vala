@@ -220,6 +220,25 @@ namespace DVB {
         }
         
         /**
+         * @rec_id: The id of the recording
+         * @returns: The channel's name or an empty string if
+         * rec_id doesn't exist
+         */
+        public string GetChannelName (uint32 rec_id) {
+            string ret;
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    Recording rec = this.recordings.get (rec_id);
+                    ret = rec.ChannelName;
+                } else {
+                    ret = "";
+                }
+            }
+            
+            return ret;
+        }
+        
+        /**
          * @recordingsbasedir: The directory to search
          *
          * Searches recursively in the given directory
