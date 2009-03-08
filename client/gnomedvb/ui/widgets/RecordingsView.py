@@ -31,5 +31,5 @@ class RecordingsView(gtk.TreeView):
     def _get_start_data(self, column, cell, model, aiter):
         timestamp = model[aiter][RecordingsStore.COL_START]
         time = datetime.datetime.fromtimestamp(timestamp)
-        cell.set_property("text", time.strftime("%A, %x"))
+        cell.set_property("text", time.strftime("%c"))
                 
