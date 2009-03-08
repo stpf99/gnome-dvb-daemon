@@ -231,8 +231,8 @@ class DVBRecordingsStoreClient(gobject.GObject):
     def get_start_timestamp(self, rid):
         return self.recstore.GetStartTimestamp(rid)
         
-    def delete(self, rid):
-        return self.recstore.Delete(rid)
+    def delete(self, rid, **kwargs):
+        return self.recstore.Delete(rid, **kwargs)
         
     def get_channel_name(self, rid):
         return self.recstore.GetChannelName(rid)
