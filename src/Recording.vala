@@ -9,6 +9,7 @@ namespace DVB {
     
         public uint32 Id {get; set;}
         public uint ChannelSid {get; set;}
+        public string ChannelName {get; set;}
         public File Location {get; set;}
         public string? Name {get; set;}
         public string? Description {get; set;}
@@ -51,8 +52,8 @@ namespace DVB {
         
         public string serialize () {
             uint[] started = this.get_start ();
-            return "%u\n%u\n%s\n%u-%u-%u %u:%u\n%lld\n%s\n%s".printf (
-                this.Id, this.ChannelSid, this.Location.get_path (),                
+            return "%u\n%s\n%s\n%u-%u-%u %u:%u\n%lld\n%s\n%s".printf (
+                this.Id, this.ChannelName, this.Location.get_path (),                
                 started[0], started[1], started[2], started[3],
                 started[4], this.Length,
                 (this.Name == null) ? "" : this.Name,
@@ -79,7 +80,7 @@ namespace DVB {
                     break;
                     
                     case 1:
-                        rec.ChannelSid = (uint)field.to_int ();
+                        rec.ChannelName = field;
                     break;
                     
                     case 2:

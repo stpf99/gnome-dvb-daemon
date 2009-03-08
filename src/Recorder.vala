@@ -188,6 +188,8 @@ namespace DVB {
             recording.Description = null;
             recording.Id = timer.Id;
             recording.ChannelSid = timer.ChannelSid;
+            Channel channel = this.device.Channels.get_channel (timer.ChannelSid);
+            recording.ChannelName = channel.Name;
             recording.StartTime =
                 timer.get_start_time_time ();
             recording.Location = location;
@@ -826,8 +828,8 @@ namespace DVB {
          */
         private void on_recording_stopped (RecordingThread recthread,
                 Recording recording, Timer timer) {
-            debug ("Recording of channel %u stopped after %lli seconds",
-                recording.ChannelSid, recording.Length);
+            debug ("Recording of channel %s stopped after %lli seconds",
+                recording.ChannelName, recording.Length);
             
             if (recthread.count == 0) {
                 this.active_recording_threads.remove (timer);
