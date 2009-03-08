@@ -234,6 +234,9 @@ class DVBRecordingsStoreClient(gobject.GObject):
     def delete(self, rid):
         return self.recstore.Delete(rid)
         
+    def get_channel_name(self, rid):
+        return self.recstore.GetChannelName(rid)
+        
     def on_changed(self, rid, typeid):
         self.emit("changed", rid, typeid)
         
@@ -454,6 +457,7 @@ if __name__ == '__main__':
         
     recstore = DVBRecordingsStoreClient()
     for rid in recstore.get_recordings():
+        print "Channel", recstore.get_channel_name(rid)
         print "Location", recstore.get_location(rid)
         print "Start", recstore.get_start_time(rid)
         print recstore.get_start_timestamp(rid)
