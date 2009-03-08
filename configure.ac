@@ -150,6 +150,7 @@ AC_CONFIG_FILES([
 	client/gnomedvb/Makefile
 	client/gnomedvb/ui/controlcenter/Makefile
 	client/gnomedvb/ui/preferences/Makefile
+	client/gnomedvb/ui/recordings/Makefile
 	client/gnomedvb/ui/timers/Makefile
 	client/gnomedvb/ui/Makefile
 	client/gnomedvb/ui/widgets/Makefile

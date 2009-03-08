@@ -1,6 +1,7 @@
 SUBDIRS = \
     controlcenter \
     preferences \
+    recordings \
     timers \
     widgets \
     wizard

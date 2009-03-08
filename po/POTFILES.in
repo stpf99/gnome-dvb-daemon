@@ -5,10 +5,12 @@ client/gnomedvb/ui/controlcenter/ControlCenterWindow.py
 client/gnomedvb/ui/preferences/DeviceGroupsView.py
 client/gnomedvb/ui/preferences/Dialogs.py
 client/gnomedvb/ui/preferences/Preferences.py
+client/gnomedvb/ui/recordings/RecordingsDialog.py
 client/gnomedvb/ui/timers/CalendarDialog.py
 client/gnomedvb/ui/timers/EditTimersDialog.py
 client/gnomedvb/ui/timers/TimerDialog.py
 client/gnomedvb/ui/widgets/ChannelsView.py
+client/gnomedvb/ui/widgets/RecordingsView.py
 client/gnomedvb/ui/widgets/ScheduleView.py
 client/gnomedvb/ui/wizard/pages/AdaptersPage.py
 client/gnomedvb/ui/wizard/pages/ChannelScanPage.py
