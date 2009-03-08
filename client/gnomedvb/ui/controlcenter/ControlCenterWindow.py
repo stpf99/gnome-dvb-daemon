@@ -11,6 +11,7 @@ from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
 from gnomedvb.ui.preferences.Preferences import Preferences
+from gnomedvb.ui.recordings.RecordingsDialog import RecordingsDialog
 
 class HelpBox(gtk.EventBox):
 
@@ -120,6 +121,7 @@ class ControlCenterWindow(gtk.Window):
         <menubar name="MenuBar">
           <menu action="Timers">
             <menuitem action="EditTimers"/>
+            <menuitem action="Recordings"/>
             <separator/>
             <menuitem action="Quit"/>
           </menu>
@@ -160,6 +162,8 @@ class ControlCenterWindow(gtk.Window):
         actiongroup.add_actions([
             ('EditTimers', None, _('_Manage'), None,
              _('Manage timers'), self._on_button_display_timers_clicked),
+            ('Recordings', None, _('_Recordings'), None,
+             _('Manage recordings'), self._on_button_recordings_clicked),
             ('Quit', gtk.STOCK_QUIT, _('_Quit'), None,
              _('Quit the Program'), gtk.main_quit)])
         uimanager.insert_action_group(actiongroup, 1)
@@ -213,6 +217,13 @@ class ControlCenterWindow(gtk.Window):
         self.timersitem.set_image(timers_image)
         self.timersitem.set_sensitive(False)
         
+        pixbuf = icon_theme.load_icon("video", gtk.ICON_SIZE_MENU, gtk.ICON_LOOKUP_USE_BUILTIN)
+        recordings_image = gtk.image_new_from_pixbuf(pixbuf)
+        recordings_image.show()
+        
+        recordings = uimanager.get_widget('/MenuBar/Timers/Recordings')
+        recordings.set_image(recordings_image)
+        
         self.refresh_menuitem = uimanager.get_widget('/MenuBar/View/Refresh')
         self.refresh_menuitem.set_sensitive(False)
         
@@ -251,15 +262,24 @@ class ControlCenterWindow(gtk.Window):
         self.button_display_timers.show()
         self.toolbar.insert(self.button_display_timers, 0)
         
+        pixbuf = icon_theme.load_icon("video", gtk.ICON_SIZE_MENU, gtk.ICON_LOOKUP_USE_BUILTIN)
+        recordings_image = gtk.image_new_from_pixbuf(pixbuf)
+        recordings_image.show()
+        
+        button_recordings = gtk.ToolButton(icon_widget=recordings_image, label=_("Recordings"))
+        button_recordings.connect("clicked", self._on_button_recordings_clicked)
+        button_recordings.show()
+        self.toolbar.insert(button_recordings, 1)
+         
         sep = gtk.SeparatorToolItem()
         sep.show()
-        self.toolbar.insert(sep, 1)
+        self.toolbar.insert(sep, 2)
         
         self.refresh_button = gtk.ToolButton(gtk.STOCK_REFRESH)
         self.refresh_button.connect("clicked", self._on_refresh_clicked)
         self.refresh_button.set_tooltip_markup(_("Refresh program guide"))        
         self.refresh_button.show()
-        self.toolbar.insert(self.refresh_button, 2)
+        self.toolbar.insert(self.refresh_button, 3)
         
         prev_image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_LARGE_TOOLBAR)
         prev_image.show()
@@ -268,7 +288,7 @@ class ControlCenterWindow(gtk.Window):
         self.button_prev_day.set_tooltip_markup(_("Go to previous day"))
         self.button_prev_day.set_sensitive(False)
         self.button_prev_day.show()
-        self.toolbar.insert(self.button_prev_day, 3)
+        self.toolbar.insert(self.button_prev_day, 4)
         
         next_image = gtk.image_new_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_LARGE_TOOLBAR)
         next_image.show()
@@ -277,15 +297,12 @@ class ControlCenterWindow(gtk.Window):
         self.button_next_day.set_tooltip_markup(_("Go to next day"))
         self.button_next_day.set_sensitive(False)
         self.button_next_day.show()
-        self.toolbar.insert(self.button_next_day, 4)
-         
+        self.toolbar.insert(self.button_next_day, 5)
+        
     def get_device_groups(self):
         for group in self.manager.get_registered_device_groups():
             self._append_group(group)
-            
-    def device_groups_reply(self, a):
-        print a
-       
+    
     def _select_first_group(self):
         self.devgroupscombo.set_active(0)
         self.channelsview.grab_focus()
@@ -477,6 +494,11 @@ class ControlCenterWindow(gtk.Window):
         prefs = Preferences(self.manager, self)
         prefs.run()
         prefs.destroy()
+        
+    def _on_button_recordings_clicked(self, button):
+        dialog = RecordingsDialog(self)
+        dialog.run()
+        dialog.destroy()
         
     def _on_view_channels_clicked(self, action):
         if self.vbox_left:
