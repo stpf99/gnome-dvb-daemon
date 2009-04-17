@@ -59,7 +59,7 @@ namespace DVB {
             "inner-fec", typeof(string), code_rate,
             "modulation", typeof(string), modulation);
             
-            base.add_structure_to_scan (#tuning_params);  
+            base.add_structure_to_scan (tuning_params);  
         }
         
         public bool AddScanningDataFromFile (string path) {

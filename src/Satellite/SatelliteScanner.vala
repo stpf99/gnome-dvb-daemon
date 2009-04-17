@@ -59,7 +59,7 @@ namespace DVB {
             "symbol-rate", typeof(uint), symbol_rate,
             "polarization", typeof(string), polarization);
             
-            base.add_structure_to_scan (#tuning_params);
+            base.add_structure_to_scan (tuning_params);
         }
         
         public bool AddScanningDataFromFile (string path) {

@@ -215,7 +215,7 @@ namespace DVB {
             this.frequencies.clear ();
         }
         
-        protected void add_structure_to_scan (Gst.Structure# structure) {
+        protected void add_structure_to_scan (owned Gst.Structure structure) {
             if (structure == null) return;
             
             ScannedItem item = this.get_scanned_item (structure);
