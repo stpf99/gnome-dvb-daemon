@@ -62,20 +62,28 @@ namespace DVB {
         }
         
         /**
+         * @id: ID of group
          * @reference_device: All devices of this group will inherit
          * the settings from this device
+         * @with_epg_scanner: Whether to provide an EPG scanner
          */
-        public DeviceGroup (uint id, Device reference_device) {
+        public DeviceGroup (uint id, Device reference_device,
+                bool with_epg_scanner=true) {
             this.Id = id;
             this.reference_device = reference_device;
             this.reference_device.Channels.group_id = id;
-            this._epgscanner = new EPGScanner (this);
+            if (with_epg_scanner) {
+                this._epgscanner = new EPGScanner (this);
+            } else {
+                this._epgscanner = null;
+            }
             this._recorder = new Recorder (this);
         }
         
         public void destroy () {
             debug ("Destroying group %u", this.Id);
-            this._epgscanner.destroy ();
+            if (this._epgscanner != null)
+                this._epgscanner.destroy ();
             this._recorder.stop ();
         }
         

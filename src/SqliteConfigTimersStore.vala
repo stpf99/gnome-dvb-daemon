@@ -197,7 +197,8 @@ namespace DVB {
                 ref_dev.RecordingsDirectory = rec_dir;
                 
                 // Create device group
-                DeviceGroup group = new DeviceGroup ((uint)group_id, ref_dev);
+                DeviceGroup group = new DeviceGroup ((uint)group_id, ref_dev,
+                    !Main.get_disable_epg_scanner());
                 group.Name = statement.column_text (4);
                 
                 for (int i=1; i<devs.size; i++)
