@@ -261,7 +261,7 @@ namespace DVB {
                 if (sink == null) {
                     critical ("No element with name %s", sink_name);
                 } else {
-                    Pad sinkpad = sink.get_pad ("sink");
+                    Pad sinkpad = sink.get_static_pad ("sink");
                     
                     PadLinkReturn rc = pad.link (sinkpad);
                     if (rc != PadLinkReturn.OK) {
