@@ -92,6 +92,7 @@ namespace DVB {
         protected HashMap<uint, Gst.Structure> transport_streams;
         
         private static const string BASE_PIDS = "16:17:18";
+        private static const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u pids=%s stats-reporting-interval=0 ! mpegtsparse ! fakesink silent=true";
         
         // Contains SIDs
         private ArrayList<uint> new_channels;
@@ -139,10 +140,8 @@ namespace DVB {
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
                 this.pipeline = Gst.parse_launch(
-                    "dvbsrc name=dvbsrc adapter=%u frontend=%u ".printf (
-                    this.Device.Adapter, this.Device.Frontend)
-                    + "pids=%s stats-reporting-interval=0 ".printf (BASE_PIDS)
-                    + "! mpegtsparse ! fakesink silent=true");
+                    PIPELINE_TEMPLATE.printf (this.Device.Adapter,
+                        this.Device.Frontend, BASE_PIDS));
             } catch (Error e) {
                 error ("Could not create pipeline: %s", e.message);
                 return;
