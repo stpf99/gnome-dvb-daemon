@@ -511,7 +511,7 @@ namespace DVB {
                     }
                 }
             }
-        
+            
             this.nit_arrived = true;
         }
         
@@ -594,10 +594,8 @@ namespace DVB {
                 }
             }
             
-            if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
-                this.remove_wait_for_tables_timeout ();
-                
-                ArrayList<uint> del_channels = new ArrayList<uint> ();
+            // NIT gives us the transport stream, SDT links SID and TS ID 
+            if (this.nit_arrived && this.sdt_arrived) {
                 foreach (uint sid in this.new_channels) {
                     DVB.Channel channel = this.channels.get_channel (sid);
                     
@@ -608,7 +606,21 @@ namespace DVB {
                         this.add_values_from_structure_to_channel (
                             this.transport_streams.get (tsid),
                             channel);
-                         
+                    } else {
+                        debug ("TS %u for channel %u does not exist", tsid,
+                            sid);
+                        // We haven't seen the transport stream, yet
+                        // Maybe it comes with a later bus message
+                        this.nit_arrived = false;
+                    }
+                }
+                
+                // We received all tables at least once. Add valid channels.
+                if (this.pat_arrived) {
+                    ArrayList<uint> del_channels = new ArrayList<uint> ();
+                    foreach (uint sid in this.new_channels) {
+                        DVB.Channel channel = this.channels.get_channel (sid);
+                             
                         // If this fails we may miss video or audio pid,
                         // because we didn't came across the sdt, yet   
                         if (channel.is_valid ()) {
@@ -623,16 +635,19 @@ namespace DVB {
                             debug ("Channel %u is not valid: %s", sid,
                                 channel.to_string ());
                         }
-                    } else {
-                        debug ("TS %u for channel %u does not exist", tsid,
-                            sid);
+                    }
+                    
+                    // Only remove those channels we have all the information for
+                    foreach (uint sid in del_channels) {
+                        this.new_channels.remove (sid);
                     }
                 }
-                
-                // Only remove those channels we have all the information for
-                foreach (uint sid in del_channels) {
-                    this.new_channels.remove (sid);
-                }
+            }
+            
+            // If we collect all information we can continue scanning
+            // the next frequency
+            if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
+                this.remove_wait_for_tables_timeout ();
                 
                 this.start_scan ();
             }
