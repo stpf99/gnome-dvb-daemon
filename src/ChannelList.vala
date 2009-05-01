@@ -53,6 +53,7 @@ namespace DVB {
         }
         
         public void add (Channel channel) {
+            channel.GroupId = group_id;
             lock (this.channels) {
                 this.channels.set (channel.Sid, channel);
             }
@@ -86,9 +87,9 @@ namespace DVB {
             return this.channels.get_values().iterator();
         }
         
-        public static ChannelList restore_from_file (File channelsfile, AdapterType type) throws Error {
-            // FIXME make thread-safe
-            var reader = new DVB.ChannelListReader (channelsfile, type);
+        public static ChannelList restore_from_file (File channelsfile,
+                AdapterType type, uint group_id) throws Error {
+            var reader = new DVB.ChannelListReader (channelsfile, type, group_id);
             return reader.read ();
         }
         

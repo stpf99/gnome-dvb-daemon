@@ -182,7 +182,7 @@ namespace DVB {
                 ChannelList channels; 
                 try {
                     channels = ChannelList.restore_from_file (
-                        channels_file, type);
+                        channels_file, type, group_id);
                 } catch (Error e) {
                     warning ("Could not read channels: %s", e.message);
                     continue;

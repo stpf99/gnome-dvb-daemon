@@ -25,10 +25,12 @@ namespace DVB {
     
         public File ChannelFile {get; construct;}
         public AdapterType Type {get; construct;}
+        public uint GroupId {get; construct;}
         
-        public ChannelListReader (File file, AdapterType type) {
+        public ChannelListReader (File file, AdapterType type, uint group_id) {
             this.ChannelFile = file;
             this.Type = type;
+            this.GroupId = group_id;
         }
         
         public ChannelList? read () throws Error {
@@ -36,6 +38,7 @@ namespace DVB {
             if (contents == null) return null;
             
             ChannelList channels = new ChannelList (this.ChannelFile);
+            channels.group_id = this.GroupId;
         
             foreach (string line in contents.split("\n")) {
                 if (line.size () > 0) {

@@ -259,7 +259,7 @@ namespace DVB {
                 string channels_conf, string recordings_dir, string name) {
             
             Device device = this.create_device (adapter, frontend, channels_conf,
-                recordings_dir);
+                recordings_dir, device_group_counter + 1);
             
             if (device == null) return false;
             
@@ -519,7 +519,7 @@ namespace DVB {
         }
         
         private static Device? create_device (uint adapter, uint frontend,
-                string channels_conf, string recordings_dir) {
+                string channels_conf, string recordings_dir, uint group_id) {
             // TODO Check if adapter and frontend exists
             File channelsfile = File.new_for_path (channels_conf);
             File recdir = File.new_for_path (recordings_dir);
@@ -529,7 +529,8 @@ namespace DVB {
             
             ChannelList channels;
             try {
-                channels = DVB.ChannelList.restore_from_file (channelsfile, device.Type);
+                channels = DVB.ChannelList.restore_from_file (channelsfile,
+                    device.Type, group_id);
             } catch (Error e) {
                 critical ("Could not create channels list from %s: %s",
                     channels_conf, e.message);

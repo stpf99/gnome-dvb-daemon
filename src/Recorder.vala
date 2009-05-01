@@ -455,7 +455,7 @@ namespace DVB {
          */
         public uint32 AddTimerForEPGEvent (uint event_id, uint channel_sid) {
             weak EPGStore epgstore = Factory.get_epg_store ();
-            Event? event = epgstore.get_event (event_id, channel_sid);
+            Event? event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
             if (event == null) {
                 debug ("Could not find event with id %u", event_id);
                 return 0;
@@ -625,7 +625,7 @@ namespace DVB {
         
         public OverlapType HasTimerForEvent (uint event_id, uint channel_sid) {
             weak EPGStore epgstore = Factory.get_epg_store ();
-            Event? event = epgstore.get_event (event_id, channel_sid);
+            Event? event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
             if (event == null) {
                 debug ("Could not find event with id %u", event_id);
                 return OverlapType.UNKNOWN;

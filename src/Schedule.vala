@@ -67,10 +67,12 @@ namespace DVB {
             this.event_id_map = new HashMap<uint, weak Sequence<EventElement>> ();
             this.epgstore = Factory.get_epg_store ();
             
-        	Gee.List<Event> events = this.epgstore.get_events (this.channel);
+        	Gee.List<Event> events = this.epgstore.get_events (
+        	    this.channel.Sid, this.channel.GroupId);
         	foreach (Event event in events) {
         	    if (event.has_expired ()) {
-        	        this.epgstore.remove_event (event.id, this.channel);
+        	        this.epgstore.remove_event (event.id, this.channel.Sid,
+        	            this.channel.GroupId);
         	    } else {
         		    this.create_and_add_event_element (event);
         		}
@@ -105,13 +107,14 @@ namespace DVB {
                     this.event_id_map.remove (element.id);
                     this.events.remove (iter);
                     this.epgstore.remove_event (
-                        element.id, this.channel);
+                        element.id, this.channel.Sid, this.channel.GroupId);
                 }
             }
         }
         
         public Event? get_event (uint event_id) {
-            return this.epgstore.get_event (event_id, this.channel.Sid);
+            return this.epgstore.get_event (event_id,
+                this.channel.Sid, this.channel.GroupId);
         }
         
         /**
@@ -131,7 +134,8 @@ namespace DVB {
                 
                 this.create_and_add_event_element (event);
                 
-                this.epgstore.add_or_update_event (event, this.channel);
+                this.epgstore.add_or_update_event (event, this.channel.Sid,
+                    this.channel.GroupId);
             }
         }
         

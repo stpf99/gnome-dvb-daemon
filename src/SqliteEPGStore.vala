@@ -26,7 +26,8 @@ namespace DVB {
     public class SqliteEPGStore : GLib.Object, EPGStore {
     
         private static const string CREATE_EVENTS_TABLE_STATEMENT = 
-            """CREATE TABLE events (sid INTEGER,
+            """CREATE TABLE events (group_id INTEGER,
+            sid INTEGER,
             event_id INTEGER,
             starttime JULIAN,
             duration INTEGER,
@@ -38,24 +39,24 @@ namespace DVB {
             PRIMARY KEY (sid, event_id))""";
         
         private static const string INSERT_EVENT_SQL = 
-            "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
         private static const string DELETE_EVENT_STATEMENT = 
-            "DELETE FROM events WHERE sid=? AND event_id=?";
+            "DELETE FROM events WHERE group_id=? AND sid=? AND event_id=?";
             
         private static const string SELECT_ALL_EVENTS_STATEMENT =
             """SELECT event_id, datetime(starttime),
             duration, running_status, free_ca_mode, name,
             description, extended_description
-            FROM events WHERE sid='%u'""";
+            FROM events WHERE group_id='%u' AND sid='%u'""";
             
         private static const string HAS_EVENT_STATEMENT =
-            "SELECT COUNT(*) FROM events WHERE sid=? AND event_id=?";
+            "SELECT COUNT(*) FROM events WHERE group_id=? AND sid=? AND event_id=?";
             
         private static const string UPDATE_EVENT_SQL =
             """UPDATE events SET starttime=?, duration=?, running_status=?,
             free_ca_mode=?, name=?, description=?,
-            extended_description=? WHERE sid=? AND event_id=?""";
+            extended_description=? WHERE group_id=? AND sid=? AND event_id=?""";
             
         private static const string TO_JULIAN_SQL =
             "SELECT julianday(?)";
@@ -64,7 +65,7 @@ namespace DVB {
             """SELECT event_id, datetime(starttime),
             duration, running_status, free_ca_mode, name,
             description, extended_description
-            FROM events WHERE sid=? AND event_id=?""";
+            FROM events WHERE group_id=? AND sid=? AND event_id=?""";
             
         private Statement to_julian_statement;
         private Statement insert_event_statement;
@@ -94,7 +95,7 @@ namespace DVB {
                 out this.select_event_statement);
         }
         
-        public bool add_or_update_event (Event event, Channel channel) {
+        public bool add_or_update_event (Event event, uint channel_sid, uint group_id) {
             if (this.db == null) {
                 critical ("SQLite error: No database connection");
                 return false;
@@ -111,7 +112,7 @@ namespace DVB {
             // Check if start time got converted correctly
             if (julian_start <= 0) return false;
             
-            if (this.contains_event (event, channel)) {
+            if (this.contains_event (event, channel_sid, group_id)) {
                 this.update_event_statement.reset ();
                 
                 if (this.update_event_statement.bind_double (1, julian_start) != Sqlite.OK
@@ -120,7 +121,10 @@ namespace DVB {
                         || this.update_event_statement.bind_int (4, free_ca_mode) != Sqlite.OK
                         || this.update_event_statement.bind_text (5, name) != Sqlite.OK
                         || this.update_event_statement.bind_text (6, desc) != Sqlite.OK
-                        || this.update_event_statement.bind_text (7, ext_desc) != Sqlite.OK) {
+                        || this.update_event_statement.bind_text (7, ext_desc) != Sqlite.OK
+                        || this.update_event_statement.bind_int (8, (int)group_id) != Sqlite.OK
+                        || this.update_event_statement.bind_int (9, (int)channel_sid) != Sqlite.OK
+                        || this.update_event_statement.bind_int (10, (int)event.id) != Sqlite.OK) {
                     this.print_last_error ();
                     return false;
                 }
@@ -132,15 +136,16 @@ namespace DVB {
             } else {
                 this.insert_event_statement.reset ();
                 
-                if (this.insert_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
-                        || this.insert_event_statement.bind_int (2, (int)event.id) != Sqlite.OK
-                        || this.insert_event_statement.bind_double (3, julian_start) != Sqlite.OK
-                        || this.insert_event_statement.bind_int (4, (int)event.duration) != Sqlite.OK
-                        || this.insert_event_statement.bind_int (5, (int)event.running_status) != Sqlite.OK
-                        || this.insert_event_statement.bind_int (6, free_ca_mode) != Sqlite.OK
-                        || this.insert_event_statement.bind_text (7, name) != Sqlite.OK
-                        || this.insert_event_statement.bind_text (8, desc) != Sqlite.OK
-                        || this.insert_event_statement.bind_text (9, ext_desc) != Sqlite.OK) {
+                if (this.insert_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (3, (int)event.id) != Sqlite.OK
+                        || this.insert_event_statement.bind_double (4, julian_start) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (5, (int)event.duration) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (6, (int)event.running_status) != Sqlite.OK
+                        || this.insert_event_statement.bind_int (7, free_ca_mode) != Sqlite.OK
+                        || this.insert_event_statement.bind_text (8, name) != Sqlite.OK
+                        || this.insert_event_statement.bind_text (9, desc) != Sqlite.OK
+                        || this.insert_event_statement.bind_text (10, ext_desc) != Sqlite.OK) {
                     this.print_last_error ();
                     return false;
                 }
@@ -153,11 +158,12 @@ namespace DVB {
             return true;
         }
         
-        public Event? get_event (uint event_id, uint channel_sid) {
+        public Event? get_event (uint event_id, uint channel_sid, uint group_id) {
             this.select_event_statement.reset ();
             
-            if (this.select_event_statement.bind_int (1, (int)channel_sid) != Sqlite.OK
-                    || this.select_event_statement.bind_int (2, (int)event_id) != Sqlite.OK) {
+            if (this.select_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
+                    || this.select_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
+                    || this.select_event_statement.bind_int (3, (int)event_id) != Sqlite.OK) {
                 this.print_last_error ();
                 return null;
             }
@@ -174,7 +180,7 @@ namespace DVB {
             else return this.create_event_from_statement (this.select_event_statement);
         }
         
-        public bool remove_event (uint event_id, Channel channel) {
+        public bool remove_event (uint event_id, uint channel_sid, uint group_id) {
             if (this.db == null) {
                 critical ("SQLite error: No database connection");
                 return false;
@@ -182,8 +188,9 @@ namespace DVB {
             
             this.delete_event_statement.reset ();
             
-            if (this.delete_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
-                    || this.delete_event_statement.bind_int (2, (int)event_id) != Sqlite.OK) {
+            if (this.delete_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
+                    || this.delete_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
+                    || this.delete_event_statement.bind_int (3, (int)event_id) != Sqlite.OK) {
                 this.print_last_error ();
                 return false;
             }
@@ -196,11 +203,12 @@ namespace DVB {
             return true;
         }
         
-        public bool contains_event (Event event, Channel channel) {
+        public bool contains_event (Event event, uint channel_sid, uint group_id) {
             this.has_event_statement.reset ();
             
-            if (this.has_event_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
-                    || this.has_event_statement.bind_int (2, (int)event.id) != Sqlite.OK) {
+            if (this.has_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
+                    || this.has_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
+                    || this.has_event_statement.bind_int (3, (int)event.id) != Sqlite.OK) {
                 this.print_last_error ();
                 return false;
             }
@@ -213,13 +221,13 @@ namespace DVB {
             return (c > 0);
         }
         
-        public Gee.List<Event> get_events (Channel channel) {
+        public Gee.List<Event> get_events (uint channel_sid, uint group_id) {
             Gee.List<Event> events = new ArrayList<Event> ();
             
             if (this.db == null) return events;
             
             string statement_str = SELECT_ALL_EVENTS_STATEMENT.printf (
-                channel.Sid);
+                group_id, channel_sid);
             
             Statement statement;
             if (this.db.prepare (statement_str, -1, out statement) != Sqlite.OK) {
