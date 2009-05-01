@@ -24,9 +24,12 @@ namespace DVB {
     public class MediaFactory : Gst.RTSPMediaFactory {
         
         private string? sid;
-        private Gst.Bin dvbrtpbin;
-        private EPGScanner? epgscanner;
-        
+        private Gst.Bin? dvbrtpbin;
+
+        construct {
+            this.set_shared (true);
+        }
+
         public override Gst.Element? get_element (Gst.RTSPUrl url) {
             uint sidnr = 0;
           	uint grpnr = 0;
@@ -53,7 +56,7 @@ namespace DVB {
           	}
           	
           	// Stop EPG scanner
-          	this.epgscanner = devgrp.epgscanner;
+          	EPGScanner? epgscanner = devgrp.epgscanner;
           	if (epgscanner != null) epgscanner.stop ();
           	
           	Device? free_dev = devgrp.get_next_free_device ();
@@ -69,12 +72,7 @@ namespace DVB {
           	}
           	
           	this.sid = sidnr.to_string ();
-          	/*
-          	FIXME: We need a way to get to the pipeline
-            Gst.Bus bus = pipeline.get_bus();
-            bus.add_signal_watch();
-            bus.message += this.bus_watch_func;
-          	*/
+          	
           	Gst.Element dvbbasebin = Gst.ElementFactory.make ("dvbbasebin",
                     "dvbbasebin");
             if (dvbbasebin == null) {
@@ -114,7 +112,7 @@ namespace DVB {
                     critical ("No element with name %s", sink_name);
                 } else {
                     // Link dvbbasebin and rtpmp2tpay
-                    Gst.Pad sinkpad = sink.get_pad ("sink");
+                    Gst.Pad sinkpad = sink.get_static_pad ("sink");
                     
                     Gst.PadLinkReturn rc = pad.link (sinkpad);
                     if (rc != Gst.PadLinkReturn.OK) {
@@ -128,29 +126,8 @@ namespace DVB {
             }
         }
         
-        private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            switch (message.type) {
-                case Gst.MessageType.ELEMENT:
-                    string structure_name = message.structure.get_name();
-                    if (structure_name == "eit") {
-			if (this.epgscanner != null)
-                            this.epgscanner.on_eit_structure (message.structure);
-                    }
-                    break;
-                case Gst.MessageType.STATE_CHANGED:
-                    int enumval;
-                    message.structure.get_enum ("new-state", typeof(Gst.State),
-                        out enumval);
-                    if (enumval == Gst.State.NULL) {
-                        debug ("Pipeline stopped");
-                        this.sid = null;
-                        // Start EPG scanner again
-                        if (this.epgscanner != null)
-                            this.epgscanner.start ();
-                        this.epgscanner = null;
-                    }
-                    break;
-            }
+        public override string gen_key (Gst.RTSPUrl url) {
+            return url.abspath;
         }
         
     }

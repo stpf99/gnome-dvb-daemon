@@ -212,7 +212,7 @@ namespace DVB {
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
                     Channel channel = this.channels.get (channel_id);
-                    url = "rtsp://localhost:1554/%u/%u".printf (
+                    url = "rtsp://localhost:8554/%u/%u".printf (
                         this.group_id, channel.Sid);   
                 }
             }
