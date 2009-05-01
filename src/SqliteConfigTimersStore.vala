@@ -210,8 +210,8 @@ namespace DVB {
             return groups;
         }
         
-        public void add_device_group (DeviceGroup dev_group) {
-            if (this.contains_group (dev_group.Id)) return;
+        public bool add_device_group (DeviceGroup dev_group) {
+            if (this.contains_group (dev_group.Id)) return false;
         
             string channels = dev_group.Channels.channels_file.get_path ();
             string recdir = dev_group.RecordingsDirectory.get_path ();
@@ -223,27 +223,32 @@ namespace DVB {
                 || this.insert_group_statement.bind_text (4, recdir) != Sqlite.OK
                 || this.insert_group_statement.bind_text (5, dev_group.Name) != Sqlite.OK) {
                 this.print_last_error ();
-                return;
+                return false;
             }
             
             if (this.insert_group_statement.step () != Sqlite.DONE) {
                 this.print_last_error ();
-                return;
+                return false;
             }
             
             foreach (Device dev in dev_group)
                 this.add_device_to_group (dev, dev_group);
+                
+            return true;
         }
         
-        public void remove_device_group (DeviceGroup devgroup) {
+        public bool remove_device_group (DeviceGroup devgroup) {
             this.delete_group_statement.reset ();
             if (this.delete_group_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK) {
                 this.print_last_error ();
-                return;
+                return false;
             }
             
-            if (this.delete_group_statement.step () != Sqlite.DONE)
+            if (this.delete_group_statement.step () != Sqlite.DONE) {
                 this.print_last_error ();
+                return false;
+            }
+            return true;
         }
         
         public bool contains_group (uint group_id) {
@@ -262,31 +267,37 @@ namespace DVB {
             return (c > 0);
         }
         
-        public void add_device_to_group (Device dev, DeviceGroup devgroup) {
+        public bool add_device_to_group (Device dev, DeviceGroup devgroup) {
             this.insert_device_statement.reset ();
             if (this.insert_device_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK
                 || this.insert_device_statement.bind_int (2, (int)dev.Adapter) != Sqlite.OK
                 || this.insert_device_statement.bind_int (3, (int)dev.Frontend) != Sqlite.OK)
             {
                 this.print_last_error ();
-                return;
+                return false;
             }
             
-            if (this.insert_device_statement.step () != Sqlite.DONE)
+            if (this.insert_device_statement.step () != Sqlite.DONE) {
                 this.print_last_error ();
+                return false;
+            }
+            return true;
         }
         
-        public void remove_device_from_group (Device dev, DeviceGroup devgroup) {
+        public bool remove_device_from_group (Device dev, DeviceGroup devgroup) {
             this.delete_device_statement.reset ();
             if (this.delete_device_statement.bind_int (1, (int)dev.Adapter) != Sqlite.OK
                 || this.delete_device_statement.bind_int (2, (int)dev.Frontend) != Sqlite.OK)
             {
                 this.print_last_error ();
-                return;
+                return false;
             }
             
-            if (this.delete_device_statement.step () != Sqlite.DONE)
-                this.print_last_error ();        
+            if (this.delete_device_statement.step () != Sqlite.DONE) {
+                this.print_last_error ();
+                return false;
+            }
+            return true;
         }
         
         public Gee.List<Timer> get_all_timers_of_device_group (DeviceGroup dev) {
@@ -318,8 +329,8 @@ namespace DVB {
             return timers;
         }
         
-        public void add_timer_to_device_group (Timer timer, DeviceGroup dev) {
-            if (this.contains_timer (timer.Id)) return;
+        public bool add_timer_to_device_group (Timer timer, DeviceGroup dev) {
+            if (this.contains_timer (timer.Id)) return false;
             
             this.insert_timer_statement.reset ();
             if (this.insert_timer_statement.bind_int (1, (int)timer.Id) != Sqlite.OK
@@ -333,24 +344,30 @@ namespace DVB {
                 || this.insert_timer_statement.bind_int (9, (int)timer.Duration) != Sqlite.OK)
             {
                 this.print_last_error ();
-                return;
+                return false;
             }
             
-            if (this.insert_timer_statement.step () != Sqlite.DONE)
+            if (this.insert_timer_statement.step () != Sqlite.DONE) {
                 this.print_last_error ();
+                return false;
+            }
+            return true;
         }
         
-        public void remove_timer_from_device_group (uint timer_id, DeviceGroup dev) {
+        public bool remove_timer_from_device_group (uint timer_id, DeviceGroup dev) {
             this.delete_timer_statement.reset ();
             
             if (this.delete_timer_statement.bind_int (1, (int)timer_id) != Sqlite.OK)
             {
                 this.print_last_error ();
-                return;
+                return false;
             }
             
-            if (this.delete_timer_statement.step () != Sqlite.DONE)
+            if (this.delete_timer_statement.step () != Sqlite.DONE) {
                 this.print_last_error ();
+                return false;
+            }
+            return true;
         }
         
         public bool contains_timer (uint timer_id) {
