@@ -30,6 +30,7 @@ namespace DVB {
                 this.schedule = new DVB.Schedule (this);
             }
         }
+        public uint GroupId;
         public string Name {get; set;}
         public uint TransportStreamId {get; set;}
         public string Network {get; set;}
