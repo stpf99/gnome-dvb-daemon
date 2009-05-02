@@ -28,6 +28,8 @@ namespace DVB {
         private static StaticRecMutex store_mutex = StaticRecMutex ();
         private static DVB.EPGStore epgstore;
         private static StaticRecMutex epgstore_mutex = StaticRecMutex ();
+        private static DVB.Settings settings;
+        private static StaticRecMutex settings_mutex = StaticRecMutex ();
         
         public static weak DVB.TimersStore get_timers_store () {
         	store_mutex.lock ();
@@ -56,6 +58,16 @@ namespace DVB {
         	return epgstore;
         }
         
+        public static weak DVB.Settings get_settings () {
+            settings_mutex.lock ();
+            if (settings == null) {
+                settings = new DVB.Settings ();
+                settings.load ();
+            }
+            settings_mutex.unlock ();
+            return settings;
+        }
+        
         public static void shutdown () {
             store_mutex.lock ();
             store = null;
@@ -64,6 +76,11 @@ namespace DVB {
             epgstore_mutex.lock ();
             epgstore = null;
             epgstore_mutex.unlock ();
+            
+            settings_mutex.lock ();
+            if (settings != null) settings.save ();
+            settings = null;
+            settings_mutex.unlock ();
         }
         
     }

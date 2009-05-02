@@ -49,6 +49,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Scanner.vala \
 	src/ScannedItem.vala \
 	src/Schedule.vala \
+	src/Settings.vala \
 	src/SqliteConfigTimersStore.vala \
 	src/SqliteEPGStore.vala \
 	src/Timer.vala \
