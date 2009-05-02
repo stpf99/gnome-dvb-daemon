@@ -28,21 +28,16 @@ namespace DVB {
     
         public uint32 Id {get; construct;}
         public uint ChannelSid {get; construct;}
-        public string? Name {get; construct;}
+        public string? Name {get; set;}
         // TODO Create values from starttime
-        public uint Year {get; construct;}
-        public uint Month {get; construct;}
-        public uint Day {get; construct;}
-        public uint Hour {get; construct;}
-        public uint Minute {get; construct;}
-        public uint Duration {get; construct;}
+        public uint Year {get; set;}
+        public uint Month {get; set;}
+        public uint Day {get; set;}
+        public uint Hour {get; set;}
+        public uint Minute {get; set;}
+        public uint Duration {get; set;}
         
         private Time starttime;
-        
-        construct {
-            this.starttime = Utils.create_time ((int)this.Year, (int)this.Month,
-                (int)this.Day, (int)this.Hour, (int)this.Minute);
-        }
         
         public Timer (uint32 id, uint channel_sid,
         int year, int month, int day, int hour, int minute, uint duration,
@@ -51,13 +46,16 @@ namespace DVB {
             this.ChannelSid = channel_sid;
             this.Name = name;
             
-            this.Year = year;
-            this.Month = month;
-            this.Day = day;
-            this.Hour = hour;
-            this.Minute = minute;
+            this.Year = (uint)year;
+            this.Month = (uint)month;
+            this.Day = (uint)day;
+            this.Hour = (uint)hour;
+            this.Minute = (uint)minute;
            
             this.Duration = duration;
+            
+            this.starttime = Utils.create_time (year, month,
+                day, hour, minute);
         }
         
         /**
@@ -150,7 +148,21 @@ namespace DVB {
                 }
             }
         }
-                
+        
+        /**
+         * Add the specified amount of minutes to the starting time
+         */
+        public void add_to_start_time (int minutes) {
+            this.starttime.minute += minutes;
+            this.starttime.mktime ();
+            
+            this.Year = this.starttime.year + 1900;
+            this.Month = this.starttime.month + 1;
+            this.Day = this.starttime.day;
+            this.Hour = this.starttime.hour;
+            this.Minute = this.starttime.minute;
+        }
+              
         public uint[] get_start_time () {
             uint[] start = new uint[] {
                 this.Year,
@@ -179,18 +191,14 @@ namespace DVB {
         }
         
         /**
-         * Whether the start time of the timer equals the current local time
+         * Whether the start time of the timer is after the current local time
+         * and the timer hasn't expired, yet.
          */
         public bool is_start_due () {
-            var localtime = Time.local (time_t ());
-
-            // Convert to values of struct tm aka Time            
-            int year = (int)this.Year - 1900;
-            int month = (int)this.Month - 1;
+            var localtime = time_t ();
             
-            return (year == localtime.year && month == localtime.month
-                    && this.Day == localtime.day && this.Hour == localtime.hour
-                    && this.Minute == localtime.minute);
+            return (localtime - this.starttime.mktime () >= 0
+                && !this.has_expired ());
         }
         
         /**
@@ -222,8 +230,9 @@ namespace DVB {
         }
         
         private time_t get_end_time_timestamp () {
-            var t = Utils.create_time ((int)this.Year, (int)this.Month,
-                (int)this.Day, (int)this.Hour, (int)this.Minute);
+            var t = Utils.create_time (this.starttime.year + 1900,
+                this.starttime.month + 1, this.starttime.day,
+                this.starttime.hour, this.starttime.minute);
             
             // TODO Do we change the value of this.starttime each time?
             t.minute += (int)this.Duration;

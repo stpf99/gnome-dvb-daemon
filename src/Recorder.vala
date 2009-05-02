@@ -401,7 +401,28 @@ namespace DVB {
                                        start_year, start_month, start_day,
                                        start_hour, start_minute, duration,
                                        null);
-            return this.add_timer (new_timer);
+            
+            Settings settings = Factory.get_settings ();
+            int start_margin = 0;
+            uint end_margin = 0;
+            try {
+                start_margin = -1 * settings.get_integer ("timers", "margin_start");
+                end_margin = 2 * (uint)settings.get_integer ("timers", "margin_end");
+                new_timer.Duration += end_margin;
+                new_timer.add_to_start_time (start_margin);
+            } catch (KeyFileError e) {
+                critical ("Could not retrieve start/end margins: %s",
+                    e.message);
+            }
+            
+            uint32 tid = this.add_timer (new_timer);
+            if (tid == 0) {
+                // The timer conflicts, see what happens when we remove margins
+                new_timer.Duration -= end_margin;
+                new_timer.add_to_start_time (-1*start_margin);
+                tid = this.add_timer (new_timer);
+            }
+            return tid;
         }
         
         public uint32 add_timer (Timer new_timer) {
