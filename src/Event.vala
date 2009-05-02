@@ -144,7 +144,7 @@ namespace DVB {
             
             int64 after = (int64)end_time.mktime ();
             
-            assert (after > before && after - before == this.duration);
+            assert (after - before == this.duration);
             
             return after;
         }
