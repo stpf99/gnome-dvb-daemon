@@ -71,7 +71,7 @@ namespace DVB {
         
         public string serialize () {
             uint[] started = this.get_start ();
-            return "%u\n%s\n%s\n%u-%u-%u %u:%u\n%lld\n%s\n%s".printf (
+            return ("%u\n%s\n%s\n%u-%u-%u %u:%u\n%"+int64.FORMAT+"\n%s\n%s").printf (
                 this.Id, this.ChannelName, this.Location.get_path (),                
                 started[0], started[1], started[2], started[3],
                 started[4], this.Length,

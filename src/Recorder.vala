@@ -901,7 +901,8 @@ namespace DVB {
          */
         private void on_recording_stopped (RecordingThread recthread,
                 Recording recording, Timer timer) {
-            debug ("Recording of channel %s stopped after %lli seconds",
+            debug ("Recording of channel %s stopped after %"
+                + int64.FORMAT +" seconds",
                 recording.ChannelName, recording.Length);
             
             if (recthread.count == 0) {
