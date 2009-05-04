@@ -381,27 +381,35 @@ namespace DVB {
          * Add a new timer
          */
         public uint32 AddTimer (uint channel,
+                int start_year, int start_month, int start_day,
+                int start_hour, int start_minute, uint duration) {
+            
+            Timer new_timer = this.create_timer (channel, start_year, start_month,
+                start_day, start_hour, start_minute, duration);
+            
+            if (new_timer == null)
+                return this.add_timer (new_timer);
+            else
+                return 0;
+        }
+        
+        /**
+         * Works the same way as AddTimer() but adds a margin before and
+         * after the timer.
+         *
+         * If the timer with added margins conflicts with a scheduled
+         * recording the margins are removed and adding the timer will
+         * be tried again.
+         */
+        public uint32 AddTimerWithMargin (uint channel,
             int start_year, int start_month, int start_day,
             int start_hour, int start_minute, uint duration) {
-            debug ("Adding new timer: channel: %u, start: %d-%d-%d %d:%d, duration: %u",
-                channel, start_year, start_month, start_day,
-                start_hour, start_minute, duration);
-                
-            if (!this.DeviceGroup.Channels.contains (channel)) {
-                warning ("No channel %u for device group %u", channel,
-                    this.DeviceGroup.Id);
-                return 0;
-            }
             
-            uint32 timer_id = RecordingsStore.get_instance ().get_next_id ();
-                
-            // TODO Get name for timer
-            var new_timer = new Timer (timer_id,
-                                       this.DeviceGroup.Channels.get_channel (channel).Sid,
-                                       start_year, start_month, start_day,
-                                       start_hour, start_minute, duration,
-                                       null);
-            
+            Timer new_timer = this.create_timer (channel, start_year, start_month,
+                start_day, start_hour, start_minute, duration);
+
+            if (new_timer == null) return 0;
+
             Settings settings = Factory.get_settings ();
             int start_margin = 0;
             uint end_margin = 0;
@@ -414,7 +422,7 @@ namespace DVB {
                 critical ("Could not retrieve start/end margins: %s",
                     e.message);
             }
-            
+
             uint32 tid = this.add_timer (new_timer);
             if (tid == 0) {
                 // The timer conflicts, see what happens when we remove margins
@@ -680,7 +688,32 @@ namespace DVB {
                 this.stop_recording (timer);
             }
         }
-        
+
+        protected Timer? create_timer (uint channel,
+                int start_year, int start_month, int start_day,
+                int start_hour, int start_minute, uint duration) {
+            debug ("Creating new timer: channel: %u, start: %d-%d-%d %d:%d, duration: %u",
+                channel, start_year, start_month, start_day,
+                start_hour, start_minute, duration);
+    
+            if (!this.DeviceGroup.Channels.contains (channel)) {
+                warning ("No channel %u for device group %u", channel,
+                    this.DeviceGroup.Id);
+                return null;
+            }
+
+            uint32 timer_id = RecordingsStore.get_instance ().get_next_id ();
+
+            // TODO Get name for timer
+            var new_timer = new Timer (timer_id,
+               this.DeviceGroup.Channels.get_channel (channel).Sid,
+               start_year, start_month, start_day,
+               start_hour, start_minute, duration,
+               null);
+
+            return new_timer;
+        }
+
         /**
          * Start recording of specified timer
          */

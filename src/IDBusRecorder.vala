@@ -47,6 +47,14 @@ namespace DVB {
             int start_year, int start_month, int start_day,
             int start_hour, int start_minute, uint duration);
         
+         /**
+         * Works the same way as AddTimer() but adds a margin before and
+         * after the timer.
+         */
+        public abstract uint32 AddTimerWithMargin (uint channel,
+            int start_year, int start_month, int start_day,
+            int start_hour, int start_minute, uint duration);
+        
         /**
          * @event_id: id of the EPG event
          * @channel_sid: SID of channel
