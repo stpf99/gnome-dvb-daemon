@@ -388,9 +388,9 @@ namespace DVB {
                 start_day, start_hour, start_minute, duration);
             
             if (new_timer == null)
-                return this.add_timer (new_timer);
-            else
                 return 0;
+            else
+                return this.add_timer (new_timer);
         }
         
         /**
