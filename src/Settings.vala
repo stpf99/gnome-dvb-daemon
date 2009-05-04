@@ -68,7 +68,7 @@ namespace DVB {
                 try {
                     stream.close (null);
                 } catch (Error e) {
-                    critical (e.message);
+                    critical ("%s", e.message);
                 }
             }
             
@@ -116,7 +116,7 @@ namespace DVB {
             try {
                 stream.close (null);
             } catch (Error e) {
-                critical (e.message);
+                critical ("%s", e.message);
             }
         
             return false;

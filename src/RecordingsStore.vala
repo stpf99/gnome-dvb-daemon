@@ -341,7 +341,7 @@ namespace DVB {
                     }
                 }
             } catch (Error e) {
-                critical (e.message);
+                critical ("%s", e.message);
             } finally {
                 try {
                     files.close (null);
