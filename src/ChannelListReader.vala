@@ -38,7 +38,6 @@ namespace DVB {
             if (contents == null) return null;
             
             ChannelList channels = new ChannelList (this.ChannelFile);
-            channels.group_id = this.GroupId;
         
             foreach (string line in contents.split("\n")) {
                 if (line.size () > 0) {
@@ -89,8 +88,9 @@ namespace DVB {
          * A line looks like
          * Das Erste:212500000:INVERSION_AUTO:BANDWIDTH_7_MHZ:FEC_3_4:FEC_1_2:QAM_16:TRANSMISSION_MODE_8K:GUARD_INTERVAL_1_4:HIERARCHY_NONE:513:514:32
          */
-        private static TerrestrialChannel? parse_terrestrial_channel (string line) {
+        private TerrestrialChannel? parse_terrestrial_channel (string line) {
             var channel = new TerrestrialChannel ();
+            channel.GroupId = this.GroupId;
             
             string[] fields = line.split(":");
             
@@ -199,8 +199,9 @@ namespace DVB {
          * A line looks like
          * Das Erste:11836:h:0:27500:101:102:28106
          */
-        private static SatelliteChannel? parse_satellite_channel (string line) {
+        private SatelliteChannel? parse_satellite_channel (string line) {
             var channel = new SatelliteChannel ();
+            channel.GroupId = this.GroupId;
             
             string[] fields = line.split(":");
             
@@ -244,8 +245,9 @@ namespace DVB {
          * line looks like
          * ProSieben:330000000:INVERSION_AUTO:6900000:FEC_NONE:QAM_64:255:256:898
          */
-        private static CableChannel? parse_cable_channel (string line) {
+        private CableChannel? parse_cable_channel (string line) {
             var channel = new CableChannel ();
+            channel.GroupId = this.GroupId;
             
             string[] fields = line.split(":");
             

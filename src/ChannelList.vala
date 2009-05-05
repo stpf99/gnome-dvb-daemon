@@ -28,7 +28,6 @@ namespace DVB {
         public int size {
             get { return this.channels.size; }
         }
-        public uint group_id {get; set;}
         
         /**
          * Maps channels' SID to the channels' data
@@ -53,7 +52,6 @@ namespace DVB {
         }
         
         public void add (Channel channel) {
-            channel.GroupId = group_id;
             lock (this.channels) {
                 this.channels.set (channel.Sid, channel);
             }
@@ -214,7 +212,7 @@ namespace DVB {
                 if (this.channels.contains (channel_id)) {
                     Channel channel = this.channels.get (channel_id);
                     url = "rtsp://localhost:8554/%u/%u".printf (
-                        this.group_id, channel.Sid);   
+                        channel.GroupId, channel.Sid);   
                 }
             }
             
