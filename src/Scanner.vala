@@ -221,7 +221,7 @@ namespace DVB {
             
             if (!this.scanned_frequencies.contains (item)) {
                 debug ("Queueing new frequency %u", item.Frequency);
-                this.frequencies.push_tail (#structure);
+                this.frequencies.push_tail (structure);
                 this.scanned_frequencies.add (item);
             }
         }

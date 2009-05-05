@@ -283,7 +283,7 @@ namespace DVB {
             string datetime_str = "%04u-%02u-%02u %02u:%02u:%02u".printf (
                 year, month, day, hour, minute, second);
             
-            if (this.to_julian_statement.bind_text (1, #datetime_str)
+            if (this.to_julian_statement.bind_text (1, datetime_str)
                     != Sqlite.OK) {
                 this.print_last_error ();
                 return 0;       
