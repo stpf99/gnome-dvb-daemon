@@ -322,7 +322,8 @@ namespace DVB {
                 minute = this.select_timers_statement.column_int (7);
                 duration = (uint)this.select_timers_statement.column_int (8);
                 
-                timers.add (new Timer (tid, sid, year, month, day, hour,
+                Channel channel = dev.Channels.get_channel (sid);
+                timers.add (new Timer (tid, channel, year, month, day, hour,
                     minute, duration));
             }
             
@@ -335,7 +336,7 @@ namespace DVB {
             this.insert_timer_statement.reset ();
             if (this.insert_timer_statement.bind_int (1, (int)timer.Id) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (2, (int)dev.Id) != Sqlite.OK
-                || this.insert_timer_statement.bind_int (3, (int)timer.ChannelSid) != Sqlite.OK
+                || this.insert_timer_statement.bind_int (3, (int)timer.Channel.Sid) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (4, (int)timer.Year) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (5, (int)timer.Month) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (6, (int)timer.Day) != Sqlite.OK

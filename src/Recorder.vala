@@ -67,7 +67,9 @@ namespace DVB {
         }
         
         public void stop_recording (Timer timer) {
-            string sink_name = "sink_%u".printf (timer.ChannelSid);
+            string channel_sid_string = timer.Channel.Sid.to_string ();
+                
+            string sink_name = "sink_%s".printf (channel_sid_string);
             Element sink = ((Bin) this.pipeline).get_by_name (sink_name);
             string location;
             sink.get ("location", out location);
@@ -86,8 +88,6 @@ namespace DVB {
                 string programs;
                 dvbbasebin.get ("program-numbers", out programs);
                 string[] programs_arr = programs.split (":");
-                
-                string channel_sid_string = timer.ChannelSid.to_string ();
                 
                 SList<string> new_programs_list = new SList<string> ();
                 for (int i=0; i<programs_arr.length; i++) {
@@ -126,7 +126,7 @@ namespace DVB {
         }
         
         public void start_recording (Timer timer, File location) {
-            uint channel_sid = timer.ChannelSid;
+            uint channel_sid = timer.Channel.Sid;
             this.sid = channel_sid.to_string ();
             string sink_name = "sink_%u".printf (channel_sid);
         
@@ -206,8 +206,8 @@ namespace DVB {
             recording.Name = null;
             recording.Description = null;
             recording.Id = timer.Id;
-            recording.ChannelSid = timer.ChannelSid;
-            Channel channel = this.device.Channels.get_channel (timer.ChannelSid);
+            recording.ChannelSid = channel_sid;
+            Channel channel = this.device.Channels.get_channel (channel_sid);
             recording.ChannelName = channel.Name;
             recording.StartTime =
                 timer.get_start_time_time ();
@@ -599,7 +599,7 @@ namespace DVB {
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
-                    name = this.DeviceGroup.Channels.get_channel (t.ChannelSid).Name;
+                    name = t.Channel.Name;
                 }
             }
             return name;
@@ -665,7 +665,7 @@ namespace DVB {
                 foreach (uint32 key in this.timers.get_keys ()) {
                     Timer timer = this.timers.get (key);
                     
-                    if (timer.ChannelSid == channel_sid) {
+                    if (timer.Channel.Sid == channel_sid) {
                         OverlapType overlap = timer.get_overlap_utc (
                             event.year, event.month, event.day, event.hour,
                             event.minute, event.duration/60);
@@ -706,7 +706,7 @@ namespace DVB {
 
             // TODO Get name for timer
             var new_timer = new Timer (timer_id,
-               this.DeviceGroup.Channels.get_channel (channel).Sid,
+               this.DeviceGroup.Channels.get_channel (channel),
                start_year, start_month, start_day,
                start_hour, start_minute, duration,
                null);
@@ -718,7 +718,7 @@ namespace DVB {
          * Start recording of specified timer
          */
         protected void start_recording (Timer timer) {
-            Channel channel = this.DeviceGroup.Channels.get_channel (timer.ChannelSid);
+            Channel channel = timer.Channel;
             
             File? location = this.create_recording_dirs (channel,
                 timer.get_start_time ());
@@ -730,8 +730,7 @@ namespace DVB {
             // same transport stream
             foreach (uint32 timer_id in this.active_timers) {
                 Timer other_timer = this.timers.get (timer_id);
-                Channel other_channel =
-                    this.DeviceGroup.Channels.get_channel (other_timer.ChannelSid);
+                Channel other_channel = other_timer.Channel;
                 
                 if (channel.on_same_transport_stream (other_channel)) {
                     debug ("Using already active RecordingThread");

@@ -27,7 +27,7 @@ namespace DVB {
     public class Timer : GLib.Object {
     
         public uint32 Id {get; construct;}
-        public uint ChannelSid {get; construct;}
+        public Channel Channel {get; construct;}
         public string? Name {get; set;}
         // TODO Create values from starttime
         public uint Year {get; set;}
@@ -39,11 +39,11 @@ namespace DVB {
         
         private Time starttime;
         
-        public Timer (uint32 id, uint channel_sid,
+        public Timer (uint32 id, Channel channel,
         int year, int month, int day, int hour, int minute, uint duration,
         string? name=null) {
             this.Id = id;
-            this.ChannelSid = channel_sid;
+            this.Channel = channel;
             this.Name = name;
             
             this.Year = (uint)year;
@@ -225,7 +225,7 @@ namespace DVB {
         
         public string to_string () {
             return "channel: %u, start: %u-%u-%u %u:%u, duration: %u".printf (
-                this.ChannelSid, this.Year, this.Month, this.Day, this.Hour,
+                this.Channel.Sid, this.Year, this.Month, this.Day, this.Hour,
                 this.Minute, this.Duration);
         }
         
