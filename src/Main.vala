@@ -51,7 +51,7 @@ public class Main {
             uint request_name_result = bus.RequestName (DVB.Constants.DBUS_SERVICE, (uint) 0);
 
             if (request_name_result == DBus.RequestNameReply.PRIMARY_OWNER) {
-                debug ("Creating new Manager D-Bus service");
+                message ("Creating new Manager D-Bus service");
             
                 manager = DVB.Manager.get_instance ();
                                 
@@ -59,7 +59,7 @@ public class Main {
                     DVB.Constants.DBUS_MANAGER_PATH,
                     manager);
             } else {
-                debug ("Manager D-Bus service is already running");
+                warning ("Manager D-Bus service is already running");
                 return false;
             }
 
@@ -72,7 +72,7 @@ public class Main {
     }
     
     private static bool start_recordings_store (uint32 minimum_id) {
-       debug ("Creating new RecordingsStore D-Bus service");
+       message ("Creating new RecordingsStore D-Bus service");
        
        try {
             var conn = DBus.Bus.get (DBus.BusType.SESSION);
@@ -155,6 +155,7 @@ public class Main {
         weak DVB.TimersStore timers_store = DVB.Factory.get_timers_store ();
         weak DVB.ConfigStore config_store = DVB.Factory.get_config_store ();
         
+        message ("Restoring device groups");
         Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
         foreach (DVB.DeviceGroup device_group in device_groups) {
             
@@ -162,6 +163,7 @@ public class Main {
                 DVB.Recorder rec = device_group.recorder;
             
                 // Restore timers
+                message ("Restoring timers of device group %u", device_group.Id);
                 Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
                 foreach (DVB.Timer t in timers) {
                     if (t.Id > max_id) max_id = t.Id;
@@ -176,6 +178,7 @@ public class Main {
         
         if (!start_recordings_store (max_id)) return -1;
 
+        message ("Starting RTSP server");
         server = new Gst.RTSPServer ();
         server.set_media_mapping (new DVB.MediaMapping ());
         server.attach (null);
