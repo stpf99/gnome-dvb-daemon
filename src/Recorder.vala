@@ -42,12 +42,13 @@ namespace DVB {
         }
         
         private Element? pipeline;
-        private string? sid;
+        private HashSet<string> sid_set;
         // Maps timer id to Recording
         private Map<uint, Recording> recordings;
     
         construct {
             this.recordings = new HashMap<uint, Recording> ();
+            this.sid_set = new HashSet<string> (GLib.str_hash, GLib.str_equal);
         }
     
         public RecordingThread (Device device, EPGScanner? epgscanner) {
@@ -67,10 +68,13 @@ namespace DVB {
         }
         
         public void stop_recording (Timer timer) {
-            string channel_sid_string = timer.Channel.Sid.to_string ();
-                
-            string sink_name = "sink_%s".printf (channel_sid_string);
-            Element sink = ((Bin) this.pipeline).get_by_name (sink_name);
+            uint channel_sid = timer.Channel.Sid;
+
+            Element? sink = this.get_sink (channel_sid);
+            if (sink == null) {
+                critical ("Could not find sink for SID %u", channel_sid);
+                return;
+            }
             string location;
             sink.get ("location", out location);
             
@@ -78,12 +82,13 @@ namespace DVB {
                 // Still have other recordings,
                 // just remove sid from program-numbers
             
-                Element dvbbasebin = ((Bin) this.pipeline).get_by_name (
-                    DVBBASEBIN_NAME);
+                Element dvbbasebin = this.get_dvbbasebin ();
                 if (dvbbasebin == null) {
                     critical ("No element with name %s", DVBBASEBIN_NAME);
                     return;
                 }
+                
+                string channel_sid_string = channel_sid.to_string ();
                 
                 string programs;
                 dvbbasebin.get ("program-numbers", out programs);
@@ -102,7 +107,14 @@ namespace DVB {
                 }
                 
                 this.pipeline.set_state (State.PAUSED);
+                debug ("Changing program-numbers from %s to %s", programs,
+                        new_programs.str);
                 dvbbasebin.set ("program-numbers", new_programs.str);
+                /*
+                Element? queue = this.get_queue (channel_sid_string);
+                ((Bin)this.pipeline).remove (queue);
+                ((Bin)this.pipeline).remove (sink);
+                */
                 this.pipeline.set_state (State.PLAYING);
             }
             
@@ -127,11 +139,10 @@ namespace DVB {
         
         public void start_recording (Timer timer, File location) {
             uint channel_sid = timer.Channel.Sid;
-            this.sid = channel_sid.to_string ();
-            string sink_name = "sink_%u".printf (channel_sid);
-        
-            debug ("Starting recording of channel %u",
-                channel_sid);
+            string channel_sid_str = channel_sid.to_string ();
+            
+            debug ("Starting recording of channel %s",
+                channel_sid_str);
             
             if (this.pipeline == null) {
                 // Setup new pipeline
@@ -153,16 +164,15 @@ namespace DVB {
                 bus.message += this.bus_watch_func;
                     
                 dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
-                dvbbasebin.set ("program-numbers", this.sid);
+                dvbbasebin.set ("program-numbers", channel_sid_str);
                 dvbbasebin.set ("adapter", this.device.Adapter);
                 dvbbasebin.set ("frontend", this.device.Frontend);
                 
                 // don't use add_many because of problems with ownership transfer    
                 ((Bin) this.pipeline).add (dvbbasebin);
                 
-                string queue_name = "queue_%u".printf (channel_sid);
-                Element? queue = this.add_new_queue (queue_name);
-                Element? filesink = this.add_new_filesink (sink_name,
+                Element? queue = this.add_new_queue (channel_sid);
+                Element? filesink = this.add_new_filesink (channel_sid,
                     location.get_path ());
                     
                 if (queue != null && filesink != null) {
@@ -177,30 +187,38 @@ namespace DVB {
             } else {
                 // Use current pipeline and add new filesink
             
-                Element dvbbasebin = ((Bin) this.pipeline).get_by_name (DVBBASEBIN_NAME);
+                Element? dvbbasebin = this.get_dvbbasebin ();
                 if (dvbbasebin == null) {
                     critical ("No element with name %s", DVBBASEBIN_NAME);
                     return;
                 }
                 
-                string queue_name = "queue_%u".printf (channel_sid);
-                Element? queue = this.add_new_queue (queue_name);
+                Element? queue = this.add_new_queue (channel_sid);
                 Element? filesink = this.add_new_filesink (
-                    sink_name, location.get_path ());
+                    channel_sid, location.get_path ());
                     
                 if (queue != null && filesink != null) {
                     if (!queue.link (filesink)) {
                         critical ("Could not link queue and filesink");
                         return;
                     }
-                
-                    string programs;
+                    
                     this.pipeline.set_state (State.PAUSED);
+                    
+                    string programs;
                     dvbbasebin.get ("program-numbers", out programs);
-                    dvbbasebin.set ("program-numbers", "%s:%s".printf (programs, this.sid) );
+                    
+                    string new_programs = "%s:%s".printf (programs,
+                        channel_sid_str);
+                    debug ("Changing program-numbers from %s to %s", programs,
+                        new_programs);
+                    dvbbasebin.set ("program-numbers", new_programs);
+                    
                     this.pipeline.set_state (State.PLAYING);
                 }
             }
+            
+            this.sid_set.add (channel_sid_str);
             
             Recording recording = new Recording ();
             recording.Name = null;
@@ -218,7 +236,8 @@ namespace DVB {
             RecordingsStore.get_instance().add (recording);
         }
         
-        private Element? add_new_filesink (string sink_name, string location) {
+        private Element? add_new_filesink (uint sid, string location) {
+            string sink_name = "sink_%u".printf (sid);
             Element filesink = ElementFactory.make ("filesink", sink_name);
             if (filesink == null) {
                 critical ("Could not create filesink element");
@@ -233,7 +252,8 @@ namespace DVB {
             return filesink;
         }
         
-        private Element? add_new_queue (string queue_name) {
+        private Element? add_new_queue (uint sid) {
+            string queue_name = "queue_%u".printf (sid);
             Element queue = ElementFactory.make ("queue", queue_name);
             if (queue == null) {
                 critical ("Could not create queue element");
@@ -251,28 +271,52 @@ namespace DVB {
             return queue;
         }
         
+        private Element? get_queue (string sid) {
+            string sink_name = "queue_%s".printf (sid);
+            return ((Bin) this.pipeline).get_by_name (sink_name);
+        }
+        
+        private Element? get_sink (uint sid) {
+            string sink_name = "sink_%u".printf (sid);
+            return ((Bin) this.pipeline).get_by_name (sink_name);
+        }
+        
+        private Element? get_dvbbasebin () {
+            return ((Bin) this.pipeline).get_by_name (DVBBASEBIN_NAME);
+        }
+        
         private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
-            debug ("Pad %s added", pad.get_name());
+            string pad_name = pad.get_name();
+            debug ("Pad %s added", pad_name);
             
-            string program = "program_" + this.sid;
-            if (pad.get_name() == program) {
-                string sink_name = "queue_" + this.sid;
-                Element sink = ((Bin) this.pipeline).get_by_name (sink_name);
-                if (sink == null) {
-                    critical ("No element with name %s", sink_name);
-                } else {
-                    Pad sinkpad = sink.get_static_pad ("sink");
-                    
-                    PadLinkReturn rc = pad.link (sinkpad);
-                    if (rc != PadLinkReturn.OK) {
-                        critical ("Could not link pads");
-                    }
-                    debug ("Src pad %s linked with sink pad %s",
-                        program, sink_name);
+            if (!pad_name.has_prefix ("program_"))
+                return;
+            
+            string sid = pad_name.substring (8, pad_name.size() - 8);
+            
+            debug ("SID is '%s'", sid);
+            // Check if we're interested in the pad
+            if (this.sid_set.contains (sid)) {
+                Element? queue = this.get_queue (sid);
+                if (queue == null) {
+                    critical ("Could not find queue for SID %s", sid);
+                    return;
                 }
+                
+                Pad sinkpad = queue.get_static_pad ("sink");
+                
+                PadLinkReturn rc = pad.link (sinkpad);
+                if (rc != PadLinkReturn.OK) {
+                    critical ("Could not link pads");
+                } else {
+                    debug ("Src pad %s linked with sink pad %s",
+                        pad.get_name (), sid);
+                }
+                
+               this.sid_set.remove (sid);
+            } else {
+                debug ("Not interested");
             }
-            
-            this.sid = null;
         }
         
         private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
