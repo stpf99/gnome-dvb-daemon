@@ -106,15 +106,22 @@ namespace DVB {
                     new_programs.append (":" + new_programs_list.nth_data (i));
                 }
                 
-                this.pipeline.set_state (State.PAUSED);
-                debug ("Changing program-numbers from %s to %s", programs,
-                        new_programs.str);
-                dvbbasebin.set ("program-numbers", new_programs.str);
-                /*
                 Element? queue = this.get_queue (channel_sid_string);
+                
+                debug ("Setting state of queue and sink to NULL");
+                queue.set_state (State.NULL);
+                sink.set_state (State.NULL);
+                
+                debug ("Removing queue and sink from pipeline");
                 ((Bin)this.pipeline).remove (queue);
                 ((Bin)this.pipeline).remove (sink);
-                */
+                
+                debug ("Changing program-numbers from %s to %s", programs,
+                        new_programs.str);
+                this.pipeline.set_state (State.PAUSED);
+                
+                dvbbasebin.set ("program-numbers", new_programs.str);
+                
                 this.pipeline.set_state (State.PLAYING);
             }
             
@@ -180,9 +187,6 @@ namespace DVB {
                         critical ("Could not link queue and filesink");
                         return;
                     }
-                    
-                    debug ("Starting pipeline");
-                    this.pipeline.set_state (State.PLAYING);
                 }
             } else {
                 // Use current pipeline and add new filesink
@@ -213,12 +217,12 @@ namespace DVB {
                     debug ("Changing program-numbers from %s to %s", programs,
                         new_programs);
                     dvbbasebin.set ("program-numbers", new_programs);
-                    
-                    this.pipeline.set_state (State.PLAYING);
                 }
             }
-            
+                    
             this.sid_set.add (channel_sid_str);
+            debug ("Setting pipeline to playing");
+            this.pipeline.set_state (State.PLAYING);
             
             Recording recording = new Recording ();
             recording.Name = null;
