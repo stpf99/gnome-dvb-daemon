@@ -26,7 +26,7 @@ namespace DVB {
     
         // how long to wait after all channels have been scanned
         // before the next iteration is started
-        private static const int CHECK_EIT_INTERVAL = 15*60;
+        private static int CHECK_EIT_INTERVAL = -1;
         // how long to wait for EIT data for each channel in seconds
         private static const int WAIT_FOR_EIT_DURATION = 10;
         // pids: 0=pat, 16=nit, 17=sdt, 18=eit
@@ -52,6 +52,17 @@ namespace DVB {
          */
         public EPGScanner (DVB.DeviceGroup device) {
             this.DeviceGroup = device;
+            // check if interval is unset
+            if (CHECK_EIT_INTERVAL == -1) {
+                Settings settings = Factory.get_settings ();
+                try {
+                    CHECK_EIT_INTERVAL = settings.get_integer (
+                        Settings.EPG_SECTION, Settings.SCAN_INTERVAL) * 60;
+                } catch (KeyFileError e) {
+                    critical ("%s", e.message);
+                    CHECK_EIT_INTERVAL = 15*60;
+                }
+            }
         }
         
         /**
