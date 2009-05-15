@@ -65,8 +65,11 @@ namespace DVB {
             time_t this_start = this.get_start_time_timestamp ();
             time_t other_start = t2.get_start_time_timestamp ();
             
-            if (this.Channel.on_same_transport_stream (t2.Channel)) {
-                // Recordings on the same TS never conflict
+            Channel t1_c = this.Channel;
+            Channel t2_c = t2.Channel;
+            if (t1_c.on_same_transport_stream (t2_c) && !t1_c.equals(t2_c)) {
+                // Recordings on the same TS never conflict as long
+                // as it isn't the same channel
                 return false;
             }
             
