@@ -1,4 +1,31 @@
 =============
+Version 0.1.6
+=============
+
+This release adds a dialog to gnome-dvb-control to manage recordings.
+In addition, a bug in the channels scanner has been fixed. The results
+should be reproduceable in each scan now. In addition, you can now
+record multiple channels on the same transport stream at the same time.
+EPG information is now stored for each device group separately. Therefore,
+you have to delete the old database at ~/.cache/gnome-dvb-daemon.
+This version requires gst-rtsp 0.10.2.
+
+- Save channel's name instead of SID in Recording
+- Added GetChannelName method to RecordingsStore
+- Added RecordingsStore and RecordingsView widgets and RecordingsDialog
+- Added Recordings button to manage recordings
+- Only create EPGScanner in DeviceGroup if with_epg_scanner is true
+- Fixed bug that channel scanner did not find all channels
+- Adjust to latest gst-rtsp-server
+- Added GroupId property to Channel
+- Store EPG information for each device group separately
+- Add default early start and late finish values to timers
+- Timer is now due if the current time is greater or equal the timer's start time and the timer didn't expire, yet
+- Added AddTimerWithMargin method
+- conflicts_with returns false if channels of timers are on the same transport stream
+- Fixed bug in Recorder that prevented recording multiple channels on same TS working correctly
+
+=============
 Version 0.1.5
 =============
 
