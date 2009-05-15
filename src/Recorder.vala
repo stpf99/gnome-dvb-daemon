@@ -462,8 +462,10 @@ namespace DVB {
             int start_margin = 0;
             uint end_margin = 0;
             try {
-                start_margin = -1 * settings.get_integer ("timers", "margin_start");
-                end_margin = 2 * (uint)settings.get_integer ("timers", "margin_end");
+                start_margin = -1 * settings.get_integer (
+                    Settings.TIMERS_SECTION, Settings.MARGIN_START);
+                end_margin = 2 * (uint)settings.get_integer (
+                    Settings.TIMERS_SECTION, Settings.MARGIN_END);
                 new_timer.Duration += end_margin;
                 new_timer.add_to_start_time (start_margin);
             } catch (KeyFileError e) {
