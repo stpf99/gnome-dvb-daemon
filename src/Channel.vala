@@ -80,6 +80,12 @@ namespace DVB {
             return (this.Frequency == channel.Frequency);
         }
         
+        /**
+         * @returns: TRUE of both channels are identical
+         */
+        public virtual bool equals (Channel channel) {
+            return (this.sid == channel.Sid);
+        }
         
         /**
          * @source: Either dvbbasebin or dvbsrc
