@@ -6,4 +6,5 @@ test -z "$srcdir" && srcdir=.
 
 PKG_NAME="gnome-dvb-daemon"
 
+touch ChangeLog
 . gnome-autogen.sh
