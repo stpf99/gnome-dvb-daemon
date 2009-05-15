@@ -23,11 +23,20 @@ namespace DVB {
     
     public class Settings : GLib.Object {
     
+        public static const string TIMERS_SECTION = "timers";
+        public static const string MARGIN_START = "margin_start";
+        public static const string MARGIN_END = "margin_end";
+        
+        public static const string EPG_SECTION = "epg";
+        public static const string SCAN_INTERVAL = "scan_interval";
+
         private static const string DEFAULT_SETTINGS =
         """[timers]
         margin_start=5
-        margin_end=5""";
-
+        margin_end=5
+        [epg]
+        scan_interval=30""";
+        
         private KeyFile keyfile;
 
         construct {
