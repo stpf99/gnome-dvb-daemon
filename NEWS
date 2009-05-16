@@ -1,4 +1,15 @@
 =============
+Version 0.1.7
+=============
+
+This release mainly fixes an error of the last release where an
+unreleased version of libgee was used to generate the code.
+Furthermore, scheduling a recording by EPG event will now
+automatically add a margin before and after the recording.
+
+- AddTimerForEPGEvent calls AddTimerWithMargin now
+
+=============
 Version 0.1.6
 =============
 
