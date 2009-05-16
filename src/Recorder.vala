@@ -541,7 +541,7 @@ namespace DVB {
             }
             Time start = event.get_local_start_time ();
             
-            return this.AddTimer (channel_sid,
+            return this.AddTimerWithMargin (channel_sid,
                 start.year + 1900, start.month + 1,
                 start.day, start.hour, start.minute,
                 event.duration / 60);
