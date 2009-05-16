@@ -1,4 +1,4 @@
-AC_INIT([gnome-dvb-daemon], [0.1.6],
+AC_INIT([gnome-dvb-daemon], [0.1.7],
 	[http://bugzilla.gnome.org/browse.cgi?product=dvb-daemon])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
@@ -56,7 +56,7 @@ DBUS_REQUIRED=0.74
 GEE_REQUIRED=0.1.4
 GCONF_REQUIRED=2.6.1
 SQLITE_REQUIRED=3.4
-GST_RTSP_SERVER_REQUIRED=0.10
+GST_RTSP_SERVER_REQUIRED=0.10.2
 
 PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             gio-2.0 >= $GIO_REQUIRED
