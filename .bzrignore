@@ -52,3 +52,5 @@ defs.py
 m4/intltool.m4
 po/*.pot
 po/*.mo
+ChangeLog
+*.gmo
