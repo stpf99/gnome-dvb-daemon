@@ -92,7 +92,7 @@ namespace DVB {
                 
                 uint freq = (uint)cols[1].to_int ();
                 string modulation = cols[4];
-                uint symbol_rate = (uint)cols[2].to_int ();
+                uint symbol_rate = (uint)(cols[2].to_int () / 1000);
                 string code_rate = cols[3];
                 
                 this.AddScanningData (freq, modulation, symbol_rate, code_rate);
