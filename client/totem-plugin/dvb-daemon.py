@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2008,2009 Sebastian Pölsterl
 #
 # This file is part of GNOME DVB Daemon.
