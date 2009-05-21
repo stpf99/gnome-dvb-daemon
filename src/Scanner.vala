@@ -174,11 +174,38 @@ namespace DVB {
          *
          * Write all the channels stored in this.Channels to file
          */
-        public bool WriteChannelsToFile (string path) {
+        public bool WriteAllChannelsToFile (string path) {
             bool ret = false;
             try {
                 var writer = new ChannelListWriter (File.new_for_path (path));
                 foreach (DVB.Channel c in this.channels) {
+                    writer.write (c);
+                }
+                writer.close ();
+                ret = true;
+            } catch (IOError e) {
+                critical ("Could not write channels file: %s", e.message);
+            }
+            
+            return ret;
+        }
+        
+        /**
+         * @channel_sids: A list of channels' SIDs
+         * @path: Location where the file will be stored
+         *
+         * Write the channels with the given SIDs to file @path
+         */
+        public bool WriteChannelsToFile (uint[] channel_sids, string path) {
+            bool ret = false;
+            try {
+                var writer = new ChannelListWriter (File.new_for_path (path));
+                foreach (uint sid in channel_sids) {
+                    DVB.Channel? c = this.channels.get_channel (sid);
+                    if (c == null) {
+                        warning ("Channel with SID %u does not exist", sid);
+                        continue;
+                    }
                     writer.write (c);
                 }
                 writer.close ();

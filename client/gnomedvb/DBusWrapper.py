@@ -196,8 +196,11 @@ class DVBScannerClient(gobject.GObject):
     def destroy(self):
         self.scanner.Destroy()
         
-    def write_channels_to_file(self, channelfile):
-        self.scanner.WriteChannelsToFile(channelfile)
+    def write_channels_to_file(self, channel_sids, channelfile):
+        self.scanner.WriteChannelsToFile(channel_sids, channelfile)
+        
+    def write_all_channels_to_file(self, channelfile):
+        self.scanner.WriteAllChannelsToFile(channelfile)
     
     def on_finished(self):
         self.emit("finished")

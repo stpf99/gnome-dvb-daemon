@@ -31,7 +31,8 @@ namespace DVB {
         
         public abstract void Run ();
         public abstract void Destroy ();
-        public abstract bool WriteChannelsToFile (string path);
+        public abstract bool WriteAllChannelsToFile (string path);
+        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path);
         
         public abstract void AddScanningData (uint frequency, string modulation,
             uint symbol_rate, string code_rate);
