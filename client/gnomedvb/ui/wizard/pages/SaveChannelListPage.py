@@ -31,6 +31,7 @@ class SaveChannelListPage(BasePage):
 	def __init__(self):
 		BasePage.__init__(self)
 		self.__scanner = None
+		self.__channels = None
 		
 		text = _("Choose a location where you want to save the list of channels.")
 		label = gtk.Label(text)
@@ -49,13 +50,16 @@ class SaveChannelListPage(BasePage):
 	def set_scanner(self, scanner):
 		self.__scanner = scanner
 		
+	def set_channels(self, channels):
+		self.__channels = channels
+		
 	def __on_save_button_clicked(self, button):
 		filechooser = gtk.FileChooserDialog(action=gtk.FILE_CHOOSER_ACTION_SAVE,
 			buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
 			gtk.STOCK_SAVE, gtk.RESPONSE_OK))
 		filechooser.set_do_overwrite_confirmation(True)
 		if (filechooser.run() == gtk.RESPONSE_OK):
-			self.__scanner.write_channels_to_file(filechooser.get_filename())
+			self.__scanner.write_channels_to_file(self.__channels, filechooser.get_filename())
 			self.emit("finished", True)
 		filechooser.destroy()
 

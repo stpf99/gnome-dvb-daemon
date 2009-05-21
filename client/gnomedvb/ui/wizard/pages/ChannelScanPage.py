@@ -26,8 +26,14 @@ from gnomedvb import global_error_handler
 class ChannelScanPage(BasePage):
 
 	__gsignals__ = {
-        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
-    }
+		"finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
+	}
+    
+	(COL_LOGO,
+	 COL_NAME,
+	 COL_FREQ,
+	 COL_ACTIVE,
+	 COL_SID,) = range(5)
 
 	def __init__(self):
 		BasePage.__init__(self)
@@ -43,40 +49,41 @@ class ChannelScanPage(BasePage):
 		self.label.set_line_wrap(True)
 		self.pack_start(self.label, False)
 		
-		hbox = gtk.HBox(spacing=12)
-		hbox.set_border_width(6)
-		self.pack_start(hbox)
-		
-		# TV
-		self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, int)
+		# Logo, Name, Frequency, active, SID
+		self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, int, bool, int)
 		self.tvchannelsview = gtk.TreeView(self.tvchannels)
+		self.tvchannelsview.set_reorderable(True)
 		
-		#self.tvchannelsview.append_column (col_icon)
+		col_active = gtk.TreeViewColumn()
+		cell_active = gtk.CellRendererToggle()
+		cell_active.connect("toggled", self.__on_active_toggled)
+		col_active.pack_start(cell_active, False)
+		col_active.add_attribute(cell_active, "active", self.COL_ACTIVE)
+		self.tvchannelsview.append_column(col_active)
 		
 		col_name = gtk.TreeViewColumn(_("Name"))
 		
 		cell_icon = gtk.CellRendererPixbuf()
 		col_name.pack_start(cell_icon, False)
-		col_name.add_attribute(cell_icon, "pixbuf", 0)
+		col_name.add_attribute(cell_icon, "pixbuf", self.COL_LOGO)
 		
 		cell_name = gtk.CellRendererText()
 		col_name.pack_start(cell_name)
-		col_name.add_attribute(cell_name, "markup", 1)
+		col_name.add_attribute(cell_name, "markup", self.COL_NAME)
 		self.tvchannelsview.append_column (col_name)
 		
 		col_freq = gtk.TreeViewColumn(_("Frequency"))
 		cell_freq = gtk.CellRendererText()
 		col_freq.pack_start(cell_freq, False)
-		col_freq.add_attribute(cell_freq, "text", 2)
+		col_freq.add_attribute(cell_freq, "text", self.COL_FREQ)
 		self.tvchannelsview.append_column (col_freq)
 		
 		scrolledtvview = gtk.ScrolledWindow()
-		scrolledtvview.set_border_width(6)
 		scrolledtvview.add(self.tvchannelsview)
 		scrolledtvview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
 		scrolledtvview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-		hbox.pack_start(scrolledtvview)
+		self.pack_start(scrolledtvview)
 		
 		self.progressbar = gtk.ProgressBar()
 		self.pack_start(self.progressbar, False)
@@ -89,6 +96,9 @@ class ChannelScanPage(BasePage):
 		
 	def get_page_type(self):
 		return gtk.ASSISTANT_PAGE_PROGRESS
+		
+	def get_selected_channel_sids(self):
+		return [row[self.COL_SID] for row in self.tvchannels if row[self.COL_ACTIVE]]
 		
 	def set_name(self, name):
 		self.label.set_text(_("Scanning for channels on device %s") % name)
@@ -132,9 +142,19 @@ class ChannelScanPage(BasePage):
 			icon = None
 		
 		name = name.replace("&", "&amp;")
-		self.tvchannels.append([icon, name, freq])
+		self.tvchannels.append([icon, name, freq, True, sid])
 		
 	def __on_finished(self, scanner):
+		self.remove(self.progressbar)
+		
+		select_channels_label = gtk.Label()
+		select_channels_label.set_line_wrap(True)
+		select_channels_label.set_markup(
+		_("Choose the channels you want to have in your list of channels. You can reorder the channels, too.")
+		)
+		select_channels_label.show()
+		self.pack_start(select_channels_label, False)
+		
 		self.emit("finished", True)
 		
 	def __on_freq_scanned(self, scanner, freq, qsize):
@@ -144,4 +164,10 @@ class ChannelScanPage(BasePage):
 		fraction = float(self._scanned_freqs) / self._max_freqs
 		self.progressbar.set_fraction(fraction)
 		self._last_qsize = qsize
+		
+	def __on_active_toggled(self, renderer, path):
+		aiter = self.tvchannels.get_iter(path)
+		self.tvchannels[aiter][self.COL_ACTIVE] = \
+			not self.tvchannels[aiter][self.COL_ACTIVE]
+		
 

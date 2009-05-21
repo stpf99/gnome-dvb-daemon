@@ -81,6 +81,7 @@ class SetupWizard(gtk.Assistant):
 					self.__adapter_info["frontend"], self.tuning_data_page.get_tuning_data ())
 		elif isinstance(page, SaveChannelListPage):
 			page.set_scanner(self.scan_page.get_scanner())
+			page.set_channels(self.scan_page.get_selected_channel_sids())
 		elif isinstance(page, SummaryPage):
 			self.__ask_on_exit = False
 	
