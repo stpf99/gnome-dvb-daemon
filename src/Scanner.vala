@@ -101,6 +101,7 @@ namespace DVB {
         private bool nit_arrived;
         private bool sdt_arrived;
         private bool pat_arrived;
+        private bool pmt_arrived;
         private bool locked;
         
         construct {
@@ -231,14 +232,17 @@ namespace DVB {
          * and start scanning with them
          */
         protected void start_scan () {
-            bool all_tables = (this.sdt_arrived && this.nit_arrived && this.pat_arrived);
-            debug ("Received all tables: %s (pat: %s, sdt: %s, nit: %s)",
+            bool all_tables = (this.sdt_arrived && this.nit_arrived
+                && this.pat_arrived && this.pmt_arrived);
+            debug ("Received all tables: %s (pat: %s, sdt: %s, nit: %s, pmt: %s)",
                 all_tables.to_string (), this.pat_arrived.to_string (),
-                this.sdt_arrived.to_string (), this.nit_arrived.to_string ());
+                this.sdt_arrived.to_string (), this.nit_arrived.to_string (),
+                this.pmt_arrived.to_string ());
 
             this.nit_arrived = false;
             this.sdt_arrived = false;
             this.pat_arrived = false;
+            this.pmt_arrived = false;
             this.locked = false;
             
             if (this.current_tuning_params != null) {
@@ -299,7 +303,8 @@ namespace DVB {
         
         protected bool wait_for_tables () {
             this.wait_for_tables_event_id = 0;
-            if (!(this.sdt_arrived && this.nit_arrived && this.pat_arrived)) {
+            if (!(this.sdt_arrived && this.nit_arrived && this.pat_arrived
+                    && this.pmt_arrived)) {
                 this.pipeline.set_state (Gst.State.READY);
                 this.start_scan ();
             }
@@ -565,6 +570,8 @@ namespace DVB {
                     break;
                 }
             }
+            
+            this.pmt_arrived = true;
         }
         
         protected void bus_watch_func (Gst.Bus bus, Gst.Message message) {
@@ -622,7 +629,7 @@ namespace DVB {
                         DVB.Channel channel = this.channels.get_channel (sid);
                              
                         // If this fails we may miss video or audio pid,
-                        // because we didn't came across the sdt, yet   
+                        // because we didn't came across the sdt or pmt, yet   
                         if (channel.is_valid ()) {
                             string type = (channel.VideoPID == 0) ? "Radio" : "TV";
                             debug ("Channel added: %s", channel.to_string ());
@@ -634,6 +641,7 @@ namespace DVB {
                         } else {
                             debug ("Channel %u is not valid: %s", sid,
                                 channel.to_string ());
+                            this.pmt_arrived = false;
                         }
                     }
                     
@@ -646,7 +654,8 @@ namespace DVB {
             
             // If we collect all information we can continue scanning
             // the next frequency
-            if (this.sdt_arrived && this.nit_arrived && this.pat_arrived) {
+            if (this.sdt_arrived && this.nit_arrived && this.pat_arrived
+                    && this.pmt_arrived) {
                 this.remove_wait_for_tables_timeout ();
                 
                 this.start_scan ();
