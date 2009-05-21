@@ -150,7 +150,7 @@ namespace DVB {
                                                       channel.Inversion,
                                                       "DVB_DVB_SRC_INVERSION_");
             
-            elements[2] = "%u".printf (channel.SymbolRate);
+            elements[2] = "%u".printf (channel.SymbolRate * 1000);
                                     
             elements[3] = get_name_without_prefix (typeof(DvbSrcCodeRate),
                                                       channel.CodeRate,
