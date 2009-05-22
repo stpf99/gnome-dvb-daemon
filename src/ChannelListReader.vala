@@ -274,7 +274,7 @@ namespace DVB {
                         break;
                     }
                 } else if (i == 3) {
-                    channel.SymbolRate = (uint)val.to_int ();
+                    channel.SymbolRate = (uint)(val.to_int () / 1000);
                 } else if (i == 4) {
                     int eval;
                     if (get_value_with_prefix (typeof(DvbSrcCodeRate), val,

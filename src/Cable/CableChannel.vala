@@ -39,7 +39,7 @@ namespace DVB {
             return "%s:%u:%s:%u:%s:%s:%u:%s:%u".printf(base.Name, base.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
                                           this.Inversion),
-                this.SymbolRate,
+                this.SymbolRate * 1000,
                 Utils.get_nick_from_enum (typeof(DvbSrcCodeRate),
                                           this.CodeRate),
                 Utils.get_nick_from_enum (typeof(DvbSrcModulation),
