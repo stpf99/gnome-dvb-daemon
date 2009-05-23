@@ -28,6 +28,7 @@ namespace DVB {
         public abstract bool remove_device_group (DeviceGroup devgroup);
         public abstract bool add_device_to_group (Device dev, DeviceGroup devgroup);
         public abstract bool remove_device_from_group (Device dev, DeviceGroup devgroup);
+        public abstract bool update_from_group (DeviceGroup devgroup);
         
     }
 

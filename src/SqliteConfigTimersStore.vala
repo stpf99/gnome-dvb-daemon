@@ -69,6 +69,9 @@ namespace DVB {
         private static const string CONTAINS_GROUP =
         "SELECT COUNT(*) FROM device_groups WHERE group_id=?";
         
+        private static const string UPDATE_GROUP =
+        "UPDATE device_groups SET adapter_type=?, channels_file=?, recordings_dir=?, name=? WHERE group_id=?";
+        
         private static const string DELETE_DEVICE =
         "DELETE FROM devices WHERE adapter=? AND frontend=?";
         
@@ -90,6 +93,7 @@ namespace DVB {
         private Statement select_devices_statement;
         private Statement delete_group_statement;
         private Statement insert_group_statement;
+        private Statement update_group_statement;
         private Statement delete_device_statement;
         private Statement insert_device_statement;
         private Statement select_timers_statement;
@@ -111,6 +115,8 @@ namespace DVB {
                 out this.delete_group_statement);
             this.db.prepare (INSERT_GROUP, -1,
                 out this.insert_group_statement);
+            this.db.prepare(UPDATE_GROUP, -1,
+                out this.update_group_statement);
             this.db.prepare (DELETE_DEVICE, -1,
                 out this.delete_device_statement);
             this.db.prepare (INSERT_DEVICE, -1,
@@ -385,6 +391,25 @@ namespace DVB {
             }
             
             return (c > 0);
+        }
+        
+        public bool update_from_group (DeviceGroup devgroup) {
+            this.update_group_statement.reset ();
+            if (this.update_group_statement.bind_int (1, (int)devgroup.Type) != Sqlite.OK
+                || this.update_group_statement.bind_text (2, devgroup.Channels.channels_file.get_path ()) != Sqlite.OK
+                || this.update_group_statement.bind_text (3, devgroup.RecordingsDirectory.get_path ()) != Sqlite.OK
+                || this.update_group_statement.bind_text (4, devgroup.Name) != Sqlite.OK
+                || this.update_group_statement.bind_int (5, (int)devgroup.Id) != Sqlite.OK)
+            {
+                this.print_last_error ();
+                return false;
+            }
+            
+            if (this.update_group_statement.step () != Sqlite.DONE) {
+                this.print_last_error ();
+                return false;
+            }
+            return true;
         }
         
         private void print_last_error () {
