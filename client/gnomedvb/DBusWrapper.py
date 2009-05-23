@@ -39,6 +39,7 @@ __all__= [
 service = "org.gnome.DVB"
 manager_iface = "org.gnome.DVB.Manager"
 manager_path = "/org/gnome/DVB/Manager"
+device_group_iface = "org.gnome.DVB.DeviceGroup"
 recstore_iface = "org.gnome.DVB.RecordingsStore"
 recstore_path = "/org/gnome/DVB/RecordingsStore"
 recorder_iface = "org.gnome.DVB.Recorder"
@@ -106,8 +107,8 @@ def get_dvb_devices():
 class DVBManagerClient(gobject.GObject):
     
     __gsignals__ = {
-        "changed":        (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
-        "group-changed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, int, int]),
+        "group-added":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "group-removed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
     }
     
     def __init__(self):
@@ -118,61 +119,88 @@ class DVBManagerClient(gobject.GObject):
         proxy = bus.get_object(service, manager_path)
         # Apply the correct interace to the proxy object
         self.manager = dbus.Interface(proxy, manager_iface)
-        self.manager.connect_to_signal("Changed", self.on_changed)
-        self.manager.connect_to_signal("GroupChanged", self.on_group_changed)
+        self.manager.connect_to_signal("GroupAdded", self.on_group_added)
+        self.manager.connect_to_signal("GroupRemoved", self.on_group_removed)
         
     def get_scanner_for_device(self, adapter, frontend):
         objpath, scanner_iface = self.manager.GetScannerForDevice (adapter, frontend)
         return DVBScannerClient(objpath, scanner_iface)
         
     def get_registered_device_groups(self):
-        return self.manager.GetRegisteredDeviceGroups()
-        
-    def get_recorder(self, group_id):
-        return self.manager.GetRecorder(group_id)
-        
+        return [DVBDeviceGroupClient(path) for path in self.manager.GetRegisteredDeviceGroups()]
+       
     def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir, name):
         return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir, name)
-        
-    def add_device_to_existing_group (self, adapter, frontend, group_id):
-        return self.manager.AddDeviceToExistingGroup(adapter, frontend, group_id)
-        
-    def remove_device_from_group(self, adapter, frontend, group_id):
-        return self.manager.RemoveDeviceFromGroup(adapter, frontend, group_id)
-        
-    def get_device_group_members(self, group_id):
-        return self.manager.GetDeviceGroupMembers(group_id)
-        
-    def get_device_group_name(self, group_id):
-        return self.manager.GetDeviceGroupName(group_id)
-    
-    def set_device_group_name(self, group_id, name):
-        return self.manager.SetDeviceGroupName(group_id, name)
-        
-    def get_type_of_device_group(self, group_id):
-        return self.manager.GetTypeOfDeviceGroup(group_id)
-        
+       
     def get_name_of_registered_device(self, adapter, frontend):
         return self.manager.GetNameOfRegisteredDevice(adapter, frontend)
+    
+    def on_group_added(self, group_id):
+        self.emit("group-added", group_id)
+ 
+    def on_group_removed(self, group_id):
+        self.emit("group-removed", group_id)
+
+class DVBDeviceGroupClient(gobject.GObject):
+
+    __gsignals__ = {
+        "device-added":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "device-removed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+    }
+    
+    def __init__(self, objpath):
+        gobject.GObject.__init__(self)
         
-    def get_schedule(self, group_id, channel_sid):
-        s = DVBScheduleClient(self.manager.GetSchedule(group_id, channel_sid))
-        s._group = group_id
-        s._sid = channel_sid
-        return s
+        bus = dbus.SessionBus()
+        # Get proxy object
+        proxy = bus.get_object(service, objpath)
+        # Apply the correct interace to the proxy object
+        self.manager = dbus.Interface(proxy, device_group_iface)
+        self.manager.connect_to_signal("DeviceAdded", self.on_device_added)
+        self.manager.connect_to_signal("DeviceRemoved", self.on_device_removed)
+         
+    def get_recorder(self):
+        path = self.manager.GetRecorder()
+        return DVBRecorderClient(path)
         
-    def get_recordings_directory (self, group_id):
-        return self.manager.GetRecordingsDirectory(group_id)
+    def add_device (self, adapter, frontend):
+        return self.manager.AddDevice(adapter, frontend)
         
-    def set_recordings_directory (self, group_id, location):
-        return self.manager.SetRecordingsDirectory(group_id, location)
+    def remove_device(self, adapter, frontend):
+        return self.manager.RemoveDevice(adapter, frontend)
+    
+    def get_channel_list(self):
+        path = self.manager.GetChannelList()
+        return DVBChannelListClient(path)
+    
+    def get_members(self):
+        return self.manager.GetMembers()
         
-    def on_changed(self, group_id, change_type):
-        self.emit("changed", group_id, change_type)
+    def get_name(self):
+        return self.manager.GetName()
+    
+    def set_name(self, name):
+        return self.manager.SetName(name)
         
-    def on_group_changed(self, group_id, adapter, frontend, change_type):
-        self.emit("group-changed", group_id, adapter, frontend, change_type)
+    def get_type(self):
+        return self.manager.GetType()
         
+    def get_schedule(self, channel_sid):
+        path = self.manager.GetSchedule(channel_sid)
+        return DVBScheduleClient(path)
+        
+    def get_recordings_directory (self):
+        return self.manager.GetRecordingsDirectory()
+        
+    def set_recordings_directory (self, location):
+        return self.manager.SetRecordingsDirectory(location)
+     
+    def on_device_added(self, adapter, frontend):
+        self.emit("device-added", adapter, frontend)
+ 
+    def on_device_removed(self, adapter, frontend):
+        self.emit("device-removed", adapter, frontend)
+
 class DVBScannerClient(gobject.GObject):
 
     __gsignals__ = {
@@ -277,12 +305,11 @@ class DVBRecorderClient(gobject.GObject):
         "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
     }
 
-    def __init__(self, group_id):
+    def __init__(self, object_path):
         gobject.GObject.__init__(self)
         
         bus = dbus.SessionBus()
         # Get proxy object
-        object_path = "/org/gnome/DVB/Recorder/%s" % group_id
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.recorder = dbus.Interface(proxy, recorder_iface)
@@ -344,10 +371,9 @@ class DVBRecorderClient(gobject.GObject):
            
 class DVBChannelListClient:
 
-    def __init__(self, group_id):
+    def __init__(self, object_path):
         bus = dbus.SessionBus()
         # Get proxy object
-        object_path = "/org/gnome/DVB/ChannelList/%s" % group_id
         proxy = bus.get_object(service, object_path)
         # Apply the correct interace to the proxy object
         self.channels = dbus.Interface(proxy, channel_list_iface)
@@ -382,8 +408,11 @@ class DVBScheduleClient(gobject.GObject):
     def __init__(self, object_path):
         gobject.GObject.__init__(self)
         
-        self._group = 0
-        self._sid = 0
+        # "/org/gnome/DVB/DeviceGroup/%u/Schedule/%u";
+        elements = object_path.split("/")
+        
+        self._group = elements[5]
+        self._sid = elements[7]
         
         bus = dbus.SessionBus()
         # Get proxy object
@@ -448,10 +477,10 @@ if __name__ == '__main__':
     
     dev_groups = manager.get_registered_device_groups()
     
-    for group_id in dev_groups:
-        print "Members", manager.get_device_group_members(group_id)
+    for dev_group in dev_groups:
+        print "Members", dev_group.get_members()
     
-        rec = DVBRecorderClient(group_id)
+        rec = dev_group.get_recorder()
         timers = rec.get_timers()
         print timers
         for tid in timers:
@@ -463,7 +492,7 @@ if __name__ == '__main__':
         
         print rec.add_timer(32, 2008, 7, 28, 23, 42, 2)
             
-        channellist = DVBChannelListClient(group_id)
+        channellist = dev_group.get_channel_list()
         print "RADIO CHANNELS"
         for channel_id in channellist.get_radio_channels():
             print "SID", channel_id
@@ -476,7 +505,7 @@ if __name__ == '__main__':
             print "Name", channellist.get_channel_name(channel_id)
             print "Network", channellist.get_channel_network(channel_id)
             print "URL", channellist.get_channel_url(channel_id)
-            schedule = manager.get_schedule (group_id, channel_id)
+            schedule = dev_group.get_schedule (channel_id)
             event_now = schedule.now_playing()
             print u"Now: %s" % schedule.get_name(event_now)
             print u"\tDesc: %s" % schedule.get_short_description(event_now)

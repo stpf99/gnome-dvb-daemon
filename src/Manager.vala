@@ -30,14 +30,6 @@ namespace DVB {
         // Maps device group id to Device
         private HashMap<uint, DeviceGroup> devices;
         
-        // Containss object paths to Schedule 
-        private HashSet<string> schedules;
-        
-        // Contains group ids
-        private HashSet<uint> recorders;
-        private HashSet<uint> channellists;
-        private HashSet<uint> epgscanners;
-        
         private uint device_group_counter;
         
         private static Manager instance;
@@ -47,11 +39,6 @@ namespace DVB {
             this.scanners = new HashMap<string, Scanner> (GLib.str_hash,
                 GLib.str_equal, GLib.direct_equal);
             this.devices = new HashMap<uint, DeviceGroup> ();
-            this.schedules = new HashSet<string> (GLib.str_hash,
-                GLib.str_equal);
-            this.recorders = new HashSet<uint> ();
-            this.channellists = new HashSet<uint> ();
-            this.epgscanners = new HashSet<uint> ();
             this.device_group_counter = 0;
         }
         
@@ -74,11 +61,6 @@ namespace DVB {
                     scanner.Destroy ();
                 }
                 m.scanners.clear ();
-                
-                m.schedules.clear ();
-                m.recorders.clear ();
-                m.channellists.clear ();
-                m.epgscanners.clear ();
                 
                 foreach (DeviceGroup devgrp in m.devices.get_values ()) {
                     devgrp.destroy ();
@@ -162,7 +144,7 @@ namespace DVB {
                 
                 this.scanners.set (path, scanner);
                 
-                var conn = get_dbus_connection ();
+                var conn = Utils.get_dbus_connection ();
                 if (conn == null) return new string[] {};
                 
                 conn.register_object (
@@ -177,69 +159,16 @@ namespace DVB {
         }
         
         /**
-         * @returns: Device groups' ID
+         * @returns: Device groups' DBus path
          */
-        public uint[] GetRegisteredDeviceGroups () {
-            uint[] devs = new uint[this.devices.size];
+        public string[] GetRegisteredDeviceGroups () {
+            string[] devs = new string[this.devices.size];
             int i = 0;
             foreach (uint key in this.devices.get_keys ()) {
-                devs[i] = key;
+                devs[i] = Constants.DBUS_DEVICE_GROUP_PATH.printf (key);
                 i++;
             }
             return devs;
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @returns: Name of adapter type the group holds
-         * or an empty string when group with given id doesn't exist.
-         */
-        public string GetTypeOfDeviceGroup (uint group_id) {
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                string type_str;
-                switch (devgroup.Type) {
-                    case AdapterType.DVB_T: type_str = "DVB-T"; break;
-                    case AdapterType.DVB_S: type_str = "DVB-S"; break;
-                    case AdapterType.DVB_C: type_str = "DVB-C"; break;
-                    default: type_str = ""; break;
-                }
-                return type_str;
-            }
-            
-            return "";
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @returns: Object path of the device's recorder
-         * 
-         * Returns the object path to the device's recorder.
-         * The device group must be registered with AddDeviceToNewGroup () first.
-         */
-        public string GetRecorder (uint group_id) {
-            string path = Constants.DBUS_RECORDER_PATH.printf (group_id);
-        
-            if (!this.recorders.contains (group_id)) {
-                debug ("Creating new Recorder D-Bus service for group %u",
-                    group_id);
-                
-                DeviceGroup devgroup = this.get_device_group_if_exists (group_id);
-                if (devgroup == null) return "";
-                
-                Recorder recorder = devgroup.recorder;
-                
-                var conn = get_dbus_connection ();
-                if (conn == null) return "";
-                
-                conn.register_object (
-                    path,
-                    recorder);
-                    
-                this.recorders.add (group_id);
-            }
-            
-            return path;
         }
         
         /**
@@ -273,185 +202,9 @@ namespace DVB {
             
             this.add_device_group (devgroup);
             
-            this.changed (device_group_counter, ChangeType.ADDED);
+            this.group_added (device_group_counter);
             
             return true;
-        }
-        
-        /**
-         * @adapter: Number of the device's adapter
-         * @frontend: Number of the device's frontend
-         * @group_id: ID of device group
-         * @returns: TRUE when the device has been registered successfully
-         *
-         * Creates a new device and adds it to the specified DeviceGroup.
-         * The new device will inherit all settings from the group's
-         * reference device.
-         */
-        public bool AddDeviceToExistingGroup (uint adapter, uint frontend,
-                uint group_id) {
-            
-            if (this.devices.contains (group_id)) {
-                // When the device is already registered we
-                // might see some errors if the device is
-                // currently in use
-                Device device = new Device (adapter, frontend);
-                    
-                if (device == null) return false;
-                
-                if (this.device_is_in_any_group (device)) {
-                    debug ("Device with adapter %u, frontend %u is" + 
-                        "already part of a group", adapter, frontend);
-                    return false;
-                }
-                    
-                debug ("Adding device with adapter %u, frontend %u to group %u",
-                    adapter, frontend, group_id);
-                    
-                DeviceGroup devgroup = this.devices.get (group_id);
-                if (devgroup.add (device)) {
-                    Factory.get_config_store ().add_device_to_group (device,
-                        devgroup);
-                    
-                    this.group_changed (group_id, adapter, frontend,
-                        ChangeType.ADDED);
-                
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-        
-        /**
-         * @adapter: Number of the device's adapter
-         * @frontend: Number of the device's frontend
-         * @group_id: ID of device group
-         * @returns: TRUE when device has been removed successfully
-         *
-         * Removes the device from the specified group. If the group contains
-         * no devices after the removal it's removed as well.
-         */
-        public bool RemoveDeviceFromGroup (uint adapter, uint frontend,
-                uint group_id) {
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                Device dev = new Device (adapter, frontend, false);
-                
-                if (devgroup.contains (dev)) {
-                    if (devgroup.remove (dev)) {
-                        // Stop epgscanner, because it might use the
-                        // device we want to unregister
-                        EPGScanner? epgscanner =
-                            devgroup.epgscanner;
-                        if (epgscanner != null) epgscanner.stop ();
-                    
-                        Factory.get_config_store ().remove_device_from_group (
-                            dev, devgroup);
-                        this.group_changed (group_id, adapter, frontend,
-                            ChangeType.DELETED);
-                            
-                        // Group has no devices anymore, delete it
-                        if (devgroup.size == 0) {
-                            this.remove_group (devgroup);
-                        } else {
-                            // We still have a device, start EPG scanner again
-                            if (epgscanner != null) epgscanner.start ();
-                        }
-                            
-                        return true;
-                    }
-                }
-            }
-            
-            return false;
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @returns: Name of specified device group or
-         * empty string if group with given ID doesn't exist
-         */
-        public string GetDeviceGroupName (uint group_id) {
-            string val = "";
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                val = devgroup.Name;
-            }
-            return val;
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @name: Name of the group
-         * @returns: TRUE on success
-         */
-        public bool SetDeviceGroupName (uint group_id, string name) {
-            bool ret = false;
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                devgroup.Name = name;
-                ConfigStore config = Factory.get_config_store();
-                config.update_from_group (devgroup);
-                ret = true;
-            }
-            return ret;
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @returns: Object path to the ChannelList service for this device
-         *
-         * The device group must be registered with AddDeviceToNewGroup () first.
-         */
-        public string GetChannelList (uint group_id) {
-            string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (group_id);
-            
-            if (!this.channellists.contains (group_id)) {
-                debug ("Creating new ChannelList D-Bus service for group %u",
-                    group_id);
-                
-                DeviceGroup devgroup = this.get_device_group_if_exists (group_id);
-                if (devgroup == null) return "";
-                
-                ChannelList channels = devgroup.Channels;
-                
-                var conn = get_dbus_connection ();
-                if (conn == null) return "";
-                
-                conn.register_object (
-                    path,
-                    channels);
-                    
-                this.channellists.add (group_id);
-            }
-            
-            return path;
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @returns: List of paths to the devices that are part of
-         * the specified group (e.g. /dev/dvb/adapter0/frontend0)
-         */
-        public string[] GetDeviceGroupMembers (uint group_id) {
-            string[] groupdevs;
-        
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get(group_id);
-                groupdevs = new string[devgroup.size];
-                
-                int i=0;
-                foreach (Device dev in devgroup) {
-                    groupdevs[i] = Constants.DVB_DEVICE_PATH.printf (
-                        dev.Adapter, dev.Frontend);
-                    i++;
-                }
-            } else {
-                groupdevs = new string[0];
-            }
-            
-            return groupdevs;
         }
         
         /**
@@ -471,98 +224,43 @@ namespace DVB {
                 return dev.Name;
         }
         
-        public string GetSchedule (uint group_id, uint channel_sid) {
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get(group_id);
-                
-                if (devgroup.Channels.contains (channel_sid)) {
-                    string path = Constants.DBUS_SCHEDULE_PATH.printf (group_id, channel_sid);
-                    
-                    if (!this.schedules.contains (path)) {
-                        var conn = get_dbus_connection ();
-                        if (conn == null) return "";
-                        
-                        Schedule schedule = devgroup.Channels.get_channel (
-                            channel_sid).Schedule;
-                        
-                        conn.register_object (
-                            path,
-                            schedule);
-                            
-                        this.schedules.add (path);
-                    }
-                    
-                    return path;
-                }
-            }
-        
-            return "";
-        }
-
-        /**
-         * @group_id: ID of device group
-         * @returns: Location of the recordings directory
-         */
-        public string GetRecordingsDirectory (uint group_id) {
-            string val = "";
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                val = devgroup.RecordingsDirectory.get_path ();   
-            }
-            return val;
-        }
-        
-        /**
-         * @group_id: ID of device group
-         * @location: Location of the recordings directory
-         * @returns: TRUE on success
-         */
-        public bool SetRecordingsDirectory (uint group_id, string location) {
-            bool ret = false;
-            if (this.devices.contains (group_id)) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                devgroup.RecordingsDirectory = File.new_for_path (location);
-                ConfigStore config = Factory.get_config_store();
-                config.update_from_group (devgroup);
-                ret = true;
-            }
-            return ret;
-        }
-        
         /**
          * @returns: Whether the device has been added successfully
          *
          * Register device, create Recorder and ChannelList D-Bus service
          */
         public bool add_device_group (DeviceGroup devgroup) {
-            debug ("Adding device group %u with %d devices", devgroup.Id,
+            uint group_id = devgroup.Id;
+            debug ("Adding device group %u with %d devices", group_id,
                 devgroup.size);
             
-            bool success;
-            if (devgroup.Type != AdapterType.UNKNOWN) {
-                this.devices.set (devgroup.Id, devgroup);
-                string rec_path = this.GetRecorder (devgroup.Id);
-                
-                string channels_path = this.GetChannelList (devgroup.Id);
-                
-                Factory.get_config_store ().add_device_group (devgroup);
-                
-                success = (rec_path != "" && channels_path != "");
-            } else {
+            if (devgroup.Type == AdapterType.UNKNOWN) {
                 warning ("Not adding device group %u of unknown type",
                     devgroup.Id);
-                success = false;
+                return false;
             }
             
-            if (devgroup.Id > device_group_counter)
-                device_group_counter = devgroup.Id;
-                
+            this.devices.set (group_id, devgroup);
+            Factory.get_config_store ().add_device_group (devgroup);
+            devgroup.device_removed += this.on_device_removed_from_group;
+            
+            // Register D-Bus object
+            var conn = Utils.get_dbus_connection ();
+            if (conn == null) return false;
+            
+            string path = Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id);
+            conn.register_object (
+                path,
+                devgroup);
+            
+            if (group_id > device_group_counter)
+                device_group_counter = group_id;
             
             if (!Main.get_disable_epg_scanner ()) {
                 devgroup.epgscanner.start ();
             }
             
-            return success;
+            return true;
         }
         
         private static Device? create_device (uint adapter, uint frontend,
@@ -589,17 +287,6 @@ namespace DVB {
             return device;
         }
         
-        private static DBus.Connection? get_dbus_connection () {
-            DBus.Connection conn;
-            try {
-                conn = DBus.Bus.get (DBus.BusType.SESSION);
-            } catch (Error e) {
-                error("Could not get D-Bus session bus: %s", e.message);
-                return null;
-            }
-            return conn;
-        }
-        
         protected DeviceGroup? get_device_group_if_exists (uint group_id) {;
             if (this.devices.contains (group_id))
                 return this.devices.get (group_id);
@@ -607,7 +294,7 @@ namespace DVB {
                 return null;
         }
         
-        private bool device_is_in_any_group (Device device) {
+        public bool device_is_in_any_group (Device device) {
             foreach (uint group_id in this.devices.get_keys ()) {
                 DeviceGroup devgroup = this.devices.get (group_id);
                 if (devgroup.contains (device)) return true;
@@ -662,24 +349,16 @@ namespace DVB {
             return null;
         }
         
-        private void remove_group (DeviceGroup devgroup) {
+        private void on_device_removed_from_group (DeviceGroup devgroup,
+                uint adapter, uint frontend) {
             uint group_id = devgroup.Id;
-            if (this.devices.remove (group_id)) {
-                this.recorders.remove (group_id);
-                this.channellists.remove (group_id);
-                this.epgscanners.remove (group_id);
-                
-                EPGScanner? epgscanner = devgroup.epgscanner;
-                // Remove EPG scanner, too
-                if (epgscanner != null)
-                    this.epgscanners.remove (group_id);
-                    
+            if (this.devices.remove (group_id)) {    
                 devgroup.destroy ();
                 
                 Factory.get_config_store ().remove_device_group (
                     devgroup);
                 
-                this.changed (group_id, ChangeType.DELETED);
+                this.group_removed (group_id);
             }
         }
         

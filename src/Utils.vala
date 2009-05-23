@@ -230,4 +230,15 @@ namespace DVB.Utils {
         dir.delete (null);
     }
 
+    public static DBus.Connection? get_dbus_connection () {
+        DBus.Connection conn;
+        try {
+            conn = DBus.Bus.get (DBus.BusType.SESSION);
+        } catch (Error e) {
+            error("Could not get D-Bus session bus: %s", e.message);
+            return null;
+        }
+        return conn;
+    }
+        
 }
