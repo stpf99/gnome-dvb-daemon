@@ -19,7 +19,7 @@
 import gtk
 import pango
 from gettext import gettext as _
-from ScheduleStore import ScheduleStore
+from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 
 class ScheduleView(gtk.TreeView):
 

@@ -20,7 +20,7 @@ import datetime
 import gtk
 from gettext import gettext as _
 
-from RecordingsStore import RecordingsStore
+from gnomedvb.ui.widgets.RecordingsStore import RecordingsStore
 
 class RecordingsView(gtk.TreeView):
 

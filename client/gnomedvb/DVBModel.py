@@ -18,7 +18,7 @@
 
 import gnomedvb
 import re
-from Device import Device
+from gnomedvb.Device import Device
 
 class DVBModel (gnomedvb.DVBManagerClient):
 

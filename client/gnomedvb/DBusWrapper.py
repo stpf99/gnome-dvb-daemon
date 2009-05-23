@@ -87,19 +87,19 @@ def get_dvb_devices():
 
     deviceslist = []
     for o in objects:
-	    proxy = bus.get_object(HAL_SERVICE, o)
-	    dev = dbus.Interface(proxy, HAL_DEVICE_IFACE)
+        proxy = bus.get_object(HAL_SERVICE, o)
+        dev = dbus.Interface(proxy, HAL_DEVICE_IFACE)
 
-	    dev_file = dev.GetProperty("linux.device_file")
-	
-	    match = re.search("adapter(\d+?)/frontend(\d+?)", dev_file)
-	    if match != None:
-		    adapter = int(match.group(1))
-		    info = {}
-		    info["adapter"] = adapter
-		    info["frontend"] = int(match.group(2))
-		    deviceslist.append(info)
-			
+        dev_file = dev.GetProperty("linux.device_file")
+    
+        match = re.search("adapter(\d+?)/frontend(\d+?)", dev_file)
+        if match != None:
+            adapter = int(match.group(1))
+            info = {}
+            info["adapter"] = adapter
+            info["frontend"] = int(match.group(2))
+            deviceslist.append(info)
+            
     return deviceslist
 
 class DVBManagerClient(gobject.GObject):

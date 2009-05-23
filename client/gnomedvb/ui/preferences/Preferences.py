@@ -17,9 +17,9 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-from Frame import Frame
-from Dialogs import *
-from DeviceGroupsView import *
+from gnomedvb.ui.preferences.Frame import Frame
+from gnomedvb.ui.preferences.Dialogs import *
+from gnomedvb.ui.preferences.DeviceGroupsView import *
 from gettext import gettext as _
 from gnomedvb.Device import Device
 

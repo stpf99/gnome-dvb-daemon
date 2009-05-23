@@ -19,7 +19,7 @@
 import gtk
 from gettext import gettext as _
 
-from ChannelsStore import ChannelsStore
+from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 
 class ChannelsView(gtk.TreeView):
 

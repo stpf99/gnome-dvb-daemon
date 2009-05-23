@@ -19,7 +19,7 @@
 import gtk
 import gobject
 from gettext import gettext as _
-from Frame import AlignedLabel
+from gnomedvb.ui.preferences.Frame import AlignedLabel
 
 __all__ = ["AddToGroupDialog", "NewGroupDialog", "EditGroupDialog"]
 
