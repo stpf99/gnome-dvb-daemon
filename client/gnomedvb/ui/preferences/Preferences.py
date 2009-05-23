@@ -85,6 +85,13 @@ class Preferences(gtk.Dialog):
         self.button_add.show()
         toolbar.insert(self.button_add, 3)
         
+        self.button_prefs = gtk.ToolButton(gtk.STOCK_PREFERENCES)
+        self.button_prefs.connect("clicked", self._on_button_prefs_clicked)
+        self.button_prefs.set_sensitive(False)
+        self.button_prefs.set_tooltip_markup(_("Change device group"))
+        self.button_prefs.show()
+        toolbar.insert(self.button_prefs, 4)
+        
     def __create_registered_groups(self):
         self.groups_box = gtk.HBox(spacing=6)
         self.groups_box.show()
@@ -125,6 +132,7 @@ class Preferences(gtk.Dialog):
             
             for device in group["devices"]:
                 dev_iter = self.devicegroups.append(group_iter)
+                self.devicegroups.set(dev_iter, self.devicegroups.COL_ID, group["id"])
                 self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
 
     def _on_groups_selection_changed(self, treeselection):
@@ -136,8 +144,11 @@ class Preferences(gtk.Dialog):
                 self.button_remove.set_sensitive(True)
             else:
                 self.button_remove.set_sensitive(False)
+            
+            self.button_prefs.set_sensitive(True)
         else:
-            self.button_remove.set_sensitive(aiter != None)
+            self.button_remove.set_sensitive(False)
+            self.button_prefs.set_sensitive(False)
 
     def _on_unassigned_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
@@ -226,6 +237,22 @@ class Preferences(gtk.Dialog):
                     error_dialog.run()
                     error_dialog.destroy()
                 
+            dialog.destroy()
+
+    def _on_button_prefs_clicked(self, button):
+        model, aiter = self.devicegroupsview.get_selection().get_selected()
+        
+        if aiter != None:
+            group_id = model[aiter][model.COL_ID]
+            group_name = self._model.get_device_group_name(group_id)
+            recdir = self._model.get_recordings_directory(group_id)
+            
+            dialog = EditGroupDialog(group_name, recdir, self)
+            if dialog.run() == gtk.RESPONSE_ACCEPT:
+                name = dialog.name_entry.get_text()
+                self._model.set_device_group_name(group_id, name)
+                recdir = dialog.recordings_entry.get_text()
+                self._model.set_recordings_directory(group_id, recdir)
             dialog.destroy()
 
     def _on_manager_changed(self, manager, group_id, change_type):

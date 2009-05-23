@@ -20,7 +20,7 @@ import gtk
 from gettext import gettext as _
 from Frame import AlignedLabel
 
-__all__ = ["AddToGroupDialog", "NewGroupDialog"]
+__all__ = ["AddToGroupDialog", "NewGroupDialog", "EditGroupDialog"]
 
 class AddToGroupDialog (gtk.Dialog):
 
@@ -89,19 +89,19 @@ class NewGroupDialog (gtk.Dialog):
         self.name_entry.show()
         name_ali.add(self.name_entry)
         
-        channels = AlignedLabel(_("<b>Channels File</b>"))
-        channels.show()
-        self.vbox.pack_start(channels, False, False, 0)
+        self.channels = AlignedLabel(_("<b>Channels File</b>"))
+        self.channels.show()
+        self.vbox.pack_start(self.channels, False, False, 0)
         self.vbox.set_spacing(6)
         
-        channels_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
-        channels_ali.set_padding(0, 0, 12, 0)
-        channels_ali.show()
-        self.vbox.pack_start(channels_ali)
+        self.channels_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
+        self.channels_ali.set_padding(0, 0, 12, 0)
+        self.channels_ali.show()
+        self.vbox.pack_start(self.channels_ali)
         
         channelsbox = gtk.HBox(spacing=3)
         channelsbox.show()
-        channels_ali.add(channelsbox)
+        self.channels_ali.add(channelsbox)
         self.channels_entry = gtk.Entry()
         self.channels_entry.set_editable(False)
         self.channels_entry.show()
@@ -135,6 +135,14 @@ class NewGroupDialog (gtk.Dialog):
         recordings_open.show()
         recbox.pack_start(recordings_open, False, False, 0)
         
+    def show_channels_section(self, val):
+        if val:
+            self.channels.show()
+            self.channels_ali.show()
+        else:
+            self.channels.hide()
+            self.channels_ali.hide()
+        
     def _on_channels_open_clicked(self, button):
         dialog = gtk.FileChooserDialog (title = _("Select File"),
             parent=self, action=gtk.FILE_CHOOSER_ACTION_OPEN,
@@ -152,5 +160,15 @@ class NewGroupDialog (gtk.Dialog):
         if dialog.run() == gtk.RESPONSE_ACCEPT:
             self.recordings_entry.set_text(dialog.get_filename())
         dialog.destroy()
-         
+        
+class EditGroupDialog(NewGroupDialog):
+
+    def __init__(self, name, recdir, parent=None):
+        NewGroupDialog.__init__(self, parent)
+        
+        self.set_title (_("Edit group"))
+        self.show_channels_section(False)
+
+        self.name_entry.set_text(name)
+        self.recordings_entry.set_text(recdir)
  
