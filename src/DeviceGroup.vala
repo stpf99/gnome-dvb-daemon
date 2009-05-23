@@ -252,9 +252,9 @@ namespace DVB {
                     this.device_removed (adapter, frontend);
                         
                     // Group has no devices anymore, delete it
-                    if (this.size > 0 && epgscanner != null) {
+                    if (this.size > 0 && this.epgscanner != null) {
                         // We still have a device, start EPG scanner again
-                        epgscanner.start ();
+                        this.epgscanner.start ();
                     }
                     
                     return true;
