@@ -94,8 +94,7 @@ namespace DVB {
          * reference device.
          */
         public abstract bool AddDeviceToExistingGroup (uint adapter, uint frontend,
-                uint group_id);
-                
+                uint group_id); 
                 
         /**
          * @adapter: Number of the device's adapter
@@ -126,6 +125,13 @@ namespace DVB {
         
         /**
          * @group_id: ID of device group
+         * @name: Name of the group
+         * @returns: TRUE on success
+         */
+        public abstract bool SetDeviceGroupName (uint group_id, string name);
+        
+        /**
+         * @group_id: ID of device group
          * @returns: List of paths to the devices that are part of
          * the specified group (e.g. /dev/dvb/adapter0/frontend0)
          */
@@ -147,6 +153,19 @@ namespace DVB {
          * @returns: Object path to Schedule service
          */
         public abstract string GetSchedule (uint group_id, uint channel_sid);
+
+        /**
+         * @group_id: ID of device group
+         * @returns: Location of the recordings directory
+         */
+        public abstract string GetRecordingsDirectory (uint group_id);
+        
+        /**
+         * @group_id: ID of device group
+         * @location: Location of the recordings directory
+         * @returns: TRUE on success
+         */
+        public abstract bool SetRecordingsDirectory (uint group_id, string location);
 
     }
 

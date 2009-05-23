@@ -383,6 +383,23 @@ namespace DVB {
         
         /**
          * @group_id: ID of device group
+         * @name: Name of the group
+         * @returns: TRUE on success
+         */
+        public bool SetDeviceGroupName (uint group_id, string name) {
+            bool ret = false;
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                devgroup.Name = name;
+                ConfigStore config = Factory.get_config_store();
+                config.update_from_group (devgroup);
+                ret = true;
+            }
+            return ret;
+        }
+        
+        /**
+         * @group_id: ID of device group
          * @returns: Object path to the ChannelList service for this device
          *
          * The device group must be registered with AddDeviceToNewGroup () first.
@@ -480,6 +497,36 @@ namespace DVB {
             }
         
             return "";
+        }
+
+        /**
+         * @group_id: ID of device group
+         * @returns: Location of the recordings directory
+         */
+        public string GetRecordingsDirectory (uint group_id) {
+            string val = "";
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                val = devgroup.RecordingsDirectory.get_path ();   
+            }
+            return val;
+        }
+        
+        /**
+         * @group_id: ID of device group
+         * @location: Location of the recordings directory
+         * @returns: TRUE on success
+         */
+        public bool SetRecordingsDirectory (uint group_id, string location) {
+            bool ret = false;
+            if (this.devices.contains (group_id)) {
+                DeviceGroup devgroup = this.devices.get (group_id);
+                devgroup.RecordingsDirectory = File.new_for_path (location);
+                ConfigStore config = Factory.get_config_store();
+                config.update_from_group (devgroup);
+                ret = true;
+            }
+            return ret;
         }
         
         /**

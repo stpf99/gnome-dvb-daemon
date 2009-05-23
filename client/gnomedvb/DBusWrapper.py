@@ -145,6 +145,9 @@ class DVBManagerClient(gobject.GObject):
         
     def get_device_group_name(self, group_id):
         return self.manager.GetDeviceGroupName(group_id)
+    
+    def set_device_group_name(self, group_id, name):
+        return self.manager.SetDeviceGroupName(group_id, name)
         
     def get_type_of_device_group(self, group_id):
         return self.manager.GetTypeOfDeviceGroup(group_id)
@@ -157,6 +160,12 @@ class DVBManagerClient(gobject.GObject):
         s._group = group_id
         s._sid = channel_sid
         return s
+        
+    def get_recordings_directory (self, group_id):
+        return self.manager.GetRecordingsDirectory(group_id)
+        
+    def set_recordings_directory (self, group_id, location):
+        return self.manager.SetRecordingsDirectory(group_id, location)
         
     def on_changed(self, group_id, change_type):
         self.emit("changed", group_id, change_type)
