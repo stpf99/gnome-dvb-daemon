@@ -37,6 +37,10 @@ namespace DVB {
         }
         public File RecordingsDirectory {
             get { return this.reference_device.RecordingsDirectory; }
+            set {
+                this.reference_device.RecordingsDirectory = value;
+                this.update_all_devices ();
+            }
         }
         public AdapterType Type {
             get { return this.reference_device.Type; }
@@ -142,6 +146,18 @@ namespace DVB {
         
         public Iterator<Device> iterator () {
             return this.devices.iterator();
+        }
+        
+        /**
+         * Set RecordingsDirectory property of all
+         * devices to the values of the reference device
+         */
+        private void update_all_devices () {
+            foreach (Device device in this.devices) {
+                if (device != this.reference_device) {
+                    device.RecordingsDirectory = this.reference_device.RecordingsDirectory;
+                }
+            }
         }
         
     }
