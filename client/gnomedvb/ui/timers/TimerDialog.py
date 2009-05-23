@@ -30,8 +30,7 @@ class TimerDialog(gtk.Dialog):
         """
         @param parent: Parent window
         @type parent: gtk.Window
-        @param device_group: ID of device group
-        @type device_group: int
+        @param device_group: DeviceGroup instance
         """
         gtk.Dialog.__init__(self, title=_("Timer"), parent=parent,
                 flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -166,7 +165,7 @@ class TimerDialog(gtk.Dialog):
             start = self.get_start_time()
             channel = self.get_channel()
             
-            recorder = gnomedvb.DVBRecorderClient(self.device_group)
+            recorder = self.device_group.get_recorder()
             rec_id = recorder.add_timer (channel, start[0], start[1], start[2],
                 start[3], start[4], duration)
               

@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import gobject
 from gettext import gettext as _
 from Frame import AlignedLabel
 
@@ -39,7 +40,7 @@ class AddToGroupDialog (gtk.Dialog):
         label.show()
         self.vbox.pack_start(label, False, False, 0)
         
-        self.groups = gtk.ListStore(str, int)
+        self.groups = gtk.ListStore(str, gobject.TYPE_PYOBJECT)
         
         combo = gtk.ComboBox(self.groups)
         combo.connect("changed", self.on_combo_changed)
@@ -50,8 +51,11 @@ class AddToGroupDialog (gtk.Dialog):
         self.vbox.pack_start(combo)
                       
         for group in model.get_registered_device_groups():
-            if model.get_type_of_device_group(group["id"]) == device_type:
-                self.groups.append([group["name"], group["id"]])
+            if group.get_type() == device_type:
+                name = group["name"]
+                if name == "":
+                    name = "Group %d" % group["id"]
+                self.groups.append([name, group])
             
     def on_combo_changed(self, combo):
         aiter = combo.get_active_iter()

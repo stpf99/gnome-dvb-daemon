@@ -32,8 +32,9 @@ class Preferences(gtk.Dialog):
             buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
         
         self._model = model
-        self._model.connect("changed", self._on_manager_changed)
-        self._model.connect("group-changed", self._on_group_changed)
+        self._model.connect("group-added", self._on_manager_group_added)
+        self._model.connect("group-removed", self._on_manager_group_removed)
+        #self._model.connect("group-changed", self._on_group_changed)
         
         self.set_default_size(600, 450)
         
@@ -126,14 +127,20 @@ class Preferences(gtk.Dialog):
             self.unassigned_devices.append([device])
         
         for group in self._model.get_registered_device_groups():
-            group_iter = self.devicegroups.append(None)
-            self.devicegroups.set(group_iter, self.devicegroups.COL_ID, group["id"])
-            self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group["name"])
-            
-            for device in group["devices"]:
-                dev_iter = self.devicegroups.append(group_iter)
-                self.devicegroups.set(dev_iter, self.devicegroups.COL_ID, group["id"])
-                self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
+            self._append_group(group)
+
+    def _append_group(self, group):
+        group.connect("device-added", self._on_group_device_added)
+        group.connect("device-removed", self._on_group_device_removed)
+        
+        group_iter = self.devicegroups.append(None)
+        self.devicegroups.set(group_iter, self.devicegroups.COL_GROUP, group)
+        self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group["name"])
+        
+        for device in group["devices"]:
+            dev_iter = self.devicegroups.append(group_iter)
+            self.devicegroups.set(dev_iter, self.devicegroups.COL_GROUP, group)
+            self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
 
     def _on_groups_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
@@ -161,6 +168,7 @@ class Preferences(gtk.Dialog):
         model, aiter = self.devicegroupsview.get_selection().get_selected()
         
         if aiter != None:
+            group = device = model[aiter][model.COL_GROUP]
             device = model[aiter][model.COL_DEVICE]
         
             dialog = gtk.MessageDialog(parent=self,
@@ -173,7 +181,7 @@ class Preferences(gtk.Dialog):
             dialog.destroy()
             if response == gtk.RESPONSE_YES:
                 if isinstance(device, Device):
-                    if self._model.remove_device_from_group(device):
+                    if group.remove_device(device):
                         # "Success: remove device"
                         # Add device to unassigned devices
                         self.unassigned_devices.append([device])
@@ -220,9 +228,8 @@ class Preferences(gtk.Dialog):
             device = self.unassigned_devices[aiter][0]
             dialog = AddToGroupDialog(self, self._model, device.type)
             if dialog.run() == gtk.RESPONSE_ACCEPT:
-                group_id = dialog.get_selected_group()
-                if self._model.add_device_to_existing_group(device.adapter,
-                    device.frontend, group_id):
+                group = dialog.get_selected_group()
+                if group.add_device(device.adapter, device.frontend):
                     # "Success: add to group"
                     model.remove(aiter)
                 else:
@@ -243,61 +250,56 @@ class Preferences(gtk.Dialog):
         model, aiter = self.devicegroupsview.get_selection().get_selected()
         
         if aiter != None:
-            group_id = model[aiter][model.COL_ID]
-            group_name = self._model.get_device_group_name(group_id)
-            recdir = self._model.get_recordings_directory(group_id)
+            group = model[aiter][model.COL_GROUP]
+            group_name = group.get_name()
+            recdir = group.get_recordings_directory()
             
             dialog = EditGroupDialog(group_name, recdir, self)
             if dialog.run() == gtk.RESPONSE_ACCEPT:
                 name = dialog.name_entry.get_text()
-                self._model.set_device_group_name(group_id, name)
+                group.set_name(name)
                 recdir = dialog.recordings_entry.get_text()
-                self._model.set_recordings_directory(group_id, recdir)
+                group.set_recordings_directory(recdir)
             dialog.destroy()
 
-    def _on_manager_changed(self, manager, group_id, change_type):
-        # A group has been added or deleted
-        if change_type == 0:
-            # Added
-            group_iter = self.devicegroups.append(None)
-            group_name = manager.get_device_group_name(group_id)
-            self.devicegroups.set(group_iter, self.devicegroups.COL_ID, group_id)
-            self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group_name)
-            for device in self._model.get_device_group_members(group_id):
-                dev_iter = self.devicegroups.append(group_iter)
-                self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
-        elif change_type == 1:
-            # Removed
-            aiter = self.devicegroups.get_iter_first()
-            # Iterate over groups
-            while aiter != None:
-                group = self.devicegroups[aiter][self.devicegroups.COL_ID]
-                if group == group_id:
-                    self.devicegroups.remove(aiter)
-                    return
-                aiter = self.devicegroups.iter_next(aiter)
-        
-    def _on_group_changed(self, manager, group_id, adapter, frontend, change_type):
+    def _on_manager_group_added(self, manager, group_id):
+        group = manager.get_device_group(group_id)
+        self._append_group(group)
+    
+    def _on_manager_group_removed(self, manager, group_id):        
+        aiter = self.devicegroups.get_iter_first()
         # Iterate over groups
-        for group, aiter in self.devicegroups.get_groups():
-            if group == group_id:
-                if change_type == 0:
-                    # Added
-                    devtype = manager.get_type_of_device_group(group_id)
-                    devname = manager.get_name_of_registered_device(adapter, frontend)
-                    device = Device (group_id, devname, adapter, frontend, devtype)
-                    dev_iter = self.devicegroups.append(aiter)
-                    self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
-                    break
-                elif change_type == 1:
-                    # Removed
-                    child_iter =  self.devicegroups.iter_children(aiter)
-                    while child_iter != None:
-                        device = self.devicegroups[child_iter][self.devicegroups.COL_DEVICE]
-                        if device.adapter == adapter and device.frontend == frontend:
-                             self.devicegroups.remove(child_iter)
-                             return
-                        child_iter = self.devicegroups.iter_next(child_iter)
+        while aiter != None:
+            group = self.devicegroups[aiter][self.devicegroups.COL_GROUP]
+            if group["id"] == group_id:
+                self.devicegroups.remove(aiter)
+                return
+            aiter = self.devicegroups.iter_next(aiter)
+        
+    def _on_group_device_added(self, group, adapter, frontend):
+        # Iterate over groups
+        for list_group, aiter in self.devicegroups.get_groups():
+            if group["id"] == list_group["id"]:
+                # Added
+                devtype = group.get_type()
+                devname = self._model.get_name_of_registered_device(adapter, frontend)
+                device = Device (group["id"], devname, adapter, frontend, devtype)
+                dev_iter = self.devicegroups.append(aiter)
+                self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
+                break
+                    
+    def _on_group_device_removed(self, group, adapter, frontend):
+        # Iterate over groups
+        for list_group, aiter in self.devicegroups.get_groups():
+            if group["id"] == list_group["id"]:
+                # Removed
+                child_iter =  self.devicegroups.iter_children(aiter)
+                while child_iter != None:
+                    device = self.devicegroups[child_iter][self.devicegroups.COL_DEVICE]
+                    if device.adapter == adapter and device.frontend == frontend:
+                        self.devicegroups.remove(child_iter)
+                        return
+                    child_iter = self.devicegroups.iter_next(child_iter)
            
     def _on_focus_out(self, treeview, event, widgets):
         for w in widgets:

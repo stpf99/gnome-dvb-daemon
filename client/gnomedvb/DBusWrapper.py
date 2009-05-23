@@ -24,11 +24,12 @@ import gst
 import re
 import sys
 
-__all__= [
+__all__ = [
     "global_error_handler",
     "get_adapter_info",
     "get_dvb_devices",
     "DVBManagerClient",
+    "DVBDeviceGroupClient",
     "DVBScannerClient",
     "DVBRecordingsStoreClient",
     "DVBRecorderClient",
@@ -36,18 +37,15 @@ __all__= [
     "DVBScheduleClient",
 ]
 
-service = "org.gnome.DVB"
-manager_iface = "org.gnome.DVB.Manager"
-manager_path = "/org/gnome/DVB/Manager"
-device_group_iface = "org.gnome.DVB.DeviceGroup"
-recstore_iface = "org.gnome.DVB.RecordingsStore"
-recstore_path = "/org/gnome/DVB/RecordingsStore"
-recorder_iface = "org.gnome.DVB.Recorder"
-channel_list_iface = "org.gnome.DVB.ChannelList"
-schedule_iface = "org.gnome.DVB.Schedule"
-sat_scanner_iface = "org.gnome.DVB.Scanner.Satellite"
-cable_scanner_iface = "org.gnome.DVB.Scanner.Cable"
-terrestrial_scanner_iface = "org.gnome.DVB.Scanner.Terrestrial"
+SERVICE = "org.gnome.DVB"
+MANAGER_IFACE = "org.gnome.DVB.Manager"
+MANAGER_PATH = "/org/gnome/DVB/Manager"
+DEVICE_GROUP_IFACE = "org.gnome.DVB.DeviceGroup"
+RECSTORE_IFACE = "org.gnome.DVB.RecordingsStore"
+RECSTORE_PATH = "/org/gnome/DVB/RecordingsStore"
+RECORDER_IFACE = "org.gnome.DVB.Recorder"
+CHANNEL_LIST_IFACE = "org.gnome.DVB.ChannelList"
+SCHEDULE_IFACE = "org.gnome.DVB.Schedule"
 
 HAL_MANAGER_IFACE = "org.freedesktop.Hal.Manager"
 HAL_DEVICE_IFACE = "org.freedesktop.Hal.Device"
@@ -116,15 +114,19 @@ class DVBManagerClient(gobject.GObject):
     
         bus = dbus.SessionBus()
         # Get proxy object
-        proxy = bus.get_object(service, manager_path)
+        proxy = bus.get_object(SERVICE, MANAGER_PATH)
         # Apply the correct interace to the proxy object
-        self.manager = dbus.Interface(proxy, manager_iface)
+        self.manager = dbus.Interface(proxy, MANAGER_IFACE)
         self.manager.connect_to_signal("GroupAdded", self.on_group_added)
         self.manager.connect_to_signal("GroupRemoved", self.on_group_removed)
         
     def get_scanner_for_device(self, adapter, frontend):
         objpath, scanner_iface = self.manager.GetScannerForDevice (adapter, frontend)
         return DVBScannerClient(objpath, scanner_iface)
+        
+    def get_device_group(self, group_id):
+        path = self.manager.GetDeviceGroup(group_id)
+        return DVBDeviceGroupClient(path)
         
     def get_registered_device_groups(self):
         return [DVBDeviceGroupClient(path) for path in self.manager.GetRegisteredDeviceGroups()]
@@ -144,56 +146,63 @@ class DVBManagerClient(gobject.GObject):
 class DVBDeviceGroupClient(gobject.GObject):
 
     __gsignals__ = {
-        "device-added":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
-        "device-removed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "device-added":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
+        "device-removed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
     }
     
     def __init__(self, objpath):
         gobject.GObject.__init__(self)
         
+        elements = objpath.split("/")
+        
+        self._id = int(elements[5])
+        
         bus = dbus.SessionBus()
         # Get proxy object
-        proxy = bus.get_object(service, objpath)
+        proxy = bus.get_object(SERVICE, objpath)
         # Apply the correct interace to the proxy object
-        self.manager = dbus.Interface(proxy, device_group_iface)
-        self.manager.connect_to_signal("DeviceAdded", self.on_device_added)
-        self.manager.connect_to_signal("DeviceRemoved", self.on_device_removed)
+        self.devgroup = dbus.Interface(proxy, DEVICE_GROUP_IFACE)
+        self.devgroup.connect_to_signal("DeviceAdded", self.on_device_added)
+        self.devgroup.connect_to_signal("DeviceRemoved", self.on_device_removed)
+        
+    def get_id(self):
+        return self._id
          
     def get_recorder(self):
-        path = self.manager.GetRecorder()
+        path = self.devgroup.GetRecorder()
         return DVBRecorderClient(path)
         
     def add_device (self, adapter, frontend):
-        return self.manager.AddDevice(adapter, frontend)
+        return self.devgroup.AddDevice(adapter, frontend)
         
     def remove_device(self, adapter, frontend):
-        return self.manager.RemoveDevice(adapter, frontend)
+        return self.devgroup.RemoveDevice(adapter, frontend)
     
     def get_channel_list(self):
-        path = self.manager.GetChannelList()
+        path = self.devgroup.GetChannelList()
         return DVBChannelListClient(path)
     
     def get_members(self):
-        return self.manager.GetMembers()
+        return self.devgroup.GetMembers()
         
     def get_name(self):
-        return self.manager.GetName()
+        return self.devgroup.GetName()
     
     def set_name(self, name):
-        return self.manager.SetName(name)
+        return self.devgroup.SetName(name)
         
     def get_type(self):
-        return self.manager.GetType()
+        return self.devgroup.GetType()
         
     def get_schedule(self, channel_sid):
-        path = self.manager.GetSchedule(channel_sid)
+        path = self.devgroup.GetSchedule(channel_sid)
         return DVBScheduleClient(path)
         
     def get_recordings_directory (self):
-        return self.manager.GetRecordingsDirectory()
+        return self.devgroup.GetRecordingsDirectory()
         
     def set_recordings_directory (self, location):
-        return self.manager.SetRecordingsDirectory(location)
+        return self.devgroup.SetRecordingsDirectory(location)
      
     def on_device_added(self, adapter, frontend):
         self.emit("device-added", adapter, frontend)
@@ -214,7 +223,7 @@ class DVBScannerClient(gobject.GObject):
         gobject.GObject.__init__(self)
         
         bus = dbus.SessionBus()
-        proxy = bus.get_object(service, objpath)
+        proxy = bus.get_object(SERVICE, objpath)
         self.scanner = dbus.Interface(proxy, scanner_iface)
         self.scanner.connect_to_signal ("Finished", self.on_finished)
         self.scanner.connect_to_signal ("FrequencyScanned", self.on_frequency_scanned)
@@ -262,9 +271,9 @@ class DVBRecordingsStoreClient(gobject.GObject):
         
         bus = dbus.SessionBus()
         # Get proxy object
-        proxy = bus.get_object(service, recstore_path)
+        proxy = bus.get_object(SERVICE, RECSTORE_PATH)
         # Apply the correct interace to the proxy object
-        self.recstore = dbus.Interface(proxy, recstore_iface)
+        self.recstore = dbus.Interface(proxy, RECSTORE_IFACE)
         self.recstore.connect_to_signal ("Changed", self.on_changed)
         
     def get_recordings(self, **kwargs):
@@ -310,9 +319,9 @@ class DVBRecorderClient(gobject.GObject):
         
         bus = dbus.SessionBus()
         # Get proxy object
-        proxy = bus.get_object(service, object_path)
+        proxy = bus.get_object(SERVICE, object_path)
         # Apply the correct interace to the proxy object
-        self.recorder = dbus.Interface(proxy, recorder_iface)
+        self.recorder = dbus.Interface(proxy, RECORDER_IFACE)
         self.recorder.connect_to_signal("RecordingStarted", self.on_recording_started)
         self.recorder.connect_to_signal("RecordingFinished", self.on_recording_finished)
         self.recorder.connect_to_signal("Changed", self.on_changed)
@@ -374,9 +383,9 @@ class DVBChannelListClient:
     def __init__(self, object_path):
         bus = dbus.SessionBus()
         # Get proxy object
-        proxy = bus.get_object(service, object_path)
+        proxy = bus.get_object(SERVICE, object_path)
         # Apply the correct interace to the proxy object
-        self.channels = dbus.Interface(proxy, channel_list_iface)
+        self.channels = dbus.Interface(proxy, CHANNEL_LIST_IFACE)
         self.object_path = object_path
         
     def get_path(self):
@@ -411,14 +420,14 @@ class DVBScheduleClient(gobject.GObject):
         # "/org/gnome/DVB/DeviceGroup/%u/Schedule/%u";
         elements = object_path.split("/")
         
-        self._group = elements[5]
-        self._sid = elements[7]
+        self._group = int(elements[5])
+        self._sid = int(elements[7])
         
         bus = dbus.SessionBus()
         # Get proxy object
-        proxy = bus.get_object(service, object_path)
+        proxy = bus.get_object(SERVICE, object_path)
         # Apply the correct interace to the proxy object
-        self.schedule = dbus.Interface(proxy, schedule_iface)
+        self.schedule = dbus.Interface(proxy, SCHEDULE_IFACE)
         
     def get_group_id(self):
         return self._group

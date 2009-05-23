@@ -113,8 +113,8 @@ class EditTimersDialog(gtk.Dialog):
         
         self.show_all()
         
-    def set_recorder(self, group_id):
-        self.recorder = gnomedvb.DVBRecorderClient(group_id)
+    def set_recorder(self, dev_group):
+        self.recorder = dev_group.get_recorder()
         self.recorder.connect("changed", self._on_recorder_changed)
         self.recorder.connect("recording-started", self._set_recording_state, True)
         self.recorder.connect("recording-finished", self._set_recording_state, False)
@@ -169,12 +169,7 @@ class EditTimersDialog(gtk.Dialog):
         d = TimerDialog(self, self.device_group)
         d.run()
         d.destroy()
-     
-    def _on_recorderscombo_changed(self, combo):
-        self.timerslist.clear()
-        self.get_timers(self._get_active_device_group())
-        self.button_add.set_sensitive(True)
-        
+   
     def _on_recorder_changed(self, recorder, timer_id, typeid):
         if recorder == self.recorder:
             if (typeid == 0):

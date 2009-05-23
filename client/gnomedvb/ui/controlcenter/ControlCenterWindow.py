@@ -56,7 +56,8 @@ class ControlCenterWindow(gtk.Window):
         
         self.channellists = {}
         self.manager = model
-        self.manager.connect('changed', self._on_manager_changed)
+        self.manager.connect('group-added', self._on_manager_group_added)
+        self.manager.connect('group-removed', self._on_manager_group_removed)
         
         self.connect('delete-event', gtk.main_quit)
         self.connect('destroy-event', gtk.main_quit)
@@ -86,7 +87,7 @@ class ControlCenterWindow(gtk.Window):
         groups_label = gtk.Label(_("Device groups:"))
         self.vbox_left.pack_start(groups_label, False)
         
-        self.devgroupslist = gtk.ListStore(str, int)
+        self.devgroupslist = gtk.ListStore(str, int, gobject.TYPE_PYOBJECT)
         self.devgroupslist.connect("row-inserted", self._on_devgroupslist_inserted)
         
         self.devgroupscombo = gtk.ComboBox(self.devgroupslist)
@@ -325,8 +326,8 @@ class ControlCenterWindow(gtk.Window):
         self.channelsview.grab_focus()
            
     def _append_group(self, group):
-        self.devgroupslist.append([group["name"], group["id"]])
-        self.channellists[group["id"]] = gnomedvb.DVBChannelListClient(group["id"])
+        self.devgroupslist.append([group["name"], group["id"], group])
+        self.channellists[group["id"]] = group.get_channel_list()
         
     def _remove_group(self, group_id):
         aiter = None
@@ -335,7 +336,7 @@ class ControlCenterWindow(gtk.Window):
                 aiter = row.iter
                 
         if aiter != None:
-            if self._get_selected_group_id() == group_id:
+            if self._get_selected_group()["id"] == group_id:
                 # Select no group
                 self.devgroupscombo.set_active(-1)
                 
@@ -353,21 +354,19 @@ class ControlCenterWindow(gtk.Window):
         self.scheduleview.set_model(None)
         self._display_help_message()
 
-    def _on_manager_changed(self, manager, group_id, change_type):
-        if change_type == 0:
-            # added
-            group = self.manager.get_device_group(group_id)
-            self._append_group(group)
-        elif change_type == 1:
-            # deleted
-            self._remove_group(group_id)
+    def _on_manager_group_added(self, manager, group_id):
+        group = self.manager.get_device_group(group_id)
+        self._append_group(group)
+        
+    def _on_manager_group_removed(self, manager, group_id):
+        self._remove_group(group_id)
             
-    def _get_selected_group_id(self):
+    def _get_selected_group(self):
         aiter = self.devgroupscombo.get_active_iter()
         if aiter == None:
             return None
         else:
-            return self.devgroupslist[aiter][1]
+            return self.devgroupslist[aiter][2]
         
     def _get_selected_channel_sid(self):
         model, aiter = self.channelsview.get_selection().get_selected()
@@ -378,11 +377,11 @@ class ControlCenterWindow(gtk.Window):
             return None
     
     def _on_devgroupscombo_changed(self, combo):
-        group_id = self._get_selected_group_id()
-        if group_id != None:
+        group = self._get_selected_group()
+        if group != None:
             self._set_timers_sensitive(True)
             
-            self.channelsstore = ChannelsStore(group_id)
+            self.channelsstore = ChannelsStore(group)
             self.channelsview.set_model(self.channelsstore)
             
             self._reset_schedule_view()
@@ -399,8 +398,8 @@ class ControlCenterWindow(gtk.Window):
         child = self.hpaned.get_child2()
         if aiter != None:
             sid = model[aiter][model.COL_SID]
-            group_id = self._get_selected_group_id()
-            self.schedulestore = ScheduleStore(self.manager.get_schedule(group_id, sid))
+            group = self._get_selected_group()
+            self.schedulestore = ScheduleStore(group, sid)
             self.scheduleview.set_model(self.schedulestore)
             
             # Display schedule if it isn't already displayed
@@ -441,8 +440,8 @@ class ControlCenterWindow(gtk.Window):
         self.timersitem.set_sensitive(val)
         
     def _set_refresh_sensitive(self, val):
-       self.refresh_button.set_sensitive(val) 
-       self.refresh_menuitem.set_sensitive(val)
+        self.refresh_button.set_sensitive(val) 
+        self.refresh_menuitem.set_sensitive(val)
        
     def _on_event_selected(self, treeview, event):
         if event.type == gtk.gdk._2BUTTON_PRESS:
@@ -454,9 +453,9 @@ class ControlCenterWindow(gtk.Window):
                 dialog.set_markup (_("<big><span weight=\"bold\">Schedule recording for the selected event?</span></big>"))
                 if dialog.run() == gtk.RESPONSE_YES:
                     event_id = model[aiter][model.COL_EVENT_ID]
-                    group_id = self._get_selected_group_id()
+                    group = self._get_selected_group()
                     channel_sid = self._get_selected_channel_sid()
-                    recorder = gnomedvb.DVBRecorderClient(group_id)
+                    recorder = group.get_recorder()
                     rec_id = recorder.add_timer_for_epg_event(event_id, channel_sid)
                 dialog.destroy()
                 
@@ -466,9 +465,9 @@ class ControlCenterWindow(gtk.Window):
                     dialog.destroy()
         
     def _on_button_display_timers_clicked(self, button):
-        group_id = self._get_selected_group_id()
-        if group_id != None:
-            edit = EditTimersDialog(group_id, self)
+        group = self._get_selected_group()
+        if group != None:
+            edit = EditTimersDialog(group, self)
             edit.run()
             edit.destroy()
             

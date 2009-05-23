@@ -17,7 +17,6 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-import gnomedvb
 import datetime
 from cgi import escape
 from gnomedvb import global_error_handler
@@ -38,10 +37,10 @@ class ScheduleStore(gtk.ListStore):
      
     NEW_DAY = -1
 
-    def __init__(self, schedule_client):
+    def __init__(self, dev_group, sid):
         gtk.ListStore.__init__(self, int, int, int, int, int, int, str, str, str, int, int)
-        self._client = schedule_client
-        self._recorder = gnomedvb.DVBRecorderClient(schedule_client.get_group_id())
+        self._client = dev_group.get_schedule(sid)
+        self._recorder = dev_group.get_recorder()
         self._fill_all()
         
     def reload_all(self):
