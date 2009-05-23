@@ -42,6 +42,12 @@ namespace DVB {
         public abstract string[] GetRegisteredDeviceGroups ();
         
         /**
+         * @group_id: A group ID
+         * @returns: Device group's DBus path
+         */
+        public abstract string GetDeviceGroup (uint group_id);
+        
+        /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
          * @channels_conf: Path to channels.conf for this device

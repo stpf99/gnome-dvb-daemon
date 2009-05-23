@@ -159,6 +159,18 @@ namespace DVB {
         }
         
         /**
+         * @group_id: A group ID
+         * @returns: Device group's DBus path
+         */
+        public string GetDeviceGroup (uint group_id) {
+            string val = "";
+            if (this.devices.contains (group_id)) {
+                val = Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id);
+            }
+            return val;
+        }
+        
+        /**
          * @returns: Device groups' DBus path
          */
         public string[] GetRegisteredDeviceGroups () {
@@ -352,14 +364,16 @@ namespace DVB {
         private void on_device_removed_from_group (DeviceGroup devgroup,
                 uint adapter, uint frontend) {
             uint group_id = devgroup.Id;
-            if (this.devices.remove (group_id)) {    
-                devgroup.destroy ();
-                
-                Factory.get_config_store ().remove_device_group (
-                    devgroup);
-                
-                this.group_removed (group_id);
-            }
+            if (devgroup.size == 0) {
+                if (this.devices.remove (group_id)) {    
+                    devgroup.destroy ();
+                    
+                    Factory.get_config_store ().remove_device_group (
+                        devgroup);
+                    
+                    this.group_removed (group_id);
+                }
+           }
         }
         
     }
