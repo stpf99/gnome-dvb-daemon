@@ -36,7 +36,7 @@ namespace DVB {
             name VARCHAR(255),
             description VARCHAR(255),
             extended_description TEXT,
-            PRIMARY KEY (sid, event_id))""";
+            PRIMARY KEY (group_id, sid, event_id))""";
         
         private static const string INSERT_EVENT_SQL = 
             "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
