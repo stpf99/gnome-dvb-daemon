@@ -38,7 +38,7 @@ namespace DVB {
          * 
          * Returns the object path to the device's recorder.
          */
-        public abstract string GetRecorder ();
+        public abstract DBus.ObjectPath GetRecorder ();
                
          /**
          * @adapter: Number of the device's adapter
@@ -65,7 +65,7 @@ namespace DVB {
         /**
          * @returns: Object path to the ChannelList service for this device
          */
-        public abstract string GetChannelList ();
+        public abstract DBus.ObjectPath GetChannelList ();
         
         /**
          * @returns: Name of the device group
@@ -88,7 +88,7 @@ namespace DVB {
          * @channel_sid: ID of the channel
          * @returns: Object path to Schedule service
          */
-        public abstract string GetSchedule (uint channel_sid);
+        public abstract DBus.ObjectPath GetSchedule (uint channel_sid);
 
         /**
          * @returns: Location of the recordings directory

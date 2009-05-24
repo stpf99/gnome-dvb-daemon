@@ -39,13 +39,13 @@ namespace DVB {
         /**
          * @returns: Device groups' DBus path
          */
-        public abstract string[] GetRegisteredDeviceGroups ();
+        public abstract DBus.ObjectPath[] GetRegisteredDeviceGroups ();
         
         /**
          * @group_id: A group ID
          * @returns: Device group's DBus path
          */
-        public abstract string GetDeviceGroup (uint group_id);
+        public abstract DBus.ObjectPath GetDeviceGroup (uint group_id);
         
         /**
          * @adapter: Number of the device's adapter

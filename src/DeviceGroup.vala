@@ -208,9 +208,9 @@ namespace DVB {
          * 
          * Returns the object path to the device's recorder.
          */
-        public string GetRecorder () {
-            string path = Constants.DBUS_RECORDER_PATH.printf (this.Id);
-            return path;
+        public DBus.ObjectPath GetRecorder () {
+            return new DBus.ObjectPath (
+                Constants.DBUS_RECORDER_PATH.printf (this.Id));
         }   
             
         protected bool register_recorder () {
@@ -285,9 +285,9 @@ namespace DVB {
         /**
          * @returns: Object path to the ChannelList service for this device
          */
-        public string GetChannelList () {
-            string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (this.Id);
-            return path;
+        public DBus.ObjectPath GetChannelList () {
+            return new DBus.ObjectPath (
+                Constants.DBUS_CHANNEL_LIST_PATH.printf (this.Id));
         }
         
         protected bool register_channel_list () {
@@ -327,13 +327,13 @@ namespace DVB {
          * @channel_sid: ID of the channel
          * @returns: Object path to Schedule service
          */
-        public string GetSchedule (uint channel_sid) {
+        public DBus.ObjectPath GetSchedule (uint channel_sid) {
             if (this.Channels.contains (channel_sid)) {
                 string path = Constants.DBUS_SCHEDULE_PATH.printf (this.Id, channel_sid);
                 
                 if (!this.schedules.contains (path)) {
                     var conn = Utils.get_dbus_connection ();
-                    if (conn == null) return "";
+                    if (conn == null) new DBus.ObjectPath ("");
                     
                     Schedule schedule = this.Channels.get_channel (
                         channel_sid).Schedule;
@@ -345,10 +345,10 @@ namespace DVB {
                     this.schedules.add (path);
                 }
                 
-                return path;
+                return new DBus.ObjectPath (path);
             }
         
-            return "";
+            return new DBus.ObjectPath ("");
         }
 
         /**

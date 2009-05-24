@@ -162,10 +162,12 @@ namespace DVB {
          * @group_id: A group ID
          * @returns: Device group's DBus path
          */
-        public string GetDeviceGroup (uint group_id) {
-            string val = "";
+        public DBus.ObjectPath GetDeviceGroup (uint group_id) {
+            DBus.ObjectPath val;
             if (this.devices.contains (group_id)) {
-                val = Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id);
+                val = new DBus.ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
+            } else {
+                val = new DBus.ObjectPath ("");
             }
             return val;
         }
@@ -173,11 +175,12 @@ namespace DVB {
         /**
          * @returns: Device groups' DBus path
          */
-        public string[] GetRegisteredDeviceGroups () {
-            string[] devs = new string[this.devices.size];
+        public DBus.ObjectPath[] GetRegisteredDeviceGroups () {
+            DBus.ObjectPath[] devs = new DBus.ObjectPath[this.devices.size];
             int i = 0;
             foreach (uint key in this.devices.get_keys ()) {
-                devs[i] = Constants.DBUS_DEVICE_GROUP_PATH.printf (key);
+                devs[i] = new DBus.ObjectPath (
+                    Constants.DBUS_DEVICE_GROUP_PATH.printf (key));
                 i++;
             }
             return devs;
