@@ -373,6 +373,9 @@ namespace DVB {
                     
                     Factory.get_config_store ().remove_device_group (
                         devgroup);
+                    Factory.get_epg_store ().remove_events_of_group (
+                        devgroup.Id
+                    );
                     
                     this.group_removed (group_id);
                 }
