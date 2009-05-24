@@ -67,12 +67,16 @@ namespace DVB {
             description, extended_description
             FROM events WHERE group_id=? AND sid=? AND event_id=?""";
             
+        private static const string DELETE_EVENTS_GROUP =
+        "DELETE FROM events WHERE group_id=?";
+            
         private Statement to_julian_statement;
         private Statement insert_event_statement;
         private Statement update_event_statement;
         private Statement delete_event_statement;
         private Statement has_event_statement;
         private Statement select_event_statement;
+        private Statement delete_events_group;
         
         // Database must be the last parameter, because the statements
         // MUST be finalized first before the database is closed
@@ -93,6 +97,8 @@ namespace DVB {
                 out this.has_event_statement);
             this.db.prepare (SELECT_EVENT_SQL, -1,
                 out this.select_event_statement);
+            this.db.prepare (DELETE_EVENTS_GROUP, -1,
+                out this.delete_events_group);
         }
         
         public bool add_or_update_event (Event event, uint channel_sid, uint group_id) {
@@ -241,6 +247,22 @@ namespace DVB {
             }
             
             return events;
+        }
+        
+        public bool remove_events_of_group (uint group_id) {
+            this.delete_events_group.reset ();
+            
+            if (this.delete_events_group.bind_int (1, (int)group_id) != Sqlite.OK) {
+                this.print_last_error ();
+                return false;
+            }
+            
+            if (this.delete_events_group.step () != Sqlite.DONE) {
+                this.print_last_error ();
+                return false;
+            }
+            
+            return true;
         }
         
         private Event create_event_from_statement (Statement statement) {

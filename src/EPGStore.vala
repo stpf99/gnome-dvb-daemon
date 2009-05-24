@@ -28,6 +28,7 @@ namespace DVB {
         public abstract bool remove_event (uint event_id, uint channel_sid, uint group_id);
         public abstract bool contains_event (Event event, uint channel_sid, uint group_id);
         public abstract Gee.List<Event> get_events (uint channel_sid, uint group_id);
+        public abstract bool remove_events_of_group (uint group_id);
         
     }
 
