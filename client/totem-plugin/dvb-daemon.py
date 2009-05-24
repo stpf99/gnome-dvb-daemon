@@ -74,7 +74,8 @@ class DVBDaemonPlugin(totem.Plugin):
                 if group_id == self.REC_GROUP_ID:
                     url = self.recstore.get_location(sid)
                 else:
-                    channellist = gnomedvb.DVBChannelListClient(group_id)
+                    group = gnomedvb.DVBManagerClient().get_device_group(group_id)
+                    channellist = group.get_channel_list()
                     url = channellist.get_channel_url(sid)
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_REPLACE, url)
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_PLAY, url)
