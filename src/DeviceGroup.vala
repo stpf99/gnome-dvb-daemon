@@ -51,6 +51,9 @@ namespace DVB {
         public EPGScanner epgscanner {
             get { return this._epgscanner; }
         }
+        public ChannelFactory channel_factory {
+            get { return this._channelfactory; }
+        }
         public string Name {get; set;}
                 
         // All settings are copied from this one
@@ -59,6 +62,7 @@ namespace DVB {
         private Set<Device> devices;
         private Recorder _recorder;
         private EPGScanner? _epgscanner;
+        private ChannelFactory _channelfactory;
         
         // Containss object paths to Schedule 
         private HashSet<string> schedules;
@@ -68,6 +72,8 @@ namespace DVB {
             this.schedules = new HashSet<string> (GLib.str_hash,
                 GLib.str_equal);
             this.devices.add (this.reference_device);
+            this._channelfactory = new ChannelFactory (this);
+            this._recorder = new Recorder (this);
         }
         
         /**
@@ -85,7 +91,6 @@ namespace DVB {
             } else {
                 this._epgscanner = null;
             }
-            this._recorder = new Recorder (this);
             this.register_channel_list ();
             this.register_recorder ();
         }

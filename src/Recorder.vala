@@ -18,389 +18,40 @@
  */
 
 using GLib;
-using Gst;
 using Gee;
 
 namespace DVB {
-
-    /**
-     * This class does the actual recording for a single device.
-     * It record more than one channel, if the channels are part
-     * of the same transport stream
-     */
-    public class RecordingThread : GLib.Object {
-    
-        private static const string DVBBASEBIN_NAME = "dvbbasebin";
-        
-        public signal void recording_stopped (Recording rec, Timer timer);
-        public signal void recording_aborted ();
-    
-        public Device device {get; construct;}
-        public EPGScanner? epgscanner {get; construct;}
-        public uint count {
-            get { return this.recordings.size; }
-        }
-        
-        private Element? pipeline;
-        private HashSet<string> sid_set;
-        // Maps timer id to Recording
-        private Map<uint, Recording> recordings;
-    
-        construct {
-            this.recordings = new HashMap<uint, Recording> ();
-            this.sid_set = new HashSet<string> (GLib.str_hash, GLib.str_equal);
-        }
-    
-        public RecordingThread (Device device, EPGScanner? epgscanner) {
-            this.device = device;
-            this.epgscanner = epgscanner;
-        }
-        
-        private void reset () {
-            if (this.pipeline != null) {
-                debug ("Stopping pipeline");
-                Gst.Bus bus = this.pipeline.get_bus ();
-                bus.remove_signal_watch ();
-                this.pipeline.set_state (State.NULL);
-            }
-            this.pipeline = null;
-            this.recordings.clear ();
-        }
-        
-        public void stop_recording (Timer timer) {
-            uint channel_sid = timer.Channel.Sid;
-
-            Element? sink = this.get_sink (channel_sid);
-            if (sink == null) {
-                critical ("Could not find sink for SID %u", channel_sid);
-                return;
-            }
-            string location;
-            sink.get ("location", out location);
-            
-            if (this.count > 1) {
-                // Still have other recordings,
-                // just remove sid from program-numbers
-            
-                Element dvbbasebin = this.get_dvbbasebin ();
-                if (dvbbasebin == null) {
-                    critical ("No element with name %s", DVBBASEBIN_NAME);
-                    return;
-                }
-                
-                string channel_sid_string = channel_sid.to_string ();
-                
-                string programs;
-                dvbbasebin.get ("program-numbers", out programs);
-                string[] programs_arr = programs.split (":");
-                
-                SList<string> new_programs_list = new SList<string> ();
-                for (int i=0; i<programs_arr.length; i++) {
-                    string val = programs_arr[i];
-                    if (val != channel_sid_string)
-                        new_programs_list.prepend (val);
-                }
-                
-                StringBuilder new_programs = new StringBuilder (new_programs_list.nth_data (0));
-                for (int i=1; i<new_programs_list.length (); i++) {
-                    new_programs.append (":" + new_programs_list.nth_data (i));
-                }
-                
-                Element? queue = this.get_queue (channel_sid_string);
-                
-                debug ("Setting state of queue and sink to NULL");
-                queue.set_state (State.NULL);
-                sink.set_state (State.NULL);
-                
-                debug ("Removing queue and sink from pipeline");
-                ((Bin)this.pipeline).remove (queue);
-                ((Bin)this.pipeline).remove (sink);
-                
-                debug ("Changing program-numbers from %s to %s", programs,
-                        new_programs.str);
-                this.pipeline.set_state (State.PAUSED);
-                
-                dvbbasebin.set ("program-numbers", new_programs.str);
-                
-                this.pipeline.set_state (State.PLAYING);
-            }
-            
-            Recording rec = this.recordings.get (timer.Id);
-            rec.Length = Utils.difftime (Time.local (time_t ()),
-                rec.StartTime);
-            try {
-                rec.save_to_disk ();
-            } catch (Error e) {
-                critical ("Could not save recording: %s", e.message);
-            }
-            
-            this.recordings.remove (timer.Id);
-            
-            if (this.count == 0) {
-                // No more active recordings
-                this.reset ();
-            }
-            
-            this.recording_stopped (rec, timer);
-        }
-        
-        public void start_recording (Timer timer, File location) {
-            uint channel_sid = timer.Channel.Sid;
-            string channel_sid_str = channel_sid.to_string ();
-            
-            debug ("Starting recording of channel %s",
-                channel_sid_str);
-            
-            if (this.pipeline == null) {
-                // Setup new pipeline
-            
-                Gst.Element dvbbasebin = ElementFactory.make ("dvbbasebin",
-                    DVBBASEBIN_NAME);
-                if (dvbbasebin == null) {
-                    critical ("Could not create dvbbasebin element");
-                    return;
-                }
-                DVB.Channel channel = this.device.Channels.get_channel (
-                    channel_sid);
-                channel.setup_dvb_source (dvbbasebin);
-                
-                this.pipeline = new Pipeline ("recording");
-                
-                Gst.Bus bus = this.pipeline.get_bus();
-                bus.add_signal_watch();
-                bus.message += this.bus_watch_func;
-                    
-                dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
-                dvbbasebin.set ("program-numbers", channel_sid_str);
-                dvbbasebin.set ("adapter", this.device.Adapter);
-                dvbbasebin.set ("frontend", this.device.Frontend);
-                
-                // don't use add_many because of problems with ownership transfer    
-                ((Bin) this.pipeline).add (dvbbasebin);
-                
-                Element? queue = this.add_new_queue (channel_sid);
-                Element? filesink = this.add_new_filesink (channel_sid,
-                    location.get_path ());
-                    
-                if (queue != null && filesink != null) {
-                    if (!queue.link (filesink)) {
-                        critical ("Could not link queue and filesink");
-                        return;
-                    }
-                }
-            } else {
-                // Use current pipeline and add new filesink
-            
-                Element? dvbbasebin = this.get_dvbbasebin ();
-                if (dvbbasebin == null) {
-                    critical ("No element with name %s", DVBBASEBIN_NAME);
-                    return;
-                }
-                
-                Element? queue = this.add_new_queue (channel_sid);
-                Element? filesink = this.add_new_filesink (
-                    channel_sid, location.get_path ());
-                    
-                if (queue != null && filesink != null) {
-                    if (!queue.link (filesink)) {
-                        critical ("Could not link queue and filesink");
-                        return;
-                    }
-                    
-                    this.pipeline.set_state (State.PAUSED);
-                    
-                    string programs;
-                    dvbbasebin.get ("program-numbers", out programs);
-                    
-                    string new_programs = "%s:%s".printf (programs,
-                        channel_sid_str);
-                    debug ("Changing program-numbers from %s to %s", programs,
-                        new_programs);
-                    dvbbasebin.set ("program-numbers", new_programs);
-                }
-            }
-                    
-            this.sid_set.add (channel_sid_str);
-            debug ("Setting pipeline to playing");
-            this.pipeline.set_state (State.PLAYING);
-            
-            Recording recording = new Recording ();
-            recording.Name = null;
-            recording.Description = null;
-            recording.Id = timer.Id;
-            recording.ChannelSid = channel_sid;
-            Channel channel = this.device.Channels.get_channel (channel_sid);
-            recording.ChannelName = channel.Name;
-            recording.StartTime =
-                timer.get_start_time_time ();
-            recording.Location = location;
-            
-            this.recordings.set (recording.Id, recording);
-            
-            RecordingsStore.get_instance().add (recording);
-        }
-        
-        private Element? add_new_filesink (uint sid, string location) {
-            string sink_name = "sink_%u".printf (sid);
-            Element filesink = ElementFactory.make ("filesink", sink_name);
-            if (filesink == null) {
-                critical ("Could not create filesink element");
-                return null;
-            }
-            filesink.set ("location", location);
-            if (!((Bin) this.pipeline).add (filesink)) {
-                critical ("Could not add filesink sink %s", sink_name);
-                return null;
-            }
-            debug ("Filesink %s added to pipeline", sink_name);
-            return filesink;
-        }
-        
-        private Element? add_new_queue (uint sid) {
-            string queue_name = "queue_%u".printf (sid);
-            Element queue = ElementFactory.make ("queue", queue_name);
-            if (queue == null) {
-                critical ("Could not create queue element");
-                return null;
-            }
-            queue.set ("max-size-buffers", 0);
-            //queue.set ("max-size-time", 0);
-            
-            if (!((Bin) this.pipeline).add (queue)) {
-                critical ("Could not add queue element to pipeline %s",
-                    queue_name);
-                return null;
-            }
-            debug ("Queue %s added to pipeline", queue_name);
-            return queue;
-        }
-        
-        private Element? get_queue (string sid) {
-            string sink_name = "queue_%s".printf (sid);
-            return ((Bin) this.pipeline).get_by_name (sink_name);
-        }
-        
-        private Element? get_sink (uint sid) {
-            string sink_name = "sink_%u".printf (sid);
-            return ((Bin) this.pipeline).get_by_name (sink_name);
-        }
-        
-        private Element? get_dvbbasebin () {
-            return ((Bin) this.pipeline).get_by_name (DVBBASEBIN_NAME);
-        }
-        
-        private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
-            string pad_name = pad.get_name();
-            debug ("Pad %s added", pad_name);
-            
-            if (!pad_name.has_prefix ("program_"))
-                return;
-            
-            string sid = pad_name.substring (8, pad_name.size() - 8);
-            
-            debug ("SID is '%s'", sid);
-            // Check if we're interested in the pad
-            if (this.sid_set.contains (sid)) {
-                Element? queue = this.get_queue (sid);
-                if (queue == null) {
-                    critical ("Could not find queue for SID %s", sid);
-                    return;
-                }
-                
-                Pad sinkpad = queue.get_static_pad ("sink");
-                
-                PadLinkReturn rc = pad.link (sinkpad);
-                if (rc != PadLinkReturn.OK) {
-                    critical ("Could not link pads");
-                } else {
-                    debug ("Src pad %s linked with sink pad %s",
-                        pad.get_name (), sid);
-                }
-                
-               this.sid_set.remove (sid);
-            } else {
-                debug ("Not interested");
-            }
-        }
-        
-        private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            switch (message.type) {
-                case Gst.MessageType.ELEMENT:
-                    string structure_name = message.structure.get_name();
-                    if (structure_name == "dvb-read-failure") {
-                        critical ("Could not read from DVB device");
-                        this.reset ();
-                        this.recording_aborted ();
-                    } else if (structure_name == "eit") {
-                        this.on_eit_structure (message.structure);
-                    }
-                break;
-                
-                case Gst.MessageType.ERROR:
-                    Error gerror;
-                    string debug_text;
-                    message.parse_error (out gerror, out debug_text);
-                    
-                    critical ("Error tuning: %s; %s", gerror.message, debug_text);
-                        
-                    this.reset ();
-                    this.recording_aborted ();
-                break;
-                
-                default:
-                break;
-            }
-        }
-        
-        private void on_eit_structure (Gst.Structure structure) {
-            if (this.epgscanner != null)
-                this.epgscanner.on_eit_structure (structure);
-            
-            // Find name and description for recordings
-            foreach (Recording rec in this.recordings.get_values ()) {
-                if (rec.Name == null) {
-                    Channel chan = this.device.Channels.get_channel (rec.ChannelSid);
-                    Schedule sched = chan.Schedule;
-                    
-                    Event? event = sched.get_running_event ();
-                    if (event != null) {
-                        debug ("Found running event for active recording");
-                        rec.Name = event.name;
-                        rec.Description = "%s\n%s".printf (event.description,
-                            event.extended_description);
-                    }
-                }
-            }
-        }
-        
-    }
 
     /**
      * This class is responsible for managing upcoming recordings and
      * already recorded items for a single group of devices
      */
     public class Recorder : GLib.Object, IDBusRecorder, Iterable<Timer> {
-    
-        /* Set in constructor of sub-classes */
+
         public DVB.DeviceGroup DeviceGroup { get; construct; }
         
-        protected Map<Timer, RecordingThread> active_recording_threads;
+        public uint count {
+            get { return this.recordings.size; }
+        }
+        
         // Contains timer ids
-        protected Set<uint32> active_timers;
+        private Set<uint32> active_timers;
         
         private bool have_check_timers_timeout;
         // Maps timer id to timer
         private HashMap<uint32, Timer> timers;
+        // Maps timer id to Recording
+        private Map<uint, Recording> recordings;
         
         private static const int CHECK_TIMERS_INTERVAL = 5;
         
         construct {
-            this.active_recording_threads = new HashMap<Timer, RecordingThread> ();
             this.active_timers = new HashSet<uint32> ();
             this.timers = new HashMap<uint, Timer> ();
             this.have_check_timers_timeout = false;
             RecordingsStore.get_instance ().restore_from_dir (
                 this.DeviceGroup.RecordingsDirectory);
+            this.recordings = new HashMap<uint, Recording> ();
         }
         
         public Recorder (DVB.DeviceGroup dev) {
@@ -773,50 +424,38 @@ namespace DVB {
             File? location = this.create_recording_dirs (channel,
                 timer.get_start_time ());
             if (location == null) return;
-            
-            bool create_new_thread = true;
-            RecordingThread recthread = null;
-            // Check if there's already an active recording on the
-            // same transport stream
-            foreach (uint32 timer_id in this.active_timers) {
-                Timer other_timer = this.timers.get (timer_id);
-                Channel other_channel = other_timer.Channel;
-                
-                if (channel.on_same_transport_stream (other_channel)) {
-                    debug ("Using already active RecordingThread");
-                    recthread = this.active_recording_threads.get (other_timer);
-                    create_new_thread = false;
-                }
-            }
-        
-            if (create_new_thread) {
-                debug ("Creating new RecordingThread");
-                
-                // Stop epgscanner before starting recording
-                EPGScanner? epgscanner = this.DeviceGroup.epgscanner;
-                if (epgscanner != null) epgscanner.stop ();
-                
-                DVB.Device? free_device = this.DeviceGroup.get_next_free_device ();
-                if (free_device == null) {
-                    critical ("All devices are busy");
-                    return;
-                }
-                
-                recthread = new RecordingThread (free_device, epgscanner);
-                recthread.recording_stopped += this.on_recording_stopped;
-                // FIXME
-                //recthread.recording_aborted += this.on_recording_aborted;
-            }
-            
-            if (recthread == null) {
-                critical ("Could not create recording thread");
+
+            Gst.Element filesink = Gst.ElementFactory.make ("filesink", null);
+            if (filesink == null) {
+                critical ("Could not create filesink element");
                 return;
             }
+            filesink.set ("location", location.get_path ());
             
-            recthread.start_recording (timer, location);
+            ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
+            PlayerThread? player = channel_factory.watch_channel (channel,
+                filesink);
+            if (player != null) {
+                debug ("Setting pipeline to playing");
+                player.get_pipeline().set_state (Gst.State.PLAYING);
+                player.eit_structure += this.on_eit_structure;
+                
+                Recording recording = new Recording ();
+                recording.Name = null;
+                recording.Description = null;
+                recording.Id = timer.Id;
+                recording.ChannelSid = channel.Sid;
+                recording.ChannelName = channel.Name;
+                recording.StartTime =
+                    timer.get_start_time_time ();
+                recording.Location = location;
+                
+                this.recordings.set (recording.Id, recording);
+                
+                RecordingsStore.get_instance().add (recording);
+            }
             
             this.active_timers.add (timer.Id);
-            this.active_recording_threads.set (timer, recthread);
             
             this.recording_started (timer.Id);
         }
@@ -825,15 +464,30 @@ namespace DVB {
          * Stop recording of specified timer
          */
         protected void stop_recording (Timer timer) {
-            RecordingThread recthread =
-                this.active_recording_threads.get (timer);
-           
-            recthread.stop_recording (timer);
+            Recording rec = this.recordings.get (timer.Id);
+            rec.Length = Utils.difftime (Time.local (time_t ()),
+                rec.StartTime);
+
+            debug ("Recording of channel %s stopped after %"
+                + int64.FORMAT +" seconds",
+                rec.ChannelName, rec.Length);
+                
+            try {
+                rec.save_to_disk ();
+            } catch (Error e) {
+                critical ("Could not save recording: %s", e.message);
+            }
+            ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
+            channel_factory.stop_channel (timer.Channel);
+            
+            this.recordings.remove (timer.Id);
             
             uint32 timer_id = timer.Id;
             this.active_timers.remove (timer_id);
             this.timers.remove (timer_id);
             this.changed (timer_id, ChangeType.DELETED);
+            
+            this.recording_finished (rec.Id);
         }
         
         /**
@@ -945,23 +599,25 @@ namespace DVB {
             return val;
         }
         
-        /**
-         * Add recording to RecordinsStore and let the world now
-         */
-        private void on_recording_stopped (RecordingThread recthread,
-                Recording recording, Timer timer) {
-            debug ("Recording of channel %s stopped after %"
-                + int64.FORMAT +" seconds",
-                recording.ChannelName, recording.Length);
+        private void on_eit_structure (PlayerThread player, Gst.Structure structure) {
+            uint sid;
+            structure.get_uint ("service-id", out sid);
             
-            if (recthread.count == 0) {
-                this.active_recording_threads.remove (timer);
-                // Start epgscanner again after recording ended
-                EPGScanner? epgscanner = this.DeviceGroup.epgscanner;
-                if (epgscanner != null) epgscanner.start ();
+            // Find name and description for recordings
+            foreach (Recording rec in this.recordings.get_values ()) {
+                if (rec.Name == null && sid == rec.ChannelSid) {
+                    Channel chan = this.DeviceGroup.Channels.get_channel (sid);
+                    Schedule sched = chan.Schedule;
+                    
+                    Event? event = sched.get_running_event ();
+                    if (event != null) {
+                        debug ("Found running event for active recording");
+                        rec.Name = event.name;
+                        rec.Description = "%s\n%s".printf (event.description,
+                            event.extended_description);
+                    }
+                }
             }
-            
-            this.recording_finished (recording.Id);
         }
     }
 

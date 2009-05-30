@@ -23,6 +23,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Terrestrial/TerrestrialScanner.vala \
 	src/ChangeType.vala \
 	src/Channel.vala \
+	src/ChannelFactory.vala \
 	src/ChannelList.vala \
 	src/ChannelListReader.vala \
 	src/ChannelListWriter.vala \
