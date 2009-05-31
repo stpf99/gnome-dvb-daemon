@@ -22,6 +22,15 @@ using Gst;
 
 namespace DVB {
 
+    /**
+     * This class handles watching channels one physical device.
+     * 
+     * It's possible to watch multiple channels at the same time
+     * if they are all on the same transport stream.
+     *
+     * The class is able to reuse channels that are already watched
+     * and forward EPG data to #EPGScanner.
+     */
     public class PlayerThread : GLib.Object {
         
         private class ChannelElements {
@@ -29,6 +38,9 @@ namespace DVB {
             public Gst.Element tee;
         }
 
+        /** 
+         * Emitted when we came across EIT table
+         */
         public signal void eit_structure (Gst.Structure structure);
         
         // List of channels that are currently in use
@@ -47,6 +59,10 @@ namespace DVB {
             this.active_channels = new HashSet<Channel> ();
         }
         
+        /**
+         * @device: The device to use
+         * @epgscanner: #EPGScanner to forward EIT to
+         */
         public PlayerThread (Device device, EPGScanner? epgscanner) {
             this.device = device;
             this.epgscanner = epgscanner;
@@ -61,6 +77,8 @@ namespace DVB {
         }
         
         /**
+         * @returns: GstBin containing queue and @sink_element 
+         *
          * Start watching @channel and link it with @sink_element
          */
         public Gst.Element? get_element (Channel channel, owned Gst.Element? sink_element) {
@@ -160,6 +178,10 @@ namespace DVB {
             return bin;
         }
         
+        /**
+         * @sid: Channel SID
+         * @returns: GstBin containing queue and sink for the specified channel
+         */
         public Gst.Element? get_sink_bin (uint sid) {
             ChannelElements? celems = this.elements_map.get (sid.to_string ());
             if (celems == null) return null;
@@ -184,6 +206,7 @@ namespace DVB {
                 dvbbasebin.get ("program-numbers", out programs);
                 string[] programs_arr = programs.split (":");
                 
+                // Remove SID of channel from program-numbers
                 SList<string> new_programs_list = new SList<string> ();
                 for (int i=0; i<programs_arr.length; i++) {
                     string val = programs_arr[i];
@@ -235,12 +258,6 @@ namespace DVB {
             this.elements_map.clear ();
             this.active_channels.clear ();
         }
-        
-        protected virtual void on_eit_structure (Gst.Structure structure) {
-            if (this.epgscanner != null)
-                this.epgscanner.on_eit_structure (structure);
-            this.eit_structure (structure);
-        }
 
         private bool add_element (owned Gst.Element elem) {
             string elem_name = elem.get_name ();
@@ -253,7 +270,7 @@ namespace DVB {
         }
         
         /**
-         * Link program_%d pad with sink
+         * Link program_%d pad with tee
          */
         private void on_dvbbasebin_pad_added (Gst.Element elem, Gst.Pad pad) {
             string pad_name = pad.get_name();
@@ -295,7 +312,9 @@ namespace DVB {
                 case Gst.MessageType.ELEMENT:
                     string structure_name = message.structure.get_name();
                     if (structure_name == "eit") {
-                        this.on_eit_structure (message.structure);
+                        if (this.epgscanner != null)
+                            this.epgscanner.on_eit_structure (message.structure);
+                        this.eit_structure (message.structure);
                     }
                 break;
                 
@@ -306,7 +325,7 @@ namespace DVB {
     }
 
     /**
-     * One ChannelFactory for each DeviceGroup
+     * This class handles watching channels for a single #DeviceGroup
      */
     public class ChannelFactory : GLib.Object {
     
@@ -321,6 +340,11 @@ namespace DVB {
             this.active_players = new HashSet<PlayerThread> ();
         }
 
+        /**
+         * @returns: The #PlayerThread used to watch @channel
+         *
+         * Watch @channel and use @sink_element as sink element
+         */
         public PlayerThread? watch_channel (Channel channel, owned Gst.Element? sink_element) {
             debug ("Watching channel %s (%u)", channel.Name, channel.Sid);
         
@@ -357,6 +381,11 @@ namespace DVB {
             return player;
         }
         
+        /**
+         * @returns: TRUE on success
+         *
+         * Stop watching @channel
+         */
         public bool stop_channel (Channel channel) {
             debug ("Stopping channel %s (%u)", channel.Name, channel.Sid);
         
@@ -382,6 +411,9 @@ namespace DVB {
             return success;
         }
         
+        /**
+         * @returns: a new #PlayerThread instance for @device
+         */
         public virtual PlayerThread create_player (Device device) {
             return new PlayerThread (device, this.device_group.epgscanner);
         }
