@@ -238,7 +238,7 @@ namespace DVB {
                 
                 this.active_channels.remove (channel);
             } else {
-                this.reset ();
+                this.destroy ();
             }
         
             return false;
@@ -247,7 +247,7 @@ namespace DVB {
         /**
          * Stop pipeline and clean up everything else
          */
-        protected virtual void reset () {
+        public virtual void destroy () {
             if (this.pipeline != null) {
                 debug ("Stopping pipeline");
                 Gst.Bus bus = this.pipeline.get_bus ();
@@ -330,7 +330,7 @@ namespace DVB {
     public class ChannelFactory : GLib.Object {
     
         // The device group the factory belongs to
-        public DeviceGroup device_group {get; construct;}
+        public unowned DeviceGroup device_group {get; construct;}
         
         // List of players that are currently in use
         private HashSet<PlayerThread> active_players;
@@ -338,6 +338,13 @@ namespace DVB {
         public ChannelFactory (DeviceGroup devgroup) {
             this.device_group = devgroup;
             this.active_players = new HashSet<PlayerThread> ();
+        }
+        
+        public void destroy () {
+            foreach (PlayerThread active_player in this.active_players) {
+                active_player.destroy ();
+            }
+            this.active_players.clear ();
         }
 
         /**

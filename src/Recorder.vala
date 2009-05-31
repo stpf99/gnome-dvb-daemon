@@ -28,7 +28,7 @@ namespace DVB {
      */
     public class Recorder : GLib.Object, IDBusRecorder, Iterable<Timer> {
 
-        public DVB.DeviceGroup DeviceGroup { get; construct; }
+        public unowned DVB.DeviceGroup DeviceGroup { get; construct; }
         
         public uint count {
             get { return this.recordings.size; }

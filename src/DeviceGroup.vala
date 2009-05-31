@@ -97,10 +97,13 @@ namespace DVB {
         
         public void destroy () {
             debug ("Destroying group %u", this.Id);
-            if (this._epgscanner != null)
-                this._epgscanner.destroy ();
+            if (this._epgscanner != null) {
+                this._epgscanner.stop ();
+            }
             this._recorder.stop ();
+            this._channelfactory.destroy ();
             this.schedules.clear ();
+            this.devices.clear ();
         }
         
         /**
