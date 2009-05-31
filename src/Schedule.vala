@@ -64,7 +64,7 @@ namespace DVB {
         
         construct {
             this.events = new Sequence<EventElement> (EventElement.destroy);
-            this.event_id_map = new HashMap<uint, weak Sequence<EventElement>> ();
+            this.event_id_map = new HashMap<uint, weak SequenceIter<EventElement>> ();
             this.epgstore = Factory.get_epg_store ();
             
         	Gee.List<Event> events = this.epgstore.get_events (
@@ -122,17 +122,11 @@ namespace DVB {
          */
         public void add (Event event) {
             if (event.has_expired ()) return;
-        
+            
             lock (this.events) {
-                if (this.event_id_map.contains (event.id)) {
-                    // Remove old event
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event.id);
-                    
-                    this.event_id_map.remove (event.id);
-                    this.events.remove (iter);
+                if (!this.event_id_map.contains (event.id)) {
+                    this.create_and_add_event_element (event);
                 }
-                
-                this.create_and_add_event_element (event);
                 
                 this.epgstore.add_or_update_event (event, this.channel.Sid,
                     this.channel.GroupId);
