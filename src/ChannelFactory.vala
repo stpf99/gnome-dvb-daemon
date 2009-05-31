@@ -399,13 +399,13 @@ namespace DVB {
                 }
             }
             
-            if (success)
+            if (success && player.active_channels.size == 0)
                 this.active_players.remove (player);
             
             if (this.active_players.size == 0) {
                 // Start EPG scanner again
                 EPGScanner? epgscanner = this.device_group.epgscanner;
-                if (epgscanner != null) epgscanner.stop ();
+                if (epgscanner != null) epgscanner.start ();
             }
             
             return success;
