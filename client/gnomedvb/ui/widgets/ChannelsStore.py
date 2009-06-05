@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import gobject
 import gnomedvb
 from gnomedvb import global_error_handler
 
@@ -53,10 +54,11 @@ class ChannelsTreeStore(gtk.TreeStore):
 
     (COL_GROUP_ID,
      COL_NAME,
-     COL_SID,) = range(3)
+     COL_SID,
+     COL_GROUP,) = range(4)
      
     def __init__(self):
-        gtk.TreeStore.__init__(self, int, str, int)
+        gtk.TreeStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
         
         self.set_sort_column_id(self.COL_NAME,
             gtk.SORT_ASCENDING)
@@ -70,8 +72,8 @@ class ChannelsTreeStore(gtk.TreeStore):
         for dev_group in dev_groups:
             group_id = dev_group.get_id()
             group_name = dev_group.get_name()
-            group_iter = self.append(None, [group_id, group_name, 0])
+            group_iter = self.append(None, [group_id, group_name, 0, dev_group])
             channellist = dev_group.get_channel_list()
-            append_channel = lambda channels: [self.append(group_iter, [group_id, channellist.get_channel_name(channel_id), channel_id]) for channel_id in channels]
+            append_channel = lambda channels: [self.append(group_iter, [group_id, channellist.get_channel_name(channel_id), channel_id, dev_group]) for channel_id in channels]
             channellist.get_channels(reply_handler=append_channel, error_handler=global_error_handler)
          
