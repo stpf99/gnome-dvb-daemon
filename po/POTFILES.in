@@ -11,6 +11,7 @@ client/gnomedvb/ui/timers/EditTimersDialog.py
 client/gnomedvb/ui/timers/TimerDialog.py
 client/gnomedvb/ui/widgets/ChannelsView.py
 client/gnomedvb/ui/widgets/RecordingsView.py
+client/gnomedvb/ui/widgets/RunningNextView.py
 client/gnomedvb/ui/widgets/ScheduleView.py
 client/gnomedvb/ui/wizard/pages/AdaptersPage.py
 client/gnomedvb/ui/wizard/pages/ChannelScanPage.py

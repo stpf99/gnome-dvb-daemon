@@ -5,5 +5,7 @@ gnomedvbprefsmodel_PYTHON = \
     ChannelsView.py \
     RecordingsStore.py \
     RecordingsView.py \
+    RunningNextStore.py \
+    RunningNextView.py \
     ScheduleStore.py \
     ScheduleView.py
