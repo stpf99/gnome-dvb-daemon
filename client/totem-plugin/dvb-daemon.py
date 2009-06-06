@@ -23,6 +23,7 @@ import pygst
 pygst.require("0.10")
 
 import subprocess
+import datetime
 import totem
 import gnomedvb
 
@@ -32,6 +33,8 @@ from gnomedvb.ui.widgets.ChannelsStore import ChannelsTreeStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.ScheduleView import ScheduleView
+from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
+from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.preferences.Preferences import Preferences
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
@@ -83,6 +86,30 @@ class ScheduleDialog(gtk.Dialog):
                     dialog.run()
                     dialog.destroy()
 
+class RunningNextDialog(gtk.Dialog):
+
+    def __init__(self, group, parent=None):
+        gtk.Dialog.__init__(self, title=_("Program Guide"),
+            parent=parent,
+            flags=gtk.DIALOG_DESTROY_WITH_PARENT,
+            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+            
+        self._group = group
+        
+        self.set_default_size(640, 380)
+        self.vbox.set_spacing(6)
+        
+        self.schedule = RunningNextStore(self._group)
+        self.scheduleview = RunningNextView(self.schedule)
+        self.scheduleview.show()
+        
+        self.scrolledschedule = gtk.ScrolledWindow()
+        self.scrolledschedule.add(self.scheduleview)
+        self.scrolledschedule.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolledschedule.set_shadow_type(gtk.SHADOW_IN)
+        self.vbox.pack_start(self.scrolledschedule)
+        self.scrolledschedule.show()
+
 
 class PairBox(gtk.HBox):
     def __init__(self, name, text=None):
@@ -126,6 +153,11 @@ class DetailsDialog(gtk.Dialog):
         channel_hbox.show_all()
         self.vbox.pack_start(channel_hbox, False)
         
+        date_hbox = PairBox(_("<b>Date:</b>"))
+        self.date = date_hbox.get_text_label()
+        date_hbox.show_all()
+        self.vbox.pack_start(date_hbox, False)
+        
         duration_hbox = PairBox(_("<b>Duration:</b>"))
         self.duration = duration_hbox.get_text_label()
         duration_hbox.show_all()
@@ -163,7 +195,11 @@ class DetailsDialog(gtk.Dialog):
         self.channel.set_text(channel)
         
     def set_duration(self, duration):
-        self.duration.set_text(duration)
+        self.duration.set_text(_("%d min") % duration)
+        
+    def set_date(self, timestamp):
+        date = datetime.datetime.fromtimestamp(timestamp)
+        self.date.set_text(date.strftime("%c"))
 
 
 class DVBDaemonPlugin(totem.Plugin):
@@ -276,7 +312,10 @@ class DVBDaemonPlugin(totem.Plugin):
     def _on_action_epg(self, action):
         group, sid = self._get_selected_group_and_channel()
         if group != None:
-            dialog = ScheduleDialog(group, sid, self.totem_object.get_main_window())
+            if sid != 0:
+                dialog = ScheduleDialog(group, sid, self.totem_object.get_main_window())
+            else:
+                dialog = RunningNextDialog(group, self.totem_object.get_main_window())
             dialog.run()
             dialog.destroy()
     
@@ -306,8 +345,9 @@ class DVBDaemonPlugin(totem.Plugin):
             sid = model[aiter][model.COL_SID]
             dialog.set_text(self.recstore.get_description(sid))
             dialog.set_channel(self.recstore.get_channel_name(sid))
-            dialog.set_duration(str(self.recstore.get_length(sid) / 60))
+            dialog.set_duration(self.recstore.get_length(sid) / 60)
             dialog.set_title(model[aiter][model.COL_NAME])
+            dialog.set_date(self.recstore.get_start_timestamp(sid))
             dialog.run()
             dialog.destroy()
     
