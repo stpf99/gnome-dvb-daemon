@@ -148,11 +148,16 @@ class DVBDaemonPlugin(totem.Plugin):
         self.timers_item = None
         self.epg_item = None
         self.manager = None
+        self.single_group = None
 
     def activate (self, totem_object):
         self.totem_object = totem_object
         
         self.channels = ChannelsTreeStore()
+        if len(self.channels) == 1:
+            # Activate single group mode
+            root_iter = self.channels.get_iter_root()
+            self.single_group = self.channels[root_iter][self.channels.COL_GROUP]
         
         self.channels_view = ChannelsView(self.channels, ChannelsTreeStore.COL_NAME)
         self.channels_view.connect("button-press-event", self._on_channel_selected)
@@ -195,8 +200,9 @@ class DVBDaemonPlugin(totem.Plugin):
         
         self.timers_item = uimanager.get_widget('/tmw-menubar/dvb/timers')
         self.epg_item = uimanager.get_widget('/tmw-menubar/dvb/program-guide')
-        self.timers_item.set_sensitive(False)
-        self.epg_item.set_sensitive(False)
+        sensitive = self.single_group != None
+        self.timers_item.set_sensitive(sensitive)
+        self.epg_item.set_sensitive(sensitive)
         
         totem_object.add_sidebar_page ("dvb-daemon", _("DVB"), self.scrolledchannels)
         self.scrolledchannels.show_all()
@@ -204,7 +210,7 @@ class DVBDaemonPlugin(totem.Plugin):
     def _get_selected_group_and_channel(self):
         model, aiter = self.channels_view.get_selection().get_selected()
         if aiter == None:
-            return None
+            return (None, 0)
         else:
             return (model[aiter][model.COL_GROUP], model[aiter][model.COL_SID],)
         
@@ -213,6 +219,8 @@ class DVBDaemonPlugin(totem.Plugin):
 
     def _on_action_timers(self, action):
         group = self._get_selected_group_and_channel()[0]
+        if group == None:
+            group = self.single_group
         if group != None:
             edit = EditTimersDialog(group, self.totem_object.get_main_window())
             edit.run()
@@ -220,6 +228,8 @@ class DVBDaemonPlugin(totem.Plugin):
 
     def _on_action_epg(self, action):
         group, sid = self._get_selected_group_and_channel()
+        if group == None:
+            group = self.single_group
         if group != None:
             if sid != 0:
                 dialog = ScheduleDialog(group, sid, self.totem_object.get_main_window())
