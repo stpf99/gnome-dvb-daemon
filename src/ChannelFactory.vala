@@ -241,7 +241,7 @@ namespace DVB {
                 this.destroy ();
             }
         
-            return false;
+            return true;
         }
         
         /**
