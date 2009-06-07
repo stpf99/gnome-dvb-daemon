@@ -75,6 +75,9 @@ namespace DVB {
         private static const string DELETE_DEVICE =
         "DELETE FROM devices WHERE adapter=? AND frontend=?";
         
+        private static const string DELETE_GROUP_DEVICES =
+        "DELETE FROM devices WHERE group_id=?";
+        
         private static const string INSERT_DEVICE =
         "INSERT INTO devices VALUES (?, ?, ?)";
         
@@ -95,6 +98,7 @@ namespace DVB {
         private Statement insert_group_statement;
         private Statement update_group_statement;
         private Statement delete_device_statement;
+        private Statement delete_group_devices_statement;
         private Statement insert_device_statement;
         private Statement select_timers_statement;
         private Statement delete_timer_statement;
@@ -119,6 +123,8 @@ namespace DVB {
                 out this.update_group_statement);
             this.db.prepare (DELETE_DEVICE, -1,
                 out this.delete_device_statement);
+            this.db.prepare (DELETE_GROUP_DEVICES, -1,
+                out this.delete_group_devices_statement);
             this.db.prepare (INSERT_DEVICE, -1,
                 out this.insert_device_statement);
             this.db.prepare (SELECT_TIMERS, -1,
@@ -254,6 +260,18 @@ namespace DVB {
                 this.print_last_error ();
                 return false;
             }
+            
+            this.delete_group_devices_statement.reset ();
+            if (this.delete_group_devices_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK) {
+                this.print_last_error ();
+                return false;
+            }
+            
+            if (this.delete_group_devices_statement.step () != Sqlite.DONE) {
+                this.print_last_error ();
+                return false;
+            }
+            
             return true;
         }
         
