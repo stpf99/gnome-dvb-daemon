@@ -46,6 +46,8 @@ namespace DVB {
         
         public abstract uint[] GetLocalStartTime (uint32 event_id);
         
+        public abstract int64 GetLocalStartTimestamp (uint32 event_id);
+        
         public abstract bool IsRunning (uint32 event_id);
         
         public abstract bool IsScrambled (uint32 event_id);

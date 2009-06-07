@@ -313,6 +313,20 @@ namespace DVB {
             return start;
         }
         
+        public int64 GetLocalStartTimestamp (uint32 event_id) {
+            int64 ret = 0;
+             lock (this.events) {
+                if (this.event_id_map.contains (event_id)) {
+                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get_event (element.id);
+                    Time local_time = event.get_local_start_time ();
+                    ret = (int64)local_time.mktime ();
+                }
+            }
+            return ret;
+        }
+        
         public bool IsRunning (uint32 event_id) {
             bool val = false;
         

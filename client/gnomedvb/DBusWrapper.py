@@ -459,6 +459,9 @@ class DVBScheduleClient(gobject.GObject):
     def get_local_start_time(self, eid):
         return self.schedule.GetLocalStartTime(eid)
         
+    def get_local_start_timestamp(self, eid):
+        return self.schedule.GetLocalStartTimestamp(eid)
+        
     def is_running(self, eid):
         return self.schedule.IsRunning(eid)
         
