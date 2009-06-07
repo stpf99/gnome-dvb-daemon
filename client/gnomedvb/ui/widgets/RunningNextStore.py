@@ -23,12 +23,14 @@ from cgi import escape
 class RunningNextStore(gtk.ListStore):
 
     (COL_CHANNEL,
+     COL_RUNNING_START,
      COL_RUNNING,
+     COL_NEXT_START,
      COL_NEXT,
-     COL_SID) = range(4)
+     COL_SID) = range(6)
 
     def __init__(self, group):
-        gtk.ListStore.__init__(self, str, str, str, int)
+        gtk.ListStore.__init__(self, str, int, str, int, str, int)
         
         self.set_sort_column_id(self.COL_CHANNEL,
             gtk.SORT_ASCENDING)
@@ -48,9 +50,11 @@ class RunningNextStore(gtk.ListStore):
                 sched = self._group.get_schedule(sid)
                 now = sched.now_playing()
                 if now != 0:
+                    self.set(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now))
                     self.set(aiter, self.COL_RUNNING, escape(sched.get_name(now)))
                     next = sched.next(now)
                     if next != 0:
+                        self.set(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next))
                         self.set(aiter, self.COL_NEXT, escape(sched.get_name(next)))
         
         channellist.get_channels(reply_handler=add_channels,
