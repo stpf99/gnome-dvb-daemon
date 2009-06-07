@@ -23,7 +23,6 @@ import pygst
 pygst.require("0.10")
 
 import subprocess
-import datetime
 import totem
 import gnomedvb
 
@@ -38,6 +37,7 @@ from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.preferences.Preferences import Preferences
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
+from gnomedvb.ui.recordings.DetailsDialog import DetailsDialog
 
 class ScheduleDialog(gtk.Dialog):
 
@@ -109,97 +109,6 @@ class RunningNextDialog(gtk.Dialog):
         self.scrolledschedule.set_shadow_type(gtk.SHADOW_IN)
         self.vbox.pack_start(self.scrolledschedule)
         self.scrolledschedule.show()
-
-
-class PairBox(gtk.HBox):
-    def __init__(self, name, text=None):
-        gtk.HBox.__init__(self, spacing=3)
-        
-        name_label = gtk.Label()
-        name_label.set_markup(name)
-        name_label.show()
-        self.pack_start(name_label, False)
-        
-        text_ali = gtk.Alignment()
-        text_ali.show()
-        self.pack_start(text_ali)
-        
-        self.text_label = gtk.Label(text)
-        self.text_label.show()
-        text_ali.add(self.text_label)
-        
-    def get_text_label(self):
-        return self.text_label
-
-      
-class DetailsDialog(gtk.Dialog):
-
-    def __init__(self, parent=None):
-        gtk.Dialog.__init__(self, title=_("Details"),
-            parent=parent,
-            flags=gtk.DIALOG_DESTROY_WITH_PARENT,
-            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
-        
-        self.set_default_size(440, 350)
-        self.vbox.set_spacing(6)
-        
-        title_hbox = PairBox(_("<b>Title:</b>"))
-        self.title_label = title_hbox.get_text_label()
-        title_hbox.show_all()
-        self.vbox.pack_start(title_hbox, False)
-        
-        channel_hbox = PairBox(_("<b>Channel:</b>"))
-        self.channel = channel_hbox.get_text_label()
-        channel_hbox.show_all()
-        self.vbox.pack_start(channel_hbox, False)
-        
-        date_hbox = PairBox(_("<b>Date:</b>"))
-        self.date = date_hbox.get_text_label()
-        date_hbox.show_all()
-        self.vbox.pack_start(date_hbox, False)
-        
-        duration_hbox = PairBox(_("<b>Duration:</b>"))
-        self.duration = duration_hbox.get_text_label()
-        duration_hbox.show_all()
-        self.vbox.pack_start(duration_hbox, False)
-        
-        label_description = gtk.Label()
-        label_description.set_markup(_("<b>Description:</b>"))
-        label_description.show()
-        
-        ali_desc = gtk.Alignment()
-        ali_desc.show()
-        ali_desc.add(label_description)
-        self.vbox.pack_start(ali_desc, False)
-            
-        self.textview = gtk.TextView()
-        self.textview.set_editable(False)
-        self.textview.set_wrap_mode(gtk.WRAP_WORD)
-        self.textview.show()
-        
-        self.scrolledwin = gtk.ScrolledWindow()
-        self.scrolledwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.scrolledwin.set_shadow_type(gtk.SHADOW_IN)
-        self.scrolledwin.add(self.textview)
-        self.scrolledwin.show()
-        self.vbox.pack_start(self.scrolledwin)
-        
-    def set_text(self, text):
-        self.textview.get_buffer().set_text(text)
-        
-    def set_title(self, title):
-        gtk.Dialog.set_title(self, title)
-        self.title_label.set_text(title)
-
-    def set_channel(self, channel):
-        self.channel.set_text(channel)
-        
-    def set_duration(self, duration):
-        self.duration.set_text(_("%d min") % duration)
-        
-    def set_date(self, timestamp):
-        date = datetime.datetime.fromtimestamp(timestamp)
-        self.date.set_text(date.strftime("%c"))
 
 
 class DVBDaemonPlugin(totem.Plugin):
@@ -341,13 +250,8 @@ class DVBDaemonPlugin(totem.Plugin):
     def _on_action_details(self, action):
         model, aiter = self.channels_view.get_selection().get_selected()
         if aiter != None:
-            dialog = DetailsDialog(self.totem_object.get_main_window())
-            sid = model[aiter][model.COL_SID]
-            dialog.set_text(self.recstore.get_description(sid))
-            dialog.set_channel(self.recstore.get_channel_name(sid))
-            dialog.set_duration(self.recstore.get_length(sid) / 60)
-            dialog.set_title(model[aiter][model.COL_NAME])
-            dialog.set_date(self.recstore.get_start_timestamp(sid))
+            rec_id = model[aiter][model.COL_SID]
+            dialog = DetailsDialog(rec_id, self.totem_object.get_main_window())
             dialog.run()
             dialog.destroy()
     
