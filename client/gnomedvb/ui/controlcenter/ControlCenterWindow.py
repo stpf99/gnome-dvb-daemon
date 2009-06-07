@@ -23,6 +23,8 @@ from gettext import gettext as _
 import gnomedvb
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
+from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
+from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
@@ -53,6 +55,10 @@ class ControlCenterWindow(gtk.Window):
 
     def __init__(self, model):
         gtk.Window.__init__(self)
+        
+        self.runningnextstore = None
+        self.scrolledrunningnext = None
+        self.runningnextview = None
         
         self.channellists = {}
         self.manager = model
@@ -352,7 +358,7 @@ class ControlCenterWindow(gtk.Window):
     def _reset_schedule_view(self):
         self.schedulestore = None
         self.scheduleview.set_model(None)
-        self._display_help_message()
+        self._display_running_next()
 
     def _on_manager_group_added(self, manager, group_id):
         group = self.manager.get_device_group(group_id)
@@ -410,9 +416,9 @@ class ControlCenterWindow(gtk.Window):
                 self._set_next_day_sensitive(True)
                 self._set_refresh_sensitive(True)
         else:
-            # Display help message if it isn't already displayed
-            if child != self.help_eventbox:
-                self._display_help_message()
+            # Display running/next if it isn't already displayed
+            if child != self.scrolledrunningnext:
+                self._display_running_next()
                 
     def _display_help_message(self):
         child = self.hpaned.get_child2()
@@ -426,6 +432,27 @@ class ControlCenterWindow(gtk.Window):
             self.help_eventbox.set_markup(self.create_group_text)
         else:
             self.help_eventbox.set_markup(self.choose_group_text)
+     
+    def _display_running_next(self):
+        group = self._get_selected_group()
+        
+        self.runningnextstore = RunningNextStore(group)
+        
+        self.scrolledrunningnext = gtk.ScrolledWindow()
+        self.scrolledrunningnext.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.scrolledrunningnext.set_shadow_type(gtk.SHADOW_IN)
+        self.scrolledrunningnext.show()
+        
+        self.runningnextview = RunningNextView(self.runningnextstore)
+        self.runningnextview.show()
+        self.scrolledrunningnext.add(self.runningnextview)
+    
+        child = self.hpaned.get_child2()
+        self.hpaned.remove(child)
+        self.hpaned.pack2(self.scrolledrunningnext)
+        self._set_previous_day_sensitive(False)
+        self._set_next_day_sensitive(False)
+        self._set_refresh_sensitive(False)
                 
     def _set_next_day_sensitive(self, val):
         self.button_next_day.set_sensitive(val)
