@@ -352,7 +352,7 @@ class ControlCenterWindow(gtk.Window):
     def _reset_ui(self):
         self.channelsstore = None
         self.channelsview.set_model(None)
-        self._reset_schedule_view()
+        self._display_help_message()
         self._set_timers_sensitive(False)
         
     def _reset_schedule_view(self):
