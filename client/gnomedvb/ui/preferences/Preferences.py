@@ -100,8 +100,7 @@ class Preferences(gtk.Dialog):
     
         self.devicegroups = DeviceGroupsStore()
         self.devicegroupsview = DeviceGroupsView(self.devicegroups)
-        self.devicegroupsview.connect("focus-out-event", self._on_focus_out, [self.button_remove])
-        self.devicegroupsview.connect("focus-in-event", self._on_focus_in, [self.button_remove])
+        self.devicegroupsview.connect("focus-out-event", self._on_focus_out, [self.button_remove, self.button_prefs])
         self.devicegroupsview.get_selection().connect("changed", self._on_groups_selection_changed)
         self.devicegroupsview.show()
         
@@ -113,7 +112,6 @@ class Preferences(gtk.Dialog):
         self.unassigned_devices = UnassignedDevicesStore()
         self.unassigned_view = DeviceGroupsView(self.unassigned_devices)
         self.unassigned_view.connect("focus-out-event", self._on_focus_out, [self.button_add, self.button_new])
-        self.unassigned_view.connect("focus-in-event", self._on_focus_in, [self.button_add, self.button_new])
         self.unassigned_view.get_selection().connect("changed",
             self._on_unassigned_selection_changed)
         self.unassigned_view.show()
@@ -304,8 +302,4 @@ class Preferences(gtk.Dialog):
     def _on_focus_out(self, treeview, event, widgets):
         for w in widgets:
             w.set_sensitive(False)
-            
-    def _on_focus_in(self, treeview, event, widgets):
-        for w in widgets:
-            w.set_sensitive(True)
-        
+
