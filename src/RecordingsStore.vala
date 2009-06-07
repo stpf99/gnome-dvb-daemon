@@ -257,6 +257,23 @@ namespace DVB {
             return ret;
         }
         
+        public RecordingInfo GetAllInformations (uint32 rec_id) {
+            RecordingInfo info = RecordingInfo ();
+            lock (this.recordings) {
+                if (this.recordings.contains (rec_id)) {
+                    Recording rec = this.recordings.get (rec_id);
+                    info.name = rec.Name;
+                    info.id = rec_id;
+                    info.length = rec.Length;
+                    info.description = rec.Description;
+                    info.location = rec.Location.get_path ();
+                    info.start_timestamp = (int64)rec.StartTime.mktime ();
+                    info.channel = rec.ChannelName;
+                }
+            }
+            return info;
+        }
+        
         /**
          * @recordingsbasedir: The directory to search
          *

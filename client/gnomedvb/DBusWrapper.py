@@ -303,6 +303,9 @@ class DVBRecordingsStoreClient(gobject.GObject):
     def get_channel_name(self, rid):
         return self.recstore.GetChannelName(rid)
         
+    def get_all_informations(self, rid):
+        return self.recstore.GetAllInformations(rid)
+        
     def on_changed(self, rid, typeid):
         self.emit("changed", rid, typeid)
         

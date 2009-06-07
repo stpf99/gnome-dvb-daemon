@@ -19,6 +19,16 @@
 
 namespace DVB {
 
+    public struct RecordingInfo {
+        public uint32 id;
+        public string name;
+        public string description;
+        public int64 length;
+        public int64 start_timestamp;
+        public string channel;
+        public string location;
+    }
+
     [DBus (name = "org.gnome.DVB.RecordingsStore")]
     public interface IDBusRecordingsStore : GLib.Object {
         
@@ -86,6 +96,14 @@ namespace DVB {
          * rec_id doesn't exist
          */
         public abstract string GetChannelName (uint32 rec_id);
+        
+        /**
+         * @rec_id: The id of the recording
+         *
+         * This method can be used to retrieve all informations
+         * about a particular recording at once
+         */
+        public abstract RecordingInfo GetAllInformations (uint32 rec_id);
         
     }
 
