@@ -5,6 +5,7 @@ client/gnomedvb/ui/controlcenter/ControlCenterWindow.py
 client/gnomedvb/ui/preferences/DeviceGroupsView.py
 client/gnomedvb/ui/preferences/Dialogs.py
 client/gnomedvb/ui/preferences/Preferences.py
+client/gnomedvb/ui/recordings/DetailsDialog.py
 client/gnomedvb/ui/recordings/RecordingsDialog.py
 client/gnomedvb/ui/timers/CalendarDialog.py
 client/gnomedvb/ui/timers/EditTimersDialog.py

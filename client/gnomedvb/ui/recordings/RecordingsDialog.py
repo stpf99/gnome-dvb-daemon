@@ -22,6 +22,7 @@ from gettext import gettext as _
 from gnomedvb import global_error_handler
 from gnomedvb.ui.widgets.RecordingsStore import RecordingsStore
 from gnomedvb.ui.widgets.RecordingsView import RecordingsView
+from gnomedvb.ui.recordings.DetailsDialog import DetailsDialog
 
 class RecordingsDialog(gtk.Dialog):
 
@@ -42,11 +43,11 @@ class RecordingsDialog(gtk.Dialog):
         self._model.set_sort_column_id(RecordingsStore.COL_START,
             gtk.SORT_ASCENDING)
         self._view = RecordingsView(self._model)
+        self._view.connect("button-press-event", self._on_recording_selected)
         self._view.set_property("rules-hint", True)
         self._view.show()
         
         treeselection = self._view.get_selection()
-        treeselection.set_mode(gtk.SELECTION_MULTIPLE)
         treeselection.connect("changed", self._on_selection_changed)
         
         scrolledwindow = gtk.ScrolledWindow()
@@ -57,9 +58,16 @@ class RecordingsDialog(gtk.Dialog):
         hbox_main.pack_start(scrolledwindow)
         
         buttonbox = gtk.VButtonBox()
+        buttonbox.set_spacing(3)
         buttonbox.set_layout(gtk.BUTTONBOX_START)
         buttonbox.show()
         hbox_main.pack_start(buttonbox, False)
+        
+        self.details_button = gtk.Button(stock=gtk.STOCK_INFO)
+        self.details_button.connect("clicked", self._on_details_clicked)
+        self.details_button.set_sensitive(False)
+        self.details_button.show()
+        buttonbox.pack_start(self.details_button)
         
         self.delete_button = gtk.Button(stock=gtk.STOCK_DELETE)
         self.delete_button.connect("clicked", self._on_delete_clicked)
@@ -71,11 +79,12 @@ class RecordingsDialog(gtk.Dialog):
         model, rows = treeselection.get_selected_rows()
         
         self.delete_button.set_sensitive(len(rows) > 0)
+        self.details_button.set_sensitive(len(rows) == 1)
         
     def _on_delete_clicked(self, button):
-        model, rows = self._view.get_selection().get_selected_rows()
+        model, aiter = self._view.get_selection().get_selected()
         
-        if len(rows) > 0:
+        if aiter != None:
             dialog = gtk.MessageDialog(parent=self,
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
@@ -84,11 +93,21 @@ class RecordingsDialog(gtk.Dialog):
             dialog.destroy()
             if response == gtk.RESPONSE_YES:
                 client = self._model.get_recordings_store_client()
-                for row_path in rows:
-                    aiter = model.get_iter(row_path)
-                    client.delete(model[aiter][RecordingsStore.COL_ID],
-                        reply_handler=self._delete_callback,
-                        error_handler=global_error_handler)
+                client.delete(model[aiter][RecordingsStore.COL_ID],
+                    reply_handler=self._delete_callback,
+                    error_handler=global_error_handler)
+                        
+    def _on_details_clicked(self, button):
+        model, aiter = self._view.get_selection().get_selected()
+        
+        if aiter != None:
+            dialog = DetailsDialog(model[aiter][RecordingsStore.COL_ID], self)
+            dialog.run ()
+            dialog.destroy ()
+            
+    def _on_recording_selected(self, treeview, event):
+        if event.type == gtk.gdk._2BUTTON_PRESS:
+            self._on_details_clicked(treeview)
                     
     def _delete_callback(self, success):
         if not success:
