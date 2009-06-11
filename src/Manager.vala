@@ -24,6 +24,12 @@ namespace DVB {
     
     public class Manager : Object, IDBusManager {
         
+        public Gee.Collection<DeviceGroup> device_groups {
+            owned get {
+                return this.devices.get_values ();
+            }
+        }
+        
         // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
         
