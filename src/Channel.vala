@@ -42,6 +42,12 @@ namespace DVB {
         public DVB.Schedule Schedule {
             get { return this.schedule; }
         }
+        public string URL {
+            owned get {
+                return "rtsp://localhost:8554/%u/%u".printf (
+                        this.GroupId, this.Sid);
+            }
+        }
         
         private DVB.Schedule schedule;
         private uint sid;

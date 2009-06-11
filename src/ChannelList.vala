@@ -211,8 +211,7 @@ namespace DVB {
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
                     Channel channel = this.channels.get (channel_id);
-                    url = "rtsp://localhost:8554/%u/%u".printf (
-                        channel.GroupId, channel.Sid);   
+                    url = channel.URL;
                 }
             }
             
