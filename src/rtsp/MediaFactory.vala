@@ -23,13 +23,11 @@ namespace DVB {
 
     public class MediaFactory : Gst.RTSPMediaFactory {
 
-        private Gst.Element? pipeline;
-
         construct {
             this.set_shared (true);
         }
 
-        public override Gst.Element? get_element (Gst.RTSPUrl url) {
+        public override Gst.RTSPMedia? @construct (Gst.RTSPUrl url) {
             uint sidnr = 0;
           	uint grpnr = 0;
           	
@@ -61,39 +59,52 @@ namespace DVB {
                 return null;   
             }
           	
-          	Channel channel = devgrp.Channels.get_channel (sidnr);
+          	Channel? channel = devgrp.Channels.get_channel (sidnr);
+          	if (channel == null) {
+          	    critical ("No channel with SID %u", sidnr);
+          	    return null;
+          	}
           	ChannelFactory channels_factory = devgrp.channel_factory;
           	
           	PlayerThread? player = channels_factory.watch_channel (channel, payload);
           	if (player == null) {
-          	    critical ("Could not find channel");
+          	    critical ("Could not create player");
           	    return null;
           	}
           	Gst.Element? bin = player.get_sink_bin (sidnr);
-          	this.pipeline = player.get_pipeline ();
-          	
-          	return bin;
-        }
-        
-        public override Gst.RTSPMedia? @construct (Gst.RTSPUrl url) {
-            Gst.Element? element = this.get_element (url);
-            
-            if (element == null)
-                return null;
-            
-            Gst.RTSPMedia media = new Gst.RTSPMedia ();
-            media.element = element;
-            media.pipeline = this.pipeline;
+
+            // Construct media
+          	Gst.RTSPMedia media = new DVBMedia (devgrp, channel);
+            media.element = bin;
+            // Set pipeline
+            media.pipeline = player.get_pipeline ();
             
             this.collect_streams (url, media);
-        
+            
             return media;
         }
 
         public override string gen_key (Gst.RTSPUrl url) {
             return url.abspath;
         }
-        
     }
 
+
+    public class DVBMedia : Gst.RTSPMedia {
+    
+        public DeviceGroup group {get; construct;}
+        public Channel channel {get; construct;}
+        
+        public DVBMedia (DeviceGroup group, Channel channel) {
+            this.group = group;
+            this.channel = channel;
+        }
+    
+        public override bool unprepare () {
+            ChannelFactory channels_factory = this.group.channel_factory;
+            channels_factory.stop_channel (this.channel);
+            this.pipeline = null;
+            return true;
+        }
+    }
 }
