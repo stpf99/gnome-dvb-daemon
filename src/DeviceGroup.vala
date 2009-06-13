@@ -254,16 +254,16 @@ namespace DVB {
                     // Stop epgscanner, because it might use the
                     // device we want to unregister
                     if (this.epgscanner != null) this.epgscanner.stop ();
-                
+
                     Factory.get_config_store ().remove_device_from_group (
                         dev, this);
-                    this.device_removed (adapter, frontend);
-                        
                     // Group has no devices anymore, delete it
                     if (this.size > 0 && this.epgscanner != null) {
                         // We still have a device, start EPG scanner again
                         this.epgscanner.start ();
                     }
+
+                    this.device_removed (adapter, frontend);
                     
                     return true;
                 }
