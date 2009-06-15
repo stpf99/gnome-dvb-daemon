@@ -180,7 +180,7 @@ namespace DVB.Utils {
         FileInputStream stream;
         try {
             stream = file.read (null);
-        } catch (IOError e) {
+        } catch (Error e) {
             critical ("Could not read file: %s", e.message);
             return null;
         }

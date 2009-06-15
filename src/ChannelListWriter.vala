@@ -51,7 +51,7 @@ namespace DVB {
             this.stream = new BufferedOutputStream (fostream);
         }
         
-        public ChannelListWriter (File file) throws Error {
+        public ChannelListWriter (File file) {
             this.file = file;
         }
         

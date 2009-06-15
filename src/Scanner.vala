@@ -175,19 +175,25 @@ namespace DVB {
          * Write all the channels stored in this.Channels to file
          */
         public bool WriteAllChannelsToFile (string path) {
-            bool ret = false;
-            try {
-                var writer = new ChannelListWriter (File.new_for_path (path));
-                foreach (DVB.Channel c in this.channels) {
+            bool success = true;
+            var writer = new ChannelListWriter (File.new_for_path (path));
+            foreach (DVB.Channel c in this.channels) {
+                try {
                     writer.write (c);
+                } catch (Error e) {
+                    critical ("Could not write to file: %s", e.message);
+                    success = false;
                 }
-                writer.close ();
-                ret = true;
-            } catch (IOError e) {
-                critical ("Could not write channels file: %s", e.message);
             }
             
-            return ret;
+            try {
+                writer.close ();
+            } catch (Error e) {
+                critical ("Could not close file handle: %s", e.message);
+                success = false;
+            }
+            
+            return success;
         }
         
         /**
@@ -197,24 +203,30 @@ namespace DVB {
          * Write the channels with the given SIDs to file @path
          */
         public bool WriteChannelsToFile (uint[] channel_sids, string path) {
-            bool ret = false;
-            try {
-                var writer = new ChannelListWriter (File.new_for_path (path));
-                foreach (uint sid in channel_sids) {
-                    DVB.Channel? c = this.channels.get_channel (sid);
-                    if (c == null) {
-                        warning ("Channel with SID %u does not exist", sid);
-                        continue;
-                    }
-                    writer.write (c);
+            bool success = true;
+            var writer = new ChannelListWriter (File.new_for_path (path));
+            foreach (uint sid in channel_sids) {
+                DVB.Channel? c = this.channels.get_channel (sid);
+                if (c == null) {
+                    warning ("Channel with SID %u does not exist", sid);
+                    continue;
                 }
-                writer.close ();
-                ret = true;
-            } catch (IOError e) {
-                critical ("Could not write channels file: %s", e.message);
+                try {
+                    writer.write (c);
+                } catch (Error e) {
+                    critical ("Could not write to file: %s", e.message);
+                    success = false;
+                }
             }
             
-            return ret;
+            try {
+                writer.close ();
+            } catch (Error e) {
+                critical ("Could not close file handle: %s", e.message);
+                success = false;
+            }
+            
+            return success;
         }
         
         protected void clear_and_reset_all () {

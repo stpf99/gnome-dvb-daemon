@@ -54,7 +54,7 @@ namespace DVB {
         
         public bool load () {
             File settings_file = this.get_settings_file ();
-            
+            bool success = true;
             if (!settings_file.query_exists (null)) {
                 FileOutputStream stream = null;
                 try {
@@ -70,25 +70,30 @@ namespace DVB {
                 } catch (Error e) {
                     critical ("Could not write to file %s: %s",
                         settings_file.get_path (), e.message);
-                    stream.close (null);
-                    return false;
+                    success = false;
                 }
                 
                 try {
                     stream.close (null);
                 } catch (Error e) {
                     critical ("%s", e.message);
+                    success = false;
                 }
             }
             
-            try {
-                keyfile.load_from_file (settings_file.get_path (), 0);
-            } catch (KeyFileError e) {
-                critical ("Could not load settings: %s", e.message);
-                return false;
+            if (success) {
+                try {
+                    keyfile.load_from_file (settings_file.get_path (), 0);
+                } catch (KeyFileError e) {
+                    critical ("Could not load settings: %s", e.message);
+                    success = false;
+                } catch (FileError e) {
+                    critical ("Could not load settings: %s", e.message);
+                    success = false;
+                }
             }
             
-            return true;
+            return success;
         }
         
         public bool save () {
@@ -105,19 +110,13 @@ namespace DVB {
             
             string data = null;
             size_t data_len;
-            try {
-                data = this.keyfile.to_data (out data_len);
-            } catch (KeyFileError e) {
-                // Never happens
-                return false;
-            }
+            data = this.keyfile.to_data (out data_len);
                 
             try {
                 stream.write (data, data_len, null);
             } catch (Error e) {
                 critical ("Could not write to file %s: %s",
                     settings_file.get_path (), e.message);
-                stream.close (null);
                 return false;
             }
                 
