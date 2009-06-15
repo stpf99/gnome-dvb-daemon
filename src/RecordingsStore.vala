@@ -262,10 +262,10 @@ namespace DVB {
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     Recording rec = this.recordings.get (rec_id);
-                    info.name = rec.Name;
+                    info.name = (rec.Name == null) ? "" : rec.Name;
                     info.id = rec_id;
                     info.length = rec.Length;
-                    info.description = rec.Description;
+                    info.description = (rec.Description == null) ? "" : rec.Description;
                     info.location = rec.Location.get_path ();
                     info.start_timestamp = (int64)rec.StartTime.mktime ();
                     info.channel = rec.ChannelName;
