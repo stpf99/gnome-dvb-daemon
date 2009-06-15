@@ -77,7 +77,6 @@ own_pkgs = \
 
 gnome_dvb_daemon_SOURCES = \
 	$(gnome_dvb_daemon_VALASOURCES:.vala=.c) \
-	$(gnome_dvb_daemon_VALASOURCES:.vala=.h) \
 	$(NULL)
 	
 AM_CPPFLAGS = \
