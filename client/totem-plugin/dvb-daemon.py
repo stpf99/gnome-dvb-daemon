@@ -184,7 +184,7 @@ class DVBDaemonPlugin(totem.Plugin):
         actiongroup.add_actions([
             ('dvb-menu', None, _('_DVB')),
             ('dvb-setup', None, _('_Setup'), None, None, self._on_action_setup),
-            ('dvb-timers', None, _('_Timers'), None, None, self._on_action_timers),
+            ('dvb-timers', None, _('_Recording schedule'), None, None, self._on_action_timers),
             ('dvb-epg', None, _('_Program Guide'), None, None, self._on_action_epg),
             ('dvb-preferences', gtk.STOCK_PREFERENCES, _('Preferences'), None, None, self._on_action_preferences),
             ('dvb-delete-recording', None, _('_Delete'), None, None, self._on_action_delete),

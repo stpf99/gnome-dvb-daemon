@@ -174,7 +174,7 @@ class ControlCenterWindow(gtk.Window):
         # Create actions
         actiongroup = gtk.ActionGroup('Root')
         actiongroup.add_actions([
-            ('Timers', None, _('_Timers')),
+            ('Timers', None, _('_Recording schedule')),
             ('Edit', None, _('_Edit')),
             ('View', None, _('_View')),
             ('Help', None, _('Help')),
@@ -185,7 +185,7 @@ class ControlCenterWindow(gtk.Window):
         actiongroup = gtk.ActionGroup('Timers')
         actiongroup.add_actions([
             ('EditTimers', None, _('_Manage'), None,
-             _('Manage timers'), self._on_button_display_timers_clicked),
+             _('Manage recording schedule'), self._on_button_display_timers_clicked),
             ('Recordings', None, _('_Recordings'), None,
              _('Manage recordings'), self._on_button_recordings_clicked),
             ('Quit', gtk.STOCK_QUIT, _('_Quit'), None,
@@ -279,10 +279,10 @@ class ControlCenterWindow(gtk.Window):
         timers_image = gtk.image_new_from_pixbuf(pixbuf)
         timers_image.show()
         
-        self.button_display_timers = gtk.ToolButton(icon_widget=timers_image, label=_("Timers"))
+        self.button_display_timers = gtk.ToolButton(icon_widget=timers_image, label=_("Recording schedule"))
         self.button_display_timers.set_sensitive(False)
         self.button_display_timers.connect("clicked", self._on_button_display_timers_clicked)
-        self.button_display_timers.set_tooltip_markup(_("Manage timers"))
+        self.button_display_timers.set_tooltip_markup(_("Manage recording schedule"))
         self.button_display_timers.show()
         self.toolbar.insert(self.button_display_timers, 0)
         
