@@ -20,11 +20,11 @@
 public interface MediaObject1 : GLib.Object {
     
     public abstract DBus.ObjectPath Parent {
-        get;
+        owned get;
     }
     
     public abstract string DisplayName {
-        get;
+        owned get;
     }
 }
 
@@ -34,7 +34,7 @@ public interface MediaContainer1 : GLib.Object {
     public abstract signal void Updated ();
     
     public abstract DBus.ObjectPath[] Items {
-        get;
+        owned get;
     }
     
     public abstract uint ItemCount {
@@ -42,7 +42,7 @@ public interface MediaContainer1 : GLib.Object {
     }
     
     public abstract DBus.ObjectPath[] Containers {
-        get;
+        owned get;
     }
     
     public abstract uint ContainerCount {
@@ -55,15 +55,15 @@ public interface MediaContainer1 : GLib.Object {
 public interface MediaItem1 : GLib.Object {
     
     public abstract string[] URLs {
-        get;
+        owned get;
     }
     
     public abstract string MIMEType {
-        get;
+        owned get;
     }
     
     public abstract string Type {
-        get;
+        owned get;
     }
 }
 

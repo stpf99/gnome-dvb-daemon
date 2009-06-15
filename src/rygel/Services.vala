@@ -81,7 +81,7 @@ namespace DVB {
         }
         
         public string DisplayName {
-            get {
+            owned get {
                 return Config.PACKAGE_NAME;
             }
         }
@@ -182,13 +182,13 @@ namespace DVB {
         }
     
         public DBus.ObjectPath Parent {
-            get {
+            owned get {
                 return this.parent;
             }
         }
         
         public string DisplayName {
-            get {
+            owned get {
                 return this.device_group.Name;
             }
         }
@@ -247,13 +247,13 @@ namespace DVB {
         }
     
         public DBus.ObjectPath Parent {
-            get {
+            owned get {
                 return this.parent;
             }
         }
         
         public string DisplayName {
-            get {
+            owned get {
                 return this.channel.Name;
             }
         }
@@ -267,13 +267,13 @@ namespace DVB {
         }
         
         public string MIMEType {
-            get {
+            owned get {
                 return "video/mpegts";
             }
         }
         
         public string Type {
-            get {
+            owned get {
                 return "video";
             }
         }
