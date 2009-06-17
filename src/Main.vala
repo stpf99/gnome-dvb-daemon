@@ -27,7 +27,7 @@ public class Main {
     private static bool has_debug;
     private static bool has_version;
     private static bool disable_epg_scanner;
-    private static bool enable_rygel;
+    private static bool disable_rygel;
     private static MainLoop mainloop;
     private static Gst.RTSPServer server;
 
@@ -38,8 +38,8 @@ public class Main {
         "Display version number", null},
         { "disable-epg-scanner", 0, 0, OptionArg.NONE,
         out disable_epg_scanner, "Disable scanning for EPG data", null},
-        { "enable-rygel", 0, 0, OptionArg.NONE,
-        out enable_rygel, "Enable exporting devices and channels for Rygel", null},
+        { "disable-rygel", 0, 0, OptionArg.NONE,
+        out disable_rygel, "Disable exporting devices and channels for Rygel", null},
         { null }
     };
     
@@ -186,7 +186,7 @@ public class Main {
         server.set_media_mapping (new DVB.MediaMapping ());
         server.attach (null);
 
-        if (enable_rygel)
+        if (!disable_rygel)
             DVB.RygelService.start_rygel_services ();
     
         // Start GLib mainloop
