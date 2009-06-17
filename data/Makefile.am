@@ -1,6 +1,8 @@
 # Dbus service file
 dbusservicedir = $(DBUS_SERVICES_DIR)
-dbusservice_in_files = org.gnome.DVB.service.in
+dbusservice_in_files = \
+	org.gnome.DVB.service.in \
+	org.gnome.UPnP.MediaServer1.DVBDaemon.service.in
 dbusservice_DATA = $(dbusservice_in_files:.service.in=.service)
 
 # Rule to make the service file with bindir expanded
