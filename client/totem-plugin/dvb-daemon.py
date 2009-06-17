@@ -75,13 +75,14 @@ class ScheduleDialog(gtk.Dialog):
                     flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
                 dialog.set_markup ("<big><span weight=\"bold\">%s</span></big>" % _("Schedule recording for the selected event?"))
-                if dialog.run() == gtk.RESPONSE_YES:
+                response = dialog.run()
+                if response == gtk.RESPONSE_YES:
                     event_id = model[aiter][model.COL_EVENT_ID]
                     recorder = self._group.get_recorder()
                     rec_id = recorder.add_timer_for_epg_event(event_id, self._sid)
                 dialog.destroy()
                 
-                if rec_id == 0:
+                if response == gtk.RESPONSE_YES and rec_id == 0:
                     dialog = NoTimerCreatedDialog(self)
                     dialog.run()
                     dialog.destroy()
@@ -121,6 +122,7 @@ class DVBDaemonPlugin(totem.Plugin):
       <menuitem name="setup" action="dvb-setup" />
       <menuitem name="timers" action="dvb-timers" />
       <menuitem name="program-guide" action="dvb-epg" />
+      <menuitem name="whats-on-now" action="dvb-whatson" />
       <separator />
       <menuitem name="dvb-prefs" action="dvb-preferences" />
     </menu></menubar>
@@ -147,6 +149,7 @@ class DVBDaemonPlugin(totem.Plugin):
         self.popup_recordings = None
         self.timers_item = None
         self.epg_item = None
+        self.whatson_item = None
         self.manager = None
         self.single_group = None
 
@@ -154,7 +157,18 @@ class DVBDaemonPlugin(totem.Plugin):
         self.totem_object = totem_object
         
         self.channels = ChannelsTreeStore()
-        if len(self.channels) == 1:
+        if len(self.channels) == 0:
+            dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
+                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+            dialog.set_markup (
+                "<big><span weight=\"bold\">%s</span></big>" % _("DVB card is not configured"))
+            dialog.format_secondary_text(_("Do you want to search for channels now?"))
+            response = dialog.run()
+            if response == gtk.RESPONSE_YES:
+                self._on_action_setup(None)
+            dialog.destroy()
+        elif len(self.channels) == 1:
             # Activate single group mode
             root_iter = self.channels.get_iter_root()
             self.single_group = self.channels[root_iter][self.channels.COL_GROUP]
@@ -186,6 +200,7 @@ class DVBDaemonPlugin(totem.Plugin):
             ('dvb-setup', None, _('_Setup'), None, None, self._on_action_setup),
             ('dvb-timers', None, _('_Recording schedule'), None, None, self._on_action_timers),
             ('dvb-epg', None, _('_Program Guide'), None, None, self._on_action_epg),
+            ('dvb-whatson', gtk.STOCK_INDEX, _("What's on now"), None, None, self._on_action_whats_on_now),
             ('dvb-preferences', gtk.STOCK_PREFERENCES, _('Preferences'), None, None, self._on_action_preferences),
             ('dvb-delete-recording', None, _('_Delete'), None, None, self._on_action_delete),
             ('dvb-detail-recording', None, _('D_etails'), None, None, self._on_action_details),
@@ -194,15 +209,27 @@ class DVBDaemonPlugin(totem.Plugin):
         
         uimanager.add_ui_from_string(self.MENU)
         uimanager.ensure_update()
- 
+
         self.popup_menu = uimanager.get_widget('/dvb-popup')
         self.popup_recordings = uimanager.get_widget('/dvb-recording-popup')
         
+        icon_theme = gtk.icon_theme_get_default()
+        
+        pixbuf = icon_theme.load_icon("stock_timer", gtk.ICON_SIZE_MENU, gtk.ICON_LOOKUP_USE_BUILTIN)
+        timers_image = gtk.image_new_from_pixbuf(pixbuf)
+        timers_image.show()
+        
         self.timers_item = uimanager.get_widget('/tmw-menubar/dvb/timers')
+        self.timers_item.set_image(timers_image)
+        
         self.epg_item = uimanager.get_widget('/tmw-menubar/dvb/program-guide')
         sensitive = self.single_group != None
         self.timers_item.set_sensitive(sensitive)
         self.epg_item.set_sensitive(sensitive)
+        
+        self.whatson_item = uimanager.get_widget('/tmw-menubar/dvb/whats-on-now')
+        # One entry is for recordings
+        self.whatson_item.set_sensitive(len(self.channels) > 1)
         
         totem_object.add_sidebar_page ("dvb-daemon", _("DVB"), self.scrolledchannels)
         self.scrolledchannels.show_all()
@@ -235,6 +262,15 @@ class DVBDaemonPlugin(totem.Plugin):
                 dialog = ScheduleDialog(group, sid, self.totem_object.get_main_window())
             else:
                 dialog = RunningNextDialog(group, self.totem_object.get_main_window())
+            dialog.run()
+            dialog.destroy()
+            
+    def _on_action_whats_on_now(self, action):
+        group, sid = self._get_selected_group_and_channel()
+        if group == None:
+            group = self.single_group
+        if group != None:
+            dialog = RunningNextDialog(group, self.totem_object.get_main_window())
             dialog.run()
             dialog.destroy()
     
@@ -332,7 +368,11 @@ class DVBDaemonPlugin(totem.Plugin):
                 if sid == rec_id:
                     self.channels.remove(child_iter)
                     break
-                child_iter = self.channels.iter_next(child_iter) 
+                child_iter = self.channels.iter_next(child_iter)
+                
+    def _on_channels_row_inserted_deleted(self, treestore, path, aiter=None):
+        # One entry is for recordings
+        self.whatson_item.set_sensitive(len(treestore) > 1)
                         
     def _delete_callback(self, success):
         if not success:
