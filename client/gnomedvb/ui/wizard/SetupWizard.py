@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import subprocess
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.IntroPage import IntroPage
 from gnomedvb.ui.wizard.pages.AdaptersPage import AdaptersPage
@@ -61,8 +62,8 @@ class SetupWizard(gtk.Assistant):
         save_channels_page.connect("finished", self.on_scan_finished)
         self.append_page(save_channels_page)
         
-        summary_page = SummaryPage()
-        self.append_page(summary_page)
+        self.summary_page = SummaryPage()
+        self.append_page(self.summary_page)
         
     def append_page(self, page):
         gtk.Assistant.append_page(self, page)
@@ -114,5 +115,7 @@ class SetupWizard(gtk.Assistant):
         else:
             if scanner != None:
                 scanner.destroy()
+            if self.summary_page.start_control_center():
+                subprocess.Popen('gnome-dvb-control')
             gtk.main_quit()
 
