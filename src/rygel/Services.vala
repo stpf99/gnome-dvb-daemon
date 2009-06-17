@@ -82,7 +82,7 @@ namespace DVB {
         
         public string DisplayName {
             owned get {
-                return Config.PACKAGE_NAME;
+                return "@REALNAME@'s TV on @HOSTNAME@";
             }
         }
     
