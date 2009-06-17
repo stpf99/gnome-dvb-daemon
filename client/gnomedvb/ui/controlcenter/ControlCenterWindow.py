@@ -153,6 +153,7 @@ class ControlCenterWindow(gtk.Window):
             <menuitem action="Preferences"/>
           </menu>
           <menu action="View">
+            <menuitem action="WhatsOnNow"/>
             <menuitem action="Refresh"/>
             <menuitem action="PrevDay"/>
             <menuitem action="NextDay"/>
@@ -201,6 +202,8 @@ class ControlCenterWindow(gtk.Window):
         
         actiongroup = gtk.ActionGroup('View')
         actiongroup.add_actions([
+            ('WhatsOnNow', None, _("What's on now"), None,
+             _("See what's currently on and is coming next"), self._on_whats_on_now_clicked),
             ('Refresh', gtk.STOCK_REFRESH, _('Refresh'), None,
              _('Refresh program guide'), self._on_refresh_clicked),
             ('PrevDay', None, _('Previous Day'), '<Control>B',
@@ -248,6 +251,12 @@ class ControlCenterWindow(gtk.Window):
         recordings = uimanager.get_widget('/MenuBar/Timers/Recordings')
         recordings.set_image(recordings_image)
         
+        whatson_image = gtk.image_new_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+        whatson_image.show()
+        
+        whatons_item = uimanager.get_widget('/MenuBar/View/WhatsOnNow')
+        whatons_item.set_image(whatson_image)
+        
         self.refresh_menuitem = uimanager.get_widget('/MenuBar/View/Refresh')
         self.refresh_menuitem.set_sensitive(False)
         
@@ -294,16 +303,24 @@ class ControlCenterWindow(gtk.Window):
         button_recordings.connect("clicked", self._on_button_recordings_clicked)
         button_recordings.show()
         self.toolbar.insert(button_recordings, 1)
+        
+        whatson_image = gtk.image_new_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        whatson_image.show()
+        
+        button_whatson = gtk.ToolButton(icon_widget=whatson_image, label=_("What's on now"))
+        button_whatson.connect("clicked", self._on_whats_on_now_clicked)
+        button_whatson.show()
+        self.toolbar.insert(button_whatson, 2)
          
         sep = gtk.SeparatorToolItem()
         sep.show()
-        self.toolbar.insert(sep, 2)
+        self.toolbar.insert(sep, 3)
         
         self.refresh_button = gtk.ToolButton(gtk.STOCK_REFRESH)
         self.refresh_button.connect("clicked", self._on_refresh_clicked)
         self.refresh_button.set_tooltip_markup(_("Refresh program guide"))        
         self.refresh_button.show()
-        self.toolbar.insert(self.refresh_button, 3)
+        self.toolbar.insert(self.refresh_button, 4)
         
         prev_image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_LARGE_TOOLBAR)
         prev_image.show()
@@ -312,7 +329,7 @@ class ControlCenterWindow(gtk.Window):
         self.button_prev_day.set_tooltip_markup(_("Go to previous day"))
         self.button_prev_day.set_sensitive(False)
         self.button_prev_day.show()
-        self.toolbar.insert(self.button_prev_day, 4)
+        self.toolbar.insert(self.button_prev_day, 5)
         
         next_image = gtk.image_new_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_LARGE_TOOLBAR)
         next_image.show()
@@ -321,7 +338,7 @@ class ControlCenterWindow(gtk.Window):
         self.button_next_day.set_tooltip_markup(_("Go to next day"))
         self.button_next_day.set_sensitive(False)
         self.button_next_day.show()
-        self.toolbar.insert(self.button_next_day, 5)
+        self.toolbar.insert(self.button_next_day, 6)
         
     def get_device_groups(self):
         for group in self.manager.get_registered_device_groups():
@@ -497,6 +514,9 @@ class ControlCenterWindow(gtk.Window):
             edit = EditTimersDialog(group, self)
             edit.run()
             edit.destroy()
+            
+    def _on_whats_on_now_clicked(self, button):
+        self._reset_schedule_view()
             
     def _on_refresh_clicked(self, button):
         self.schedulestore.reload_all()
