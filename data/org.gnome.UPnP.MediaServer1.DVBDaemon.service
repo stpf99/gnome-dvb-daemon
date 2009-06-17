@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.gnome.DVB
-Exec=/usr/bin/gnome-dvb-daemon
