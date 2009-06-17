@@ -268,7 +268,7 @@ namespace DVB {
         
         public string MIMEType {
             owned get {
-                return "video/mpegts";
+                return "video/mpeg";
             }
         }
         
