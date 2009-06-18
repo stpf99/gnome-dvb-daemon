@@ -22,8 +22,12 @@ import gtk
 from gnomedvb.DVBModel import DVBModel
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
-        
-SUPPORTED_DVB_TYPES = ("DVB-C", "DVB-S", "DVB-T")
+
+DVB_TYPE_TO_DESC = {
+    "DVB-C": _("digital cable"),
+    "DVB-S": _("digital satellite"),
+    "DVB-T": _("digital terrestrial")
+}
 
 class AdaptersPage(BasePage):
     
@@ -40,7 +44,8 @@ class AdaptersPage(BasePage):
         label.set_line_wrap(True)
         self.pack_start(label)
         
-        self.deviceslist = gtk.ListStore(str, str, int, int)
+        # Name, Type Name, Type, adapter, frontend
+        self.deviceslist = gtk.ListStore(str, str, str, int, int)
         self.get_dvb_devices()
         
         if len(self.deviceslist) == 0:
@@ -93,9 +98,9 @@ class AdaptersPage(BasePage):
         if self.__adapter_info == None and len(self.deviceslist) == 1:
             aiter = self.deviceslist.get_iter_first()
             self.__adapter_info = {"name": self.deviceslist[aiter][0],
-                                   "type": self.deviceslist[aiter][1],
-                                   "adapter": self.deviceslist[aiter][2],
-                                   "frontend": self.deviceslist[aiter][3]}
+                                   "type": self.deviceslist[aiter][2],
+                                   "adapter": self.deviceslist[aiter][3],
+                                   "frontend": self.deviceslist[aiter][4]}
         return self.__adapter_info
         
     def get_devices_count(self):
@@ -109,6 +114,7 @@ class AdaptersPage(BasePage):
         devgroups = model.get_registered_device_groups()
         for group in devgroups:
             for dev in group["devices"]:
+                dev.type_name = DVB_TYPE_TO_DESC[dev.type]
                 devs.add(dev)
         
         for dev in model.get_all_devices():
@@ -116,19 +122,20 @@ class AdaptersPage(BasePage):
                 info = gnomedvb.get_adapter_info(dev.adapter)
                 dev.name = info["name"]
                 dev.type = info["type"]
+                dev.type_name = DVB_TYPE_TO_DESC[info["type"]]
                 devs.add(dev)
                     
         for dev in devs:
-            self.deviceslist.append([dev.name, dev.type,
-                dev.adapter, dev.frontend])
+            self.deviceslist.append([dev.name, dev.type_name,
+                dev.type, dev.adapter, dev.frontend])
     
     def on_device_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         if aiter != None:
             self.__adapter_info = {"name": model[aiter][0],
-                                   "type": model[aiter][1],
-                                   "adapter": model[aiter][2],
-                                   "frontend": model[aiter][3]}
+                                   "type": model[aiter][2],
+                                   "adapter": model[aiter][3],
+                                   "frontend": model[aiter][4]}
             self.emit("finished", True)
         else:
             self.emit("finished", False)
