@@ -31,9 +31,8 @@ class ChannelScanPage(BasePage):
     
     (COL_LOGO,
      COL_NAME,
-     COL_FREQ,
      COL_ACTIVE,
-     COL_SID,) = range(5)
+     COL_SID,) = range(4)
 
     def __init__(self):
         BasePage.__init__(self)
@@ -50,11 +49,11 @@ class ChannelScanPage(BasePage):
         self.pack_start(self.label, False)
         
         # Logo, Name, Frequency, active, SID
-        self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, int, bool, int)
+        self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, bool, int)
         self.tvchannelsview = gtk.TreeView(self.tvchannels)
         self.tvchannelsview.set_reorderable(True)
         
-        col_name = gtk.TreeViewColumn(_("Name"))
+        col_name = gtk.TreeViewColumn(_("Channel"))
         
         cell_active = gtk.CellRendererToggle()
         cell_active.connect("toggled", self.__on_active_toggled)
@@ -69,17 +68,11 @@ class ChannelScanPage(BasePage):
         col_name.pack_start(cell_name)
         col_name.add_attribute(cell_name, "markup", self.COL_NAME)
         self.tvchannelsview.append_column (col_name)
-        
-        col_freq = gtk.TreeViewColumn(_("Frequency"))
-        cell_freq = gtk.CellRendererText()
-        col_freq.pack_start(cell_freq, False)
-        col_freq.add_attribute(cell_freq, "text", self.COL_FREQ)
-        self.tvchannelsview.append_column (col_freq)
-        
+
         scrolledtvview = gtk.ScrolledWindow()
         scrolledtvview.add(self.tvchannelsview)
         scrolledtvview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        scrolledtvview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolledtvview.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
         self.pack_start(scrolledtvview)
         
@@ -140,7 +133,7 @@ class ChannelScanPage(BasePage):
             icon = None
         
         name = name.replace("&", "&amp;")
-        self.tvchannels.append([icon, name, freq, True, sid])
+        self.tvchannels.append([icon, name, True, sid])
         
     def __on_finished(self, scanner):
         self.remove(self.progressbar)
