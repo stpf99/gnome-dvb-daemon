@@ -152,9 +152,28 @@ class DVBDaemonPlugin(totem.Plugin):
         self.whatson_item = None
         self.manager = None
         self.single_group = None
+        self.sidebar = None
 
     def activate (self, totem_object):
         self.totem_object = totem_object
+        
+        self._setup_sidebar()
+        self._setup_menu()
+        
+        # Add recordings
+        self.rec_iter = self.channels.append(None, [self.REC_GROUP_ID, _("Recordings"), 0, None])
+        self.recstore = gnomedvb.DVBRecordingsStoreClient()
+        self.recstore.connect("changed", self._on_recstore_changed)
+        add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
+        self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
+        
+        self.manager = DVBModel()
+        
+        totem_object.add_sidebar_page ("dvb-daemon", _("Digital TV"), self.sidebar)
+        self.sidebar.show_all()
+        
+    def _setup_sidebar(self):
+        self.sidebar = gtk.VBox(spacing=6)
         
         self.channels = ChannelsTreeStore()
         if len(self.channels) == 0:
@@ -181,22 +200,30 @@ class DVBDaemonPlugin(totem.Plugin):
         self.scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.scrolledchannels.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         self.scrolledchannels.add(self.channels_view)
+        self.sidebar.pack_start(self.scrolledchannels)
         
-        # Add recordings
-        self.rec_iter = self.channels.append(None, [self.REC_GROUP_ID, _("Recordings"), 0, None])
-        self.recstore = gnomedvb.DVBRecordingsStoreClient()
-        self.recstore.connect("changed", self._on_recstore_changed)
-        add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
-        self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
+        buttonbox = gtk.HButtonBox()
+        buttonbox.set_spacing(6)
+        self.sidebar.pack_start(buttonbox, False)
         
-        self.manager = DVBModel()
+        self.whatson_button = gtk.Button(label=_("What's on now"))
+        self.whatson_button.set_image(gtk.image_new_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_BUTTON))
+        self.whatson_button.connect('clicked', self._on_action_whats_on_now)
+        buttonbox.pack_start(self.whatson_button)
+        self.whatson_button.set_sensitive(len(self.channels) > 0)
         
+        self.epg_button = gtk.Button(label=_('Program Guide'))
+        self.epg_button.connect('clicked', self._on_action_epg)
+        self.epg_button.set_sensitive(False)
+        buttonbox.pack_start(self.epg_button)
+        
+    def _setup_menu(self):
         uimanager = self.totem_object.get_ui_manager()
         
         # Create actions
         actiongroup = gtk.ActionGroup('dvb')
         actiongroup.add_actions([
-            ('dvb-menu', None, _('_DVB')),
+            ('dvb-menu', None, _('Digital _TV')),
             ('dvb-setup', None, _('_Setup'), None, None, self._on_action_setup),
             ('dvb-timers', None, _('_Recording schedule'), None, None, self._on_action_timers),
             ('dvb-epg', None, _('_Program Guide'), None, None, self._on_action_epg),
@@ -225,14 +252,11 @@ class DVBDaemonPlugin(totem.Plugin):
         self.epg_item = uimanager.get_widget('/tmw-menubar/dvb/program-guide')
         sensitive = self.single_group != None
         self.timers_item.set_sensitive(sensitive)
-        self.epg_item.set_sensitive(sensitive)
+        self.epg_item.set_sensitive(False)
         
         self.whatson_item = uimanager.get_widget('/tmw-menubar/dvb/whats-on-now')
         # One entry is for recordings
-        self.whatson_item.set_sensitive(len(self.channels) > 1)
-        
-        totem_object.add_sidebar_page ("dvb-daemon", _("DVB"), self.scrolledchannels)
-        self.scrolledchannels.show_all()
+        self.whatson_item.set_sensitive(len(self.channels) > 0)
 
     def _get_selected_group_and_channel(self):
         model, aiter = self.channels_view.get_selection().get_selected()
@@ -346,9 +370,11 @@ class DVBDaemonPlugin(totem.Plugin):
             # Nothing selected or in recordings group
             self.timers_item.set_sensitive(False)
             self.epg_item.set_sensitive(False)
+            self.epg_button.set_sensitive(False)
         else:
             self.timers_item.set_sensitive(True)
             self.epg_item.set_sensitive(True)
+            self.epg_button.set_sensitive(True)
                 
     def _add_recording(self, rid):
         name = self.recstore.get_name(rid)
@@ -372,7 +398,9 @@ class DVBDaemonPlugin(totem.Plugin):
                 
     def _on_channels_row_inserted_deleted(self, treestore, path, aiter=None):
         # One entry is for recordings
-        self.whatson_item.set_sensitive(len(treestore) > 1)
+        val = len(treestore) > 1
+        self.whatson_item.set_sensitive(val)
+        self.whatson_button.set_sensitive(val)
                         
     def _delete_callback(self, success):
         if not success:
