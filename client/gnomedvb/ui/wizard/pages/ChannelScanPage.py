@@ -113,6 +113,7 @@ class ChannelScanPage(BasePage):
         elif isinstance(tuning_data, list):
             for data in tuning_data:
                 self._scanner.add_scanning_data(data)
+            self._scanner.run()
         else:
             self._scanner.destroy()
         
