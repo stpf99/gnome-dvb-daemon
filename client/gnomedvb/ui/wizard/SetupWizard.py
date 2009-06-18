@@ -38,6 +38,7 @@ class SetupWizard(gtk.Assistant):
         self.connect ('cancel', self.confirm_quit)
         self.connect ('close', self.confirm_quit)
         self.connect ('prepare', self.on_prepare)
+        self.set_forward_page_func(self.page_func)
         self.set_default_size(500, 400)
         self.set_border_width(4)
         self.set_title(_("Setup DVB"))
@@ -93,6 +94,15 @@ class SetupWizard(gtk.Assistant):
         if state:
             self.__adapter_info = page.get_adapter_info()
         self.on_scan_finished(page, state)
+        
+    def page_func(self, current_page, user_data=None):
+         if current_page == 0:
+            # On initial page
+            if self.adapters_page.get_devices_count() == 1:
+                # There's only one device no need to select one
+                self.__adapter_info = self.adapters_page.get_adapter_info()
+                return current_page + 2
+         return current_page + 1
             
     def confirm_quit(self, *args):
         scanner = self.scan_page.get_scanner()

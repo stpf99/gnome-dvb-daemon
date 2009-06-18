@@ -34,7 +34,7 @@ class AdaptersPage(BasePage):
     def __init__(self):
         BasePage.__init__(self)
         
-        self.__adapter_info = {}
+        self.__adapter_info = None
         
         label = gtk.Label()
         label.set_line_wrap(True)
@@ -90,7 +90,16 @@ class AdaptersPage(BasePage):
             return model[aiter]
         
     def get_adapter_info(self):
+        if self.__adapter_info == None and len(self.deviceslist) == 1:
+            aiter = self.deviceslist.get_iter_first()
+            self.__adapter_info = {"name": self.deviceslist[aiter][0],
+                                   "type": self.deviceslist[aiter][1],
+                                   "adapter": self.deviceslist[aiter][2],
+                                   "frontend": self.deviceslist[aiter][3]}
         return self.__adapter_info
+        
+    def get_devices_count(self):
+        return len(self.deviceslist)
         
     def get_dvb_devices(self):
         model = DVBModel()
