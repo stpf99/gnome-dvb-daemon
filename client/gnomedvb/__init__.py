@@ -19,10 +19,12 @@
 from gnomedvb.DBusWrapper import *
 
 import gnomedvb.defs
+import gnomedvb.userdirs
 import gettext
 import gio
 import gtk
 import locale
+import os
 from gettext import gettext as _
 from os.path import abspath, join
 
@@ -34,6 +36,10 @@ INFOS = {
     "website" : "http://live.gnome.org/DVBDaemon",
     "website-label" : _("GNOME DVB Daemon Website"),
 }
+
+# From pyxdg
+_home = os.environ.get('HOME', '/')
+XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', join(_home, '.config'))
 
 def setup_i18n():
     # Setup i18n
@@ -60,4 +66,10 @@ def launch_default_for_uri(uri_string):
     
     if appinfo != None:
         appinfo.launch_uris([uri_string], None)
+        
+def get_config_dir():
+    return join(XDG_CONFIG_HOME, gnomedvb.defs.PACKAGE)
+
+def get_default_recordings_dir():
+    return gnomedvb.userdirs.get_xdg_user_dirs(gnomedvb.userdirs.DIRECTORY_VIDEOS)
 
