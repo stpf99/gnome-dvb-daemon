@@ -176,6 +176,8 @@ class DVBDaemonPlugin(totem.Plugin):
         self.sidebar = gtk.VBox(spacing=6)
         
         self.channels = ChannelsTreeStore()
+        self.channels.connect('row-deleted', self._on_channels_row_inserted_deleted)
+        self.channels.connect('row-inserted', self._on_channels_row_inserted_deleted)
         if len(self.channels) == 0:
             dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
                 flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
