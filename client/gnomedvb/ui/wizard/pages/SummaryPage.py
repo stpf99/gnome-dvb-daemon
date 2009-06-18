@@ -25,22 +25,24 @@ class SummaryPage(BasePage):
     def __init__(self):
         BasePage.__init__(self)
         
-        text = _("The channel search has completed.") + " "
-        text += _("You can search for channels again for this or different devices by re-running this application.")
-        text += "\n\n"
-        text += _("The generated channels file can be used to configure your devices in the GNOME DVB Control Center.")
-        label = gtk.Label(text)
-        label.set_line_wrap(True)
-        self.pack_start(label)
-        
-        self.checkbutton = gtk.CheckButton(label=_("Start GNOME DVB Control Center now"))
+        self.checkbutton = gtk.CheckButton(label=_("Start control center now"))
         self.pack_end(self.checkbutton, False, False, 0)
     
     def get_page_title(self):
-        return _("Channel search finished")
+        return _("Configuration finished")
         
     def get_page_type(self):
         return gtk.ASSISTANT_PAGE_SUMMARY
+        
+    def set_device_name_and_details(self, name, details):
+        text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)
+        text += "\n%s\n" % details
+        text += _("You can configure additional devices by re-running this application.")
+        label = gtk.Label()
+        label.set_markup(text)
+        label.set_line_wrap(True)
+        label.show()
+        self.pack_start(label)
         
     def start_control_center(self):
         return self.checkbutton.get_active()

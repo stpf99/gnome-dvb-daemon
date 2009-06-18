@@ -32,13 +32,14 @@ class InitialTuningDataPage(BasePage):
     __gsignals__ = {
             "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
     }
+    NOT_LISTED = "00"
 
     def __init__(self):
         BasePage.__init__(self)
         
         self.__adapter_info = None
         self.__page_title = None
-        self.__tuning_data = None
+        self.__tuning_data = self.NOT_LISTED
         
     def get_page_title(self):
         return self.__page_title
@@ -62,6 +63,8 @@ class InitialTuningDataPage(BasePage):
             self.setup_unknown(info["type"])
             
     def get_tuning_data(self):
+        if self.__tuning_data == self.NOT_LISTED:
+            self.add_brute_force_scan()
         return self.__tuning_data
         
     def _create_table(self):
@@ -81,7 +84,19 @@ class InitialTuningDataPage(BasePage):
         self.pack_start(label)
         
     def setup_dvb_t(self):
-        countries = { "at": _("Austria"), "au": _("Australia"), "be": _("Belgium"),
+        label = gtk.Label()
+        label.set_line_wrap(True)
+        text = "%s %s %s" %(_('Please choose a country and the antenna that is closest to your location.'),
+            _("If you don't know which antenna to choose select \"Don't know\" from the list of providers."),
+            _("However, searching for channels will take considerably longer this way."))
+        label.set_markup(text)
+        label.show()
+        self.pack_start(label)
+    
+        self.providers_combo = None
+        
+        countries = {self.NOT_LISTED: _("Not listed"),
+             "at": _("Austria"), "au": _("Australia"), "be": _("Belgium"),
              "ch": _("Switzerland"), "cz": _("Czech Republic"), "de": _("Germany"),
              "dk": _("Denmark"), "es": _("Spain"), "fi": _("Finland"), "fr": _("France"),
              "gr": _("Greece"), "hr": _("Hungary"), "is": _("Iceland"), "it": _("Italy"),
@@ -95,9 +110,11 @@ class InitialTuningDataPage(BasePage):
         country.set_markup(_("<b>Country:</b>"))
         country.show()
         self.table.attach(country, 0, 1, 0, 1, yoptions=0)
-    
+
+        # name, code    
         self.countries = gtk.ListStore(str, str)
         self.countries.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.countries.set_sort_func(0, self.combobox_sort_func)
         
         for code, name in countries.items():
             self.countries.append([name, code])
@@ -109,6 +126,7 @@ class InitialTuningDataPage(BasePage):
         self.country_combo.add_attribute(cell, "text", 0)
         self.country_combo.show()
         self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
+        self.country_combo.set_active(0)
         
         self.providers_label = gtk.Label()
         self.providers_label.set_markup(_("<b>Antenna:</b>"))
@@ -117,6 +135,7 @@ class InitialTuningDataPage(BasePage):
         
         self.providers = gtk.ListStore(str, str)
         self.providers.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.providers.set_sort_func(0, self.combobox_sort_func)
         
         self.providers_combo = gtk.ComboBox(self.providers)
         self.providers_combo.connect('changed', self.on_providers_changed)
@@ -126,11 +145,6 @@ class InitialTuningDataPage(BasePage):
         self.providers_combo.show()
         self.table.attach(self.providers_combo, 1, 2, 1, 2, yoptions=0)
         self.providers_combo.set_sensitive(False)
-        
-        checkbox = gtk.CheckButton(label=_("Scan all frequencies"))
-        checkbox.connect("toggled", self.on_scan_all_toggled)
-        checkbox.show()
-        self.table.attach(checkbox, 0, 1, 2, 3)
         
     def setup_dvb_s(self):
         hbox = gtk.HBox(spacing=6)
@@ -156,13 +170,13 @@ class InitialTuningDataPage(BasePage):
         self.read_satellites()
         
     def setup_dvb_c(self):
-        countries = { "at": _("Austria"), "be": _("Belgium"),
+        countries = {"at": _("Austria"), "be": _("Belgium"),
              "ch": _("Switzerland"), "de": _("Germany"), "fi": _("Finland"),
              "lu": _("Luxemburg"), "nl": _("Netherlands"), "se": _("Sweden"),
              "no": _("Norway")
              }
             
-        self._create_table()    
+        self._create_table()
             
         country = gtk.Label()
         country.set_markup(_("<b>Country:</b>"))
@@ -206,17 +220,23 @@ class InitialTuningDataPage(BasePage):
         if aiter != None:
             selected_country = self.countries[aiter][1]
     
-            self.providers.clear()
-            for d in DVB_APPS_DIRS:
-                if os.access(d, os.F_OK | os.R_OK):
-                    for f in os.listdir(os.path.join(d, directory)):
-                        country, city = f.split('-', 1)
-                    
-                        if country == selected_country:
-                            self.providers.append([city, os.path.join(d, directory, f)])
-        
-            self.providers_combo.set_sensitive(True)
-            self.emit("finished", False)
+            if selected_country == self.NOT_LISTED:
+                if self.providers_combo:
+                    self.providers_combo.set_sensitive(False)
+            else:
+                self.providers.clear()
+                self.providers.append([_("Don't know"), self.NOT_LISTED])
+                for d in DVB_APPS_DIRS:
+                    if os.access(d, os.F_OK | os.R_OK):
+                        for f in os.listdir(os.path.join(d, directory)):
+                            country, city = f.split('-', 1)
+                        
+                            if country == selected_country:
+                                self.providers.append([city, os.path.join(d, directory, f)])
+            
+                self.providers_combo.set_sensitive(True)
+                self.providers_combo.set_active(0)
+            self.emit("finished", True)
         
     def on_providers_changed(self, combo):
         aiter = combo.get_active_iter()
@@ -276,4 +296,15 @@ class InitialTuningDataPage(BasePage):
                          "QAM64", # constellation
                          guard, # guard interval
                         ])
+
+    def combobox_sort_func(self, model, iter1, iter2):
+        name1, code1 = model[iter1]
+        name2, code2 = model[iter2]
+
+        if code1 == self.NOT_LISTED:
+            return -1
+        elif code2 == self.NOT_LISTED:
+            return 1
+        else:
+            return cmp(name1, name2)
     

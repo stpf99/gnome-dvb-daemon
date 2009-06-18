@@ -34,9 +34,10 @@ class ChannelScanPage(BasePage):
      COL_ACTIVE,
      COL_SID,) = range(4)
 
-    def __init__(self):
+    def __init__(self, model):
         BasePage.__init__(self)
         
+        self._model = model
         self._scanner = None
         self._max_freqs = 0
         self._scanned_freqs = 0
@@ -101,9 +102,7 @@ class ChannelScanPage(BasePage):
             else:
                 self._scanner.destroy()
         
-        manager = gnomedvb.DVBManagerClient()
-        
-        self._scanner = manager.get_scanner_for_device(adapter, frontend)
+        self._scanner = self._model.get_scanner_for_device(adapter, frontend)
         
         self._scanner.connect ("frequency-scanned", self.__on_freq_scanned)
         self._scanner.connect ("channel-added", self.__on_channel_added)

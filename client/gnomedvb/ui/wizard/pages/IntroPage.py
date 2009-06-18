@@ -26,16 +26,24 @@ class IntroPage(BasePage):
         BasePage.__init__(self)
         self.set_border_width(5)
         
-        text = _("Welcome to the channel search Assistant. It will automatically search for channels.")
+        text = _('Welcome to the digital television Assistant.')
+        text += "\n"
+        text += _('It will automatically configure your devices and search for channels, if necessary.')
         text += "\n\n"
         text += _("Click \"Forward\" to begin.")
         label = gtk.Label(text)
         label.set_line_wrap(True)
         self.pack_start(label)
         
+        self.expert_mode = gtk.CheckButton(label=_('Expert mode'))
+        self.pack_start(self.expert_mode, False, False, 0)
+        
     def get_page_title(self):
-        return _("Channel search")
+        return _("Digital TV configuration")
         
     def get_page_type(self):
         return gtk.ASSISTANT_PAGE_INTRO
+        
+    def has_expert_mode(self):
+        return self.expert_mode.get_active()
     
