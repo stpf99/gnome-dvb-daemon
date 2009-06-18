@@ -69,6 +69,10 @@ PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
 AC_SUBST(GNOME_DVB_DAEMON_CFLAGS)
 AC_SUBST(GNOME_DVB_DAEMON_LIBS)
 
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLIB_REQUIRED)
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
+
 AG_GST_CHECK_GST_INSPECT
 AG_GST_CHECK_MODULE_BAD([mpegtsparse])
 AG_GST_CHECK_MODULE_BAD([dvbbasebin])
@@ -124,6 +128,7 @@ dnl * Python
 dnl **********
 PYTHON_REQUIRED=2.5
 AM_PATH_PYTHON($PYTHON_REQUIRED)
+AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 AS_AC_EXPAND(DATADIR, $datarootdir)
 AC_SUBST(DATADIR)
@@ -156,6 +161,7 @@ AC_CONFIG_FILES([
 	client/gnomedvb/ui/widgets/Makefile
 	client/gnomedvb/ui/wizard/Makefile
 	client/gnomedvb/ui/wizard/pages/Makefile
+	client/gnomedvb/userdirs/Makefile
 	client/totem-plugin/Makefile
 	data/Makefile
 	po/Makefile.in])

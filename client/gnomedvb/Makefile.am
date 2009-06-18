@@ -1,5 +1,6 @@
 SUBDIRS = \
-	ui
+	ui \
+	userdirs
     
 gnomedvbdir = $(pythondir)/gnomedvb
 gnomedvb_PYTHON = \
