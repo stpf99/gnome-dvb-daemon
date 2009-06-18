@@ -71,5 +71,6 @@ def get_config_dir():
     return join(XDG_CONFIG_HOME, gnomedvb.defs.PACKAGE)
 
 def get_default_recordings_dir():
-    return gnomedvb.userdirs.get_xdg_user_dirs(gnomedvb.userdirs.DIRECTORY_VIDEOS)
+    return join(gnomedvb.userdirs.get_xdg_user_dir(
+        gnomedvb.userdirs.DIRECTORY_VIDEOS), 'Recordings')
 
