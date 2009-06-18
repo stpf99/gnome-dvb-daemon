@@ -54,14 +54,12 @@ class ChannelScanPage(BasePage):
         self.tvchannelsview = gtk.TreeView(self.tvchannels)
         self.tvchannelsview.set_reorderable(True)
         
-        col_active = gtk.TreeViewColumn()
+        col_name = gtk.TreeViewColumn(_("Name"))
+        
         cell_active = gtk.CellRendererToggle()
         cell_active.connect("toggled", self.__on_active_toggled)
-        col_active.pack_start(cell_active, False)
-        col_active.add_attribute(cell_active, "active", self.COL_ACTIVE)
-        self.tvchannelsview.append_column(col_active)
-        
-        col_name = gtk.TreeViewColumn(_("Name"))
+        col_name.pack_start(cell_active, False)
+        col_name.add_attribute(cell_active, "active", self.COL_ACTIVE)
         
         cell_icon = gtk.CellRendererPixbuf()
         col_name.pack_start(cell_icon, False)
