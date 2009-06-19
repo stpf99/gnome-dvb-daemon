@@ -7,4 +7,5 @@ gnomedvbwizardpages_PYTHON = \
     InitialTuningDataPage.py \
     IntroPage.py \
     SaveChannelListPage.py \
+    SetupDevicePage.py \
     SummaryPage.py

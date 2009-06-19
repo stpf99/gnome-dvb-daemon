@@ -25,6 +25,16 @@ class SummaryPage(BasePage):
     def __init__(self):
         BasePage.__init__(self)
         
+        self.label = gtk.Label()
+        self.label.set_line_wrap(True)
+        self.pack_start(self.label)
+        
+        button_alignment = gtk.Alignment(xalign=0.5)
+        self.pack_start(button_alignment, False)
+        
+        self.configure_button = gtk.Button(label=_('Configure Another Device'))
+        button_alignment.add(self.configure_button)
+        
         self.checkbutton = gtk.CheckButton(label=_("Start control center now"))
         self.pack_end(self.checkbutton, False, False, 0)
     
@@ -36,13 +46,10 @@ class SummaryPage(BasePage):
         
     def set_device_name_and_details(self, name, details):
         text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)
-        text += "\n%s\n" % details
-        text += _("You can configure additional devices by re-running this application.")
-        label = gtk.Label()
-        label.set_markup(text)
-        label.set_line_wrap(True)
-        label.show()
-        self.pack_start(label)
+        text += "\n%s" % details
+        
+        self.label.set_markup(text)
+        self.label.show()
         
     def start_control_center(self):
         return self.checkbutton.get_active()

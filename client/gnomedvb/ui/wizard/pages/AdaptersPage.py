@@ -28,6 +28,7 @@ class AdaptersPage(BasePage):
     
     __gsignals__ = {
         "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
+        "next-page": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
     }
 
     def __init__(self, model):
@@ -38,6 +39,7 @@ class AdaptersPage(BasePage):
         self.__model = model
         self._progressbar = None
         self.devicesview = None
+        self.scrolledview = None
         
         self._label = gtk.Label()
         self._label.set_line_wrap(True)
@@ -47,6 +49,9 @@ class AdaptersPage(BasePage):
         self.deviceslist = gtk.ListStore(str, str, str, int, int, bool)
         
     def show_no_devices(self):
+        if self.scrolledview:
+            self.scrolledview.hide()
+    
         text = "<big><span weight=\"bold\">%s</span></big>" % _('No devices have been found.')
         text += "\n\n"
         text += _('Either no DVB cards are installed or all cards are busy. In the latter case make sure you close all programs such as video players that access your DVB card.')
@@ -75,15 +80,21 @@ class AdaptersPage(BasePage):
             col_type.add_attribute(cell_type, "text", 1)
             self.devicesview.append_column(col_type)
         
-            scrolledview = gtk.ScrolledWindow()
-            scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-            scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            scrolledview.add(self.devicesview)
-            scrolledview.show_all()
+            self.scrolledview = gtk.ScrolledWindow()
+            self.scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+            self.scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            self.scrolledview.add(self.devicesview)
+            self.scrolledview.show_all()
         
-            self.pack_start(scrolledview)
+            self.pack_start(self.scrolledview)
+        
+        if len(self.deviceslist) == 1:
+            self.emit("next-page")
         
     def show_all_configured(self):
+        if self.scrolledview:
+            self.scrolledview.hide()
+
         text = "<big><span weight=\"bold\">%s</span></big>" % _('All devices are already configured.')
         text += "\n\n"
         text += _('Go to the control center if you want to alter the settings of already configured devices.')
@@ -130,11 +141,8 @@ class AdaptersPage(BasePage):
                                    "frontend": self.deviceslist[aiter][4],
                                    "registered": self.deviceslist[aiter][5],}
         return self.__adapter_info
-        
-    def get_devices_count(self):
-        return len(self.deviceslist)
-        
-    def get_dvb_devices(self):
+
+    def run(self):
         """
         Retrieves registered and unregistered devices
         and sets the contents of the page

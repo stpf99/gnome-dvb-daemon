@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import os.path
 import gnomedvb
 import gtk
 import subprocess
@@ -29,6 +28,7 @@ from gnomedvb.ui.wizard.pages.InitialTuningDataPage import InitialTuningDataPage
 from gnomedvb.ui.wizard.pages.ChannelScanPage import ChannelScanPage
 from gnomedvb.ui.wizard.pages.SaveChannelListPage import SaveChannelListPage
 from gnomedvb.ui.wizard.pages.SummaryPage import SummaryPage
+from gnomedvb.ui.wizard.pages.SetupDevicePage import SetupDevicePage
 
 class SetupWizard(gtk.Assistant):
 
@@ -37,15 +37,16 @@ class SetupWizard(gtk.Assistant):
      INITIAL_TUNING_DATA_PAGE,
      CHANNEL_SCAN_PAGE,
      SAVE_CHANNELS_PAGE,
-     SUMMARY_PAGE) = range(6)
+     SETUP_DEVICE_PAGE,
+     SUMMARY_PAGE) = range(7)
 
     def __init__(self):
         gtk.Assistant.__init__(self)
         self.__ask_on_exit = False
         self.__adapter_info = None
         self.__model = DVBModel()
-        self.__export_mode = False
-        self.__summary = None
+        self.__expert_mode = False
+        self.__create_group = False
         
         self.connect ('delete-event', self.confirm_quit)
         self.connect ('cancel', self.confirm_quit)
@@ -62,6 +63,7 @@ class SetupWizard(gtk.Assistant):
         
         self.adapters_page = AdaptersPage(self.__model)
         self.adapters_page.connect("finished", self.on_adapter_page_finished)
+        self.adapters_page.connect("next-page", self.on_next_page)
         self.append_page(self.adapters_page)
         
         self.tuning_data_page = InitialTuningDataPage()
@@ -76,7 +78,13 @@ class SetupWizard(gtk.Assistant):
         save_channels_page.connect("finished", self.on_page_finished)
         self.append_page(save_channels_page)
         
+        self.setup_page = SetupDevicePage(self.__model)
+        self.setup_page.connect("finished", self.on_setup_device_page_finished)
+        self.append_page(self.setup_page)
+        
         self.summary_page = SummaryPage()
+        self.summary_page.configure_button.connect("clicked",
+            lambda button: self.set_current_page(self.INTRO_PAGE))
         self.append_page(self.summary_page)
         
     def append_page(self, page):
@@ -86,21 +94,32 @@ class SetupWizard(gtk.Assistant):
     def on_prepare(self, assistant, page):
         if isinstance(page, InitialTuningDataPage):
             page.set_adapter_info(self.__adapter_info)
+        elif isinstance(page, AdaptersPage):
+            self.__expert_mode = self.intro_page.has_expert_mode()
+            page.display_configured(self.__expert_mode)
+            page.run()
         elif isinstance(page, ChannelScanPage):
             self.__ask_on_exit = True
             if self.__adapter_info["name"] != None:
                 page.set_name(self.__adapter_info["name"])
                 page.start_scanning(self.__adapter_info["adapter"],
                     self.__adapter_info["frontend"], self.tuning_data_page.get_tuning_data ())
+        elif isinstance(page, SetupDevicePage):
+            page.set_adapter(self.__adapter_info)
+            page.set_scanner(self.scan_page.get_scanner())
+            page.set_channels(self.scan_page.get_selected_channel_sids())
+            page.run(self.__create_group)
         elif isinstance(page, SaveChannelListPage):
             page.set_scanner(self.scan_page.get_scanner())
             page.set_channels(self.scan_page.get_selected_channel_sids())
         elif isinstance(page, SummaryPage):
             self.__ask_on_exit = False
             if self.__expert_mode:
-                self.__summary = _('The generated channels file can be used to configure your devices in the control center.')
+                summary = _('The generated channels file can be used to configure your devices in the control center.')
+            else:
+                summary = self.setup_page.get_summary()
             page.set_device_name_and_details(self.__adapter_info["name"],
-                self.__summary)
+                summary)
 
         self.set_page_title(page, page.get_page_title())
         
@@ -112,69 +131,27 @@ class SetupWizard(gtk.Assistant):
             self.__adapter_info = page.get_adapter_info()
         self.on_page_finished(page, state)
         
+    def on_setup_device_page_finished(self, page, state):
+        if state:
+            self.set_current_page(self.SUMMARY_PAGE)
+        
     def page_func(self, current_page, user_data=None):
-        if current_page == self.INTRO_PAGE:
-            # On initial page
-            self.__expert_mode = self.intro_page.has_expert_mode()
-            self.adapters_page.display_configured(self.__expert_mode)
-            self.adapters_page.get_dvb_devices()
-            if not self.__expert_mode:
-                if self.adapters_page.get_devices_count() == 1:
-                    # There's only one device no need to select one
-                    self.__adapter_info = self.adapters_page.get_adapter_info()
-                    existing_group = self.get_existing_group_of_same_type()
-                    if existing_group == None:
-                        return self.INITIAL_TUNING_DATA_PAGE
-                    else:
-                        self.add_to_group(existing_group)
-                        return self.SUMMARY_PAGE
-        elif current_page == self.ADAPTERS_PAGE and not self.__expert_mode:
+        if current_page == self.ADAPTERS_PAGE and not self.__expert_mode:
+            # Check if the selected adapter is not registered
             if self.__adapter_info != None and not self.__adapter_info['registered']:
-                existing_group = self.get_existing_group_of_same_type()
-                if existing_group == None:
-                    return self.INITIAL_TUNING_DATA_PAGE
-                else:
-                    self.add_to_group(existing_group)
-                    return self.SUMMARY_PAGE
-        elif current_page == self.CHANNEL_SCAN_PAGE and not self.__expert_mode:
-            existing_group = self.get_existing_group_of_same_type()
-            if existing_group == None:
-                self.create_group_automatically()
+                # Check if we can add it to an existing group
+                if self.setup_page.can_be_added_to_group(self.__adapter_info):
+                    self.__create_group = False
+                    return self.SETUP_DEVICE_PAGE
+        elif current_page == self.CHANNEL_SCAN_PAGE:
+            if self.__expert_mode:
+                return self.SAVE_CHANNELS_PAGE
             else:
-                self.add_to_group(existing_group)
+                return self.SETUP_DEVICE_PAGE
+        elif current_page == self.SAVE_CHANNELS_PAGE:
             return self.SUMMARY_PAGE
 
         return current_page + 1
-        
-    def get_existing_group_of_same_type(self):
-        groups = self.__model.get_registered_device_groups(None)
-        # Find group of same type
-        existing_group = None
-        for group in groups:
-            if group['type'] == self.__adapter_info['type']:
-                existing_group = group
-                break
-        return existing_group
-         
-    def create_group_automatically(self):
-        channels = self.scan_page.get_selected_channel_sids()
-        channels_file = os.path.join(gnomedvb.get_config_dir(),
-            "channels_%s.conf" % self.__adapter_info["type"])
-        scanner = self.scan_page.get_scanner()
-        scanner.write_channels_to_file(channels, channels_file)
-        
-        recordings_dir = gnomedvb.get_default_recordings_dir()
-        name = "%s %s" % (DVB_TYPE_TO_DESC[self.__adapter_info["type"]], _("TV"))
-        self.__model.add_device_to_new_group(self.__adapter_info['adapter'],
-                        self.__adapter_info['frontend'], channels_file,
-                        recordings_dir, name)
-                        
-        self.__summary = ''
-                        
-    def add_to_group(self, group):
-        group.add_device(self.__adapter_info['adapter'],
-                         self.__adapter_info['frontend'])
-        self.__summary = _('The device has been added to the group %s.') % group['name']
             
     def confirm_quit(self, *args):
         scanner = self.scan_page.get_scanner()
@@ -200,4 +177,16 @@ class SetupWizard(gtk.Assistant):
             if self.summary_page.start_control_center():
                 subprocess.Popen('gnome-dvb-control')
             gtk.main_quit()
+            
+    def on_next_page(self, adapters_page):
+        if not self.__expert_mode:
+            # There's only one device no need to select one
+            self.__adapter_info = adapters_page.get_adapter_info()
+            # Check if we can add it to an existing group
+            if self.setup_page.can_be_added_to_group(self.__adapter_info):
+                self.__create_group = False
+                index = self.SETUP_DEVICE_PAGE
+            else:
+                index = self.INITIAL_TUNING_DATA_PAGE
+            self.set_current_page(index)
 
