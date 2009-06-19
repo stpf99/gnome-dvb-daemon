@@ -77,30 +77,31 @@ def get_adapter_info(adapter):
     pipeline.set_state(gst.STATE_NULL)
     return info
 
-def get_dvb_devices():
+def get_dvb_devices(reply_handler, error_handler):
+    def find_devices_handler(objects):
+        deviceslist = []
+        for o in objects:
+            proxy = bus.get_object(HAL_SERVICE, o)
+            dev = dbus.Interface(proxy, HAL_DEVICE_IFACE)
+
+            dev_file = dev.GetProperty("linux.device_file")
+        
+            match = re.search("adapter(\d+?)/frontend(\d+?)", dev_file)
+            if match != None:
+                adapter = int(match.group(1))
+                info = {}
+                info["adapter"] = adapter
+                info["frontend"] = int(match.group(2))
+                deviceslist.append(info)
+                
+        reply_handler(deviceslist)
+    
     bus = dbus.SystemBus()
     # Get proxy object
     proxy = bus.get_object(HAL_SERVICE, HAL_MANAGER_PATH)
     # Apply the correct interace to the proxy object
     halmanager = dbus.Interface(proxy, HAL_MANAGER_IFACE)
-    objects = halmanager.FindDeviceByCapability("dvb")
-
-    deviceslist = []
-    for o in objects:
-        proxy = bus.get_object(HAL_SERVICE, o)
-        dev = dbus.Interface(proxy, HAL_DEVICE_IFACE)
-
-        dev_file = dev.GetProperty("linux.device_file")
-    
-        match = re.search("adapter(\d+?)/frontend(\d+?)", dev_file)
-        if match != None:
-            adapter = int(match.group(1))
-            info = {}
-            info["adapter"] = adapter
-            info["frontend"] = int(match.group(2))
-            deviceslist.append(info)
-            
-    return deviceslist
+    objects = halmanager.FindDeviceByCapability("dvb", reply_handler=find_devices_handler, error_handler=error_handler)
 
 class DVBManagerClient(gobject.GObject):
     
@@ -128,11 +129,13 @@ class DVBManagerClient(gobject.GObject):
         path = self.manager.GetDeviceGroup(group_id)
         return DVBDeviceGroupClient(path)
         
-    def get_registered_device_groups(self):
-        return [DVBDeviceGroupClient(path) for path in self.manager.GetRegisteredDeviceGroups()]
+    def get_registered_device_groups(self, reply_handler, error_handler):
+        def groups_handler(paths):
+            reply_handler([DVBDeviceGroupClient(path) for path in paths])
+        self.manager.GetRegisteredDeviceGroups(reply_handler=groups_handler, error_handler=error_handler)
        
-    def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir, name):
-        return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir, name)
+    def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir, name, **kwargs):
+        return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir, name, **kwargs)
        
     def get_name_of_registered_device(self, adapter, frontend):
         return self.manager.GetNameOfRegisteredDevice(adapter, frontend)
@@ -490,55 +493,56 @@ if __name__ == '__main__':
     #scanner.add_scanning_data(pro7_sat)
     #scanner.run()
     
-    dev_groups = manager.get_registered_device_groups()
-    
-    for dev_group in dev_groups:
-        print "Members", dev_group.get_members()
-    
-        rec = dev_group.get_recorder()
-        timers = rec.get_timers()
-        print timers
-        for tid in timers:
-            print "Start", rec.get_start_time(tid)
-            print "End", rec.get_end_time(tid)
-            print "Duration", rec.get_duration(tid)
-            
-        print rec.get_active_timers()
+    def device_handler(dev_groups):
+        for dev_group in dev_groups:
+            print "Members", dev_group.get_members()
         
-        print rec.add_timer(32, 2008, 7, 28, 23, 42, 2)
+            rec = dev_group.get_recorder()
+            timers = rec.get_timers()
+            print timers
+            for tid in timers:
+                print "Start", rec.get_start_time(tid)
+                print "End", rec.get_end_time(tid)
+                print "Duration", rec.get_duration(tid)
+                
+            print rec.get_active_timers()
             
-        channellist = dev_group.get_channel_list()
-        print "RADIO CHANNELS"
-        for channel_id in channellist.get_radio_channels():
-            print "SID", channel_id
-            print "Name", channellist.get_channel_name(channel_id)
-            print "Network", channellist.get_channel_network(channel_id)
-        print
-        print "TV CHANNELS"
-        for channel_id in channellist.get_tv_channels():
-            print "SID", channel_id
-            print "Name", channellist.get_channel_name(channel_id)
-            print "Network", channellist.get_channel_network(channel_id)
-            print "URL", channellist.get_channel_url(channel_id)
-            schedule = dev_group.get_schedule (channel_id)
-            event_now = schedule.now_playing()
-            print u"Now: %s" % schedule.get_name(event_now)
-            print u"\tDesc: %s" % schedule.get_short_description(event_now)
-            time = schedule.get_local_start_time(event_now)
-            if len(time) == 6:
-                print u"\tStart: %04d-%02d-%02d %02d:%02d:%02d" % (time[0], time[1], time[2], time[3],
-                    time[4], time[5])
-            print u"\tDuration: %s" % schedule.get_duration(event_now)
+            print rec.add_timer(32, 2008, 7, 28, 23, 42, 2)
+                
+            channellist = dev_group.get_channel_list()
+            print "RADIO CHANNELS"
+            for channel_id in channellist.get_radio_channels():
+                print "SID", channel_id
+                print "Name", channellist.get_channel_name(channel_id)
+                print "Network", channellist.get_channel_network(channel_id)
             print
-        
-    recstore = DVBRecordingsStoreClient()
-    for rid in recstore.get_recordings():
-        print "Channel", recstore.get_channel_name(rid)
-        print "Location", recstore.get_location(rid)
-        print "Start", recstore.get_start_time(rid)
-        print recstore.get_start_timestamp(rid)
-        print "Length", recstore.get_length(rid)    
-        print "Name", recstore.get_name (rid)
-        print "Desc", recstore.get_description(rid)
+            print "TV CHANNELS"
+            for channel_id in channellist.get_tv_channels():
+                print "SID", channel_id
+                print "Name", channellist.get_channel_name(channel_id)
+                print "Network", channellist.get_channel_network(channel_id)
+                print "URL", channellist.get_channel_url(channel_id)
+                schedule = dev_group.get_schedule (channel_id)
+                event_now = schedule.now_playing()
+                print u"Now: %s" % schedule.get_name(event_now)
+                print u"\tDesc: %s" % schedule.get_short_description(event_now)
+                time = schedule.get_local_start_time(event_now)
+                if len(time) == 6:
+                    print u"\tStart: %04d-%02d-%02d %02d:%02d:%02d" % (time[0], time[1], time[2], time[3],
+                        time[4], time[5])
+                print u"\tDuration: %s" % schedule.get_duration(event_now)
+                print
+            
+        recstore = DVBRecordingsStoreClient()
+        for rid in recstore.get_recordings():
+            print "Channel", recstore.get_channel_name(rid)
+            print "Location", recstore.get_location(rid)
+            print "Start", recstore.get_start_time(rid)
+            print recstore.get_start_timestamp(rid)
+            print "Length", recstore.get_length(rid)    
+            print "Name", recstore.get_name (rid)
+            print "Desc", recstore.get_description(rid)
+    
+    dev_groups = manager.get_registered_device_groups(reply_handler=device_handler)
     
     loop.run()
