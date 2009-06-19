@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gobject
+import glib
 import gnomedvb
 import gtk
 from gettext import gettext as _
@@ -35,10 +36,11 @@ class AdaptersPage(BasePage):
         self.__adapter_info = None
         self.__use_configured = True
         self.__model = model
+        self._progressbar = None
+        self.devicesview = None
         
         self._label = gtk.Label()
         self._label.set_line_wrap(True)
-        self._label.show()
         self.pack_start(self._label)
         
         # Name, Type Name, Type, adapter, frontend, registered
@@ -49,40 +51,62 @@ class AdaptersPage(BasePage):
         text += "\n\n"
         text += _('Either no DVB cards are installed or all cards are busy. In the latter case make sure you close all programs such as video players that access your DVB card.')
         self._label.set_markup (text)
+        self._label.show()
     
     def show_devices(self):
         text = _("Select device you want to configure.")
         self._label.set_markup (text)
+        self._label.show()
     
-        self.devicesview = gtk.TreeView(self.deviceslist)
-        self.devicesview.get_selection().connect("changed",
-            self.on_device_selection_changed)
-    
-        cell_name = gtk.CellRendererText()
-        col_name = gtk.TreeViewColumn(_("Name"))
-        col_name.pack_start(cell_name)
-        col_name.add_attribute(cell_name, "text", 0)
-        self.devicesview.append_column(col_name)
-    
-        cell_type = gtk.CellRendererText()
-        col_type = gtk.TreeViewColumn(_("Type"))
-        col_type.pack_start(cell_type)
-        col_type.add_attribute(cell_type, "text", 1)
-        self.devicesview.append_column(col_type)
-    
-        scrolledview = gtk.ScrolledWindow()
-        scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrolledview.add(self.devicesview)
-        scrolledview.show_all()
-    
-        self.pack_start(scrolledview)
+        if self.devicesview == None:
+            self.devicesview = gtk.TreeView(self.deviceslist)
+            self.devicesview.get_selection().connect("changed",
+                self.on_device_selection_changed)
+        
+            cell_name = gtk.CellRendererText()
+            col_name = gtk.TreeViewColumn(_("Name"))
+            col_name.pack_start(cell_name)
+            col_name.add_attribute(cell_name, "text", 0)
+            self.devicesview.append_column(col_name)
+        
+            cell_type = gtk.CellRendererText()
+            col_type = gtk.TreeViewColumn(_("Type"))
+            col_type.pack_start(cell_type)
+            col_type.add_attribute(cell_type, "text", 1)
+            self.devicesview.append_column(col_type)
+        
+            scrolledview = gtk.ScrolledWindow()
+            scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+            scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            scrolledview.add(self.devicesview)
+            scrolledview.show_all()
+        
+            self.pack_start(scrolledview)
         
     def show_all_configured(self):
         text = "<big><span weight=\"bold\">%s</span></big>" % _('All devices are already configured.')
         text += "\n\n"
         text += _('Go to the control center if you want to alter the settings of already configured devices.')
         self._label.set_markup (text)
+        self._label.show()
+        
+    def show_progressbar(self):
+        self._label.hide()
+        self._progressbar = gtk.ProgressBar()
+        self._progressbar.set_text(_("Searching for devices"))
+        self._progressbar.set_fraction(0.1)
+        self._progressbar.show()
+        self.pack_start(self._progressbar, False)
+        self._progressbar_timer = glib.timeout_add(100, self.progressbar_pulse)
+        
+    def destroy_progressbar(self):
+        glib.source_remove(self._progressbar_timer)
+        self._progressbar_timer = None
+        self._progressbar.destroy()
+
+    def progressbar_pulse(self):
+        self._progressbar.pulse()
+        return True
 
     def get_page_title(self):
         return _("Device selection")
@@ -115,40 +139,49 @@ class AdaptersPage(BasePage):
         Retrieves registered and unregistered devices
         and sets the contents of the page
         """
-        registered = set()
-        devgroups = self.__model.get_registered_device_groups()
-        for group in devgroups:
-            for dev in group["devices"]:
-                dev.type_name = DVB_TYPE_TO_DESC[dev.type]
-                dev.registered = True
-                registered.add(dev)
+        def registered_handler(devgroups):
+            for group in devgroups:
+                for dev in group["devices"]:
+                    dev.type_name = DVB_TYPE_TO_DESC[dev.type]
+                    dev.registered = True
+                    registered.add(dev)       
+            self.__model.get_all_devices(reply_handler=devices_handler)
         
-        unregistered = set()
-        for dev in self.__model.get_all_devices():
-            if dev not in registered:
-                info = gnomedvb.get_adapter_info(dev.adapter)
-                dev.name = info["name"]
-                dev.type = info["type"]
-                dev.type_name = DVB_TYPE_TO_DESC[info["type"]]
-                dev.registered = False
-                unregistered.add(dev)
-                
-        if self.__use_configured:
-            devs =  registered | unregistered
-        else:
-            devs = unregistered
-                    
-        for dev in devs:
-            self.deviceslist.append([dev.name, dev.type_name,
-                dev.type, dev.adapter, dev.frontend, dev.registered])
-
-        if len(devs) == 0:
+        def devices_handler(devices):
+            for dev in devices:
+                if dev not in registered:
+                    info = gnomedvb.get_adapter_info(dev.adapter)
+                    dev.name = info["name"]
+                    dev.type = info["type"]
+                    dev.type_name = DVB_TYPE_TO_DESC[info["type"]]
+                    dev.registered = False
+                    unregistered.add(dev)
+               
             if self.__use_configured:
-                self.show_no_devices()
+                devs =  registered | unregistered
             else:
-                self.show_all_configured()
-        else:
-            self.show_devices()
+                devs = unregistered
+
+            self.deviceslist.clear()
+            for dev in devs:
+                self.deviceslist.append([dev.name, dev.type_name,
+                    dev.type, dev.adapter, dev.frontend, dev.registered])
+
+            self.destroy_progressbar()
+
+            if len(devs) == 0:
+                if self.__use_configured:
+                    self.show_no_devices()
+                else:
+                    self.show_all_configured()
+            else:
+                self.show_devices()
+    
+        registered = set()
+        unregistered = set()
+        self.show_progressbar()
+        
+        self.__model.get_registered_device_groups(reply_handler=registered_handler)
     
     def on_device_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()

@@ -341,8 +341,10 @@ class ControlCenterWindow(gtk.Window):
         self.toolbar.insert(self.button_next_day, 6)
         
     def get_device_groups(self):
-        for group in self.manager.get_registered_device_groups():
-            self._append_group(group)
+        def append_groups(groups):
+            for group in groups:
+                self._append_group(group)
+        self.manager.get_registered_device_groups(reply_handler=append_groups)
     
     def _select_first_group(self):
         self.devgroupscombo.set_active(0)

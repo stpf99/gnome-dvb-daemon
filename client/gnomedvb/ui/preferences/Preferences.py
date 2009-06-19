@@ -121,11 +121,16 @@ class Preferences(gtk.Dialog):
         self.vbox_main.pack_start(unassigned_frame)
         
     def _fill(self):
-        for device in self._model.get_unregistered_devices():
-            self.unassigned_devices.append([device])
-        
-        for group in self._model.get_registered_device_groups():
-            self._append_group(group)
+        def append_unassigned(devices):
+            for device in devices:
+                self.unassigned_devices.append([device])
+                
+        def append_registered(groups):
+            for group in groups:
+                self._append_group(group)
+                
+        self._model.get_unregistered_devices(reply_handler=append_unassigned)
+        self._model.get_registered_device_groups(reply_handler=append_registered)
 
     def _append_group(self, group):
         group.connect("device-added", self._on_group_device_added)

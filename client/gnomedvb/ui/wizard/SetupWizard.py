@@ -147,7 +147,7 @@ class SetupWizard(gtk.Assistant):
         return current_page + 1
         
     def get_existing_group_of_same_type(self):
-        groups = self.__model.get_registered_device_groups()
+        groups = self.__model.get_registered_device_groups(None)
         # Find group of same type
         existing_group = None
         for group in groups:

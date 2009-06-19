@@ -49,13 +49,15 @@ class AddToGroupDialog (gtk.Dialog):
         combo.add_attribute(cell, "text", 0)
         combo.show()
         self.vbox.pack_start(combo)
-                      
-        for group in model.get_registered_device_groups():
-            if group.get_type() == device_type:
-                name = group["name"]
-                if name == "":
-                    name = "Group %d" % group["id"]
-                self.groups.append([name, group])
+                     
+        def append_groups(groups):
+            for group in groups:
+                if group.get_type() == device_type:
+                    name = group["name"]
+                    if name == "":
+                        name = "Group %d" % group["id"]
+                    self.groups.append([name, group])
+        model.get_registered_device_groups(reply_handler=append_groups)
             
     def on_combo_changed(self, combo):
         aiter = combo.get_active_iter()

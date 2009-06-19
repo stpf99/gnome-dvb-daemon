@@ -66,15 +66,21 @@ class ChannelsTreeStore(gtk.TreeStore):
         self._add_channels()
             
     def _add_channels(self):
+        def append_groups(dev_groups):
+            for dev_group in dev_groups:
+                self._append_group(dev_group)
+
         manager = gnomedvb.DVBManagerClient ()
         manager.connect('group-added', self._on_manager_group_added)
         manager.connect('group-removed', self._on_manager_group_removed)
-        dev_groups = manager.get_registered_device_groups()
+        manager.get_registered_device_groups(reply_handler=append_groups, error_handler=global_error_handler)
     
-        for dev_group in dev_groups:
-            self._append_group(dev_group)
-            
     def _append_group(self, dev_group):
+        group_id = dev_group.get_id()
+        group_name = dev_group.get_name()
+        group_iter = self.append(None, [group_id, group_name, 0, dev_group])
+        channellist = dev_group.get_channel_list()
+        
         def append_channel(channels):
             for channel_id in channels:
                 self.append(group_iter,
@@ -82,11 +88,7 @@ class ChannelsTreeStore(gtk.TreeStore):
                     channellist.get_channel_name(channel_id),
                     channel_id,
                     dev_group])
-    
-        group_id = dev_group.get_id()
-        group_name = dev_group.get_name()
-        group_iter = self.append(None, [group_id, group_name, 0, dev_group])
-        channellist = dev_group.get_channel_list()
+
         channellist.get_channels(reply_handler=append_channel, error_handler=global_error_handler)
        
     def _on_manager_group_added(self, manager, group_id):
