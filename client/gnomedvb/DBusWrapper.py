@@ -175,8 +175,8 @@ class DVBDeviceGroupClient(gobject.GObject):
         path = self.devgroup.GetRecorder()
         return DVBRecorderClient(path)
         
-    def add_device (self, adapter, frontend):
-        return self.devgroup.AddDevice(adapter, frontend)
+    def add_device (self, adapter, frontend, **kwargs):
+        return self.devgroup.AddDevice(adapter, frontend, **kwargs)
         
     def remove_device(self, adapter, frontend):
         return self.devgroup.RemoveDevice(adapter, frontend)
@@ -245,11 +245,11 @@ class DVBScannerClient(gobject.GObject):
     def destroy(self):
         self.scanner.Destroy()
         
-    def write_channels_to_file(self, channel_sids, channelfile):
-        self.scanner.WriteChannelsToFile(channel_sids, channelfile)
+    def write_channels_to_file(self, channel_sids, channelfile, **kwargs):
+        self.scanner.WriteChannelsToFile(channel_sids, channelfile, **kwargs)
         
-    def write_all_channels_to_file(self, channelfile):
-        self.scanner.WriteAllChannelsToFile(channelfile)
+    def write_all_channels_to_file(self, channelfile, **kwargs):
+        self.scanner.WriteAllChannelsToFile(channelfile, **kwargs)
     
     def on_finished(self):
         self.emit("finished")
