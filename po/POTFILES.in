@@ -20,6 +20,7 @@ client/gnomedvb/ui/wizard/pages/ChannelScanPage.py
 client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py
 client/gnomedvb/ui/wizard/pages/IntroPage.py
 client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py
+client/gnomedvb/ui/wizard/pages/SetupDevicePage.py
 client/gnomedvb/ui/wizard/pages/SummaryPage.py
 client/gnomedvb/ui/wizard/SetupWizard.py
 client/totem-plugin/dvb-daemon.py
