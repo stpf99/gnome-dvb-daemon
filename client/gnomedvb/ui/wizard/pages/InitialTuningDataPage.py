@@ -102,7 +102,7 @@ class InitialTuningDataPage(BasePage):
              "gr": _("Greece"), "hr": _("Hungary"), "is": _("Iceland"), "it": _("Italy"),
              "lu": _("Luxemburg"), "nl": _("Netherlands"), "nz": _("New Zealand"),
              "pl": _("Poland"), "se": _("Sweden"), "sk": _("Slovakia"), "tw": _("Taiwan"),
-             "uk": _("United Kingdom") }
+             "uk": _("United Kingdom"), "hk": _("Hong Kong") }
     
         self._create_table()
         
