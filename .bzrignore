@@ -14,8 +14,8 @@
 *.o
 *.class
 *.py[co]
+src/**/*.[ch]
 *.stamp
-*.[ch]
 .dirstamp
 stamp-it
 aclocal.m4
