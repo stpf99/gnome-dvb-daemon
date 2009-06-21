@@ -19,11 +19,26 @@
 
 import gnomedvb
 import gtk
+import gtk.gdk
 from gnomedvb.ui.wizard.SetupWizard import SetupWizard
+from optparse import OptionParser
 
 gnomedvb.setup_i18n()
 
+parser = OptionParser()
+parser.add_option("--transient-for", dest="transient_for", type=int,
+                  help="XID of parent window")
+		  
+(options, args) = parser.parse_args()
+
 w = SetupWizard()
+w.realize()
+
+if options.transient_for:
+	foreign_win = gtk.gdk.window_foreign_new(options.transient_for)
+	if foreign_win:
+		w.window.set_transient_for(foreign_win)
+
 w.show_all()
 gtk.main ()
 	
