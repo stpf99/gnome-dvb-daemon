@@ -272,7 +272,9 @@ class DVBDaemonPlugin(totem.Plugin):
             return (model[aiter][model.COL_GROUP], model[aiter][model.COL_SID],)
         
     def _on_action_setup(self, action):
-        subprocess.Popen('gnome-dvb-setup')
+        main_window = self.totem_object.get_main_window()
+        xid = main_window.window.xid
+        subprocess.Popen(["gnome-dvb-setup", "--transient-for=%d" % xid])
 
     def _on_action_timers(self, action):
         group = self._get_selected_group_and_channel()[0]
