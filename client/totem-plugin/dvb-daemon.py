@@ -21,7 +21,7 @@ pygtk.require("2.0")
 import gtk
 import pygst
 pygst.require("0.10")
-
+import glib
 import subprocess
 import totem
 import gnomedvb
@@ -178,25 +178,12 @@ class DVBDaemonPlugin(totem.Plugin):
         self.channels = ChannelsTreeStore()
         self.channels.connect('row-deleted', self._on_channels_row_inserted_deleted)
         self.channels.connect('row-inserted', self._on_channels_row_inserted_deleted)
-        if len(self.channels) == 0:
-            dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
-                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
-            dialog.set_markup (
-                "<big><span weight=\"bold\">%s</span></big>" % _("DVB card is not configured"))
-            dialog.format_secondary_text(_("Do you want to search for channels now?"))
-            response = dialog.run()
-            if response == gtk.RESPONSE_YES:
-                self._on_action_setup(None)
-            dialog.destroy()
-        elif len(self.channels) == 1:
-            # Activate single group mode
-            root_iter = self.channels.get_iter_root()
-            self.single_group = self.channels[root_iter][self.channels.COL_GROUP]
         
         self.channels_view = ChannelsView(self.channels, ChannelsTreeStore.COL_NAME)
         self.channels_view.connect("button-press-event", self._on_channel_selected)
         self.channels_view.get_selection().connect("changed", self._on_selection_changed)
+        # Channels are added async, check in two seconds
+        glib.timeout_add_seconds(2, self._is_setup)
         
         self.scrolledchannels = gtk.ScrolledWindow()
         self.scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -259,6 +246,23 @@ class DVBDaemonPlugin(totem.Plugin):
         self.whatson_item = uimanager.get_widget('/tmw-menubar/dvb/whats-on-now')
         # One entry is for recordings
         self.whatson_item.set_sensitive(len(self.channels) > 0)
+
+    def _is_setup(self):
+        if len(self.channels) == 1:
+            dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
+                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+            dialog.set_markup (
+                "<big><span weight=\"bold\">%s</span></big>" % _("DVB card is not configured"))
+            dialog.format_secondary_text(_("Do you want to search for channels now?"))
+            response = dialog.run()
+            if response == gtk.RESPONSE_YES:
+                self._on_action_setup(None)
+            dialog.destroy()
+        elif len(self.channels) == 1:
+            # Activate single group mode
+            root_iter = self.channels.get_iter_root()
+            self.single_group = self.channels[root_iter][self.channels.COL_GROUP]
 
     def _get_selected_group_and_channel(self):
         model, aiter = self.channels_view.get_selection().get_selected()
