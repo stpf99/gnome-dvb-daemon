@@ -118,13 +118,13 @@ class DVBDaemonPlugin(totem.Plugin):
     
     MENU = '''<ui>
     <menubar name="tmw-menubar">
-    <menu name="dvb" action="dvb-menu">
-      <menuitem name="setup" action="dvb-setup" />
+    <menu name="edit" action="edit-menu">
       <menuitem name="timers" action="dvb-timers" />
+      <menuitem name="dvb-prefs" action="dvb-preferences" />
+    </menu>
+    <menu name="view" action="view-menu">
       <menuitem name="program-guide" action="dvb-epg" />
       <menuitem name="whats-on-now" action="dvb-whatson" />
-      <separator />
-      <menuitem name="dvb-prefs" action="dvb-preferences" />
     </menu></menubar>
     <popup name="dvb-popup">
         <menuitem name="dvb-program-guide" action="dvb-epg" />
@@ -213,11 +213,10 @@ class DVBDaemonPlugin(totem.Plugin):
         actiongroup = gtk.ActionGroup('dvb')
         actiongroup.add_actions([
             ('dvb-menu', None, _('Digital _TV')),
-            ('dvb-setup', None, _('_Setup'), None, None, self._on_action_setup),
             ('dvb-timers', None, _('_Recording schedule'), None, None, self._on_action_timers),
             ('dvb-epg', None, _('_Program Guide'), None, None, self._on_action_epg),
             ('dvb-whatson', gtk.STOCK_INDEX, _("What's on now"), None, None, self._on_action_whats_on_now),
-            ('dvb-preferences', gtk.STOCK_PREFERENCES, _('Preferences'), None, None, self._on_action_preferences),
+            ('dvb-preferences', gtk.STOCK_PREFERENCES, _('Digital TV Preferences'), None, None, self._on_action_preferences),
             ('dvb-delete-recording', None, _('_Delete'), None, None, self._on_action_delete),
             ('dvb-detail-recording', None, _('D_etails'), None, None, self._on_action_details),
         ])
@@ -235,17 +234,28 @@ class DVBDaemonPlugin(totem.Plugin):
         timers_image = gtk.image_new_from_pixbuf(pixbuf)
         timers_image.show()
         
-        self.timers_item = uimanager.get_widget('/tmw-menubar/dvb/timers')
+        self.timers_item = uimanager.get_widget('/tmw-menubar/edit/timers')
         self.timers_item.set_image(timers_image)
         
-        self.epg_item = uimanager.get_widget('/tmw-menubar/dvb/program-guide')
+        self.epg_item = uimanager.get_widget('/tmw-menubar/view/program-guide')
         sensitive = self.single_group != None
         self.timers_item.set_sensitive(sensitive)
         self.epg_item.set_sensitive(False)
         
-        self.whatson_item = uimanager.get_widget('/tmw-menubar/dvb/whats-on-now')
+        self.whatson_item = uimanager.get_widget('/tmw-menubar/view/whats-on-now')
         # One entry is for recordings
         self.whatson_item.set_sensitive(len(self.channels) > 0)
+        
+        # Reorder items
+        edit_menu = uimanager.get_widget('/tmw-menubar/edit').get_submenu()
+        edit_menu.reorder_child(self.timers_item, 6)
+        edit_menu.reorder_child(uimanager.get_widget('/tmw-menubar/edit/dvb-prefs'), 7)
+        edit_menu.insert(gtk.SeparatorMenuItem(), 8)
+        
+        view_menu = uimanager.get_widget('/tmw-menubar/view').get_submenu()
+        view_menu.reorder_child(self.whatson_item, 17)
+        view_menu.reorder_child(self.epg_item, 18)
+        view_menu.insert(gtk.SeparatorMenuItem(), 19)
 
     def _is_setup(self):
         if len(self.channels) == 1:
