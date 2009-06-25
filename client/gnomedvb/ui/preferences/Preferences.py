@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import subprocess
 from gnomedvb.ui.preferences.Frame import Frame
 from gnomedvb.ui.preferences.Dialogs import *
 from gnomedvb.ui.preferences.DeviceGroupsView import *
@@ -25,8 +26,13 @@ from gnomedvb.Device import Device
 
 class Preferences(gtk.Dialog):
 
+    (BUTTON_EDIT,
+     BUTTON_REMOVE,
+     SEP1,
+     BUTTON_PREFERENCES,) = range(4)
+
     def __init__(self, model, parent=None):
-        gtk.Dialog.__init__(self, title=_("Configure DVB"),
+        gtk.Dialog.__init__(self, title=_('Digital TV Preferences'),
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
@@ -34,7 +40,6 @@ class Preferences(gtk.Dialog):
         self._model = model
         self._model.connect("group-added", self._on_manager_group_added)
         self._model.connect("group-removed", self._on_manager_group_removed)
-        #self._model.connect("group-changed", self._on_group_changed)
         
         self.set_default_size(600, 450)
         
@@ -50,48 +55,60 @@ class Preferences(gtk.Dialog):
         
         self._fill()
         
-        self.devicegroupsview.expand_all()
+        self.devicegroupsview.grab_focus()
         
     def __create_toolbar(self):
         toolbar = gtk.Toolbar()
         toolbar.show()
         self.vbox.pack_start(toolbar, False)
         
+        self.button_prefs = gtk.ToolButton(gtk.STOCK_EDIT)
+        self.button_prefs.connect("clicked", self._on_button_prefs_clicked)
+        self.button_prefs.set_sensitive(False)
+        self.button_prefs.set_tooltip_markup(_("Edit selected group"))
+        self.button_prefs.show()
+        toolbar.insert(self.button_prefs, self.BUTTON_EDIT)
+        
         self.button_remove = gtk.ToolButton(gtk.STOCK_REMOVE)
         self.button_remove.connect("clicked", self._on_button_remove_clicked)
         self.button_remove.set_sensitive(False)
         self.button_remove.set_tooltip_markup(_("Remove selected device"))
         self.button_remove.show()
-        toolbar.insert(self.button_remove, 0)
+        toolbar.insert(self.button_remove, self.BUTTON_REMOVE)
         
         sep = gtk.SeparatorToolItem()
         sep.show()
-        toolbar.insert(sep, 1)
+        toolbar.insert(sep, self.SEP1)
         
-        new_image = gtk.image_new_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        prefs_image = gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        button_setup = gtk.MenuToolButton(icon_widget=prefs_image, label=_("Setup"))
+        button_setup.connect("clicked", self._on_button_setup_clicked)
+        button_setup.set_tooltip_markup(_("Setup devices"))
+        button_setup.show()
+        toolbar.insert(button_setup, self.BUTTON_PREFERENCES)
+        
+        setup_menu = gtk.Menu()        
+        new_image = gtk.image_new_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_MENU)
         new_image.show()
-        self.button_new = gtk.ToolButton(icon_widget=new_image, label=_("Create new group"))
-        self.button_new.connect("clicked", self._on_button_new_clicked)
+        self.button_new = gtk.ImageMenuItem(_("Create new group"))
+        self.button_new.connect("activate", self._on_button_new_clicked)
+        self.button_new.set_image(new_image)
         self.button_new.set_sensitive(False)
         self.button_new.set_tooltip_markup(_("Create new group for selected device"))
         self.button_new.show()
-        toolbar.insert(self.button_new, 2)
+        setup_menu.append(self.button_new)
         
-        add_image = gtk.image_new_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        add_image = gtk.image_new_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
         add_image.show()
-        self.button_add = gtk.ToolButton(icon_widget=add_image, label=_("Add to group"))
-        self.button_add.connect("clicked", self._on_button_add_clicked)
+        self.button_add = gtk.ImageMenuItem(_("Add to group"))
+        self.button_add.connect("activate", self._on_button_add_clicked)
+        self.button_add.set_image(add_image)
         self.button_add.set_sensitive(False)
         self.button_add.set_tooltip_markup(_("Add selected device to existing group"))
         self.button_add.show()
-        toolbar.insert(self.button_add, 3)
+        setup_menu.append(self.button_add)
         
-        self.button_prefs = gtk.ToolButton(gtk.STOCK_PREFERENCES)
-        self.button_prefs.connect("clicked", self._on_button_prefs_clicked)
-        self.button_prefs.set_sensitive(False)
-        self.button_prefs.set_tooltip_markup(_("Change device group"))
-        self.button_prefs.show()
-        toolbar.insert(self.button_prefs, 4)
+        button_setup.set_menu(setup_menu)
         
     def __create_registered_groups(self):
         self.groups_box = gtk.HBox(spacing=6)
@@ -104,19 +121,18 @@ class Preferences(gtk.Dialog):
         self.devicegroupsview.get_selection().connect("changed", self._on_groups_selection_changed)
         self.devicegroupsview.show()
         
-        groups_frame = Frame(_("<b>Registered groups</b>"), self.devicegroupsview)
+        groups_frame = Frame(_("<b>Configured devices</b>"), self.devicegroupsview)
         groups_frame.show()
         self.groups_box.pack_start(groups_frame)
     
     def __create_unassigned_devices(self):
         self.unassigned_devices = UnassignedDevicesStore()
         self.unassigned_view = DeviceGroupsView(self.unassigned_devices)
-        self.unassigned_view.connect("focus-out-event", self._on_focus_out, [self.button_add, self.button_new])
         self.unassigned_view.get_selection().connect("changed",
             self._on_unassigned_selection_changed)
         self.unassigned_view.show()
         
-        unassigned_frame = Frame(_("<b>Unassigned devices</b>"), self.unassigned_view)
+        unassigned_frame = Frame(_("<b>Unconfigured devices</b>"), self.unassigned_view)
         unassigned_frame.show()
         self.vbox_main.pack_start(unassigned_frame)
         
@@ -196,6 +212,10 @@ class Preferences(gtk.Dialog):
                         error_dialog.set_markup(_("<big><span weight=\"bold\">Device could not be removed from group</big></span>"))
                         error_dialog.run()
                         error_dialog.destroy()
+                        
+    def _on_button_setup_clicked(self, button):
+        subprocess.Popen(["gnome-dvb-setup",
+            "--transient-for=%d" % self.window.xid])
 
     def _on_button_new_clicked(self, button):
         model, aiter = self.unassigned_view.get_selection().get_selected()
