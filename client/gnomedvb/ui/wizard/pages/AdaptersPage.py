@@ -187,6 +187,7 @@ class AdaptersPage(BasePage):
     
         registered = set()
         unregistered = set()
+        self.__adapter_info = None
         self.show_progressbar()
         
         self.__model.get_registered_device_groups(reply_handler=registered_handler)
