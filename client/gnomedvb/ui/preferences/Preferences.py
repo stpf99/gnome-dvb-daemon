@@ -117,7 +117,6 @@ class Preferences(gtk.Dialog):
     
         self.devicegroups = DeviceGroupsStore()
         self.devicegroupsview = DeviceGroupsView(self.devicegroups)
-        self.devicegroupsview.connect("focus-out-event", self._on_focus_out, [self.button_remove, self.button_prefs])
         self.devicegroupsview.get_selection().connect("changed", self._on_groups_selection_changed)
         self.devicegroupsview.show()
         
@@ -194,8 +193,8 @@ class Preferences(gtk.Dialog):
                 flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                 type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
             dialog.set_markup(
-                _("Are you sure you want to remove device <b>%s</b> from <b>group %s</b>") % (device.name,
-                device.group))
+                _("Are you sure you want to remove device <b>%s</b> from <b>%s</b>") % (device.name,
+                device.group_name))
             response = dialog.run()
             dialog.destroy()
             if response == gtk.RESPONSE_YES:
@@ -307,6 +306,7 @@ class Preferences(gtk.Dialog):
                 devtype = group.get_type()
                 devname = self._model.get_name_of_registered_device(adapter, frontend)
                 device = Device (group["id"], devname, adapter, frontend, devtype)
+                device.group_name = group["name"]
                 dev_iter = self.devicegroups.append(aiter)
                 self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
                 break
@@ -323,8 +323,4 @@ class Preferences(gtk.Dialog):
                         self.devicegroups.remove(child_iter)
                         return
                     child_iter = self.devicegroups.iter_next(child_iter)
-           
-    def _on_focus_out(self, treeview, event, widgets):
-        for w in widgets:
-            w.set_sensitive(False)
 
