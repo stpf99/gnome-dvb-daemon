@@ -104,7 +104,6 @@ class SetupWizard(gtk.Assistant):
                 page.start_scanning(self.__adapter_info["adapter"],
                     self.__adapter_info["frontend"], self.tuning_data_page.get_tuning_data ())
         elif isinstance(page, SetupDevicePage):
-            print self.__adapter_info
             page.set_adapter(self.__adapter_info)
             page.set_scanner(self.scan_page.get_scanner())
             page.set_channels(self.scan_page.get_selected_channel_sids())
