@@ -121,7 +121,7 @@ class ControlCenterWindow(gtk.Window):
                 
         self.help_eventbox = HelpBox()
         self.choose_group_text = _("Choose a device group and channel on the left to view the program guide")
-        self.create_group_text = _("No device groups are configured. Please go to preferences and create one.")
+        self.create_group_text = _("No devices are configured. Please go to preferences and to configure them.")
         self.hpaned.pack2(self.help_eventbox)
         
         self.scheduleview = ScheduleView()
