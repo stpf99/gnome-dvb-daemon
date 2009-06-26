@@ -114,6 +114,7 @@ class DeviceGroup(gnomedvb.DVBDeviceGroupClient):
                 frontend = int(match.group(2))
                 devname = manager.get_name_of_registered_device(adapter, frontend)
                 dev = Device (self._id, devname, adapter, frontend, self["type"])
+                dev.group_name = self._name
                 devices.append(dev)
         return devices
 

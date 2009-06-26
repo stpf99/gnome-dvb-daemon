@@ -22,6 +22,7 @@ class Device:
 
     def __init__(self, group_id, name, adapter, frontend, devtype):
         self.group = group_id
+        self.group_name = None
         self.name = name
         self.adapter = adapter
         self.frontend = frontend
