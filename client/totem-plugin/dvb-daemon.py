@@ -117,15 +117,6 @@ class DVBDaemonPlugin(totem.Plugin):
     REC_GROUP_ID = -1
     
     MENU = '''<ui>
-    <menubar name="tmw-menubar">
-    <menu name="edit" action="edit-menu">
-      <menuitem name="timers" action="dvb-timers" />
-      <menuitem name="dvb-prefs" action="dvb-preferences" />
-    </menu>
-    <menu name="view" action="view-menu">
-      <menuitem name="program-guide" action="dvb-epg" />
-      <menuitem name="whats-on-now" action="dvb-whatson" />
-    </menu></menubar>
     <popup name="dvb-popup">
         <menuitem name="dvb-program-guide" action="dvb-epg" />
     </popup>
@@ -224,7 +215,33 @@ class DVBDaemonPlugin(totem.Plugin):
         
         uimanager.add_ui_from_string(self.MENU)
         uimanager.ensure_update()
-
+        
+        # Edit menu
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/edit/plugins', 'dvb-timers', 'dvb-timers',
+            gtk.UI_MANAGER_AUTO, True)
+        
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/edit/plugins', 'dvb-preferences', 'dvb-preferences',
+            gtk.UI_MANAGER_AUTO, True)
+            
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/edit/plugins', 'dvb-sep-1', None,
+            gtk.UI_MANAGER_AUTO, True)
+        
+        # View menu
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/sidebar', 'dvb-whatson', 'dvb-whatson',
+            gtk.UI_MANAGER_AUTO, True)
+        
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/sidebar', 'dvb-epg', 'dvb-epg',
+            gtk.UI_MANAGER_AUTO, True)
+        
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/sidebar', 'dvb-sep-2', None,
+            gtk.UI_MANAGER_AUTO, True)
+        
         self.popup_menu = uimanager.get_widget('/dvb-popup')
         self.popup_recordings = uimanager.get_widget('/dvb-recording-popup')
         
@@ -234,26 +251,15 @@ class DVBDaemonPlugin(totem.Plugin):
         timers_image = gtk.image_new_from_pixbuf(pixbuf)
         timers_image.show()
         
-        self.timers_item = uimanager.get_widget('/tmw-menubar/edit/timers')
+        self.timers_item = uimanager.get_widget('/tmw-menubar/edit/dvb-timers')
         self.timers_item.set_image(timers_image)
         
-        self.epg_item = uimanager.get_widget('/tmw-menubar/view/program-guide')
+        self.epg_item = uimanager.get_widget('/tmw-menubar/view/dvb-epg')
         self.timers_item.set_sensitive(False)
         self.epg_item.set_sensitive(False)
         
-        self.whatson_item = uimanager.get_widget('/tmw-menubar/view/whats-on-now')
+        self.whatson_item = uimanager.get_widget('/tmw-menubar/view/dvb-whatson')
         self.whatson_item.set_sensitive(False)
-        
-        # Reorder items
-        edit_menu = uimanager.get_widget('/tmw-menubar/edit').get_submenu()
-        edit_menu.reorder_child(self.timers_item, 6)
-        edit_menu.reorder_child(uimanager.get_widget('/tmw-menubar/edit/dvb-prefs'), 7)
-        edit_menu.insert(gtk.SeparatorMenuItem(), 8)
-        
-        view_menu = uimanager.get_widget('/tmw-menubar/view').get_submenu()
-        view_menu.reorder_child(self.whatson_item, 17)
-        view_menu.reorder_child(self.epg_item, 18)
-        view_menu.insert(gtk.SeparatorMenuItem(), 19)
 
     def _is_setup(self):
         if len(self.channels) == 1:
