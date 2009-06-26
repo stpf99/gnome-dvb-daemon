@@ -199,7 +199,7 @@ class DVBDaemonPlugin(totem.Plugin):
         self.whatson_button.set_image(gtk.image_new_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_BUTTON))
         self.whatson_button.connect('clicked', self._on_action_whats_on_now)
         buttonbox.pack_start(self.whatson_button)
-        self.whatson_button.set_sensitive(len(self.channels) > 0)
+        self.whatson_button.set_sensitive(False)
         
         self.epg_button = gtk.Button(label=_('Program Guide'))
         self.epg_button.connect('clicked', self._on_action_epg)
@@ -238,13 +238,11 @@ class DVBDaemonPlugin(totem.Plugin):
         self.timers_item.set_image(timers_image)
         
         self.epg_item = uimanager.get_widget('/tmw-menubar/view/program-guide')
-        sensitive = self.single_group != None
-        self.timers_item.set_sensitive(sensitive)
+        self.timers_item.set_sensitive(False)
         self.epg_item.set_sensitive(False)
         
         self.whatson_item = uimanager.get_widget('/tmw-menubar/view/whats-on-now')
-        # One entry is for recordings
-        self.whatson_item.set_sensitive(len(self.channels) > 0)
+        self.whatson_item.set_sensitive(False)
         
         # Reorder items
         edit_menu = uimanager.get_widget('/tmw-menubar/edit').get_submenu()
@@ -269,10 +267,17 @@ class DVBDaemonPlugin(totem.Plugin):
             if response == gtk.RESPONSE_YES:
                 self._on_action_setup(None)
             dialog.destroy()
-        elif len(self.channels) == 1:
+        elif len(self.channels) == 2: # One for the group and one for recordings
             # Activate single group mode
             root_iter = self.channels.get_iter_root()
-            self.single_group = self.channels[root_iter][self.channels.COL_GROUP]
+            group_iter = self.channels.iter_next(root_iter)
+            self.single_group = self.channels[group_iter][self.channels.COL_GROUP]
+            self._enable_single_group_mode(True)
+            
+    def _enable_single_group_mode(self, val):
+        self.timers_item.set_sensitive(val)
+        self.whatson_item.set_sensitive(val)
+        self.whatson_button.set_sensitive(val)
 
     def _get_selected_group_and_channel(self):
         model, aiter = self.channels_view.get_selection().get_selected()
@@ -386,13 +391,17 @@ class DVBDaemonPlugin(totem.Plugin):
         model, aiter = treeselection.get_selected()
         if aiter == None or model[aiter][model.COL_GROUP] == None:
             # Nothing selected or in recordings group
-            self.timers_item.set_sensitive(False)
+            if self.single_group == None:
+                self._enable_single_group_mode(False)
             self.epg_item.set_sensitive(False)
             self.epg_button.set_sensitive(False)
         else:
-            self.timers_item.set_sensitive(True)
-            self.epg_item.set_sensitive(True)
-            self.epg_button.set_sensitive(True)
+            if self.single_group == None:
+                self._enable_single_group_mode(True)
+            # Check if a channel is selected
+            epg_status = model[aiter][model.COL_SID] != 0
+            self.epg_item.set_sensitive(epg_status)
+            self.epg_button.set_sensitive(epg_status)
                 
     def _add_recording(self, rid):
         name = self.recstore.get_name(rid)
@@ -416,9 +425,8 @@ class DVBDaemonPlugin(totem.Plugin):
                 
     def _on_channels_row_inserted_deleted(self, treestore, path, aiter=None):
         # One entry is for recordings
-        val = len(treestore) > 1
-        self.whatson_item.set_sensitive(val)
-        self.whatson_button.set_sensitive(val)
+        val = len(treestore) == 2
+        self._enable_single_group_mode(val)
                         
     def _delete_callback(self, success):
         if not success:
