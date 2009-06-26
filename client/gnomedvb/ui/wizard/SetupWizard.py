@@ -18,7 +18,6 @@
 
 import gnomedvb
 import gtk
-import subprocess
 from gettext import gettext as _
 from gnomedvb.DVBModel import DVBModel
 from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
@@ -174,8 +173,6 @@ class SetupWizard(gtk.Assistant):
         else:
             if scanner != None:
                 scanner.destroy()
-            if self.summary_page.start_control_center():
-                subprocess.Popen('gnome-dvb-control')
             gtk.main_quit()
             
     def on_next_page(self, adapters_page):

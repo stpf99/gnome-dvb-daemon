@@ -34,9 +34,6 @@ class SummaryPage(BasePage):
         
         self.configure_button = gtk.Button(label=_('Configure Another Device'))
         button_alignment.add(self.configure_button)
-        
-        self.checkbutton = gtk.CheckButton(label=_("Start control center now"))
-        self.pack_end(self.checkbutton, False, False, 0)
     
     def get_page_title(self):
         return _("Configuration finished")
@@ -50,7 +47,4 @@ class SummaryPage(BasePage):
         
         self.label.set_markup(text)
         self.label.show()
-        
-    def start_control_center(self):
-        return self.checkbutton.get_active()
     
