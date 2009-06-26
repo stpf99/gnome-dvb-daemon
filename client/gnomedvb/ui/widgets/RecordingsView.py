@@ -20,6 +20,7 @@ import datetime
 import gtk
 from gettext import gettext as _
 
+from gnomedvb import seconds_to_time_duration_string
 from gnomedvb.ui.widgets.RecordingsStore import RecordingsStore
 
 class RecordingsView(gtk.TreeView):
@@ -34,7 +35,10 @@ class RecordingsView(gtk.TreeView):
         col.set_cell_data_func(cell, self._get_start_data)
         self._append_text_column(_("Channel"), RecordingsStore.COL_CHANNEL)
         self._append_text_column(_("Title"), RecordingsStore.COL_NAME)
-        self._append_text_column(_("Length"), RecordingsStore.COL_DURATION)
+        
+        col_length, cell_length = self._append_text_column(_("Length"),
+            RecordingsStore.COL_DURATION)
+        col_length.set_cell_data_func(cell_length, self._get_length_data)
             
     def _append_text_column(self, title, col_index):
         col = gtk.TreeViewColumn(title)
@@ -49,4 +53,9 @@ class RecordingsView(gtk.TreeView):
         timestamp = model[aiter][RecordingsStore.COL_START]
         time = datetime.datetime.fromtimestamp(timestamp)
         cell.set_property("text", time.strftime("%c"))
+        
+    def _get_length_data(self, column, cell, model, aiter):
+        duration = model[aiter][RecordingsStore.COL_DURATION]
+        duration_str = seconds_to_time_duration_string(duration)
+        cell.set_property("text", duration_str)
                 

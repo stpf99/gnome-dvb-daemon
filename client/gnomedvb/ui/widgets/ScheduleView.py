@@ -19,6 +19,7 @@
 import gtk
 import pango
 from gettext import gettext as _
+from gnomedvb import seconds_to_time_duration_string
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 
 class ScheduleView(gtk.TreeView):
@@ -60,14 +61,14 @@ class ScheduleView(gtk.TreeView):
             cell.set_property("xalign", 0)
             cell.set_property ("cell-background-gdk", self.style.base[gtk.STATE_NORMAL])
             
-            duration = model[aiter][ScheduleStore.COL_DURATION]
+            duration = seconds_to_time_duration_string(model[aiter][ScheduleStore.COL_DURATION])
             title = model[aiter][ScheduleStore.COL_TITLE]
             
             short_desc = model[aiter][ScheduleStore.COL_SHORT_DESC]
             if len(short_desc) > 0:
                 short_desc += "\n"
             
-            description = "<b>%s</b>\n%s<small><i>%s: %s %s</i></small>" % (title, short_desc, _("Duration"), duration, _("minutes"))
+            description = "<b>%s</b>\n%s<small><i>%s: %s</i></small>" % (title, short_desc, _("Duration"), duration)
             
             # Check if row is the selected row
             sel_iter = self.get_selection().get_selected()[1]

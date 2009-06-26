@@ -87,7 +87,7 @@ class EditTimersDialog(gtk.Dialog):
         cell_duration = gtk.CellRendererText()
         col_duration = gtk.TreeViewColumn(_("Duration"))
         col_duration.pack_start(cell_duration)
-        col_duration.add_attribute(cell_duration, "text", self.COL_DURATION )
+        col_duration.set_cell_data_func(cell_duration, self._get_duration_data)
         
         self.timersview.append_column(col_duration)
         
@@ -198,4 +198,10 @@ class EditTimersDialog(gtk.Dialog):
     def _get_recording_icon_for_cell(self, column, cell, model, aiter):
         if model[aiter][self.COL_ACTIVE]:
             cell.set_property("stock-id", gtk.STOCK_MEDIA_RECORD)
-    
+            
+    def _get_duration_data(self, column, cell, model, aiter):
+        # We have minutes but need seconds
+        duration = model[aiter][self.COL_DURATION] * 60
+        duration_str = gnomedvb.seconds_to_time_duration_string(duration)
+        cell.set_property("text", duration_str)
+

@@ -120,7 +120,8 @@ class DetailsDialog(gtk.Dialog):
         self.channel.set_text(channel)
         
     def set_duration(self, duration):
-        self.duration.set_text(_("%d min") % duration)
+        duration_str = gnomedvb.seconds_to_time_duration_string(duration)
+        self.duration.set_text(duration_str)
         
     def set_date(self, timestamp):
         date = datetime.datetime.fromtimestamp(timestamp)

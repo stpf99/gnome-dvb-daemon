@@ -89,9 +89,8 @@ class ScheduleStore(gtk.ListStore):
         short_desc = escape(self._client.get_short_description(event_id))
         ext_desc = escape(self._client.get_extended_description(event_id))
         start_arr = self._client.get_local_start_time(event_id)
-                
-        # We want minutes
-        duration = self._client.get_duration(event_id) / 60
+
+        duration = self._client.get_duration(event_id)
         
         rec = self._recorder.has_timer_for_event(event_id,
             self._client.get_channel_sid())
