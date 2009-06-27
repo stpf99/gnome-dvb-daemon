@@ -434,7 +434,7 @@ namespace DVB {
             
             ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
             PlayerThread? player = channel_factory.watch_channel (channel,
-                filesink);
+                filesink, true);
             if (player != null) {
                 debug ("Setting pipeline to playing");
                 player.get_pipeline().set_state (Gst.State.PLAYING);

@@ -36,6 +36,7 @@ namespace DVB {
         private class ChannelElements {
             public Gst.Element sink;
             public Gst.Element tee;
+            public bool forced;
         }
 
         /** 
@@ -47,6 +48,19 @@ namespace DVB {
         public HashSet<Channel> active_channels {get; construct;}
         // The device in use
         public Device device {get; construct;}
+        // Whether watching one of the channels was forced
+        public bool forced {
+            get {
+                bool val = false;
+                foreach (ChannelElements celem in this.elements_map.get_values ()) {
+                    if (celem.forced) {
+                        val = true;
+                        break;
+                    }
+                }
+                return val;
+            }
+        }
         
         private Element? pipeline;
         private HashMap<string, ChannelElements> elements_map;
@@ -81,7 +95,7 @@ namespace DVB {
          *
          * Start watching @channel and link it with @sink_element
          */
-        public Gst.Element? get_element (Channel channel, owned Gst.Element? sink_element) {
+        public Gst.Element? get_element (Channel channel, owned Gst.Element sink_element, bool forced) {
             uint channel_sid = channel.Sid;
             string channel_sid_str = channel_sid.to_string ();
             
@@ -154,6 +168,7 @@ namespace DVB {
             ChannelElements celems = new ChannelElements ();
             celems.sink = bin;
             celems.tee = tee;
+            celems.forced = forced;
                     
             this.elements_map.set (channel_sid_str, celems);
             
@@ -340,6 +355,9 @@ namespace DVB {
             this.active_players = new HashSet<PlayerThread> ();
         }
         
+        /**
+         * Stop all currently active players
+         */
         public void destroy () {
             foreach (PlayerThread active_player in this.active_players) {
                 active_player.destroy ();
@@ -348,15 +366,19 @@ namespace DVB {
         }
 
         /**
+         * @channel: channel to watch
+         * @sink_element: The element the src pad should be linked with
+         * @force: Whether to stop a player when there's currently no free device
          * @returns: The #PlayerThread used to watch @channel
          *
          * Watch @channel and use @sink_element as sink element
          */
-        public PlayerThread? watch_channel (Channel channel, owned Gst.Element? sink_element) {
+        public PlayerThread? watch_channel (Channel channel, owned Gst.Element sink_element, bool force=false) {
             debug ("Watching channel %s (%u)", channel.Name, channel.Sid);
         
             bool create_new = true;
-            PlayerThread player = null;
+            PlayerThread? player = null;
+            DVB.Device? free_device = null;
             foreach (PlayerThread active_player in this.active_players) {
                 foreach (Channel other_channel in active_player.active_channels) {
                     if (channel.on_same_transport_stream (other_channel)) {
@@ -373,7 +395,19 @@ namespace DVB {
                 EPGScanner? epgscanner = this.device_group.epgscanner;
                 if (epgscanner != null) epgscanner.stop ();
 
-                DVB.Device? free_device = this.device_group.get_next_free_device ();
+                free_device = this.device_group.get_next_free_device ();
+                if (free_device == null && force) {
+                    // Stop first player
+                    foreach (PlayerThread active_player in this.active_players) {
+                        if (!active_player.forced) {
+                            active_player.destroy ();
+                            break;
+                        } else {
+                            critical ("No active players that are not forced");
+                        }
+                    }
+                    free_device = this.device_group.get_next_free_device ();
+                }
                 if (free_device == null) {
                     critical ("All devices are busy");
                     return null;
@@ -382,7 +416,7 @@ namespace DVB {
                 player = this.create_player (free_device);
             }
 
-            player.get_element (channel, sink_element);
+            player.get_element (channel, sink_element, force);
             this.active_players.add (player);
             
             return player;
