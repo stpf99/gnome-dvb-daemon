@@ -72,6 +72,11 @@ namespace DVB {
          * is returned.
          */
         public abstract string GetNameOfRegisteredDevice (uint adapter, uint frontend);
+        
+        /**
+         * @returns: the numner of configured device groups
+         */
+        public abstract int GetDeviceGroupSize ();
     }
 
 }

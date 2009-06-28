@@ -246,6 +246,13 @@ namespace DVB {
         }
         
         /**
+         * @returns: the numner of configured device groups
+         */
+        public int GetDeviceGroupSize () {
+            return this.devices.size;
+        }
+        
+        /**
          * @returns: Whether the device has been added successfully
          *
          * Register device, create Recorder and ChannelList D-Bus service

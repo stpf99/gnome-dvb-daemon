@@ -139,6 +139,9 @@ class DVBManagerClient(gobject.GObject):
        
     def get_name_of_registered_device(self, adapter, frontend):
         return self.manager.GetNameOfRegisteredDevice(adapter, frontend)
+        
+    def get_device_group_size(self):
+        return self.manager.GetDeviceGroupSize()
     
     def on_group_added(self, group_id):
         self.emit("group-added", group_id)
