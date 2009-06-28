@@ -148,6 +148,8 @@ class DVBDaemonPlugin(totem.Plugin):
     def activate (self, totem_object):
         self.totem_object = totem_object
         
+        self.manager = DVBModel()
+        
         self._setup_sidebar()
         self._setup_menu()
         
@@ -158,10 +160,11 @@ class DVBDaemonPlugin(totem.Plugin):
         add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
         self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
         
-        self.manager = DVBModel()
-        
         totem_object.add_sidebar_page ("dvb-daemon", _("Digital TV"), self.sidebar)
         self.sidebar.show_all()
+        
+        # Channels are added async, check in two seconds
+        glib.timeout_add_seconds(2, self._is_setup)
         
     def _setup_sidebar(self):
         self.sidebar = gtk.VBox(spacing=6)
@@ -173,8 +176,6 @@ class DVBDaemonPlugin(totem.Plugin):
         self.channels_view = ChannelsView(self.channels, ChannelsTreeStore.COL_NAME)
         self.channels_view.connect("button-press-event", self._on_channel_selected)
         self.channels_view.get_selection().connect("changed", self._on_selection_changed)
-        # Channels are added async, check in two seconds
-        glib.timeout_add_seconds(2, self._is_setup)
         
         self.scrolledchannels = gtk.ScrolledWindow()
         self.scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -262,7 +263,8 @@ class DVBDaemonPlugin(totem.Plugin):
         self.whatson_item.set_sensitive(False)
 
     def _is_setup(self):
-        if len(self.channels) == 1:
+        size = self.manager.get_device_group_size()
+        if size == 0:
             dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
                 flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                 type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
@@ -273,7 +275,7 @@ class DVBDaemonPlugin(totem.Plugin):
             if response == gtk.RESPONSE_YES:
                 self._on_action_setup(None)
             dialog.destroy()
-        elif len(self.channels) == 2: # One for the group and one for recordings
+        elif size == 1:
             # Activate single group mode
             root_iter = self.channels.get_iter_root()
             group_iter = self.channels.iter_next(root_iter)
