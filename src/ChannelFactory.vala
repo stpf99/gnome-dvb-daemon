@@ -22,6 +22,8 @@ using Gst;
 
 namespace DVB {
 
+    public static delegate void ForcedStopNotify (Channel channel);
+
     /**
      * This class handles watching channels one physical device.
      * 
@@ -34,9 +36,11 @@ namespace DVB {
     public class PlayerThread : GLib.Object {
         
         private class ChannelElements {
+            public uint sid;
             public Gst.Element sink;
             public Gst.Element tee;
             public bool forced;
+            public ForcedStopNotify notify_func;
         }
 
         /** 
@@ -52,10 +56,12 @@ namespace DVB {
         public bool forced {
             get {
                 bool val = false;
-                foreach (ChannelElements celem in this.elements_map.get_values ()) {
-                    if (celem.forced) {
-                        val = true;
-                        break;
+                lock (this.elements_map) {
+                    foreach (ChannelElements celem in this.elements_map.get_values ()) {
+                        if (celem.forced) {
+                            val = true;
+                            break;
+                        }
                     }
                 }
                 return val;
@@ -63,13 +69,12 @@ namespace DVB {
         }
         
         private Element? pipeline;
-        private HashMap<string, ChannelElements> elements_map;
+        private HashMap<uint, ChannelElements> elements_map;
         private EPGScanner? epgscanner;
         private Element? dvbbasebin;
         
         construct {
-            this.elements_map = new HashMap<string, ChannelElements> (GLib.str_hash, GLib.str_equal,
-                    GLib.direct_equal);
+            this.elements_map = new HashMap<uint, ChannelElements> ();
             this.active_channels = new HashSet<Channel> ();
         }
         
@@ -95,7 +100,8 @@ namespace DVB {
          *
          * Start watching @channel and link it with @sink_element
          */
-        public Gst.Element? get_element (Channel channel, owned Gst.Element sink_element, bool forced) {
+        public Gst.Element? get_element (Channel channel, owned Gst.Element sink_element,
+                bool forced, ForcedStopNotify? notify_func) {
             uint channel_sid = channel.Sid;
             string channel_sid_str = channel_sid.to_string ();
             
@@ -157,7 +163,9 @@ namespace DVB {
                         new_programs);
                     this.dvbbasebin.set ("program-numbers", new_programs);
                 } else {
-                    tee = this.elements_map.get (channel_sid_str).tee;
+                    lock (this.elements_map) {
+                        tee = this.elements_map.get (channel_sid).tee;
+                    }
                     
                     bin = this.add_sink_bin (sink_element);
                     if (!tee.link (bin)) critical ("Could not link tee and bin");
@@ -166,12 +174,15 @@ namespace DVB {
             
             // TODO same channel different queue and sink?
             ChannelElements celems = new ChannelElements ();
+            celems.sid = channel_sid;
             celems.sink = bin;
             celems.tee = tee;
             celems.forced = forced;
-                    
-            this.elements_map.set (channel_sid_str, celems);
-            
+            celems.notify_func = notify_func;
+
+            lock (this.elements_map) {
+                this.elements_map.set (channel_sid, celems);
+            }
             this.active_channels.add (channel);
             
             return bin;
@@ -198,24 +209,30 @@ namespace DVB {
          * @returns: GstBin containing queue and sink for the specified channel
          */
         public Gst.Element? get_sink_bin (uint sid) {
-            ChannelElements? celems = this.elements_map.get (sid.to_string ());
-            if (celems == null) return null;
+            Gst.Element? result = null;
             
-            return celems.sink;
+            lock (this.elements_map) {
+                ChannelElements? celems = this.elements_map.get (sid);
+                if (celems != null) result = celems.sink;
+            }
+            
+            return result;
         }
         
         /**
          * Stop watching @channel
          */
         public bool remove_channel (Channel channel) {
+            uint channel_sid = channel.Sid;
+        
             if (!this.active_channels.contains (channel)) {
-                critical ("Could not find channel with SID %u", channel.Sid);
+                critical ("Could not find channel with SID %u", channel_sid);
                 return false;
             }
             
             // Check if that's the only channel in use
             if (this.active_channels.size > 1) {
-                string channel_sid_string = channel.Sid.to_string ();
+                string channel_sid_string = channel_sid.to_string ();
                 
                 string programs;
                 dvbbasebin.get ("program-numbers", out programs);
@@ -234,7 +251,10 @@ namespace DVB {
                     new_programs.append (":" + new_programs_list.nth_data (i));
                 }
                 
-                ChannelElements celements = this.elements_map.get (channel_sid_string);
+                ChannelElements celements;
+                lock (this.elements_map) {
+                    celements = this.elements_map.get (channel_sid);
+                }
                 Element? sink = celements.sink;
                 
                 debug ("Setting state of queue and sink to NULL");
@@ -262,7 +282,19 @@ namespace DVB {
         /**
          * Stop pipeline and clean up everything else
          */
-        public virtual void destroy () {
+        public virtual void destroy (bool forced=false) {
+            if (forced) {
+                lock (this.elements_map) {
+                    foreach (ChannelElements celems in this.elements_map.get_values ()) {
+                        if (celems.notify_func != null) {
+                            Channel channel = this.device.Channels.get_channel (
+                                celems.sid);
+                            celems.notify_func (channel);
+                        }
+                    }
+                }
+            }
+
             if (this.pipeline != null) {
                 debug ("Stopping pipeline");
                 Gst.Bus bus = this.pipeline.get_bus ();
@@ -294,27 +326,30 @@ namespace DVB {
             if (!pad_name.has_prefix ("program_"))
                 return;
             
-            string sid = pad_name.substring (8, pad_name.size() - 8);
+            uint sid;
+            pad_name.scanf("program_%u", out sid);
             
-            debug ("SID is '%s'", sid);
+            debug ("SID is '%u'", sid);
             // Check if we're interested in the pad
-            if (this.elements_map.contains (sid)) {
-                Element? sink = this.elements_map.get (sid).tee;
-                if (sink == null) {
-                    critical ("Could not find sink for SID %s", sid);
-                    return;
-                }
-                
-                debug ("Linking elements %s and %s", elem.get_name(), sink.get_name ());
-                Pad sinkpad = sink.get_static_pad ("sink");
-                
-                PadLinkReturn rc = pad.link (sinkpad);
-                if (rc != PadLinkReturn.OK) {
-                    critical ("Could not link pads %s and %s", pad.get_name (),
-                        sinkpad.get_name ());
-                } else {
-                    debug ("Src pad %s linked with sink pad %s",
-                        pad.get_name (), sinkpad.get_name ());
+            lock (this.elements_map) {
+                if (this.elements_map.contains (sid)) {
+                    Element? sink = this.elements_map.get (sid).tee;
+                    if (sink == null) {
+                        critical ("Could not find sink for SID %u", sid);
+                        return;
+                    }
+                    
+                    debug ("Linking elements %s and %s", elem.get_name(), sink.get_name ());
+                    Pad sinkpad = sink.get_static_pad ("sink");
+                    
+                    PadLinkReturn rc = pad.link (sinkpad);
+                    if (rc != PadLinkReturn.OK) {
+                        critical ("Could not link pads %s and %s", pad.get_name (),
+                            sinkpad.get_name ());
+                    } else {
+                        debug ("Src pad %s linked with sink pad %s",
+                            pad.get_name (), sinkpad.get_name ());
+                    }
                 }
             }
         }
@@ -369,11 +404,15 @@ namespace DVB {
          * @channel: channel to watch
          * @sink_element: The element the src pad should be linked with
          * @force: Whether to stop a player when there's currently no free device
+         * @notify_func: The given function is called when watching the channel
+         *   is aborted because a recording on a different transport streams is
+         *   about to start
          * @returns: The #PlayerThread used to watch @channel
          *
          * Watch @channel and use @sink_element as sink element
          */
-        public PlayerThread? watch_channel (Channel channel, owned Gst.Element sink_element, bool force=false) {
+        public PlayerThread? watch_channel (Channel channel, owned Gst.Element sink_element,
+                bool force=false, ForcedStopNotify? notify_func = null) {
             debug ("Watching channel %s (%u)", channel.Name, channel.Sid);
         
             bool create_new = true;
@@ -400,7 +439,7 @@ namespace DVB {
                     // Stop first player
                     foreach (PlayerThread active_player in this.active_players) {
                         if (!active_player.forced) {
-                            active_player.destroy ();
+                            active_player.destroy (true);
                             break;
                         } else {
                             critical ("No active players that are not forced");
@@ -416,7 +455,7 @@ namespace DVB {
                 player = this.create_player (free_device);
             }
 
-            player.get_element (channel, sink_element, force);
+            player.get_element (channel, sink_element, force, notify_func);
             this.active_players.add (player);
             
             return player;

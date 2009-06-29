@@ -66,7 +66,8 @@ namespace DVB {
           	}
           	ChannelFactory channels_factory = devgrp.channel_factory;
           	
-          	PlayerThread? player = channels_factory.watch_channel (channel, payload);
+          	PlayerThread? player = channels_factory.watch_channel (channel,
+          	    payload, false, DVB.RTSPServer.stop_streaming);
           	if (player == null) {
           	    critical ("Could not create player");
           	    return null;

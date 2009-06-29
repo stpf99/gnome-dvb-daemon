@@ -30,5 +30,17 @@ namespace DVB.RTSPServer {
     public static void shutdown () {
         server = null;
     }
+    
+    public static void stop_streaming (Channel channel) {
+        Gst.RTSPUrl url;
+        Gst.RTSPUrl.parse (channel.URL, out url);
+        debug ("Stop streaming channel with URL %s", url.abspath);
+        List<Gst.RTSPSession> sessions = server.session_pool.find_by_uri (url);
+
+        for (int i=0; i<sessions.length(); i++) {
+            Gst.RTSPSession sess = sessions.nth_data (i);
+            server.session_pool.remove (sess);
+        }
+    }
 
 }
