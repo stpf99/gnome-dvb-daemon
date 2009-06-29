@@ -28,7 +28,6 @@ namespace Main {
     private static bool disable_epg_scanner;
     private static bool disable_rygel;
     private static MainLoop mainloop;
-    private static Gst.RTSPServer server;
 
     const OptionEntry[] options =  {
         { "debug", 'd', 0, OptionArg.NONE, out has_debug,
@@ -96,8 +95,7 @@ namespace Main {
     private static void on_exit (int signum) {
         message ("Exiting");
         
-        server = null;
-        
+        DVB.RTSPServer.shutdown ();
         DVB.Manager.shutdown ();
         DVB.Factory.shutdown ();
         DVB.RecordingsStore.shutdown ();
@@ -181,9 +179,7 @@ namespace Main {
         if (!start_recordings_store (max_id)) return -1;
 
         message ("Starting RTSP server");
-        server = new Gst.RTSPServer ();
-        server.set_media_mapping (new DVB.MediaMapping ());
-        server.attach (null);
+        DVB.RTSPServer.start ();
 
         if (!disable_rygel)
             DVB.RygelService.start_rygel_services ();

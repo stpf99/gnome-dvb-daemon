@@ -59,6 +59,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Utils.vala \
 	src/rtsp/MediaFactory.vala \
 	src/rtsp/MediaMapping.vala \
+	src/rtsp/Server.vala \
 	src/rygel/Interfaces.vala \
 	src/rygel/Services.vala \
 	$(NULL)
