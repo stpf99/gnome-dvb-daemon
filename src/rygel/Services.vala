@@ -279,8 +279,7 @@ namespace DVB {
         }
     }
 
-    [Compact]
-    public class RygelService {
+    namespace RygelService {
         
         private static DeviceGroupsMediaContainer root_container;
         

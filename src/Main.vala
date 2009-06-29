@@ -19,8 +19,7 @@
 
 using GLib;
 
-[Compact]
-public class Main {
+namespace Main {
 
     private static weak DVB.Manager manager;
     private static DVB.RecordingsStore recstore;
