@@ -25,6 +25,7 @@ namespace DVB.RTSPServer {
         server = new Gst.RTSPServer ();
         server.set_media_mapping (new MediaMapping ());
         server.attach (null);
+        GLib.Timeout.add_seconds (2, (GLib.SourceFunc)timeout);
     }
     
     public static void shutdown () {
@@ -41,6 +42,12 @@ namespace DVB.RTSPServer {
             Gst.RTSPSession sess = sessions.nth_data (i);
             server.session_pool.remove (sess);
         }
+    }
+    
+    private static bool timeout () {
+        Gst.RTSPSessionPool pool = server.get_session_pool ();
+        pool.cleanup ();
+        return true;
     }
 
 }
