@@ -58,6 +58,7 @@ namespace DVB {
                 critical ("Could not create rtpmp2tpay element");
                 return null;   
             }
+            payload.set ("pt", 96);
           	
           	Channel? channel = devgrp.Channels.get_channel (sidnr);
           	if (channel == null) {
