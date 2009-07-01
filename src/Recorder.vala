@@ -384,9 +384,11 @@ namespace DVB {
         }
         
         public void stop () {
-            foreach (uint32 timer_id in this.active_timers) {
-                Timer timer = this.timers.get (timer_id);
-                this.stop_recording (timer);
+            lock (this.timers) {
+                foreach (uint32 timer_id in this.active_timers) {
+                    Timer timer = this.timers.get (timer_id);
+                    this.stop_recording (timer);
+                }
             }
         }
 
@@ -450,7 +452,9 @@ namespace DVB {
                     timer.get_start_time_time ();
                 recording.Location = location;
                 
-                this.recordings.set (recording.Id, recording);
+                lock (this.recordings) {
+                    this.recordings.set (recording.Id, recording);
+                }
                 
                 RecordingsStore.get_instance().add (recording);
             }
@@ -464,27 +468,31 @@ namespace DVB {
          * Stop recording of specified timer
          */
         protected void stop_recording (Timer timer) {
-            Recording rec = this.recordings.get (timer.Id);
-            rec.Length = Utils.difftime (Time.local (time_t ()),
-                rec.StartTime);
+            Recording rec;
+            lock (this.recordings) {
+                rec = this.recordings.get (timer.Id);
+                rec.Length = Utils.difftime (Time.local (time_t ()),
+                    rec.StartTime);
 
-            debug ("Recording of channel %s stopped after %"
-                + int64.FORMAT +" seconds",
-                rec.ChannelName, rec.Length);
+                debug ("Recording of channel %s stopped after %"
+                    + int64.FORMAT +" seconds",
+                    rec.ChannelName, rec.Length);
+                    
+                try {
+                    rec.save_to_disk ();
+                } catch (Error e) {
+                    critical ("Could not save recording: %s", e.message);
+                }
+                ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
+                channel_factory.stop_channel (timer.Channel);
                 
-            try {
-                rec.save_to_disk ();
-            } catch (Error e) {
-                critical ("Could not save recording: %s", e.message);
-            }
-            ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
-            channel_factory.stop_channel (timer.Channel);
-            
-            this.recordings.remove (timer.Id);
-            
+                this.recordings.remove (timer.Id);
+            } 
             uint32 timer_id = timer.Id;
-            this.active_timers.remove (timer_id);
-            this.timers.remove (timer_id);
+            lock (this.timers) {
+                this.active_timers.remove (timer_id);
+                this.timers.remove (timer_id);
+            }
             this.changed (timer_id, ChangeType.DELETED);
             
             this.recording_finished (rec.Id);
@@ -540,32 +548,32 @@ namespace DVB {
         private bool check_timers () {
             debug ("Checking timers");
             
+            bool val;
             SList<Timer> ended_recordings =
                 new SList<Timer> ();
-            foreach (uint32 timer_id in this.active_timers) {
-                Timer timer =
-                    this.timers.get (timer_id);
-                if (timer.is_end_due()) {
-                    ended_recordings.prepend (timer);
-                }
-            }
-            
-            // Delete timers of recordings that have ended
-            for (int i=0; i<ended_recordings.length(); i++) {
-                Timer timer = ended_recordings.nth_data (i);
-                this.stop_recording (timer);
-            }
-            
-            bool val;
-            // Store items we want to delete in here
-            SList<uint32> deleteable_items = new SList<uint32> ();
-            
             lock (this.timers) {
+                foreach (uint32 timer_id in this.active_timers) {
+                    Timer timer =
+                        this.timers.get (timer_id);
+                    if (timer.is_end_due()) {
+                        ended_recordings.prepend (timer);
+                    }
+                }
+
+                // Delete timers of recordings that have ended
+                for (int i=0; i<ended_recordings.length(); i++) {
+                    Timer timer = ended_recordings.nth_data (i);
+                    this.stop_recording (timer);
+                }
+
+                // Store items we want to delete in here
+                SList<uint32> deleteable_items = new SList<uint32> ();
+
                 foreach (uint32 key in this.timers.get_keys()) {
                     Timer timer = this.timers.get (key);
-                    
+
                     debug ("Checking timer: %s", timer.to_string());
-                    
+
                     // Check if we should start new recording and if we didn't
                     // start it before
                     if (timer.is_start_due()
@@ -576,12 +584,12 @@ namespace DVB {
                         deleteable_items.prepend (key);
                     }
                 }
-                
+
                 // Delete items from this.timers using this.DeleteTimer
                 for (int i=0; i<deleteable_items.length(); i++) {
                     this.DeleteTimer (deleteable_items.nth_data (i));
                 }
-                
+
                 if (this.timers.size == 0 && this.active_timers.size == 0) {
                     // We don't have any timers and no recording is in progress
                     debug ("No timers left and no recording in progress");
@@ -594,7 +602,6 @@ namespace DVB {
                         this.active_timers.size);
                     val = true;
                 }
-                
             }
             return val;
         }
@@ -603,18 +610,20 @@ namespace DVB {
             uint sid;
             structure.get_uint ("service-id", out sid);
             
-            // Find name and description for recordings
-            foreach (Recording rec in this.recordings.get_values ()) {
-                if (rec.Name == null && sid == rec.ChannelSid) {
-                    Channel chan = this.DeviceGroup.Channels.get_channel (sid);
-                    Schedule sched = chan.Schedule;
-                    
-                    Event? event = sched.get_running_event ();
-                    if (event != null) {
-                        debug ("Found running event for active recording");
-                        rec.Name = event.name;
-                        rec.Description = "%s\n%s".printf (event.description,
-                            event.extended_description);
+            lock (this.recordings) {
+                // Find name and description for recordings
+                foreach (Recording rec in this.recordings.get_values ()) {
+                    if (rec.Name == null && sid == rec.ChannelSid) {
+                        Channel chan = this.DeviceGroup.Channels.get_channel (sid);
+                        Schedule sched = chan.Schedule;
+                        
+                        Event? event = sched.get_running_event ();
+                        if (event != null) {
+                            debug ("Found running event for active recording");
+                            rec.Name = event.name;
+                            rec.Description = "%s\n%s".printf (event.description,
+                                event.extended_description);
+                        }
                     }
                 }
             }
