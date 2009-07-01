@@ -33,15 +33,10 @@ namespace DVB.RTSPServer {
     }
     
     public static void stop_streaming (Channel channel) {
-        Gst.RTSPUrl url;
-        Gst.RTSPUrl.parse (channel.URL, out url);
-        debug ("Stop streaming channel with URL %s", url.abspath);
-        List<Gst.RTSPSession> sessions = server.session_pool.find_by_uri (url);
-
-        for (int i=0; i<sessions.length(); i++) {
-            Gst.RTSPSession sess = sessions.nth_data (i);
-            server.session_pool.remove (sess);
-        }
+        debug ("Stop streaming channel %s", channel.Name);
+        
+        var helper = new StopChannelHelper (channel.URL);
+        server.session_pool.filter (helper.session_filter_func);
     }
     
     private static bool timeout () {
@@ -50,4 +45,21 @@ namespace DVB.RTSPServer {
         return true;
     }
 
+    private class StopChannelHelper {
+        private Gst.RTSPUrl url;
+        
+        public StopChannelHelper (string url_str) {
+            Gst.RTSPUrl.parse (url_str, out this.url);
+        }
+        
+        public Gst.RTSPFilterResult session_filter_func (Gst.RTSPSessionPool pool,
+                Gst.RTSPSession session) {
+            if (session.get_media (this.url) != null) {
+                return Gst.RTSPFilterResult.REMOVE;
+            } else {
+                return Gst.RTSPFilterResult.KEEP;
+            }    
+        }
+    }
+    
 }
