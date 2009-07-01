@@ -40,11 +40,13 @@ namespace DVB {
         private uint scan_event_id;
         private uint queue_scan_event_id;
         private bool do_stop;
+        private int stop_counter;
         
         construct {
             this.channels = new Queue<Channel> ();
             this.scan_event_id = 0;
             this.do_stop = false;
+            this.stop_counter = 0;
         }
         
         /**
@@ -70,9 +72,12 @@ namespace DVB {
          */
         public void stop () {
             debug ("Stopping EPG scan for group %u", this.DeviceGroup.Id);
-         
-            this.remove_timeouts ();
-            this.reset ();
+        
+            if (this.stop_counter == 0) {
+                this.remove_timeouts ();
+                this.reset ();
+            }
+            this.stop_counter += 1;
         }   
             
         private void remove_timeouts () {
@@ -117,6 +122,9 @@ namespace DVB {
          * Start collection EPG data for all channels
          */
         public bool start () {
+            this.stop_counter -= 1;
+            if (this.stop_counter > 0) return false;
+            
             debug ("Starting EPG scan for group %u", this.DeviceGroup.Id);
         
             // TODO scan all channels?
