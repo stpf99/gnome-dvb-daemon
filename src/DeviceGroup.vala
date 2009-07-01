@@ -103,7 +103,9 @@ namespace DVB {
             this._recorder.stop ();
             this._channelfactory.destroy ();
             this.schedules.clear ();
-            this.devices.clear ();
+            lock (this.devices) {
+                this.devices.clear ();
+            }
         }
         
         /**
@@ -129,19 +131,31 @@ namespace DVB {
                 return false;
             }
         
-            // Set settings from reference device
-            device.Channels = this.reference_device.Channels;
-            device.RecordingsDirectory = this.reference_device.RecordingsDirectory;
-            
-            return this.devices.add (device);
+            bool result;
+            lock (this.devices) {
+                // Set settings from reference device
+                device.Channels = this.reference_device.Channels;
+                device.RecordingsDirectory = this.reference_device.RecordingsDirectory;
+                
+                result = this.devices.add (device);
+            }
+            return result;
         }
         
         public bool contains (Device device) {
-            return this.devices.contains (device);
+            bool result;
+            lock (this.devices) {
+                result = this.devices.contains (device);
+            }
+            return result;
         }
         
         public bool remove (Device device) {
-            return this.devices.remove (device);
+            bool result;
+            lock (this.devices) {
+                result = this.devices.remove (device);
+            }
+            return result;
         }
         
         /**
@@ -149,11 +163,17 @@ namespace DVB {
          * If all devices are busy NULL is returned.
          */
         public Device? get_next_free_device () {
-            foreach (Device dev in this.devices) {
-                if (!dev.is_busy ()) return dev;
+            Device? result = null;
+            lock (this.devices) {
+                foreach (Device dev in this.devices) {
+                    if (!dev.is_busy ()) {
+                        result = dev;
+                        break;
+                    }
+                }
             }
             
-            return null;
+            return result;
         }
         
         /**
@@ -323,10 +343,12 @@ namespace DVB {
             string[] groupdevs = new string[this.size];
             
             int i=0;
-            foreach (Device dev in this.devices) {
-                groupdevs[i] = Constants.DVB_DEVICE_PATH.printf (
-                    dev.Adapter, dev.Frontend);
-                i++;
+            lock (this.devices) {
+                foreach (Device dev in this.devices) {
+                    groupdevs[i] = Constants.DVB_DEVICE_PATH.printf (
+                        dev.Adapter, dev.Frontend);
+                    i++;
+                }
             }
             
             return groupdevs;
@@ -390,9 +412,11 @@ namespace DVB {
          * devices to the values of the reference device
          */
         private void update_all_devices () {
-            foreach (Device device in this.devices) {
-                if (device != this.reference_device) {
-                    device.RecordingsDirectory = this.reference_device.RecordingsDirectory;
+            lock (this.devices) {
+                foreach (Device device in this.devices) {
+                    if (device != this.reference_device) {
+                        device.RecordingsDirectory = this.reference_device.RecordingsDirectory;
+                    }
                 }
             }
         }
