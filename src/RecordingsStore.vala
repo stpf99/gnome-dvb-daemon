@@ -375,23 +375,26 @@ namespace DVB {
          * Delete a recording by the path of the recording
          */
         private bool delete_recording_by_location (string location) {
+            bool result = false;
             uint32 rec_id = 0;
-            foreach (uint32 id  in this.recordings.get_keys ()) {
-                Recording rec = this.recordings.get (id);
-                if (rec.Location.get_path () == location) {
-                    rec_id = id;
-                    break;
+            lock (this.recordings) {
+                foreach (uint32 id  in this.recordings.get_keys ()) {
+                    Recording rec = this.recordings.get (id);
+                    if (rec.Location.get_path () == location) {
+                        rec_id = id;
+                        break;
+                    }
+                }
+                
+                if (rec_id != 0) {
+                    debug ("Deleting recording %u", rec_id);
+                    this.recordings.remove (rec_id);
+                    this.changed (rec_id, ChangeType.DELETED);
+                    result = true;
                 }
             }
             
-            if (rec_id != 0) {
-                debug ("Deleting recording %u", rec_id);
-                this.recordings.remove (rec_id);
-                this.changed (rec_id, ChangeType.DELETED);
-                return true;
-            }
-            
-            return false;
+            return result;
         }
         
         private void on_recording_file_changed (FileMonitor monitor,
