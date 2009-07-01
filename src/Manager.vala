@@ -62,16 +62,20 @@ namespace DVB {
             Manager m = instance;
             
             if (instance != null) {
-                foreach (Scanner scanner in m.scanners.get_values ()) {
-                    debug ("Stopping scanner");
-                    scanner.Destroy ();
+                lock (m.scanners) {
+                    foreach (Scanner scanner in m.scanners.get_values ()) {
+                        debug ("Stopping scanner");
+                        scanner.Destroy ();
+                    }
+                    m.scanners.clear ();
                 }
-                m.scanners.clear ();
                 
-                foreach (DeviceGroup devgrp in m.devices.get_values ()) {
-                    devgrp.destroy ();
+                lock (m.devices) {
+                    foreach (DeviceGroup devgrp in m.devices.get_values ()) {
+                        devgrp.destroy ();
+                    }
+                    m.devices.clear ();
                 }
-                m.devices.clear ();
                 
                 instance = null;
             }
@@ -124,41 +128,43 @@ namespace DVB {
                 critical ("Unknown adapter type");
                 return new string[] {"", ""};
             }
-                
-            if (!this.scanners.contains (path)) {
-                Scanner scanner = null;
-                switch (device.Type) {
-                    case AdapterType.DVB_T:
-                    scanner = new TerrestrialScanner (device);
-                    break;
+            
+            lock (this.scanners) {
+                if (!this.scanners.contains (path)) {
+                    Scanner scanner = null;
+                    switch (device.Type) {
+                        case AdapterType.DVB_T:
+                        scanner = new TerrestrialScanner (device);
+                        break;
+                        
+                        case AdapterType.DVB_S:
+                        scanner = new SatelliteScanner (device);
+                        break;
+                        
+                        case AdapterType.DVB_C:
+                        scanner = new CableScanner (device);
+                        break;
+                    }
                     
-                    case AdapterType.DVB_S:
-                    scanner = new SatelliteScanner (device);
-                    break;
+                    if (scanner == null) {
+                        critical ("Unknown adapter type");
+                        return new string[] {"", ""};
+                    }
                     
-                    case AdapterType.DVB_C:
-                    scanner = new CableScanner (device);
-                    break;
+                    scanner.destroyed += this.on_scanner_destroyed;
+                    
+                    this.scanners.set (path, scanner);
+                    
+                    var conn = Utils.get_dbus_connection ();
+                    if (conn == null) return new string[] {};
+                    
+                    conn.register_object (
+                        path,
+                        scanner);
+                    
+                    debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
+                          adapter, frontend, dbusiface);
                 }
-                
-                if (scanner == null) {
-                    critical ("Unknown adapter type");
-                    return new string[] {"", ""};
-                }
-                
-                scanner.destroyed += this.on_scanner_destroyed;
-                
-                this.scanners.set (path, scanner);
-                
-                var conn = Utils.get_dbus_connection ();
-                if (conn == null) return new string[] {};
-                
-                conn.register_object (
-                    path,
-                    scanner);
-                
-                debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
-                      adapter, frontend, dbusiface);
             }
             
             return new string[] {path, dbusiface};
@@ -170,10 +176,12 @@ namespace DVB {
          */
         public DBus.ObjectPath GetDeviceGroup (uint group_id) {
             DBus.ObjectPath val;
-            if (this.devices.contains (group_id)) {
-                val = new DBus.ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
-            } else {
-                val = new DBus.ObjectPath ("");
+            lock (this.devices) {
+                if (this.devices.contains (group_id)) {
+                    val = new DBus.ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
+                } else {
+                    val = new DBus.ObjectPath ("");
+                }
             }
             return val;
         }
@@ -184,10 +192,12 @@ namespace DVB {
         public DBus.ObjectPath[] GetRegisteredDeviceGroups () {
             DBus.ObjectPath[] devs = new DBus.ObjectPath[this.devices.size];
             int i = 0;
-            foreach (uint key in this.devices.get_keys ()) {
-                devs[i] = new DBus.ObjectPath (
-                    Constants.DBUS_DEVICE_GROUP_PATH.printf (key));
-                i++;
+            lock (this.devices) {
+                foreach (uint key in this.devices.get_keys ()) {
+                    devs[i] = new DBus.ObjectPath (
+                        Constants.DBUS_DEVICE_GROUP_PATH.printf (key));
+                    i++;
+                }
             }
             return devs;
         }
@@ -268,7 +278,9 @@ namespace DVB {
                 return false;
             }
             
-            this.devices.set (group_id, devgroup);
+            lock (this.devices) {
+                this.devices.set (group_id, devgroup);
+            }
             Factory.get_config_store ().add_device_group (devgroup);
             devgroup.device_removed += this.on_device_removed_from_group;
             
@@ -315,19 +327,27 @@ namespace DVB {
             return device;
         }
         
-        protected DeviceGroup? get_device_group_if_exists (uint group_id) {;
-            if (this.devices.contains (group_id))
-                return this.devices.get (group_id);
-            else
-                return null;
+        protected DeviceGroup? get_device_group_if_exists (uint group_id) {
+            DeviceGroup? result = null;
+            lock (this.devices) {
+                if (this.devices.contains (group_id))
+                    result = this.devices.get (group_id);
+            }
+            return result;
         }
         
         public bool device_is_in_any_group (Device device) {
-            foreach (uint group_id in this.devices.get_keys ()) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                if (devgroup.contains (device)) return true;
+            bool result = false;
+            lock (this.devices) {
+                foreach (uint group_id in this.devices.get_keys ()) {
+                    DeviceGroup devgroup = this.devices.get (group_id);
+                    if (devgroup.contains (device)) {
+                        result = true;
+                        break;
+                    }
+                }
             }
-            return false;
+            return result;
         }
         
         private void on_scanner_destroyed (Scanner scanner) {
@@ -335,7 +355,9 @@ namespace DVB {
             uint frontend = scanner.Device.Frontend;
             
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
-            this.scanners.remove (path);
+            lock (this.scanners) {
+                this.scanners.remove (path);
+            }
             
             debug ("Destroying scanner for adapter %u, frontend %u (%s)", adapter,
                 frontend, path);
@@ -349,39 +371,53 @@ namespace DVB {
         }
         
         private Device? get_registered_device (uint adapter, uint frontend) {
+            Device? result = null;
             Device fake_device = new Device (adapter, frontend, false);
-            foreach (uint group_id in this.devices.get_keys ()) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                if (devgroup.contains (fake_device)) {
-                    foreach (Device device in devgroup) {
-                        if (Device.equal (fake_device, device))
-                            return device;
+            lock (this.devices) {
+                foreach (uint group_id in this.devices.get_keys ()) {
+                    DeviceGroup devgroup = this.devices.get (group_id);
+                    if (devgroup.contains (fake_device)) {
+                        foreach (Device device in devgroup) {
+                            if (Device.equal (fake_device, device)) {
+                                result = device;
+                                break;
+                            }
+                        }
                     }
                 }
             }
             
-            return null;
+            return result;
         }
         
         private DeviceGroup? get_device_group_of_device (Device device) {
-            foreach (uint group_id in this.devices.get_keys ()) {
-                DeviceGroup devgroup = this.devices.get (group_id);
-                if (devgroup.contains (device)) {
-                    foreach (Device grp_device in devgroup) {
-                        if (Device.equal (grp_device, device))
-                            return devgroup;
+            DeviceGroup? result = null;
+            lock (this.devices) {
+                foreach (uint group_id in this.devices.get_keys ()) {
+                    DeviceGroup devgroup = this.devices.get (group_id);
+                    if (devgroup.contains (device)) {
+                        foreach (Device grp_device in devgroup) {
+                            if (Device.equal (grp_device, device)) {
+                                result = devgroup;
+                                break;
+                            }
+                        }
                     }
                 }
             }
             
-            return null;
+            return result;
         }
         
         private void on_device_removed_from_group (DeviceGroup devgroup,
                 uint adapter, uint frontend) {
             uint group_id = devgroup.Id;
             if (devgroup.size == 0) {
-                if (this.devices.remove (group_id)) {    
+                bool success;
+                lock (this.devices) {
+                    success = this.devices.remove (group_id);
+                }
+                if (success) {
                     devgroup.destroy ();
                     
                     Factory.get_config_store ().remove_device_group (
