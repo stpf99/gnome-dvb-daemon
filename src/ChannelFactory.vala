@@ -72,10 +72,12 @@ namespace DVB {
         private HashMap<uint, ChannelElements> elements_map;
         private EPGScanner? epgscanner;
         private Element? dvbbasebin;
+        private bool destroyed;
         
         construct {
             this.elements_map = new HashMap<uint, ChannelElements> ();
             this.active_channels = new HashSet<Channel> ();
+            this.destroyed = false;
         }
         
         /**
@@ -108,60 +110,63 @@ namespace DVB {
             Element? bin, tee = null;
             if (this.pipeline == null) {
                 debug ("Creating new pipeline");
-                // Setup new pipeline
-                this.pipeline = new Pipeline ("recording");
-            
-                Gst.Bus bus = this.pipeline.get_bus();
-                bus.add_signal_watch();
-                bus.message += this.bus_watch_func;
+                lock (this.pipeline) {
+                    // Setup new pipeline
+                    this.pipeline = new Pipeline ("recording");
                 
-                this.dvbbasebin = ElementFactory.make ("dvbbasebin", null);
-                if (this.dvbbasebin == null) {
-                    critical ("Could not create dvbbasebin element");
-                    return null;
-                }
-                this.dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
-                
-                channel.setup_dvb_source (this.dvbbasebin);
-                
-                this.dvbbasebin.set ("program-numbers", channel_sid_str);
-                this.dvbbasebin.set ("adapter", this.device.Adapter);
-                this.dvbbasebin.set ("frontend", this.device.Frontend);
-                
-                // don't use add_many because of problems with ownership transfer    
-                ((Bin) this.pipeline).add (this.dvbbasebin);
-                
-                tee = ElementFactory.make ("tee", null);
-                this.add_element (tee);
-                
-                bin = this.add_sink_bin (sink_element);
-                if (!tee.link (bin)) critical ("Could not link tee and bin");
-            } else {
-                // Use current pipeline and add new sink
-                debug ("Reusing existing pipeline");
-                
-                if (this.dvbbasebin == null) {
-                    critical ("No dvbbasebin element");
-                    return null;
-                }
-                
-                if (!this.active_channels.contains (channel)) {
+                    Gst.Bus bus = this.pipeline.get_bus();
+                    bus.add_signal_watch();
+                    bus.message += this.bus_watch_func;
+                    
+                    this.dvbbasebin = ElementFactory.make ("dvbbasebin", null);
+                    if (this.dvbbasebin == null) {
+                        critical ("Could not create dvbbasebin element");
+                        return null;
+                    }
+                    this.dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
+                    
+                    channel.setup_dvb_source (this.dvbbasebin);
+                    
+                    this.dvbbasebin.set ("program-numbers", channel_sid_str);
+                    this.dvbbasebin.set ("adapter", this.device.Adapter);
+                    this.dvbbasebin.set ("frontend", this.device.Frontend);
+                    
+                    // don't use add_many because of problems with ownership transfer    
+                    ((Bin) this.pipeline).add (this.dvbbasebin);
+                    
                     tee = ElementFactory.make ("tee", null);
                     this.add_element (tee);
                     
                     bin = this.add_sink_bin (sink_element);
                     if (!tee.link (bin)) critical ("Could not link tee and bin");
-                
-                    this.pipeline.set_state (State.PAUSED);
+                }
+            } else {
+                // Use current pipeline and add new sink
+                debug ("Reusing existing pipeline");
+                if (this.dvbbasebin == null) {
+                    critical ("No dvbbasebin element");
+                    return null;
+                }
                     
-                    string programs;
-                    dvbbasebin.get ("program-numbers", out programs);
+                if (!this.active_channels.contains (channel)) {
+                    lock (this.pipeline) {
+                        tee = ElementFactory.make ("tee", null);
+                        this.add_element (tee);
+                        
+                        bin = this.add_sink_bin (sink_element);
+                        if (!tee.link (bin)) critical ("Could not link tee and bin");
                     
-                    string new_programs = "%s:%s".printf (programs,
-                        channel_sid_str);
-                    debug ("Changing program-numbers from %s to %s", programs,
-                        new_programs);
-                    this.dvbbasebin.set ("program-numbers", new_programs);
+                        this.pipeline.set_state (State.PAUSED);
+                        
+                        string programs;
+                        dvbbasebin.get ("program-numbers", out programs);
+                        
+                        string new_programs = "%s:%s".printf (programs,
+                            channel_sid_str);
+                        debug ("Changing program-numbers from %s to %s", programs,
+                            new_programs);
+                        this.dvbbasebin.set ("program-numbers", new_programs);
+                    }
                 } else {
                     lock (this.elements_map) {
                         tee = this.elements_map.get (channel_sid).tee;
@@ -234,43 +239,45 @@ namespace DVB {
             if (this.active_channels.size > 1) {
                 string channel_sid_string = channel_sid.to_string ();
                 
-                string programs;
-                dvbbasebin.get ("program-numbers", out programs);
-                string[] programs_arr = programs.split (":");
+                lock (this.pipeline) {
+                    string programs;
+                    dvbbasebin.get ("program-numbers", out programs);
+                    string[] programs_arr = programs.split (":");
+                    
+                    // Remove SID of channel from program-numbers
+                    SList<string> new_programs_list = new SList<string> ();
+                    for (int i=0; i<programs_arr.length; i++) {
+                        string val = programs_arr[i];
+                        if (val != channel_sid_string)
+                            new_programs_list.prepend (val);
+                    }
+                    
+                    StringBuilder new_programs = new StringBuilder (new_programs_list.nth_data (0));
+                    for (int i=1; i<new_programs_list.length (); i++) {
+                        new_programs.append (":" + new_programs_list.nth_data (i));
+                    }
+                    
+                    ChannelElements celements;
+                    lock (this.elements_map) {
+                        celements = this.elements_map.get (channel_sid);
+                    }
+                    Element? sink = celements.sink;
                 
-                // Remove SID of channel from program-numbers
-                SList<string> new_programs_list = new SList<string> ();
-                for (int i=0; i<programs_arr.length; i++) {
-                    string val = programs_arr[i];
-                    if (val != channel_sid_string)
-                        new_programs_list.prepend (val);
+                    debug ("Setting state of queue and sink to NULL");
+                    sink.set_state (State.NULL);
+                    
+                    debug ("Removing queue and sink from pipeline");
+                    ((Bin)this.pipeline).remove (sink);
+                    
+                    debug ("Changing program-numbers from %s to %s", programs,
+                            new_programs.str);
+                    this.pipeline.set_state (State.PAUSED);
+                    
+                    dvbbasebin.set ("program-numbers", new_programs.str);
+                    
+                    this.pipeline.set_state (State.PLAYING);
                 }
-                
-                StringBuilder new_programs = new StringBuilder (new_programs_list.nth_data (0));
-                for (int i=1; i<new_programs_list.length (); i++) {
-                    new_programs.append (":" + new_programs_list.nth_data (i));
-                }
-                
-                ChannelElements celements;
-                lock (this.elements_map) {
-                    celements = this.elements_map.get (channel_sid);
-                }
-                Element? sink = celements.sink;
-                
-                debug ("Setting state of queue and sink to NULL");
-                sink.set_state (State.NULL);
-                
-                debug ("Removing queue and sink from pipeline");
-                ((Bin)this.pipeline).remove (sink);
-                
-                debug ("Changing program-numbers from %s to %s", programs,
-                        new_programs.str);
-                this.pipeline.set_state (State.PAUSED);
-                
-                dvbbasebin.set ("program-numbers", new_programs.str);
-                
-                this.pipeline.set_state (State.PLAYING);
-                
+                    
                 this.active_channels.remove (channel);
             } else {
                 this.destroy ();
@@ -283,27 +290,35 @@ namespace DVB {
          * Stop pipeline and clean up everything else
          */
         public virtual void destroy (bool forced=false) {
-            if (forced) {
-                lock (this.elements_map) {
-                    foreach (ChannelElements celems in this.elements_map.get_values ()) {
-                        if (celems.notify_func != null) {
-                            Channel channel = this.device.Channels.get_channel (
-                                celems.sid);
-                            celems.notify_func (channel);
+            if (this.destroyed) return;
+            lock (this.destroyed) {
+                if (forced) {
+                    lock (this.elements_map) {
+                        foreach (ChannelElements celems in this.elements_map.get_values ()) {
+                            if (celems.notify_func != null) {
+                                Channel channel = this.device.Channels.get_channel (
+                                    celems.sid);
+                                celems.notify_func (channel);
+                            }
                         }
                     }
                 }
-            }
 
-            if (this.pipeline != null) {
-                debug ("Stopping pipeline");
-                Gst.Bus bus = this.pipeline.get_bus ();
-                bus.remove_signal_watch ();
-                this.pipeline.set_state (State.NULL);
+                lock (this.pipeline) {
+                    if (this.pipeline != null) {
+                        debug ("Stopping pipeline");
+                        Gst.Bus bus = this.pipeline.get_bus ();
+                        bus.remove_signal_watch ();
+                        this.pipeline.set_state (State.NULL);
+                    }
+                    this.pipeline = null;
+                }
+                lock (this.elements_map) {
+                    this.elements_map.clear ();
+                }
+                this.active_channels.clear ();
+                this.destroyed = true;
             }
-            this.pipeline = null;
-            this.elements_map.clear ();
-            this.active_channels.clear ();
         }
 
         private bool add_element (owned Gst.Element elem) {
@@ -394,10 +409,12 @@ namespace DVB {
          * Stop all currently active players
          */
         public void destroy () {
-            foreach (PlayerThread active_player in this.active_players) {
-                active_player.destroy ();
+            lock (this.active_players) {
+                foreach (PlayerThread active_player in this.active_players) {
+                    active_player.destroy ();
+                }
+                this.active_players.clear ();
             }
-            this.active_players.clear ();
         }
 
         /**
@@ -418,12 +435,14 @@ namespace DVB {
             bool create_new = true;
             PlayerThread? player = null;
             DVB.Device? free_device = null;
-            foreach (PlayerThread active_player in this.active_players) {
-                foreach (Channel other_channel in active_player.active_channels) {
-                    if (channel.on_same_transport_stream (other_channel)) {
-                        create_new = false;
-                        player = active_player;
-                        break;
+            lock (this.active_players) {
+                foreach (PlayerThread active_player in this.active_players) {
+                    foreach (Channel other_channel in active_player.active_channels) {
+                        if (channel.on_same_transport_stream (other_channel)) {
+                            create_new = false;
+                            player = active_player;
+                            break;
+                        }
                     }
                 }
             }
@@ -437,12 +456,14 @@ namespace DVB {
                 free_device = this.device_group.get_next_free_device ();
                 if (free_device == null && force) {
                     // Stop first player
-                    foreach (PlayerThread active_player in this.active_players) {
-                        if (!active_player.forced) {
-                            active_player.destroy (true);
-                            break;
-                        } else {
-                            critical ("No active players that are not forced");
+                    lock (this.active_players) {
+                        foreach (PlayerThread active_player in this.active_players) {
+                            if (!active_player.forced) {
+                                active_player.destroy (true);
+                                break;
+                            } else {
+                                critical ("No active players that are not forced");
+                            }
                         }
                     }
                     free_device = this.device_group.get_next_free_device ();
@@ -456,7 +477,9 @@ namespace DVB {
             }
 
             player.get_element (channel, sink_element, force, notify_func);
-            this.active_players.add (player);
+            lock (this.active_players) {
+                this.active_players.add (player);
+            }
             
             return player;
         }
@@ -471,23 +494,24 @@ namespace DVB {
         
             bool success = false;
             PlayerThread? player = null;
-            foreach (PlayerThread active_player in this.active_players) {
-                if (active_player.active_channels.contains (channel)) {
-                    success = active_player.remove_channel (channel);
-                    player = active_player;
-                    break;
+            lock (this.active_players) {
+                foreach (PlayerThread active_player in this.active_players) {
+                    if (active_player.active_channels.contains (channel)) {
+                        success = active_player.remove_channel (channel);
+                        player = active_player;
+                        break;
+                    }
+                }
+            
+                if (success && player.active_channels.size == 0)
+                    this.active_players.remove (player);
+                
+                if (this.active_players.size == 0) {
+                    // Start EPG scanner again
+                    EPGScanner? epgscanner = this.device_group.epgscanner;
+                    if (epgscanner != null) epgscanner.start ();
                 }
             }
-            
-            if (success && player.active_channels.size == 0)
-                this.active_players.remove (player);
-            
-            if (this.active_players.size == 0) {
-                // Start EPG scanner again
-                EPGScanner? epgscanner = this.device_group.epgscanner;
-                if (epgscanner != null) epgscanner.start ();
-            }
-            
             return success;
         }
         
