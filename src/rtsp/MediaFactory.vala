@@ -104,6 +104,7 @@ namespace DVB {
     
         public override bool unprepare () {
             this.remove_elements ();
+            this.pipeline = null;
             ChannelFactory channels_factory = this.group.channel_factory;
             channels_factory.stop_channel (this.channel);
             return true;
