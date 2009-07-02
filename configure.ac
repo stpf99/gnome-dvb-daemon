@@ -117,12 +117,6 @@ DBUS_SERVICES_DIR="$expanded_datadir/dbus-1/services"
 AC_SUBST(DBUS_SERVICES_DIR)
 AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR", [DBus services directory])
 
-dnl *********
-dnl * GConf
-dnl *********
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
-AM_GCONF_SOURCE_2
-
 dnl **********
 dnl * Python
 dnl **********
