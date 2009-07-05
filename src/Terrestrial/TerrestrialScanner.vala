@@ -95,6 +95,7 @@ namespace DVB {
             // line looks like:
             // T freq bw fec_hi fec_lo mod transmission-mode guard-interval hierarchy
             foreach (string line in contents.split("\n")) {
+                line = line.chug ();
                 if (line.has_prefix ("#")) continue;
                 
                 string[] cols = Regex.split_simple ("\\s+", line);

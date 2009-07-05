@@ -80,6 +80,7 @@ namespace DVB {
             // line looks like:
             // C freq sr fec mod
             foreach (string line in contents.split("\n")) {
+                line = line.chug ();
                 if (line.has_prefix ("#")) continue;
                 
                 string[] cols = Regex.split_simple ("\\s+", line);
