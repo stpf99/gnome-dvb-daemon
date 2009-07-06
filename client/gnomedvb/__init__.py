@@ -26,7 +26,7 @@ import gtk
 import locale
 import os
 from gettext import gettext as _
-from os.path import abspath, join
+from os.path import abspath, join, expanduser
 
 INFOS = {
     "authors": ["Sebastian Pölsterl <sebp@k-d-w.org>"],
@@ -71,8 +71,11 @@ def get_config_dir():
     return join(XDG_CONFIG_HOME, gnomedvb.defs.PACKAGE)
 
 def get_default_recordings_dir():
-    return join(gnomedvb.userdirs.get_xdg_user_dir(
-        gnomedvb.userdirs.DIRECTORY_VIDEOS), 'Recordings')
+    videos = gnomedvb.userdirs.get_xdg_user_dir(
+        gnomedvb.userdirs.DIRECTORY_VIDEOS)
+    if videos == None:
+        videos = join(expanduser('~'), 'Videos')
+    return join(videos, 'Recordings')
         
 def seconds_to_time_duration_string(duration):
     hours = duration / 3600
