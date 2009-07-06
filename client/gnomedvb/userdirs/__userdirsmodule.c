@@ -39,8 +39,8 @@ userdirs_get_xdg_user_dir (PyObject *self, PyObject *directory)
         if (dir) {
             return PyString_FromString (dir);
         } else {
-        	PyErr_SetString (PyExc_ValueError, "Argument out of range");
-        	return NULL;
+        	Py_INCREF (Py_None);
+        	return Py_None;
         }
     }
 }
