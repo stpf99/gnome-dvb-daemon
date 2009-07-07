@@ -450,6 +450,12 @@ class DVBScheduleClient(gobject.GObject):
     def get_all_events(self, **kwargs):
         return self.schedule.GetAllEvents(**kwargs)
         
+    def get_all_event_infos(self, **kwargs):
+        return self.schedule.GetAllEventInfos(**kwargs)
+        
+    def get_informations(self, eid, **kwargs):
+        return self.schedule.GetInformations(eid, **kwargs)
+        
     def now_playing(self):
         return self.schedule.NowPlaying()
         

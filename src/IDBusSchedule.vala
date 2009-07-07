@@ -21,10 +21,23 @@ using GLib;
 
 namespace DVB {
 
+    public struct EventInfo {
+        public uint32 id;
+        public uint32 next;
+        public string name;
+        public uint duration;
+        public string short_description;
+        /* public uint[] local_start; */
+    }
+
     [DBus (name = "org.gnome.DVB.Schedule")]
     public interface IDBusSchedule : GLib.Object {
     
         public abstract uint32[] GetAllEvents ();
+        
+        public abstract EventInfo[] GetAllEventInfos ();
+        
+        public abstract EventInfo GetInformations (uint32 event_id);
     
         /**
          * @returns: ID of currently running event

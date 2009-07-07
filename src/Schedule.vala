@@ -192,6 +192,70 @@ namespace DVB {
             
             return event_ids;
         }
+
+        public EventInfo[] GetAllEventInfos () {
+            EventInfo[] events = new EventInfo[this.events.get_length ()];
+            lock (this.events) {
+                SequenceIter<EventElement> iter = this.events.get_iter_at_pos (0);
+                EventElement element = this.events.get (iter);
+                int i=0;
+                while (i<this.events.get_length ()) {
+                    EventInfo event_info = EventInfo();
+                    Event? event = this.get_event (element.id);
+                    
+                    event_info.id = element.id;
+                    event_info.name = event.name;
+                    event_info.duration = event.duration;
+                    event_info.short_description = event.description;
+                    /*
+                    Time local_time = event.get_local_start_time ();
+                    event_info.local_start = to_time_array (local_time);
+                    */
+                    iter = iter.next ();
+                    element = this.events.get (iter);
+                    if (iter.is_end ()) {
+                        event_info.next = 0;
+                    } else {
+                        event_info.next = element.id;
+                    }
+                    events[i] = event_info;
+                    
+                    i++;
+                 }
+            }
+            
+            return events;
+        }
+
+        public EventInfo GetInformations (uint32 event_id) {
+            EventInfo event_info = EventInfo();
+            
+            lock (this.events) {        
+                if (this.event_id_map.contains (event_id)) {
+                    SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
+                    EventElement element = this.events.get (iter);
+                    Event? event = this.get_event (element.id);
+                    
+                    event_info.id = element.id;
+                    event_info.name = event.name;
+                    event_info.duration = event.duration;
+                    event_info.short_description = event.description;
+                    /*
+                    Time local_time = event.get_local_start_time ();
+                    event_info.local_start = to_time_array (local_time);
+                    */
+                    iter = iter.next ();
+                    element = this.events.get (iter);
+                    if (iter.is_end ()) {
+                        event_info.next = 0;
+                    } else {
+                        event_info.next = element.id;
+                    }
+                }
+            }
+            
+            return event_info;
+        }
         
         public uint32 NowPlaying () {
             Event? event = this.get_running_event ();
@@ -298,13 +362,7 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
                     Time local_time = event.get_local_start_time ();
-                    start = new uint[6];
-                    start[0] = local_time.year + 1900;
-                    start[1] = local_time.month + 1;
-                    start[2] = local_time.day;
-                    start[3] = local_time.hour;
-                    start[4] = local_time.minute;
-                    start[5] = local_time.second;
+                    start = to_time_array (local_time);
                 } else {
                     debug ("No event with id %u", event_id);
                 }
@@ -359,6 +417,17 @@ namespace DVB {
             }
             
             return val;
+        }
+        
+        private static uint[] to_time_array (Time local_time) {
+            uint[] start = new uint[6];
+            start[0] = local_time.year + 1900;
+            start[1] = local_time.month + 1;
+            start[2] = local_time.day;
+            start[3] = local_time.hour;
+            start[4] = local_time.minute;
+            start[5] = local_time.second;
+            return start;
         }
     }
 
