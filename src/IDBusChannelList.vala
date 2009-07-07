@@ -19,6 +19,11 @@
 
 namespace DVB {
 
+	public struct ChannelInfo {
+		public uint id;
+		public string name;
+	}
+	
 	[DBus (name = "org.gnome.DVB.ChannelList")]
 	public interface IDBusChannelList : GLib.Object {
 	
@@ -68,6 +73,8 @@ namespace DVB {
          * @returns: URL to watch the channel
          */
         public abstract string GetChannelURL (uint channel_id);
+        
+        public abstract ChannelInfo[] GetChannelInfos ();
         
 	}
 

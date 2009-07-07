@@ -217,6 +217,21 @@ namespace DVB {
             
             return url;
         }
+        
+        public ChannelInfo[] GetChannelInfos () {
+            ChannelInfo[] channels = new ChannelInfo[this.channels.size];
+            int i = 0;
+            lock (this.channels) {
+                foreach (uint id in this.channels.get_keys ()) {
+                    ChannelInfo channel = ChannelInfo();
+                    channel.id = id;
+                    channel.name = this.channels.get (id).Name;
+                    channels[i] = channel;
+                    i++;
+                }
+            }
+            return channels;
+        }
     }
 
 }
