@@ -42,21 +42,22 @@ class RunningNextStore(gtk.ListStore):
         channellist = self._group.get_channel_list()
     
         def add_channels(channels):
-            for sid in channels:
+            for sid, name in channels:
                 aiter = self.append()
-                self.set(aiter, self.COL_CHANNEL, channellist.get_channel_name(sid))
+                self.set(aiter, self.COL_CHANNEL, name)
                 self.set(aiter, self.COL_SID, sid)
                 
                 sched = self._group.get_schedule(sid)
                 now = sched.now_playing()
                 if now != 0:
+                    next, name, duration, short_desc = sched.get_informations(now)[1:]
                     self.set(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now))
-                    self.set(aiter, self.COL_RUNNING, escape(sched.get_name(now)))
-                    next = sched.next(now)
+                    self.set(aiter, self.COL_RUNNING, escape(name))
                     if next != 0:
+                        name, duration, short_desc = sched.get_informations(next)[2:]
                         self.set(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next))
-                        self.set(aiter, self.COL_NEXT, escape(sched.get_name(next)))
+                        self.set(aiter, self.COL_NEXT, escape(name))
         
-        channellist.get_channels(reply_handler=add_channels,
+        channellist.get_channel_infos(reply_handler=add_channels,
             error_handler=global_error_handler)
         
