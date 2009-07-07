@@ -421,6 +421,9 @@ class DVBChannelListClient:
     def get_channel_url(self, cid):
         return self.channels.GetChannelURL(cid)
         
+    def get_channel_infos(self, **kwargs):
+        return self.channels.GetChannelInfos(**kwargs)
+        
 class DVBScheduleClient(gobject.GObject):
 
     def __init__(self, object_path):

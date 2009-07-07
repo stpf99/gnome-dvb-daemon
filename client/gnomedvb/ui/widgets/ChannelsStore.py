@@ -43,11 +43,10 @@ class ChannelsStore(gtk.ListStore):
         channellist = device_group.get_channel_list()
         
         def append_channel(channels):
-            for channel_id in channels:
-                name = channellist.get_channel_name(channel_id)
+            for channel_id, name in channels:
                 self.append([name, channel_id])
         
-        channellist.get_channels(reply_handler=append_channel, error_handler=global_error_handler)
+        channellist.get_channel_infos(reply_handler=append_channel, error_handler=global_error_handler)
 
 
 class ChannelsTreeStore(gtk.TreeStore):
@@ -82,14 +81,14 @@ class ChannelsTreeStore(gtk.TreeStore):
         channellist = dev_group.get_channel_list()
         
         def append_channel(channels):
-            for channel_id in channels:
+            for channel_id, name in channels:
                 self.append(group_iter,
                     [group_id,
-                    channellist.get_channel_name(channel_id),
+                    name,
                     channel_id,
                     dev_group])
 
-        channellist.get_channels(reply_handler=append_channel, error_handler=global_error_handler)
+        channellist.get_channel_infos(reply_handler=append_channel, error_handler=global_error_handler)
        
     def _on_manager_group_added(self, manager, group_id):
         group = manager.get_device_group(group_id)
