@@ -20,15 +20,17 @@
 namespace DVB.RTSPServer {
 
     private static Gst.RTSPServer server;
+    private static uint timeout_id;
 
     public static void start () {
         server = new Gst.RTSPServer ();
         server.set_media_mapping (new MediaMapping ());
         server.attach (null);
-        GLib.Timeout.add_seconds (2, (GLib.SourceFunc)timeout);
+        timeout_id = GLib.Timeout.add_seconds (2, (GLib.SourceFunc)timeout);
     }
     
     public static void shutdown () {
+        GLib.Source.remove (timeout_id);
         server = null;
     }
     
