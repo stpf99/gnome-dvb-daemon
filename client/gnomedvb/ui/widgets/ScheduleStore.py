@@ -57,8 +57,8 @@ class ScheduleStore(gtk.ListStore):
     def _fill_all(self):
         def append_event(events):
             prev_date = (0,0,0,)
-            for event_id in events:
-                new_iter = self._append_event(event_id)
+            for event in events:
+                new_iter = self._append_event(event)
                 new_date = self.get_date(new_iter)
                 # Insert bogus entry to mark that a new day starts
                 if prev_date < new_date:
@@ -69,7 +69,7 @@ class ScheduleStore(gtk.ListStore):
                     self.set(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
                 prev_date = new_date
         
-        self._client.get_all_events(reply_handler=append_event, error_handler=global_error_handler)
+        self._client.get_all_event_infos(reply_handler=append_event, error_handler=global_error_handler)
         
     def get_date(self, aiter):
         return (self[aiter][self.COL_YEAR],
@@ -84,21 +84,27 @@ class ScheduleStore(gtk.ListStore):
             self[aiter][self.COL_MONTH], self[aiter][self.COL_DAY],
             self[aiter][self.COL_HOUR], self[aiter][self.COL_MINUTE])
         
-    def _append_event(self, event_id):
-        name = escape(self._client.get_name(event_id))
-        short_desc = escape(self._client.get_short_description(event_id))
-        ext_desc = escape(self._client.get_extended_description(event_id))
+    def _append_event(self, event):
+        event_id, next, name, duration, short_desc = event
+        name = escape(name)
+        short_desc = escape(short_desc)
+        
         start_arr = self._client.get_local_start_time(event_id)
-
-        duration = self._client.get_duration(event_id)
         
         rec = self._recorder.has_timer_for_event(event_id,
             self._client.get_channel_sid())
         
         return self.append([start_arr[0], start_arr[1], start_arr[2],
             start_arr[3], start_arr[4],
-            duration, name, short_desc, ext_desc,
+            duration, name, short_desc, None,
             rec, event_id])
+            
+    def get_extended_description(self, aiter):
+        if aiter != None:
+            event_id = self[aiter][self.COL_EVENT_ID] 
+            ext_desc = escape(self._client.get_extended_description(event_id))
+            self[aiter][self.COL_EXTENDED_DESC] = ext_desc
+        return ext_desc
         
     def get_next_day_iter(self, aiter):
         """

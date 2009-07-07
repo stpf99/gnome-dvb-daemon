@@ -74,6 +74,8 @@ class ScheduleView(gtk.TreeView):
             sel_iter = self.get_selection().get_selected()[1]
             if sel_iter != None and model.get_path(aiter) == model.get_path(sel_iter):
                 ext_desc = model[aiter][ScheduleStore.COL_EXTENDED_DESC]
+                if ext_desc == None:
+                    ext_desc = model.get_extended_description(aiter)
                 description += "\n<small>%s</small>" % ext_desc
                 # Update cell height
                 model.emit("row-changed", model.get_path(aiter), aiter)
