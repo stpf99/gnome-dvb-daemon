@@ -293,7 +293,7 @@ namespace DVB {
             return event;
         }
         
-        private void print_last_error () {
+        private inline void print_last_error () {
             critical ("SQLite error: %d, %s",
                 this.db.errcode (), this.db.errmsg ());
         }

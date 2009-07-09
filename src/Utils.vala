@@ -23,7 +23,7 @@ namespace DVB.Utils {
 
     private const int BUFFER_SIZE = 4096;
 
-    public static unowned string? get_nick_from_enum (GLib.Type enumtype, int val) {
+    public static inline unowned string? get_nick_from_enum (GLib.Type enumtype, int val) {
         EnumClass eclass = (EnumClass)enumtype.class_ref ();
         unowned EnumValue eval = eclass.get_value (val);
         
@@ -35,7 +35,7 @@ namespace DVB.Utils {
         }
     }
     
-    public static bool get_value_by_name_from_enum (GLib.Type enumtype, string name, out int evalue) {
+    public static inline bool get_value_by_name_from_enum (GLib.Type enumtype, string name, out int evalue) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
         unowned EnumValue eval = enumclass.get_value_by_name (name);
         
@@ -48,7 +48,7 @@ namespace DVB.Utils {
         }
     }
     
-    public static unowned string? get_name_by_value_from_enum (GLib.Type enumtype, int val) {
+    public static inline unowned string? get_name_by_value_from_enum (GLib.Type enumtype, int val) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
         unowned EnumValue eval = enumclass.get_value (val);
         
@@ -99,7 +99,7 @@ namespace DVB.Utils {
     /**
      * @returns: Difference in seconds
      */ 
-    public static int64 difftime (Time t1, Time t2) {
+    public static inline int64 difftime (Time t1, Time t2) {
         int64 ts1 = (int64)t1.mktime ();
         int64 ts2 = (int64)t2.mktime ();
         
@@ -111,7 +111,7 @@ namespace DVB.Utils {
     /**
      * Creates Time of local time
      */
-    public static Time create_time (int year, int month, int day, int hour,
+    public static inline Time create_time (int year, int month, int day, int hour,
         int minute, int second=0) {
         
         assert (year >= 1900 && month >= 1 && day >= 1 && hour >= 0 && minute >= 0
@@ -133,7 +133,7 @@ namespace DVB.Utils {
     /**
      * Creates Time of UTC time
      */
-    public static Time create_utc_time (int year, int month, int day, int hour,
+    public static inline Time create_utc_time (int year, int month, int day, int hour,
         int minute, int second=0) {
         
         assert (year >= 1900 && month >= 1 && day >= 1 && hour >= 0 && minute >= 0
@@ -230,7 +230,7 @@ namespace DVB.Utils {
         dir.delete (null);
     }
 
-    public static DBus.Connection? get_dbus_connection () {
+    public static inline DBus.Connection? get_dbus_connection () {
         DBus.Connection conn;
         try {
             conn = DBus.Bus.get (DBus.BusType.SESSION);
