@@ -71,8 +71,9 @@ namespace DVB {
          * Stop collecting EPG data
          */
         public void stop () {
+            debug ("Stopping EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
+        
             if (this.stop_counter == 0) {
-                debug ("Stopping EPG scan for group %u", this.DeviceGroup.Id);
                 this.remove_timeouts ();
                 this.reset ();
             }
@@ -123,10 +124,11 @@ namespace DVB {
          */
         public bool start () {
             debug ("Starting EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
-            if (this.stop_counter > 0) {
-                this.stop_counter -= 1;
-                return false;
-            }
+            
+            this.stop_counter -= 1;
+            if (this.stop_counter > 0) return false;
+            this.stop_counter = 0;
+        
             // TODO scan all channels?
             HashSet<uint> unique_frequencies = new HashSet<uint> ();
             foreach (Channel c in this.DeviceGroup.Channels) {
@@ -164,9 +166,9 @@ namespace DVB {
          * Scan the next frequency for EPG data
          */
         private bool scan_new_frequency () {
-            debug ("Finished EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
-            
             if (this.channels.is_empty () || this.do_stop) {
+                debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
+                
                 this.reset ();
                 // Time the next iteration
                 this.queue_scan_event_id = Timeout.add_seconds (
