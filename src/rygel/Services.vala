@@ -311,7 +311,7 @@ namespace DVB {
                 error ("Oops %s", e.message);
                 return false;
             }
-            return true;
+            return false;
         }
     }
     

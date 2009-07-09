@@ -175,15 +175,14 @@ namespace Main {
         }
         timers_store = null;
         config_store = null;
-        
+
         if (!start_recordings_store (max_id)) return -1;
 
-        message ("Starting RTSP server");
-        DVB.RTSPServer.start ();
+        Idle.add (DVB.RTSPServer.start);
 
         if (!disable_rygel)
-            DVB.RygelService.start_rygel_services ();
-    
+            Idle.add (DVB.RygelService.start_rygel_services);
+
         // Start GLib mainloop
         mainloop.run ();
         

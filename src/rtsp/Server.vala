@@ -22,11 +22,13 @@ namespace DVB.RTSPServer {
     private static Gst.RTSPServer server;
     private static uint timeout_id;
 
-    public static void start () {
+    public static bool start () {
+        message ("Starting RTSP server");
         server = new Gst.RTSPServer ();
         server.set_media_mapping (new MediaMapping ());
         server.attach (null);
         timeout_id = GLib.Timeout.add_seconds (2, (GLib.SourceFunc)timeout);
+        return false;
     }
     
     public static void shutdown () {
