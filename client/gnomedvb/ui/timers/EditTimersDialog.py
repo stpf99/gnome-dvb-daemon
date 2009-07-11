@@ -54,24 +54,13 @@ class EditTimersDialog(gtk.Dialog):
         self.timersview = gtk.TreeView(self.timerslist)
         self.timersview.get_selection().connect("changed",
             self._on_timers_selection_changed)
-        
-        cell_rec = gtk.CellRendererPixbuf()
-        col_rec = gtk.TreeViewColumn()
-        col_rec.pack_start(cell_rec)
-        col_rec.set_cell_data_func(cell_rec, self._get_recording_icon_for_cell)
-        col_rec.add_attribute(cell_rec, "stock-id", self.COL_ACTIVE)
-        
-        self.timersview.append_column(col_rec)
-         
-        cell_id = gtk.CellRendererText()
-        col_id = gtk.TreeViewColumn(_("ID"))
-        col_id.pack_start(cell_id)
-        col_id.add_attribute(cell_id, "text", self.COL_ID)
-        
-        self.timersview.append_column(col_id)
-        
-        cell_channel = gtk.CellRendererText()
+
         col_channel = gtk.TreeViewColumn(_("Channel"))
+        cell_rec = gtk.CellRendererPixbuf()
+        col_channel.pack_start(cell_rec)
+        col_channel.set_cell_data_func(cell_rec, self._get_recording_icon_for_cell)
+        col_channel.add_attribute(cell_rec, "stock-id", self.COL_ACTIVE)
+        cell_channel = gtk.CellRendererText()
         col_channel.pack_start(cell_channel)
         col_channel.add_attribute(cell_channel, "text", self.COL_CHANNEL)
         
