@@ -171,9 +171,16 @@ namespace DVB {
                     lock (this.elements_map) {
                         tee = this.elements_map.get (channel_sid).tee;
                     }
-                    
-                    bin = this.add_sink_bin (sink_element);
-                    if (!tee.link (bin)) critical ("Could not link tee and bin");
+
+                    lock (this.pipeline) {
+                        this.pipeline.set_state (State.PAUSED);
+                        bin = this.add_sink_bin (sink_element);
+                    }
+
+                    debug ("Linking %s with %s", tee.get_name (), bin.get_name ());
+                    if (!tee.link (bin)) {
+                        critical ("Could not link tee and bin");
+                    }
                 }
             }
             
@@ -199,7 +206,10 @@ namespace DVB {
             
             Gst.Element bin = new Gst.Bin (null);
             ((Gst.Bin)bin).add_many (queue, sink_element);
-            queue.link (sink_element);
+            if (!queue.link (sink_element)) {
+                critical ("Could not link elements %s and %s", queue.get_name (),
+                    sink_element.get_name ());
+            }
             
             var pad = queue.get_static_pad ("sink");
             bin.add_pad (new Gst.GhostPad ("sink", pad));
