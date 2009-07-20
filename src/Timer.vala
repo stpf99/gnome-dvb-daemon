@@ -36,6 +36,7 @@ namespace DVB {
         public uint Hour {get; set;}
         public uint Minute {get; set;}
         public uint Duration {get; set;}
+        public Gst.Element sink {get; set;}
         
         private Time starttime;
         

@@ -433,6 +433,7 @@ namespace DVB {
                 return;
             }
             filesink.set ("location", location.get_path ());
+            timer.sink = filesink;
             
             ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
             PlayerThread? player = channel_factory.watch_channel (channel,
@@ -484,7 +485,7 @@ namespace DVB {
                     critical ("Could not save recording: %s", e.message);
                 }
                 ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
-                channel_factory.stop_channel (timer.Channel);
+                channel_factory.stop_channel (timer.Channel, timer.sink);
                 
                 this.recordings.remove (timer.Id);
             } 

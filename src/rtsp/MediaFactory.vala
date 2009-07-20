@@ -73,7 +73,7 @@ namespace DVB {
           	    critical ("Could not create player");
           	    return null;
           	}
-          	Gst.Element? bin = player.get_sink_bin (sidnr);
+          	Gst.Element? bin = player.get_sink_bin (sidnr, payload);
 
             // Construct media
           	Gst.RTSPMedia media = new DVBMedia (devgrp, channel);
@@ -106,7 +106,7 @@ namespace DVB {
             this.remove_elements ();
             this.pipeline = null;
             ChannelFactory channels_factory = this.group.channel_factory;
-            channels_factory.stop_channel (this.channel);
+            channels_factory.stop_channel (this.channel, this.element);
             return true;
         }
     }
