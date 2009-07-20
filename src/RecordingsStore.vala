@@ -63,26 +63,33 @@ namespace DVB {
             }
         }
         
-        public bool add (Recording rec) {
+        public bool add (Recording rec, bool monitor) {
             uint32 id = rec.Id;
             lock (this.recordings) {
                 if (this.recordings.contains (id)) {
                     critical ("Recording with id %u already available", id);
                     return false;
                 }
-                     
-                // Monitor the recording           
-                try {
-                    FileMonitor monitor = rec.Location.monitor_file (0, null);
-                    monitor.changed += this.on_recording_file_changed;
-                } catch (Error e) {
-                    warning ("Could not create FileMonitor: %s", e.message);
+
+                if (monitor) {
+                    this.monitor_recording (rec);
                 }
                 
                 this.recordings.set (id, rec);
                 this.changed (id, ChangeType.ADDED);
             }
             return true;
+        }
+        
+        public void monitor_recording (Recording rec) {
+            // Monitor the recording
+            try {
+                FileMonitor monitor = rec.Location.monitor_file (0, null);
+                monitor.changed += this.on_recording_file_changed;
+                rec.file_monitor = monitor;
+            } catch (Error e) {
+                warning ("Could not create FileMonitor: %s", e.message);
+            }
         }
     
         public uint32 get_next_id () {
@@ -344,7 +351,7 @@ namespace DVB {
                                     debug ("Restored recording from %s",
                                         child.get_path ());
                                     lock (this.recordings) {
-                                        this.add (rec);
+                                        this.add (rec, true);
                                     }
                                     
                                     lock (this.last_id) {

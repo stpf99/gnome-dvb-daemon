@@ -34,6 +34,7 @@ namespace DVB {
         public string? Description {get; set;}
         public GLib.Time StartTime {get; set;}
         public int64 Length {get; set;}
+        public FileMonitor file_monitor {get; set;}
         
         public uint[] get_start () {
             return new uint[] {

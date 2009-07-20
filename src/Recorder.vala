@@ -457,7 +457,7 @@ namespace DVB {
                     this.recordings.set (recording.Id, recording);
                 }
                 
-                RecordingsStore.get_instance().add (recording);
+                RecordingsStore.get_instance().add (recording, false);
             }
             
             this.active_timers.add (timer.Id);
@@ -494,6 +494,8 @@ namespace DVB {
                 this.active_timers.remove (timer_id);
                 this.timers.remove (timer_id);
             }
+            RecordingsStore.get_instance().monitor_recording (rec);
+            
             this.changed (timer_id, ChangeType.DELETED);
             
             this.recording_finished (rec.Id);
