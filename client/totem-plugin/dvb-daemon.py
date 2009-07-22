@@ -170,8 +170,6 @@ class DVBDaemonPlugin(totem.Plugin):
         self.sidebar = gtk.VBox(spacing=6)
         
         self.channels = ChannelsTreeStore()
-        self.channels.connect('row-deleted', self._on_channels_row_inserted_deleted)
-        self.channels.connect('row-inserted', self._on_channels_row_inserted_deleted)
         
         self.channels_view = ChannelsView(self.channels, ChannelsTreeStore.COL_NAME)
         self.channels_view.connect("button-press-event", self._on_channel_selected)
@@ -281,11 +279,17 @@ class DVBDaemonPlugin(totem.Plugin):
             group_iter = self.channels.iter_next(root_iter)
             self.single_group = self.channels[group_iter][self.channels.COL_GROUP]
             self._enable_single_group_mode(True)
+        
+        # Monitor if channels are added (don't monitor it when channels are added when loading)
+        self.channels.connect('row-deleted', self._on_channels_row_inserted_deleted)
+        self.channels.connect('row-inserted', self._on_channels_row_inserted_deleted)
             
     def _enable_single_group_mode(self, val):
         self.timers_item.set_sensitive(val)
         self.whatson_item.set_sensitive(val)
         self.whatson_button.set_sensitive(val)
+        if not val:
+            self.single_group = None
 
     def _get_selected_group_and_channel(self):
         model, aiter = self.channels_view.get_selection().get_selected()
@@ -432,9 +436,10 @@ class DVBDaemonPlugin(totem.Plugin):
                 child_iter = self.channels.iter_next(child_iter)
                 
     def _on_channels_row_inserted_deleted(self, treestore, path, aiter=None):
-        # One entry is for recordings
-        val = len(treestore) == 2
-        self._enable_single_group_mode(val)
+        if len(path) == 1:
+            # One entry is for recordings
+            val = len(treestore) == 2
+            self._enable_single_group_mode(val)
                         
     def _delete_callback(self, success):
         if not success:
