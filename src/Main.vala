@@ -115,6 +115,34 @@ namespace Main {
     public static bool get_disable_epg_scanner () {
         return Main.disable_epg_scanner;
     }
+
+    private static bool check_feature_version (string name, uint major,
+            uint minor, uint micro) {
+        Gst.Registry reg = Gst.Registry.get_default ();
+        Gst.PluginFeature feature = reg.lookup_feature (name);
+        bool ret;
+        if (feature == null)
+            ret = false;
+        else
+            ret = feature.check_version (major, minor, micro);
+        debug ("Has %s >= %u.%u.%u: %s", name, major, minor, micro, ret.to_string ());
+        return ret;
+    }
+
+    private static bool check_requirements () {
+        bool val;
+        val = check_feature_version ("dvbsrc", 0, 10, 13);
+        if (!val) return false;
+
+        val = check_feature_version ("dvbbasebin", 0, 10, 13);
+        if (!val) return false;
+
+        val = check_feature_version ("mpegtsparse", 0, 10, 13);
+        if (!val) return false;
+
+        val = check_feature_version ("rtpmp2tpay", 0, 10, 14);
+        return val;
+    }
     
     public static int main (string[] args) {
         cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
@@ -147,6 +175,13 @@ namespace Main {
 
         // Initializing GStreamer
         Gst.init (ref args);
+
+        if (!check_requirements ()) {
+            stderr.printf ("You don't have all of the necessary requirements to run %s.\n",
+                Config.PACKAGE_NAME);
+            stderr.printf ("Start the daemon with the --debug flag for more details.\n");
+            return -1;
+        }
         
         if (!start_manager ()) return -1;
         
