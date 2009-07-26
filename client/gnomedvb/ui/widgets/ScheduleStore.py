@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import gobject
 import datetime
 from cgi import escape
 from gnomedvb import global_error_handler
@@ -36,6 +37,10 @@ class ScheduleStore(gtk.ListStore):
      COL_EVENT_ID,) = range(11)
      
     NEW_DAY = -1
+    
+    __gsignals__ = {
+        "loading-finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+    }
 
     def __init__(self, dev_group, sid):
         gtk.ListStore.__init__(self, int, int, int, int, int, int, str, str, str, int, int)
@@ -68,6 +73,7 @@ class ScheduleStore(gtk.ListStore):
                     self.set(date_iter, self.COL_DAY, new_date[2])
                     self.set(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
                 prev_date = new_date
+            self.emit("loading-finished")
         
         self._client.get_all_event_infos(reply_handler=append_event, error_handler=global_error_handler)
         
