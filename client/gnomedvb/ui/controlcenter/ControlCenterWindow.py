@@ -122,6 +122,7 @@ class ControlCenterWindow(gtk.Window):
         self.help_eventbox = HelpBox()
         self.choose_group_text = _("Choose a device group and channel on the left to view the program guide")
         self.create_group_text = _("No devices are configured. Please go to preferences and to configure them.")
+        self.no_events_text = _("There is currently no schedule available for this channel")
         self.hpaned.pack2(self.help_eventbox)
         
         self.scheduleview = ScheduleView()
@@ -371,7 +372,11 @@ class ControlCenterWindow(gtk.Window):
     def _reset_ui(self):
         self.channelsstore = None
         self.channelsview.set_model(None)
-        self._display_help_message()
+        if len(self.devgroupslist) == 0:
+            text = self.create_group_text
+        else:
+            text = self.choose_group_text
+        self._display_help_message(text)
         self._set_timers_sensitive(False)
         
     def _reset_schedule_view(self):
@@ -425,8 +430,10 @@ class ControlCenterWindow(gtk.Window):
             sid = model[aiter][model.COL_SID]
             group = self._get_selected_group()
             self.schedulestore = ScheduleStore(group, sid)
+            self.schedulestore.connect("loading-finished",
+                self._on_schedule_loading_finished)
+                
             self.scheduleview.set_model(self.schedulestore)
-            
             # Display schedule if it isn't already displayed
             if child != self.scrolledschedule:
                 self.hpaned.remove(child)
@@ -438,8 +445,12 @@ class ControlCenterWindow(gtk.Window):
             # Display running/next if it isn't already displayed
             if child != self.scrolledrunningnext:
                 self._display_running_next()
-                
-    def _display_help_message(self):
+    
+    def _on_schedule_loading_finished(self, schedulestore):
+        if len(self.schedulestore) == 0:
+            self._display_help_message(self.no_events_text)
+            
+    def _display_help_message(self, text):
         child = self.hpaned.get_child2()
         self.hpaned.remove(child)
         self.hpaned.pack2(self.help_eventbox)
@@ -447,10 +458,7 @@ class ControlCenterWindow(gtk.Window):
         self._set_next_day_sensitive(False)
         self._set_refresh_sensitive(False)
         
-        if len(self.devgroupslist) == 0:
-            self.help_eventbox.set_markup(self.create_group_text)
-        else:
-            self.help_eventbox.set_markup(self.choose_group_text)
+        self.help_eventbox.set_markup(text)
      
     def _display_running_next(self):
         group = self._get_selected_group()
