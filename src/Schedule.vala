@@ -196,32 +196,34 @@ namespace DVB {
         public EventInfo[] GetAllEventInfos () {
             EventInfo[] events = new EventInfo[this.events.get_length ()];
             lock (this.events) {
-                SequenceIter<EventElement> iter = this.events.get_iter_at_pos (0);
-                EventElement element = this.events.get (iter);
-                int i=0;
-                while (i<this.events.get_length ()) {
-                    EventInfo event_info = EventInfo();
-                    Event? event = this.get_event (element.id);
-                    
-                    event_info.id = element.id;
-                    event_info.name = event.name;
-                    event_info.duration = event.duration;
-                    event_info.short_description = event.description;
-                    /*
-                    Time local_time = event.get_local_start_time ();
-                    event_info.local_start = to_time_array (local_time);
-                    */
-                    iter = iter.next ();
-                    element = this.events.get (iter);
-                    if (iter.is_end ()) {
-                        event_info.next = 0;
-                    } else {
-                        event_info.next = element.id;
-                    }
-                    events[i] = event_info;
-                    
-                    i++;
-                 }
+                SequenceIter<EventElement> iter = this.events.get_begin_iter ();
+                if (!iter.is_end ()) {
+                    EventElement element = this.events.get (iter);
+                    int i = 0;
+                    while (!iter.is_end ()) {
+                        EventInfo event_info = EventInfo();
+                        Event? event = this.get_event (element.id);
+                        
+                        event_info.id = element.id;
+                        event_info.name = event.name;
+                        event_info.duration = event.duration;
+                        event_info.short_description = event.description;
+                        /*
+                        Time local_time = event.get_local_start_time ();
+                        event_info.local_start = to_time_array (local_time);
+                        */
+                        iter = iter.next ();
+                        if (iter.is_end ()) {
+                            event_info.next = 0;
+                        } else {
+                            element = this.events.get (iter);
+                            event_info.next = element.id;
+                        }
+                        events[i] = event_info;
+                        
+                        i++;
+                     }
+                }
             }
             
             return events;
