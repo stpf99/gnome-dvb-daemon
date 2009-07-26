@@ -357,6 +357,11 @@ namespace DVB {
         private void remove_sink_bin (uint channel_sid, Gst.Element sink) {
             Gst.Element? sink_bin = this.get_sink_bin (channel_sid, sink);
 
+            if (sink_bin == null) {
+                warning ("Could not find sink bin for channel %u and sink %p",
+                    channel_sid, sink);
+                return;
+            }
             debug ("Setting state of queue and sink to NULL");
             sink_bin.set_state (State.NULL);
             
