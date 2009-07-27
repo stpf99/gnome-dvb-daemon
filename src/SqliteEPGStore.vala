@@ -338,7 +338,7 @@ namespace DVB {
             
             string escaped_str;
             try {
-                escaped_str = regex.replace_literal (text, text.size (),
+                escaped_str = regex.replace_literal (text, text.len (),
                     0, "''", 0);
             } catch (RegexError e) {
                 warning ("RegexError: %s", e.message);
