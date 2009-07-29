@@ -25,6 +25,10 @@ class ChannelsStore(gtk.ListStore):
 
     (COL_NAME,
      COL_SID,) = range(2)
+    
+    __gsignals__ = {
+        "loading-finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+    }
 
     def __init__(self, device_group):
         """
@@ -45,6 +49,7 @@ class ChannelsStore(gtk.ListStore):
         def append_channel(channels):
             for channel_id, name in channels:
                 self.append([name, channel_id])
+            self.emit("loading-finished")
         
         channellist.get_channel_infos(reply_handler=append_channel, error_handler=global_error_handler)
 
@@ -55,7 +60,11 @@ class ChannelsTreeStore(gtk.TreeStore):
      COL_NAME,
      COL_SID,
      COL_GROUP,) = range(4)
-     
+    
+    __gsignals__ = {
+        "loading-finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+    }
+    
     def __init__(self):
         gtk.TreeStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
         
@@ -87,6 +96,7 @@ class ChannelsTreeStore(gtk.TreeStore):
                     name,
                     channel_id,
                     dev_group])
+            self.emit("loading-finished", group_id)
 
         channellist.get_channel_infos(reply_handler=append_channel, error_handler=global_error_handler)
        
