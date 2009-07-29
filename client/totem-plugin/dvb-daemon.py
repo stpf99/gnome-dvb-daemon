@@ -21,7 +21,6 @@ pygtk.require("2.0")
 import gtk
 import pygst
 pygst.require("0.10")
-import glib
 import subprocess
 import totem
 import gnomedvb
@@ -149,6 +148,8 @@ class DVBDaemonPlugin(totem.Plugin):
         self.totem_object = totem_object
         
         self.manager = DVBModel()
+        self._size = self.manager.get_device_group_size()
+        self._loaded_groups = 0
         
         self._setup_sidebar()
         self._setup_menu()
@@ -162,14 +163,15 @@ class DVBDaemonPlugin(totem.Plugin):
         
         totem_object.add_sidebar_page ("dvb-daemon", _("Digital TV"), self.sidebar)
         self.sidebar.show_all()
-        
-        # Channels are added async, check in two seconds
-        glib.timeout_add_seconds(2, self._is_setup)
+
+        if self._size == 0:
+            self._show_configure_dialog()  
         
     def _setup_sidebar(self):
         self.sidebar = gtk.VBox(spacing=6)
         
         self.channels = ChannelsTreeStore()
+        self.channels.connect("loading-finished", self._on_group_loaded)
         
         self.channels_view = ChannelsView(self.channels, ChannelsTreeStore.COL_NAME)
         self.channels_view.connect("button-press-event", self._on_channel_selected)
@@ -260,20 +262,8 @@ class DVBDaemonPlugin(totem.Plugin):
         self.whatson_item = uimanager.get_widget('/tmw-menubar/view/dvb-whatson')
         self.whatson_item.set_sensitive(False)
 
-    def _is_setup(self):
-        size = self.manager.get_device_group_size()
-        if size == 0:
-            dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
-                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
-            dialog.set_markup (
-                "<big><span weight=\"bold\">%s</span></big>" % _("DVB card is not configured"))
-            dialog.format_secondary_text(_("Do you want to search for channels now?"))
-            response = dialog.run()
-            if response == gtk.RESPONSE_YES:
-                self._on_action_setup(None)
-            dialog.destroy()
-        elif size == 1:
+    def _configure_mode(self):
+        if self._size == 1:
             # Activate single group mode
             root_iter = self.channels.get_iter_root()
             group_iter = self.channels.iter_next(root_iter)
@@ -283,6 +273,18 @@ class DVBDaemonPlugin(totem.Plugin):
         # Monitor if channels are added (don't monitor it when channels are added when loading)
         self.channels.connect('row-deleted', self._on_channels_row_inserted_deleted)
         self.channels.connect('row-inserted', self._on_channels_row_inserted_deleted)
+
+    def _show_configure_dialog(self):
+        dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
+            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+            type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+        dialog.set_markup (
+            "<big><span weight=\"bold\">%s</span></big>" % _("DVB card is not configured"))
+        dialog.format_secondary_text(_("Do you want to search for channels now?"))
+        response = dialog.run()
+        if response == gtk.RESPONSE_YES:
+            self._on_action_setup(None)
+        dialog.destroy()
             
     def _enable_single_group_mode(self, val):
         self.timers_item.set_sensitive(val)
@@ -440,6 +442,11 @@ class DVBDaemonPlugin(totem.Plugin):
             # One entry is for recordings
             val = len(treestore) == 2
             self._enable_single_group_mode(val)
+
+    def _on_group_loaded(self, treestore, group_id):
+        self._loaded_groups += 1
+        if self._loaded_groups == self._size:
+            self._configure_mode()
                         
     def _delete_callback(self, success):
         if not success:
