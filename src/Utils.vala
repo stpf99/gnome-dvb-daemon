@@ -87,7 +87,7 @@ namespace DVB.Utils {
         
         string new_text;
         try {
-            new_text = regex.replace_literal (text, text.len(), 0, "_", 0);
+            new_text = regex.replace_literal (text, -1, 0, "_", 0);
         } catch (RegexError e) {
             error ("RegexError: %s", e.message);
             return text;
