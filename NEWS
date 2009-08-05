@@ -1,4 +1,37 @@
 =============
+Version 0.1.8
+=============
+
+In this release live TV and recordings handled the same way.
+Thus conflicts between live TV and recordings can be resolved.
+Furthermore, all features that are available in gnome-control-center can
+be accessed from the Totem plugin. The setup assistant got re-designed and
+does most of the work automatically now.
+This release depends on libgee 0.1.6 and gst-rtsp-server 0.10.4.
+
+- Fixed bug #582927: Totem plugin fails to start: Non-ASCII character in python source
+- Fixed bug #582925: Symbol-rate unit mismatch
+- Renamed method WriteChannelsToFile to WriteAllChannelsToFile. WriteChannels now expects a list of SIDs and a path and will store all channels in the given order to the file.
+- Added the possibility to choose and reorder channels after the scan completed.
+- Added SetDeviceGroupName, (Get|Set)RecordingsDirectory methods
+- Added EditGroupDialog
+- Fixed crash when adding same epg event of different device group.
+- Delete EPG events of group when it gets destroyed
+- Moved handling of devices and creating dvbbasebin elements to new ChannelFactory and PlayerThread classes.
+- Added DVB menu, schedule dialog, timers dialog, preferences dialog and right-click menus to Totem plugin
+- Implemented Rygel MediaServer spec.
+- Fixed bug #586230: Channel results should pack checkbox in first column
+- Fixed bug #586231: Removed frequency column and never show horizontal scrollbars
+- Fixed bug #586224: No need for device selection in setup wizard
+- Fixed bug #586226: Device type not user-friendly
+- Re-designed big portions of gnome-dvb-setup (fixex bugs #586227, #586228 and #586232)
+- Add Hong Kong to list of countries in Initial Tuning Data Page
+- Stop streaming channels when a recording is about to start on a different transport stream and no free devices are available
+- Fixed bug where all streams of a channel were stopped when a single client/recording stopped
+- Check if all required GStreamer elements are available, if not print an error message and quit.
+- Override information that Totem writes to GtkRecentManager
+
+=============
 Version 0.1.7
 =============
 
