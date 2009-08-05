@@ -290,6 +290,7 @@ class ControlCenterWindow(gtk.Window):
         timers_image.show()
         
         self.button_display_timers = gtk.ToolButton(icon_widget=timers_image, label=_("Recording schedule"))
+        self.button_display_timers.set_is_important(True)
         self.button_display_timers.set_sensitive(False)
         self.button_display_timers.connect("clicked", self._on_button_display_timers_clicked)
         self.button_display_timers.set_tooltip_markup(_("Manage recording schedule"))
@@ -301,6 +302,7 @@ class ControlCenterWindow(gtk.Window):
         recordings_image.show()
         
         button_recordings = gtk.ToolButton(icon_widget=recordings_image, label=_("Recordings"))
+        button_recordings.set_is_important(True)
         button_recordings.connect("clicked", self._on_button_recordings_clicked)
         button_recordings.show()
         self.toolbar.insert(button_recordings, 1)
@@ -309,6 +311,7 @@ class ControlCenterWindow(gtk.Window):
         whatson_image.show()
         
         button_whatson = gtk.ToolButton(icon_widget=whatson_image, label=_("What's on now"))
+        button_whatson.set_is_important(True)
         button_whatson.connect("clicked", self._on_whats_on_now_clicked)
         button_whatson.show()
         self.toolbar.insert(button_whatson, 2)
