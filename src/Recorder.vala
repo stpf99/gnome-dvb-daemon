@@ -399,20 +399,26 @@ namespace DVB {
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
     
-            if (!this.DeviceGroup.Channels.contains (channel)) {
+            ChannelList channels = this.DeviceGroup.Channels;
+            if (!channels.contains (channel)) {
                 warning ("No channel %u for device group %u", channel,
                     this.DeviceGroup.Id);
                 return null;
             }
+            Schedule schedule = channels.get_channel (channel).Schedule;
 
             uint32 timer_id = RecordingsStore.get_instance ().get_next_id ();
 
-            // TODO Get name for timer
             var new_timer = new Timer (timer_id,
                this.DeviceGroup.Channels.get_channel (channel),
                start_year, start_month, start_day,
                start_hour, start_minute, duration,
                null);
+            // See if we can find an EPG event belonging to this recording
+            Event? event = schedule.get_event_around (
+                new_timer.get_start_time_time (), duration);
+            if (event != null)
+                new_timer.EventID = event.id;
 
             return new_timer;
         }
@@ -444,14 +450,27 @@ namespace DVB {
                 player.eit_structure += this.on_eit_structure;
                 
                 Recording recording = new Recording ();
-                recording.Name = null;
-                recording.Description = null;
                 recording.Id = timer.Id;
                 recording.ChannelSid = channel.Sid;
                 recording.ChannelName = channel.Name;
                 recording.StartTime =
                     timer.get_start_time_time ();
                 recording.Location = location;
+
+                if (timer.EventID != 0) {
+                    /* We know the EPG event belonging to this timer,
+                     * transfer informations */
+                    Event? event = channel.Schedule.get_event (timer.EventID);
+                    if (event != null) {
+                        debug ("Transfering event information from timer");
+                        recording.Name = event.name;
+                        recording.Description = "%s\n%s".printf (
+                            event.description,
+                            event.extended_description);
+                    }
+                }
+                recording.Name = null;
+                recording.Description = null;
                 
                 lock (this.recordings) {
                     this.recordings.set (recording.Id, recording);
