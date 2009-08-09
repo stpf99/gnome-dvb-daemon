@@ -456,6 +456,8 @@ namespace DVB {
                 recording.StartTime =
                     timer.get_start_time_time ();
                 recording.Location = location;
+                recording.Name = null;
+                recording.Description = null;
 
                 if (timer.EventID != 0) {
                     /* We know the EPG event belonging to this timer,
@@ -469,8 +471,6 @@ namespace DVB {
                             event.extended_description);
                     }
                 }
-                recording.Name = null;
-                recording.Description = null;
                 
                 lock (this.recordings) {
                     this.recordings.set (recording.Id, recording);
