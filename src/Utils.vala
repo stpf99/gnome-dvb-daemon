@@ -99,11 +99,11 @@ namespace DVB.Utils {
     /**
      * @returns: Difference in seconds
      */ 
-    public static inline int64 difftime (Time t1, Time t2) {
-        int64 ts1 = (int64)t1.mktime ();
-        int64 ts2 = (int64)t2.mktime ();
+    public static inline time_t difftime (Time t1, Time t2) {
+        time_t ts1 = t1.mktime ();
+        time_t ts2 = t2.mktime ();
         
-        int64 diff = ts1 - ts2;
+        time_t diff = ts1 - ts2;
         if (diff < 0) return -1*diff;
         else return diff;
     }

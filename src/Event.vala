@@ -77,9 +77,9 @@ namespace DVB {
             // because it respects dst
             current_utc.isdst = -1;
             
-            int64 current_time = (int64)current_utc.mktime ();
+            time_t current_time = current_utc.mktime ();
            
-            int64 end_timestamp = this.get_end_timestamp ();
+            time_t end_timestamp = this.get_end_timestamp ();
             
             return (end_timestamp < current_time);
         }
@@ -88,8 +88,8 @@ namespace DVB {
             Time time_now = Time.gm (time_t ());
             Time time_start = this.get_utc_start_time ();
             
-            int64 timestamp_now = (int64)cUtils.timegm (time_now);
-            int64 timestamp_start = (int64)cUtils.timegm (time_start);
+            time_t timestamp_now = cUtils.timegm (time_now);
+            time_t timestamp_start = cUtils.timegm (time_start);
             
             if (timestamp_now - timestamp_start >= 0) {
                 // Has started, check if it's still running
@@ -133,16 +133,16 @@ namespace DVB {
         /**
          * @returns: UNIX time stamp
          */
-        private int64 get_end_timestamp () {
+        private time_t get_end_timestamp () {
             Time end_time = Utils.create_utc_time ((int)this.year, (int)this.month,
                 (int)this.day, (int)this.hour, (int)this.minute,
                 (int)this.second);
                 
-            int64 before = (int64)end_time.mktime ();
+            time_t before = end_time.mktime ();
             
             end_time.second += (int)this.duration;
             
-            int64 after = (int64)end_time.mktime ();
+            time_t after = end_time.mktime ();
             
             assert (after - before == this.duration);
             
@@ -160,8 +160,8 @@ namespace DVB {
             else if (event1 == null && event2 != null) return +1;
             else if (event1 != null && event2 == null) return -1;
         
-            int64 event1_time = event1->get_end_timestamp ();
-            int64 event2_time = event2->get_end_timestamp ();
+            time_t event1_time = event1->get_end_timestamp ();
+            time_t event2_time = event2->get_end_timestamp ();
             
             if (event1_time < event2_time) return -1;
             else if (event1_time > event2_time) return +1;
