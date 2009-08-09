@@ -9,9 +9,9 @@ Daemon:
     - gst-plugins-bad from git repository (http://gstreamer.freedesktop.org/dev/)
     - glib >= 2.16
     - dbus-glib >= 0.74
-    - libgee >= 0.1.4
+    - libgee >= 0.1.6
     - sqlite >= 3.4
-    - gst-rtsp-server 0.10.1 (http://people.freedesktop.org/~wtay/)
+    - gst-rtsp-server 0.10.4 (http://people.freedesktop.org/~wtay/)
 
 UI:
     - Python >= 2.5
