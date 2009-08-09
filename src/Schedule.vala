@@ -31,7 +31,7 @@ namespace DVB {
     
         public uint id;
         /* Time is stored in UTC */
-        public int64 starttime;
+        public time_t starttime;
     
         public static int compare (EventElement* event1, EventElement* event2) {
             if (event1 == null && event2 == null) return 0;
@@ -140,7 +140,7 @@ namespace DVB {
             EventElement element = new EventElement ();
             element.id = event.id;
             Time utc_starttime = event.get_utc_start_time ();
-            element.starttime = (int64)utc_starttime.mktime ();
+            element.starttime = utc_starttime.mktime ();
             
             SequenceIter<EventElement> iter = this.events.insert_sorted (element, EventElement.compare);
             this.event_id_map.set (event.id, iter);
@@ -173,12 +173,48 @@ namespace DVB {
             
             return running_event;
         }
-       
-        /*
-        public weak Event get_event_around (Time time) {
-            return new Event ();
-        }*/
-        
+
+        /**
+         * @start: local time of event
+         * @duration: how long the event is
+         * @returns: the event that starts after @start
+         * and spans the given time period
+         */
+        public Event? get_event_around (Time start, uint duration) {
+            Event? result = null;
+            time_t start_t = start.mktime ();
+            time_t end_t = start_t + duration * 60;
+            lock (this.events) {
+                // Difference between end of timer and end of event
+                time_t last_diff = -3600;
+                for (int i=0; i<this.events.get_length (); i++) {
+                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
+                    EventElement element = this.events.get (iter);
+                    // convert UTC to local time
+                    time_t event_start = cUtils.timegm (Time.local (element.starttime));
+
+                    // Check if event starts after timer and ends before timer
+                    if (event_start >= start_t && event_start <= end_t) {
+                        Event? event = this.get_event (element.id);
+                        if (event != null) {
+                            time_t event_end = event_start + event.duration;
+                            time_t end_diff = end_t - event_end;
+                            // If the difference is bigger we are sure that
+                            // this one is the right event
+                            if (last_diff < end_diff) {
+                                last_diff = end_diff;
+                                result = event;
+                            }
+                        }
+                    } else if (event_start > end_t) {
+                        // All other events are too far in the future
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
         public uint32[] GetAllEvents () {
             uint32[] event_ids = new uint32[this.events.get_length ()];
             
@@ -375,7 +411,7 @@ namespace DVB {
         
         public int64 GetLocalStartTimestamp (uint32 event_id) {
             int64 ret = 0;
-             lock (this.events) {
+            lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
