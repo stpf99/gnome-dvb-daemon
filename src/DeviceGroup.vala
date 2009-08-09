@@ -94,11 +94,11 @@ namespace DVB {
             this.register_channel_list ();
             this.register_recorder ();
         }
-        
+
         public void destroy () {
             debug ("Destroying group %u", this.Id);
             if (this._epgscanner != null) {
-                this._epgscanner.stop ();
+                this._epgscanner.destroy ();
             }
             this._recorder.stop ();
             this._channelfactory.destroy ();
