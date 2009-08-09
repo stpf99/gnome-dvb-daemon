@@ -94,10 +94,10 @@ namespace DVB {
         }
         
         public void destroy () {
-            this.remove_timeouts ();
             /* Don't call reset directly here
              or we get in a in-consistent state */
             this.do_stop = true;
+            this.remove_timeouts ();
         }
             
         private void reset () {
@@ -155,10 +155,10 @@ namespace DVB {
                 bus.add_signal_watch ();
                 bus.message += this.bus_watch_func;
             }
-            
+
             this.scan_event_id = Timeout.add_seconds (WAIT_FOR_EIT_DURATION,
                 this.scan_new_frequency);
-            
+
             return false;
         }
         
@@ -170,9 +170,11 @@ namespace DVB {
                 debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
                 
                 this.reset ();
-                // Time the next iteration
-                this.queue_scan_event_id = Timeout.add_seconds (
-                    CHECK_EIT_INTERVAL, this.start);
+                if (!this.do_stop) {
+                    // Time the next iteration
+                    this.queue_scan_event_id = Timeout.add_seconds (
+                        CHECK_EIT_INTERVAL, this.start);
+                }
                 return false;
             }
             
