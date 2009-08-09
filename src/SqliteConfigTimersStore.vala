@@ -52,6 +52,7 @@ namespace DVB {
         hour INTEGER,
         minute INTEGER,
         duration INTEGER,
+        event_id INTEGER,
         PRIMARY KEY(timer_id))""";
         
         private static const string SELECT_ALL_GROUPS =
@@ -88,7 +89,7 @@ namespace DVB {
         "DELETE FROM timers WHERE timer_id=?";
         
         private static const string INSERT_TIMER =
-        "INSERT INTO timers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO timers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         private static const string CONTAINS_TIMER =
         "SELECT COUNT(*) FROM timers WHERE timer_id=?";
@@ -334,7 +335,7 @@ namespace DVB {
             }
             
             while (this.select_timers_statement.step () == Sqlite.ROW) {
-                uint tid, sid, duration;
+                uint tid, sid, duration, event_id;
                 int year, month, day, hour, minute;
                 
                 tid = (uint)this.select_timers_statement.column_int (0);
@@ -345,10 +346,13 @@ namespace DVB {
                 hour = this.select_timers_statement.column_int (6);
                 minute = this.select_timers_statement.column_int (7);
                 duration = (uint)this.select_timers_statement.column_int (8);
+                event_id = (uint)this.select_timers_statement.column_int (9);
                 
                 Channel channel = dev.Channels.get_channel (sid);
-                timers.add (new Timer (tid, channel, year, month, day, hour,
-                    minute, duration));
+                Timer timer = new Timer (tid, channel, year, month, day, hour,
+                    minute, duration);
+                timer.EventID = event_id;
+                timers.add (timer);
             }
             
             return timers;
@@ -366,7 +370,8 @@ namespace DVB {
                 || this.insert_timer_statement.bind_int (6, (int)timer.Day) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (7, (int)timer.Hour) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (8, (int)timer.Minute) != Sqlite.OK
-                || this.insert_timer_statement.bind_int (9, (int)timer.Duration) != Sqlite.OK)
+                || this.insert_timer_statement.bind_int (9, (int)timer.Duration) != Sqlite.OK
+                || this.insert_timer_statement.bind_int (10, (int)timer.EventID) != Sqlite.OK)
             {
                 this.print_last_error ();
                 return false;
