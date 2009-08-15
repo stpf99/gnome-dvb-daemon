@@ -39,7 +39,6 @@ namespace DVB {
         private Queue<Channel> channels;
         private Source scan_source;
         private Source queue_source;
-        private bool do_stop;
         private int stop_counter;
         private MainContext context;
         private MainLoop loop;
@@ -47,7 +46,6 @@ namespace DVB {
         
         construct {
             this.channels = new Queue<Channel> ();
-            this.do_stop = false;
             this.stop_counter = 0;
             this.context = new MainContext ();
         }
