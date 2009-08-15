@@ -77,10 +77,8 @@ namespace DVB {
             }
         }
         
-        public Type get_element_type () {
-            return typeof(Channel);
-        }
-        
+	public Type element_type { get { return typeof (Channel); } }
+      
         public Iterator<Channel> iterator () {
             return this.channels.get_values().iterator();
         }

@@ -399,9 +399,7 @@ namespace DVB {
             return true;
         }
         
-        public GLib.Type get_element_type () {
-            return typeof(Device);
-        }
+        public Type element_type { get { return typeof (Device); } }
         
         public Iterator<Device> iterator () {
             return this.devices.iterator();

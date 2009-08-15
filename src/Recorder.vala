@@ -58,10 +58,8 @@ namespace DVB {
             this.DeviceGroup = dev;
         }
         
-        public Type get_element_type () {
-            return typeof(Timer);
-        }
-        
+	public Type element_type { get { return typeof (Timer); } }
+    
         public Gee.Iterator<Timer> iterator () {
             return this.timers.get_values().iterator ();
         }
