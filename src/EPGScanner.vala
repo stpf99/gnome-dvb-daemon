@@ -37,16 +37,19 @@ namespace DVB {
         
         private Gst.Element? pipeline;
         private Queue<Channel> channels;
-        private uint scan_event_id;
-        private uint queue_scan_event_id;
+        private Source scan_source;
+        private Source queue_source;
         private bool do_stop;
         private int stop_counter;
+        private MainContext context;
+        private MainLoop loop;
+        private unowned Thread worker_thread;
         
         construct {
             this.channels = new Queue<Channel> ();
-            this.scan_event_id = 0;
             this.do_stop = false;
             this.stop_counter = 0;
+            this.context = new MainContext ();
         }
         
         /**
@@ -81,23 +84,25 @@ namespace DVB {
         }   
             
         private void remove_timeouts () {
-            // Remove timed scans 
-            if (this.scan_event_id != 0) {
-                Source.remove (this.scan_event_id);
-                this.scan_event_id = 0;
+            if (this.scan_source != null) {
+                this.scan_source.destroy ();
+                this.scan_source = null;
             }
-            if (this.queue_scan_event_id != 0) {
-                Source.remove (this.queue_scan_event_id);
-                this.queue_scan_event_id = 0;
+            if (this.queue_source != null) {
+                this.queue_source.destroy ();
+                this.queue_source = null;
             }
-            
+            this.loop.quit ();
+            this.loop = null;
+            this.worker_thread.join ();
+            this.worker_thread = null;
         }
-        
-        public void destroy () {
-            /* Don't call reset directly here
-             or we get in a in-consistent state */
-            this.do_stop = true;
-            this.remove_timeouts ();
+
+        /* Main Thread */
+        private void* worker () {
+            this.loop.run ();
+
+            return null;
         }
             
         private void reset () {
@@ -124,6 +129,9 @@ namespace DVB {
          */
         public bool start () {
             debug ("Starting EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
+
+            this.loop = new MainLoop (this.context, false);
+            this.worker_thread = Thread.create (this.worker, true);
             
             this.stop_counter -= 1;
             if (this.stop_counter > 0) return false;
@@ -156,8 +164,9 @@ namespace DVB {
                 bus.message += this.bus_watch_func;
             }
 
-            this.scan_event_id = Timeout.add_seconds (WAIT_FOR_EIT_DURATION,
-                this.scan_new_frequency);
+            this.scan_source = new TimeoutSource.seconds (WAIT_FOR_EIT_DURATION);
+            this.scan_source.set_callback (this.scan_new_frequency);
+            this.scan_source.attach (this.context);
 
             return false;
         }
@@ -166,15 +175,14 @@ namespace DVB {
          * Scan the next frequency for EPG data
          */
         private bool scan_new_frequency () {
-            if (this.channels.is_empty () || this.do_stop) {
+            if (this.channels.is_empty ()) {
                 debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
-                
+
                 this.reset ();
-                if (!this.do_stop) {
-                    // Time the next iteration
-                    this.queue_scan_event_id = Timeout.add_seconds (
-                        CHECK_EIT_INTERVAL, this.start);
-                }
+                // Time the next iteration
+                this.queue_source = new TimeoutSource.seconds (CHECK_EIT_INTERVAL);
+                this.queue_source.set_callback (this.start);
+                this.queue_source.attach (this.context);
                 return false;
             }
             
