@@ -508,6 +508,7 @@ class ControlCenterWindow(gtk.Window):
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
                 dialog.set_markup (_("<big><span weight=\"bold\">Schedule recording for the selected event?</span></big>"))
+                rec_id = -1
                 if dialog.run() == gtk.RESPONSE_YES:
                     event_id = model[aiter][model.COL_EVENT_ID]
                     group = self._get_selected_group()
