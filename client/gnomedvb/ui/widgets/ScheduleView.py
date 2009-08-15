@@ -30,7 +30,9 @@ class ScheduleView(gtk.TreeView):
         else:
             gtk.TreeView.__init__(self)
         
+        self.prev_selection = None
         self.set_property("headers-visible", False)
+        self.get_selection().connect("changed", self._on_selection_changed)
         
         cell_rec = gtk.CellRendererPixbuf()
         col_rec = gtk.TreeViewColumn("Recording", cell_rec)
@@ -51,7 +53,7 @@ class ScheduleView(gtk.TreeView):
     
     def _get_description_data(self, column, cell, model, aiter):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
-        
+
         if event_id == ScheduleStore.NEW_DAY:
             date = model.get_datetime(aiter)
             description = "<big><b>%s</b></big>" % date.strftime("%A %x")
@@ -76,9 +78,8 @@ class ScheduleView(gtk.TreeView):
                 ext_desc = model[aiter][ScheduleStore.COL_EXTENDED_DESC]
                 if ext_desc == None:
                     ext_desc = model.get_extended_description(aiter)
+                    model[aiter][ScheduleStore.COL_EXTENDED_DESC] = ext_desc
                 description += "\n<small>%s</small>" % ext_desc
-                # Update cell height
-                model.emit("row-changed", model.get_path(aiter), aiter)
         
         cell.set_property("markup", description)
         
@@ -105,4 +106,13 @@ class ScheduleView(gtk.TreeView):
             cell.set_property("icon-name", "stock_timer")
         else:
             cell.set_property("icon-name", None)
+
+    def _on_selection_changed(self, selection):
+        model, aiter = selection.get_selected()
+        # Update cell height of previously and currenlty selected row
+        if self.prev_selection != None:
+            model.emit ("row-changed", model.get_path(self.prev_selection), self.prev_selection)
+        if aiter != None:
+            model.emit ("row-changed", model.get_path(aiter), aiter)
+        self.prev_selection = aiter
 
