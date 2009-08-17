@@ -43,6 +43,7 @@ namespace DVB {
         private MainContext context;
         private MainLoop loop;
         private unowned Thread worker_thread;
+        private uint bus_watch_id;
         
         construct {
             this.channels = new Queue<Channel> ();
@@ -106,8 +107,12 @@ namespace DVB {
         private void reset () {
             lock (this.pipeline) {
                 if (this.pipeline != null) {
-                    Gst.Bus bus = this.pipeline.get_bus ();
-                    bus.remove_signal_watch ();
+                    Source bus_watch_source = this.context.find_source_by_id (
+                        this.bus_watch_id);
+                    if (bus_watch_source != null) {
+                        bus_watch_source.destroy ();
+                        this.bus_watch_id = 0;
+                    }
                     this.pipeline.set_state (Gst.State.NULL);
                     this.pipeline.get_state (null, null, -1);
                     this.pipeline = null;
@@ -158,8 +163,8 @@ namespace DVB {
                 }
                 
                 Gst.Bus bus = this.pipeline.get_bus ();
-                bus.add_signal_watch ();
-                bus.message += this.bus_watch_func;
+                this.bus_watch_id = cUtils.gst_bus_add_watch_context (bus,
+                    this.bus_watch_func, this.context);
             }
 
             this.scan_source = new TimeoutSource.seconds (WAIT_FOR_EIT_DURATION);
@@ -200,7 +205,7 @@ namespace DVB {
             return true;
         }
         
-        private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
+        private bool bus_watch_func (Gst.Bus bus, Gst.Message message) {
             switch (message.type) {
                 case Gst.MessageType.ELEMENT:
                     if (message.structure.get_name() == "dvb-read-failure") {
@@ -217,11 +222,12 @@ namespace DVB {
                     message.parse_error (out gerror, out debug);
                     critical ("%s %s", gerror.message, debug);
                     this.stop ();
-                break;
+                    return false;
                 
                 default:
                 break;
             }
+            return true;
         }
         
         public void on_eit_structure (Gst.Structure structure) {
