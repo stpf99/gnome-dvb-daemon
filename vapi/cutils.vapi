@@ -28,4 +28,7 @@ namespace cUtils {
     [CCode (cname = "g_log_default_handler", cheader_filename = "glib.h")]
     public static void log_default_handler (string? log_domain, GLib.LogLevelFlags log_levels, string message, void* data);
 
+    [CCode (cname = "gst_bus_add_watch_context", cheader_filename = "cstuff.h")]
+    public static uint gst_bus_add_watch_context (Gst.Bus bus, Gst.BusFunc func, GLib.MainContext context);
+
 }

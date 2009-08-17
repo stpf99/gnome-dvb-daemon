@@ -57,10 +57,13 @@ GEE_REQUIRED=0.3.0
 SQLITE_REQUIRED=3.4
 GST_RTSP_SERVER_REQUIRED=0.10.4
 
+PKG_CHECK_MODULES(GST, gstreamer-0.10 >= $GST_REQUIRED)
+AC_SUBST(GST_CFLAGS)
+AC_SUBST(GST_LIBS)
+
 PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             gio-2.0 >= $GIO_REQUIRED
                             gobject-2.0 >= $GLIB_REQUIRED
-                            gstreamer-0.10 >= $GST_REQUIRED
                             dbus-glib-1 >= $DBUS_REQUIRED
                             gee-1.0 >= $GEE_REQUIRED
                             sqlite3 >= $SQLITE_REQUIRED

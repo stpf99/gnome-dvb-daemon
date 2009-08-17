@@ -83,6 +83,8 @@ gnome_dvb_daemon_CPPFLAGS = \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	$(GNOME_DVB_DAEMON_CFLAGS) \
+	$(GST_CFLAGS) \
+	-I$(top_srcdir)/vapi \
 	-include $(CONFIG_HEADER) \
 	$(NULL)
 
@@ -95,6 +97,17 @@ gnome_dvb_daemon_LDFLAGS = \
 
 gnome_dvb_daemon_LDADD = \
 	$(GNOME_DVB_DAEMON_LIBS) \
+	$(GST_LIBS) \
+	libdvbdaemon-utils.a \
+	$(NULL)
+
+noinst_LIBRARIES = libdvbdaemon-utils.a
+libdvbdaemon_utils_a_SOURCES = \
+	vapi/cstuff.c \
+	$(NULL)
+
+libdvbdaemon_utils_a_CPPFLAGS = \
+	$(GST_CFLAGS) \
 	$(NULL)
 
 EXTRA_DIST = \
@@ -103,6 +116,8 @@ EXTRA_DIST = \
 	intltool-merge.in \
 	$(gnome_dvb_daemon_VALASOURCES) \
 	src/gnome-dvb-daemon.vala.stamp \
+	vapi/cutils.vapi \
+	vapi/cstuff.h \
 	$(NULL)
 
 DISTCLEANFILES = \
