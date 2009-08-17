@@ -1,7 +1,5 @@
 NULL = 
 
-AUTOMAKE_OPTIONS = subdir-objects
-
 SUBDIRS = \
 	client \
 	data \
@@ -80,7 +78,7 @@ gnome_dvb_daemon_SOURCES = \
 	$(gnome_dvb_daemon_VALASOURCES:.vala=.c) \
 	$(NULL)
 	
-AM_CPPFLAGS = \
+gnome_dvb_daemon_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \

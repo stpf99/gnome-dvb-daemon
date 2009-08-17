@@ -3,7 +3,7 @@ AC_INIT([gnome-dvb-daemon], [0.1.9],
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([dist-bzip2])
+AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
@@ -146,15 +146,6 @@ AC_CONFIG_FILES([
 	client/Makefile
 	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
-	client/gnomedvb/ui/controlcenter/Makefile
-	client/gnomedvb/ui/preferences/Makefile
-	client/gnomedvb/ui/recordings/Makefile
-	client/gnomedvb/ui/timers/Makefile
-	client/gnomedvb/ui/Makefile
-	client/gnomedvb/ui/widgets/Makefile
-	client/gnomedvb/ui/wizard/Makefile
-	client/gnomedvb/ui/wizard/pages/Makefile
-	client/gnomedvb/userdirs/Makefile
 	client/totem-plugin/Makefile
 	data/Makefile
 	po/Makefile.in])
