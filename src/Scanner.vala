@@ -96,13 +96,18 @@ namespace DVB {
         
         // Contains SIDs
         private ArrayList<uint> new_channels;
-        private uint check_for_lock_event_id;
-        private uint wait_for_tables_event_id;
+        private Source check_for_lock_source;
+        private Source wait_for_tables_source;
         private bool nit_arrived;
         private bool sdt_arrived;
         private bool pat_arrived;
         private bool pmt_arrived;
         private bool locked;
+        private MainContext context;
+        private MainLoop loop;
+        private unowned Thread worker_thread;
+        private bool running;
+        private uint bus_watch_id;
         
         construct {
             this.scanned_frequencies =
@@ -110,6 +115,8 @@ namespace DVB {
             this.new_channels = new ArrayList<uint> ();
             this.frequencies = new Queue<Gst.Structure> ();
             this.transport_streams = new HashMap<uint, Gst.Structure> ();
+            this.context = new MainContext ();
+            this.running = false;
         }
         
         /**
@@ -137,6 +144,12 @@ namespace DVB {
          * Start the scanner
          */
         public void Run () {
+            if (this.running) return;
+            this.running = true;
+        
+            this.loop = new MainLoop (this.context, false);
+            this.worker_thread = Thread.create (this.worker, true);
+
             this.channels = new ChannelList ();
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
             try {
@@ -149,12 +162,14 @@ namespace DVB {
             }
             
             Gst.Bus bus = this.pipeline.get_bus();
-            bus.add_signal_watch();
-            bus.message += this.bus_watch_func;
+            this.bus_watch_id = cUtils.gst_bus_add_watch_context (bus,
+                    this.bus_watch_func, this.context);
             
             this.pipeline.set_state(Gst.State.READY);
             
-            this.start_scan();
+            var source = new IdleSource ();
+            source.set_callback (this.start_scan);
+            source.attach (this.context);
         }
         
         /**
@@ -167,6 +182,13 @@ namespace DVB {
             this.channels.clear ();
             this.channels = null;
             this.destroyed ();
+
+            if (this.loop != null) {
+                this.loop.quit ();
+                this.loop = null;
+                this.worker_thread.join ();
+                this.worker_thread = null;
+            }
         }
         
         /** 
@@ -228,11 +250,22 @@ namespace DVB {
             
             return success;
         }
-        
+
+        /* Main Thread */
+        private void* worker () {
+            this.loop.run ();
+
+            return null;
+        }
+
         protected void clear_and_reset_all () {
             if (this.pipeline != null) {
-                Gst.Bus bus = this.pipeline.get_bus ();
-                bus.remove_signal_watch ();
+               Source bus_watch_source = this.context.find_source_by_id (
+                    this.bus_watch_id);
+                if (bus_watch_source != null) {
+                    bus_watch_source.destroy ();
+                    this.bus_watch_id = 0;
+                }
                 this.pipeline.set_state (Gst.State.NULL);
                 // Free pipeline
                 this.pipeline = null;
@@ -243,6 +276,7 @@ namespace DVB {
             this.clear_frequencies ();
             this.current_tuning_params = null;
             this.new_channels.clear ();
+            this.running = false;
         }
         
         protected void clear_frequencies () {
@@ -270,7 +304,7 @@ namespace DVB {
          * Pick up the next tuning paramters from the queue
          * and start scanning with them
          */
-        protected void start_scan () {
+        protected bool start_scan () {
             bool all_tables = (this.sdt_arrived && this.nit_arrived
                 && this.pat_arrived && this.pmt_arrived);
             debug ("Received all tables: %s (pat: %s, sdt: %s, nit: %s, pmt: %s)",
@@ -301,7 +335,7 @@ namespace DVB {
                 }
                 this.clear_and_reset_all ();
                 this.finished ();
-                return;
+                return false;
             }
             
             this.current_tuning_params = this.frequencies.pop_head();
@@ -316,15 +350,19 @@ namespace DVB {
             this.pipeline.set_state (Gst.State.READY);
             
             this.prepare ();
-            
+
             // Reset PIDs
             Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
             dvbsrc.set ("pids", BASE_PIDS);
-            
+
+            this.check_for_lock_source =
+                new TimeoutSource.seconds (5);
+            this.check_for_lock_source.set_callback (this.check_for_lock);
+            this.check_for_lock_source.attach (this.context);
+
             this.pipeline.set_state (Gst.State.PLAYING);
-            
-            this.check_for_lock_event_id =
-                Timeout.add_seconds (5, this.check_for_lock);
+
+            return false;
         }
         
         /**
@@ -332,36 +370,40 @@ namespace DVB {
          * used tuning parameters
          */
         protected bool check_for_lock () {
-            this.check_for_lock_event_id = 0;
             if (!this.locked) {
                 this.pipeline.set_state (Gst.State.READY);
-                this.start_scan ();
+                this.queue_start_scan ();
             }
             return false;
         }
         
         protected bool wait_for_tables () {
-            this.wait_for_tables_event_id = 0;
             if (!(this.sdt_arrived && this.nit_arrived && this.pat_arrived
                     && this.pmt_arrived)) {
                 this.pipeline.set_state (Gst.State.READY);
-                this.start_scan ();
+                this.queue_start_scan ();
             }
             return false;
         }
         
         protected void remove_check_for_lock_timeout () {
-            if (this.check_for_lock_event_id != 0) {
-                Source.remove (this.check_for_lock_event_id);
-                this.check_for_lock_event_id = 0;
+            if (this.check_for_lock_source != null) {
+                this.check_for_lock_source.destroy ();
+                this.check_for_lock_source = null;
             }
         }
         
         protected void remove_wait_for_tables_timeout () {
-            if (this.wait_for_tables_event_id != 0) {
-                Source.remove (this.wait_for_tables_event_id);
-                this.wait_for_tables_event_id = 0;
+            if (this.wait_for_tables_source != null) {
+                this.wait_for_tables_source.destroy ();
+                this.wait_for_tables_source = null;
             }
+        }
+
+        protected void queue_start_scan () {
+            var source = new IdleSource ();
+            source.set_callback (this.start_scan);
+            source.attach (this.context);
         }
         
         protected static void set_uint_property (Gst.Element src,
@@ -377,8 +419,10 @@ namespace DVB {
             if (has_lock && !this.locked) {
                 debug("Got lock");
                 this.remove_check_for_lock_timeout ();
-                this.wait_for_tables_event_id =
-                    Timeout.add_seconds (10, this.wait_for_tables);
+                this.wait_for_tables_source =
+                    new TimeoutSource.seconds (10);
+                this.wait_for_tables_source.set_callback (this.wait_for_tables);
+                this.wait_for_tables_source.attach (this.context);
             }
         }
         
@@ -613,7 +657,7 @@ namespace DVB {
             this.pmt_arrived = true;
         }
         
-        protected void bus_watch_func (Gst.Bus bus, Gst.Message message) {
+        protected bool bus_watch_func (Gst.Bus bus, Gst.Message message) {
             switch (message.type) {
                 case Gst.MessageType.ELEMENT: {
                     if (message.structure.get_name() == "dvb-frontend-stats")
@@ -636,7 +680,7 @@ namespace DVB {
                     message.parse_error (out gerror, out debug);
                     critical ("%s %s", gerror.message, debug);
                     this.Destroy ();
-                break;
+                    return false;
                 }
             }
             
@@ -697,8 +741,10 @@ namespace DVB {
                     && this.pmt_arrived) {
                 this.remove_wait_for_tables_timeout ();
                 
-                this.start_scan ();
+                this.queue_start_scan ();
             }
+
+            return true;
         }
         
         protected void add_new_channel (uint sid) {
