@@ -113,7 +113,7 @@ namespace DVB {
             data = this.keyfile.to_data (out data_len);
                 
             try {
-                stream.write (data, data_len, null);
+                stream.write_all (data, data_len, null, null);
             } catch (Error e) {
                 critical ("Could not write to file %s: %s",
                     settings_file.get_path (), e.message);
