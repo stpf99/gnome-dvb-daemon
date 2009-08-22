@@ -19,6 +19,14 @@
 
 namespace DVB {
 
+    public struct TimerInfo {
+        public uint32 id;
+        public uint duration;
+        public bool active;
+        public string channel_name;
+        public string title;
+    }
+
     [DBus (name = "org.gnome.DVB.Recorder")]
     public interface IDBusRecorder : GLib.Object {
     
@@ -113,6 +121,14 @@ namespace DVB {
          * about the title of the show
          */
         public abstract string GetTitle (uint32 timer_id);
+
+        /**
+         * @timer_id: Timer's id
+         *
+         * This method can be used to retrieve all informations
+         * about a particular timer at once
+         */
+        public abstract TimerInfo GetAllInformations (uint32 timer_id);
         
         /**
          * @returns: The currently active timers

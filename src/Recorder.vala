@@ -323,6 +323,30 @@ namespace DVB {
             return title;
         }
 
+        public TimerInfo GetAllInformations (uint32 timer_id) {
+            TimerInfo info = TimerInfo ();
+            lock (this.timers) {
+                if (this.timers.contains (timer_id)) {
+                    Timer t = this.timers.get (timer_id);
+
+                    info.id = timer_id;
+                    info.duration = t.Duration;
+
+                    info.active = this.active_timers.contains (timer_id);
+
+                    Channel chan = t.Channel;
+                    info.channel_name = chan.Name;
+
+                    Event? event = chan.Schedule.get_event (t.EventID);
+                    if (event != null)
+                        info.title = event.name;
+                    else
+                        info.title = "";
+                }
+            }
+            return info;
+        }
+
         /**
          * @returns: The currently active timers
          */
