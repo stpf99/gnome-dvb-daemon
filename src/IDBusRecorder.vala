@@ -105,6 +105,14 @@ namespace DVB {
          * empty string when a timer with the given id doesn't exist
          */
         public abstract string GetChannelName (uint32 timer_id);
+
+        /**
+         * @timer_id: Timer's id
+         * @returns: The name of the show the timer belongs to or an
+         * empty string if the timer doesn't exist or has no information
+         * about the title of the show
+         */
+        public abstract string GetTitle (uint32 timer_id);
         
         /**
          * @returns: The currently active timers

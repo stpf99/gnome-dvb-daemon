@@ -365,6 +365,9 @@ class DVBRecorderClient(gobject.GObject):
         
     def get_channel_name(self, tid):
         return self.recorder.GetChannelName(tid)
+
+    def get_title(self, tid):
+        return self.recorder.GetTitle(tid)
         
     def get_active_timers(self):
         return self.recorder.GetActiveTimers()

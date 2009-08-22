@@ -303,7 +303,26 @@ namespace DVB {
             }
             return name;
         }
-        
+
+        /**
+         * @timer_id: Timer's id
+         * @returns: The name of the show the timer belongs to or an
+         * empty string if the timer doesn't exist or has no information
+         * about the title of the show
+         */
+        public string GetTitle (uint32 timer_id) {
+            string title = "";
+            lock (this.timers) {
+                if (this.timers.contains (timer_id)) {
+                    Timer t = this.timers.get (timer_id);
+                    Event? event = t.Channel.Schedule.get_event (t.EventID);
+                    if (event != null)
+                        title = event.name;
+                }
+            }
+            return title;
+        }
+
         /**
          * @returns: The currently active timers
          */
