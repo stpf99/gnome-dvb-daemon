@@ -126,10 +126,7 @@ class EditTimersDialog(gtk.Dialog):
         start_list = self.recorder.get_start_time(timer_id)
         starttime = "%04d-%02d-%02d %02d:%02d" % (start_list[0], start_list[1],
                 start_list[2], start_list[3], start_list[4])
-        duration = self.recorder.get_duration(timer_id)
-        channel = self.recorder.get_channel_name(timer_id)
-        active = self.recorder.is_timer_active(timer_id)
-        title = self.recorder.get_title(timer_id)
+        (duration, active, channel, title) = self.recorder.get_all_informations(timer_id)[1:]
         
         self.timerslist.append([timer_id, channel, title, starttime, duration, active])
 
