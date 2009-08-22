@@ -49,6 +49,11 @@ class InitialTuningDataPage(BasePage):
         
         for widget in self.get_children():
             widget.destroy()
+
+        if not self.is_dvb_apps_installed():
+            self.__page_title = _("Missing requirements")
+            self.setup_dvb_apps_missing()
+            return
             
         if info["type"] == "DVB-T":
             self.setup_dvb_t()
@@ -60,6 +65,7 @@ class InitialTuningDataPage(BasePage):
             self.setup_dvb_c()
             self.__page_title = _("Country and provider selection")
         else:
+            self.__page_title = _("Unsupported adapter")
             self.setup_unknown(info["type"])
             
     def get_tuning_data(self):
@@ -73,12 +79,28 @@ class InitialTuningDataPage(BasePage):
         self.table.set_col_spacings(3)
         self.table.show()
         self.pack_start(self.table)
+
+    def is_dvb_apps_installed(self):
+        val = False
+        for d in DVB_APPS_DIRS:
+            if os.path.exists(d):
+                val = True
+                break
+        return val
     
     def setup_unknown(self, devtype):
         label = gtk.Label()
         label.set_line_wrap(True)
         # translators: first %s is the DVB type, e.g. DVB-S
         text = _("Sorry, but '%s' cards aren't supported.") % devtype
+        label.set_markup(text)
+        label.show()
+        self.pack_start(label)
+
+    def setup_dvb_apps_missing(self):
+        label = gtk.Label()
+        text = "<big><b>%s</b></big>\n%s" % (_("Could not find initial tuning data."),
+            _("Please make sure that the dvb-apps package is installed."))
         label.set_markup(text)
         label.show()
         self.pack_start(label)
