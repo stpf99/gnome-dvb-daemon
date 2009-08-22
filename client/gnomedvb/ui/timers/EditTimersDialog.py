@@ -26,9 +26,10 @@ class EditTimersDialog(gtk.Dialog):
 
     (COL_ID,
     COL_CHANNEL,
+    COL_TITLE,
     COL_START,
     COL_DURATION,
-    COL_ACTIVE,) = range(5)
+    COL_ACTIVE,) = range(6)
     
     def __init__(self, device_group, parent=None):
         """
@@ -48,7 +49,7 @@ class EditTimersDialog(gtk.Dialog):
         self.vbox.set_spacing(6)
         self.set_size_request(350, 400)
         
-        self.timerslist = gtk.ListStore(int, str, str, int, bool)
+        self.timerslist = gtk.ListStore(int, str, str, str, int, bool)
         self.timerslist.set_sort_column_id(self.COL_START, gtk.SORT_ASCENDING)
         
         self.timersview = gtk.TreeView(self.timerslist)
@@ -63,8 +64,15 @@ class EditTimersDialog(gtk.Dialog):
         cell_channel = gtk.CellRendererText()
         col_channel.pack_start(cell_channel)
         col_channel.add_attribute(cell_channel, "text", self.COL_CHANNEL)
-        
+
         self.timersview.append_column(col_channel)
+
+        col_title = gtk.TreeViewColumn(_("Title"))
+        cell_title = gtk.CellRendererText()
+        col_title.pack_start(cell_title)
+        col_title.add_attribute(cell_title, "text", self.COL_TITLE)
+        
+        self.timersview.append_column(col_title)
         
         cell_starttime = gtk.CellRendererText()
         col_starttime = gtk.TreeViewColumn(_("Start time"))
@@ -121,8 +129,9 @@ class EditTimersDialog(gtk.Dialog):
         duration = self.recorder.get_duration(timer_id)
         channel = self.recorder.get_channel_name(timer_id)
         active = self.recorder.is_timer_active(timer_id)
+        title = self.recorder.get_title(timer_id)
         
-        self.timerslist.append([timer_id, channel, starttime, duration, active])
+        self.timerslist.append([timer_id, channel, title, starttime, duration, active])
 
     def _remove_timer(self, timer_id):
         for row in self.timerslist:
