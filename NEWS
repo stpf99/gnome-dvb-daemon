@@ -1,4 +1,25 @@
 =============
+Version 0.1.9
+=============
+
+This is mainly a bug fix release. In addition, it is now possible
+to retrieve the title of the show a particular timer is scheduled for.
+This requires an updated database scheme. Make sure to delete the 
+old database at ~/.cache/gnome-dvb-daemon.
+This version depends on libgee 0.3.0
+
+- Use timer's EPG event id to assign name and description to recording
+- Fixed bug #591542: Make install rule not working correctly for client/gnomedvb/userdirs/ subdir on x86_64
+- Fixed bug #588611: RTSP server exposes local RTPS URL for live TV
+- Don't cause endless loop causing 100% CPU usage when selected an entry in ScheduleView
+- Fixed exception when scheduling selected event for recording was canceled
+- Moved to libgee 0.3.0
+- Use own main loop in EPGScanner
+- Use own main loop for Scanner
+- Use write_all instead of write
+- Show error message if initial tuning data was not found
+
+=============
 Version 0.1.8
 =============
 
