@@ -9,7 +9,7 @@ Daemon:
     - gst-plugins-bad from git repository (http://gstreamer.freedesktop.org/dev/)
     - glib >= 2.16
     - dbus-glib >= 0.74
-    - libgee >= 0.1.6
+    - libgee >= 0.3.0
     - sqlite >= 3.4
     - gst-rtsp-server 0.10.4 (http://people.freedesktop.org/~wtay/)
 
