@@ -235,7 +235,7 @@ namespace DVB {
         }
         
         public string to_string () {
-            return "channel: %u, start: %u-%u-%u %u:%u, duration: %u".printf (
+            return "channel: %u, start: %04u-%02u-%02u %02u:%02u, duration: %u".printf (
                 this.Channel.Sid, this.Year, this.Month, this.Day, this.Hour,
                 this.Minute, this.Duration);
         }

@@ -436,7 +436,7 @@ namespace DVB {
         protected Timer? create_timer (uint channel,
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration) {
-            debug ("Creating new timer: channel: %u, start: %d-%d-%d %d:%d, duration: %u",
+            debug ("Creating new timer: channel: %u, start: %04d-%02d-%02d %02d:%02d, duration: %u",
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
     
