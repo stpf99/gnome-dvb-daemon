@@ -47,7 +47,7 @@ class EditTimersDialog(gtk.Dialog):
         self.set_recorder(device_group)
         
         self.vbox.set_spacing(6)
-        self.set_size_request(350, 400)
+        self.set_size_request(550, 400)
         
         self.timerslist = gtk.ListStore(int, str, str, str, int, bool)
         self.timerslist.set_sort_column_id(self.COL_START, gtk.SORT_ASCENDING)
