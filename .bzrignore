@@ -50,7 +50,6 @@ data/*.service
 gnome-dvb-daemon-*.tar.*
 defs.py
 m4/intltool.m4
-po/*.pot
 po/*.mo
 po/Makefile.in.in
 ChangeLog
