@@ -102,12 +102,13 @@ class DetailsDialog(gtk.Dialog):
         
     def _fill(self, rec_id):
         recstore = gnomedvb.DVBRecordingsStoreClient()
-        infos = recstore.get_all_informations(rec_id)
-        self.set_title(infos[1])
-        self.set_description(infos[2])
-        self.set_duration(infos[3])
-        self.set_date(infos[4])
-        self.set_channel(infos[5])
+        infos, success = recstore.get_all_informations(rec_id)
+        if success:
+            self.set_title(infos[1])
+            self.set_description(infos[2])
+            self.set_duration(infos[3])
+            self.set_date(infos[4])
+            self.set_channel(infos[5])
         
     def set_description(self, text):
         self.textview.get_buffer().set_text(text)

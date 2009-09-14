@@ -44,42 +44,47 @@ namespace DVB {
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The location of the recording on the filesystem
+         * @location: The location of the recording on the filesystem
+         * @returns: TRUE on success
          */
-        public abstract string GetLocation (uint32 rec_id);
+        public abstract bool GetLocation (uint32 rec_id, out string location);
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The name of the recording (e.g. the name of
+         * @name: The name of the recording (e.g. the name of
          * a TV show)
+         * @returns: TRUE on success
          */
-        public abstract string GetName (uint32 rec_id);
+        public abstract bool GetName (uint32 rec_id, out string name);
         
         /**
          * @rec_id: The id of the recording
-         * @returns: A short text describing the recorded item
+         * @description: A short text describing the recorded item
          * (e.g. the description from EPG)
+         * @returns: TRUE on success
          */
-        public abstract string GetDescription (uint32 rec_id);
+        public abstract bool GetDescription (uint32 rec_id, out string description);
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The starting time of the recording
+         * @start_time: The starting time of the recording
+         * @returns: TRUE on success
          */
-        public abstract uint[] GetStartTime (uint32 rec_id);
+        public abstract bool GetStartTime (uint32 rec_id, out uint[] start_time);
         
         /**
          * @rec_id: The id of the recording
-         * @returns: Start time as UNIX timestamp
+         * @timestamp: Start time as UNIX timestamp
+         * @returns: TRUE on success
          */
-        public abstract int64 GetStartTimestamp (uint32 rec_id);
+        public abstract bool GetStartTimestamp (uint32 rec_id, out int64 timestamp);
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The length of the recording in seconds
-         * or -1 if no recording with the given id exists
+         * @length: The length of the recording in seconds
+         * @returns: TRUE on success
          */
-        public abstract int64 GetLength (uint32 rec_id);
+        public abstract bool GetLength (uint32 rec_id, out int64 length);
         
          /**
          * @rec_id: The id of the recording
@@ -92,18 +97,20 @@ namespace DVB {
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The channel's name or an empty string if
+         * @name: The channel's name or an empty string if
          * rec_id doesn't exist
+         * @returns: TRUE on success
          */
-        public abstract string GetChannelName (uint32 rec_id);
+        public abstract bool GetChannelName (uint32 rec_id, out string name);
         
         /**
          * @rec_id: The id of the recording
+         * @returns: TRUE on success
          *
          * This method can be used to retrieve all informations
          * about a particular recording at once
          */
-        public abstract RecordingInfo GetAllInformations (uint32 rec_id);
+        public abstract bool GetAllInformations (uint32 rec_id, out RecordingInfo infos);
         
     }
 

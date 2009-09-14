@@ -120,100 +120,115 @@ namespace DVB {
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The location of the recording on the filesystem
+         * @location: The location of the recording on the filesystem
+         * @returns: TRUE on success
          */
-        public string GetLocation (uint32 rec_id) {
-            string val = "";
+        public bool GetLocation (uint32 rec_id, out string location) {
+            bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
-                    val = this.recordings.get(rec_id).Location.get_uri ();
+                    location = this.recordings.get(rec_id).Location.get_uri ();
+                    ret = true;
                 }
             }
-           
-            return val;
+            if (!ret) location = "";
+            return ret;
         }
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The name of the recording (e.g. the name of
+         * @name: The name of the recording (e.g. the name of
          * a TV show)
+         * @returns: TRUE on success
          */
-        public string GetName (uint32 rec_id) {
-            string val = "";
+        public bool GetName (uint32 rec_id, out string name) {
+            bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
-                    val = this.recordings.get(rec_id).Name;
-                    if (val == null) val = "";
+                    string val = this.recordings.get(rec_id).Name;
+                    if (val != null) {
+                        name = val;
+                        ret = true;
+                    }
                 }
             }
-           
-            return val;
+            if (!ret) name = "";
+            return ret;
         }
         
         /**
          * @rec_id: The id of the recording
-         * @returns: A short text describing the recorded item
+         * @description: A short text describing the recorded item
          * (e.g. the description from EPG)
+         * @returns: TRUE on success
          */
-        public string GetDescription (uint32 rec_id) {
-            string val = "";
+        public bool GetDescription (uint32 rec_id, out string description) {
+            bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
-                    val = this.recordings.get(rec_id).Description;
-                    if (val == null) val = "";
+                    string val = this.recordings.get(rec_id).Description;
+                    if (val != null) {
+                        description = val;
+                        ret = true;
+                    }
                 }
             }
-           
-            return val;
+            if (!ret) description = "";
+            return ret;
         }
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The starting time of the recording
+         * @start_time: The starting time of the recording
+         * @returns: TRUE on success
          */
-        public uint[] GetStartTime (uint32 rec_id) {
-            uint[] val;
+        public bool GetStartTime (uint32 rec_id, out uint[] start_time) {
+            bool ret;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
-                    val = this.recordings.get(rec_id).get_start ();
+                    start_time = this.recordings.get(rec_id).get_start ();
+                    ret = true;
                 } else {
-                    val = new uint[] {};
+                    start_time = new uint[] {};
+                    ret = false;
                 }
             }
-           
-            return val;
+
+            return ret;
         }
         
         /**
          * @rec_id: The id of the recording
-         * @returns: Start time as UNIX timestamp
+         * @timestamp: Start time as UNIX timestamp
+         * @returns: TRUE on success
          */
-        public int64 GetStartTimestamp (uint32 rec_id) {
-            int64 val = -1;
-            
+        public bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) {
+            bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
-                    val = (int64)this.recordings.get(rec_id).StartTime.mktime ();
+                    timestamp = (int64)this.recordings.get(rec_id).StartTime.mktime ();
+                    ret = true;
                 }
             }
             
-            return val;
+            return ret;
         }
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The length of the recording in seconds
-         * or -1 if no recording with the given id exists
+         * @length: The length of the recording in seconds
+         * @returns: TRUE on success
          */
-        public int64 GetLength (uint32 rec_id) {
-            int64 val = -1;
+        public bool GetLength (uint32 rec_id, out int64 length) {
+            bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
-                    val = this.recordings.get(rec_id).Length;
+                    length = this.recordings.get(rec_id).Length;
+                    ret = true;
                 }
             }
            
-            return val;
+            return ret;
         }
         
         /**
@@ -247,25 +262,26 @@ namespace DVB {
         
         /**
          * @rec_id: The id of the recording
-         * @returns: The channel's name or an empty string if
+         * @name: The channel's name or an empty string if
          * rec_id doesn't exist
+         * @returns: TRUE on success
          */
-        public string GetChannelName (uint32 rec_id) {
-            string ret;
+        public bool GetChannelName (uint32 rec_id, out string name) {
+            bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     Recording rec = this.recordings.get (rec_id);
-                    ret = rec.ChannelName;
-                } else {
-                    ret = "";
+                    name = rec.ChannelName;
+                    ret = true;
                 }
             }
-            
+            if (!ret) name = "";
             return ret;
         }
         
-        public RecordingInfo GetAllInformations (uint32 rec_id) {
-            RecordingInfo info = RecordingInfo ();
+        public bool GetAllInformations (uint32 rec_id, out RecordingInfo info) {
+            bool ret = false;
+            info = RecordingInfo ();
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     Recording rec = this.recordings.get (rec_id);
@@ -276,9 +292,10 @@ namespace DVB {
                     info.location = rec.Location.get_path ();
                     info.start_timestamp = (int64)rec.StartTime.mktime ();
                     info.channel = rec.ChannelName;
+                    ret = true;
                 }
             }
-            return info;
+            return ret;
         }
         
         /**

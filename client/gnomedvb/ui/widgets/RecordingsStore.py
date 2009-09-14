@@ -41,14 +41,17 @@ class RecordingsStore(gtk.ListStore):
         return self._recstore
         
     def _append_recording(self, rec_id):
-        channame = self._recstore.get_channel_name(rec_id)
-        name = escape(self._recstore.get_name(rec_id))
-        start = self._recstore.get_start_timestamp(rec_id)
-        duration = self._recstore.get_length(rec_id)
-        location = self._recstore.get_location(rec_id)
-        #print "Desc", recstore.get_description(rec_id)
+        info, success = self._recstore.get_all_informations (rec_id)
+        
+        if success:
+            channame = info[5]
+            name = escape(info[1])
+            start = info[4]
+            duration = info[3]
+            location = info[6]
+            #print "Desc", recstore.get_description(rec_id)
     
-        self.append([start, channame, name, duration, location, rec_id])
+            self.append([start, channame, name, duration, location, rec_id])
         
     def _fill(self):
         def append_rec(rids):
