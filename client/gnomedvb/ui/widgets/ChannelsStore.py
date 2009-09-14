@@ -101,8 +101,9 @@ class ChannelsTreeStore(gtk.TreeStore):
         channellist.get_channel_infos(reply_handler=append_channel, error_handler=global_error_handler)
        
     def _on_manager_group_added(self, manager, group_id):
-        group = manager.get_device_group(group_id)
-        self._append_group(group)
+        group, success = manager.get_device_group(group_id)
+        if success:
+            self._append_group(group)
         
     def _on_manager_group_removed(self, manager, group_id):
         for row in self:

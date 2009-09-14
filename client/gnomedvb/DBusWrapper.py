@@ -122,12 +122,18 @@ class DVBManagerClient(gobject.GObject):
         self.manager.connect_to_signal("GroupRemoved", self.on_group_removed)
         
     def get_scanner_for_device(self, adapter, frontend):
-        objpath, scanner_iface = self.manager.GetScannerForDevice (adapter, frontend)
-        return DVBScannerClient(objpath, scanner_iface)
+        objpath, scanner_iface, success = self.manager.GetScannerForDevice (adapter, frontend)
+        if success:
+            return DVBScannerClient(objpath, scanner_iface)
+        else:
+            return None
         
     def get_device_group(self, group_id):
-        path = self.manager.GetDeviceGroup(group_id)
-        return DVBDeviceGroupClient(path)
+        path, success = self.manager.GetDeviceGroup(group_id)
+        if success:
+            return DVBDeviceGroupClient(path)
+        else:
+            return None
         
     def get_registered_device_groups(self, reply_handler, error_handler):
         def groups_handler(paths):
@@ -557,10 +563,10 @@ if __name__ == '__main__':
             print "Location", recstore.get_location(rid)
             print "Start", recstore.get_start_time(rid)
             print recstore.get_start_timestamp(rid)
-            print "Length", recstore.get_length(rid)    
+            print "Length", recstore.get_length(rid)
             print "Name", recstore.get_name (rid)
             print "Desc", recstore.get_description(rid)
     
-    dev_groups = manager.get_registered_device_groups(reply_handler=device_handler)
+    dev_groups = manager.get_registered_device_groups(reply_handler=device_handler, error_handler=global_error_handler)
     
     loop.run()

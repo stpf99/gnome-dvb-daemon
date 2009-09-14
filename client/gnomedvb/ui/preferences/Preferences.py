@@ -285,8 +285,9 @@ class Preferences(gtk.Dialog):
             dialog.destroy()
 
     def _on_manager_group_added(self, manager, group_id):
-        group = manager.get_device_group(group_id)
-        self._append_group(group)
+        group, success = manager.get_device_group(group_id)
+        if success:
+            self._append_group(group)
     
     def _on_manager_group_removed(self, manager, group_id):        
         aiter = self.devicegroups.get_iter_first()
@@ -304,7 +305,7 @@ class Preferences(gtk.Dialog):
             if group["id"] == list_group["id"]:
                 # Added
                 devtype = group.get_type()
-                devname = self._model.get_name_of_registered_device(adapter, frontend)
+                devname, success = self._model.get_name_of_registered_device(adapter, frontend)
                 device = Device (group["id"], devname, adapter, frontend, devtype)
                 device.group_name = group["name"]
                 dev_iter = self.devicegroups.append(aiter)

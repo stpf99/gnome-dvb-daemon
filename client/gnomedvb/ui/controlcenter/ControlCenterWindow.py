@@ -388,8 +388,9 @@ class ControlCenterWindow(gtk.Window):
         self._display_running_next()
 
     def _on_manager_group_added(self, manager, group_id):
-        group = self.manager.get_device_group(group_id)
-        self._append_group(group)
+        group, success = self.manager.get_device_group(group_id)
+        if success:
+            self._append_group(group)
         
     def _on_manager_group_removed(self, manager, group_id):
         self._remove_group(group_id)

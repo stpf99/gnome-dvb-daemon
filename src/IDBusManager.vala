@@ -30,11 +30,14 @@ namespace DVB {
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
-         * @returns: Object path and interface to the scanner service
+         * @opath: Object path of the scanner service
+         * @dbusiface: DBus interface of the scanner service
+         * @returns: TRUE on success
          *
          * Get the object path of the channel scanner for this device.
          */
-        public abstract string[] GetScannerForDevice (uint adapter, uint frontend);
+        public abstract bool GetScannerForDevice (uint adapter, uint frontend,
+                out DBus.ObjectPath opath, out string dbusiface);
         
         /**
          * @returns: Device groups' DBus path
@@ -43,9 +46,10 @@ namespace DVB {
         
         /**
          * @group_id: A group ID
-         * @returns: Device group's DBus path
+         * @path: Device group's DBus path
+         * @returns: TRUE on success
          */
-        public abstract DBus.ObjectPath GetDeviceGroup (uint group_id);
+        public abstract bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath);
         
         /**
          * @adapter: Number of the device's adapter
@@ -66,12 +70,13 @@ namespace DVB {
         /**
          * @adapter: Adapter of device
          * @frontend: Frontend of device
-         * @returns: The name of the device or "Unknown"
+         * @name: The name of the device or "Unknown"
+         * @returns: TRUE on success
          *
          * The device must be part of group, otherwise "Unknown"
          * is returned.
          */
-        public abstract string GetNameOfRegisteredDevice (uint adapter, uint frontend);
+        public abstract bool GetNameOfRegisteredDevice (uint adapter, uint frontend, out string name);
         
         /**
          * @returns: the numner of configured device groups

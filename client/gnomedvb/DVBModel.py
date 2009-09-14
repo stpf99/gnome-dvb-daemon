@@ -26,8 +26,11 @@ class DVBModel (gnomedvb.DVBManagerClient):
         gnomedvb.DVBManagerClient.__init__(self)
         
     def get_device_group(self, group_id):
-        path = self.manager.GetDeviceGroup(group_id)
-        return DeviceGroup(path)
+        path, success = self.manager.GetDeviceGroup(group_id)
+        if success:
+            return DeviceGroup(path)
+        else:
+            return None
         
     def get_registered_device_groups(self, reply_handler,
             error_handler=gnomedvb.global_error_handler):
@@ -112,7 +115,7 @@ class DeviceGroup(gnomedvb.DVBDeviceGroupClient):
             if match != None:
                 adapter = int(match.group(1))
                 frontend = int(match.group(2))
-                devname = manager.get_name_of_registered_device(adapter, frontend)
+                devname, success = manager.get_name_of_registered_device(adapter, frontend)
                 dev = Device (self._id, devname, adapter, frontend, self["type"])
                 dev.group_name = self._name
                 devices.append(dev)

@@ -85,12 +85,16 @@ namespace DVB {
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
-         * @returns: Object path and interface to the scanner service
+         * @opath: Object path of the scanner service
+         * @dbusiface: DBus interface of the scanner service
+         * @returns: TRUE on success
          *
          * Get the object path of the channel scanner for this device.
          */
-        public string[] GetScannerForDevice (uint adapter, uint frontend) {
+        public bool GetScannerForDevice (uint adapter, uint frontend,
+                out DBus.ObjectPath opath, out string dbusiface) {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
+            opath = new DBus.ObjectPath (path);
             
             Device device;
             Device? reg_dev = this.get_registered_device (adapter, frontend);
@@ -108,8 +112,7 @@ namespace DVB {
                 // Assign existing device
                 device = reg_dev;
             }
-                
-            string dbusiface = null;
+
             switch (device.Type) {
                 case AdapterType.DVB_T:
                 dbusiface = "org.gnome.DVB.Scanner.Terrestrial";
@@ -122,11 +125,16 @@ namespace DVB {
                 case AdapterType.DVB_C:
                 dbusiface = "org.gnome.DVB.Scanner.Cable";
                 break;
+
+                default:
+                dbusiface = null;
+                break;
             }
             
             if (dbusiface == null) {
                 critical ("Unknown adapter type");
-                return new string[] {"", ""};
+                dbusiface = "";
+                return false;
             }
             
             lock (this.scanners) {
@@ -148,7 +156,7 @@ namespace DVB {
                     
                     if (scanner == null) {
                         critical ("Unknown adapter type");
-                        return new string[] {"", ""};
+                        return false;
                     }
                     
                     scanner.destroyed += this.on_scanner_destroyed;
@@ -156,7 +164,7 @@ namespace DVB {
                     this.scanners.set (path, scanner);
                     
                     var conn = Utils.get_dbus_connection ();
-                    if (conn == null) return new string[] {};
+                    if (conn == null) return false;
                     
                     conn.register_object (
                         path,
@@ -167,23 +175,26 @@ namespace DVB {
                 }
             }
             
-            return new string[] {path, dbusiface};
+            return true;
         }
         
         /**
          * @group_id: A group ID
-         * @returns: Device group's DBus path
+         * @path: Device group's DBus path
+         * @returns: TRUE on success
          */
-        public DBus.ObjectPath GetDeviceGroup (uint group_id) {
-            DBus.ObjectPath val;
+        public bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath) {
+            bool ret;
             lock (this.devices) {
                 if (this.devices.contains (group_id)) {
-                    val = new DBus.ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
+                    opath = new DBus.ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
+                    ret = true;
                 } else {
-                    val = new DBus.ObjectPath ("");
+                    opath = new DBus.ObjectPath ("");
+                    ret = false;
                 }
             }
-            return val;
+            return ret;
         }
         
         /**
@@ -241,18 +252,23 @@ namespace DVB {
         /**
          * @adapter: Adapter of device
          * @frontend: Frontend of device
-         * @returns: The name of the device or "Unknown"
+         * @name: The name of the device or "Unknown"
+         * @returns: TRUE on success
          *
          * The device must be part of group, otherwise "Unknown"
          * is returned.
          */
-        public string GetNameOfRegisteredDevice (uint adapter, uint frontend) {
+        public bool GetNameOfRegisteredDevice (uint adapter, uint frontend,
+                out string name) {
             Device? dev = this.get_registered_device (adapter, frontend);
             
-            if (dev == null)
-                return "Unknown";
-            else
-                return dev.Name;
+            if (dev == null) {
+                name = "";
+                return false;
+            } else {
+                name = dev.Name;
+                return true;
+            }
         }
         
         /**
