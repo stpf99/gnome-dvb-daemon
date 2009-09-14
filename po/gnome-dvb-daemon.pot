@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-06 19:56+0200\n"
+"POT-Creation-Date: 2009-09-14 14:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -375,7 +375,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:36
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:30
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:57
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:62
 msgid "Channel"
 msgstr ""
 
@@ -504,16 +504,20 @@ msgstr ""
 msgid "Device selection"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:87
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:85
+msgid "Select scrambled channels"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:101
 msgid "Scanning for channels"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:96
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:110
 #, python-format
 msgid "Scanning for channels on device %s"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:144
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:159
 msgid ""
 "Choose the channels you want to have in your list of channels. You can "
 "reorder the channels, too."
