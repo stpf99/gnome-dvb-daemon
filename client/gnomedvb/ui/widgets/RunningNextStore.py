@@ -50,12 +50,12 @@ class RunningNextStore(gtk.ListStore):
                 sched = self._group.get_schedule(sid)
                 now = sched.now_playing()
                 if now != 0:
-                    next, name, duration, short_desc = sched.get_informations(now)[1:]
-                    self.set(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now))
+                    next, name, duration, short_desc = sched.get_informations(now)[0][1:]
+                    self.set(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now)[0])
                     self.set(aiter, self.COL_RUNNING, escape(name))
                     if next != 0:
-                        name, duration, short_desc = sched.get_informations(next)[2:]
-                        self.set(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next))
+                        name, duration, short_desc = sched.get_informations(next)[0][2:]
+                        self.set(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next)[0])
                         self.set(aiter, self.COL_NEXT, escape(name))
         
         channellist.get_channel_infos(reply_handler=add_channels,

@@ -95,7 +95,7 @@ class ScheduleStore(gtk.ListStore):
         name = escape(name)
         short_desc = escape(short_desc)
         
-        start_arr = self._client.get_local_start_time(event_id)
+        start_arr = self._client.get_local_start_time(event_id)[0]
         
         rec = self._recorder.has_timer_for_event(event_id,
             self._client.get_channel_sid())
@@ -108,7 +108,7 @@ class ScheduleStore(gtk.ListStore):
     def get_extended_description(self, aiter):
         if aiter != None:
             event_id = self[aiter][self.COL_EVENT_ID] 
-            ext_desc = escape(self._client.get_extended_description(event_id))
+            ext_desc = escape(self._client.get_extended_description(event_id)[0])
             self[aiter][self.COL_EXTENDED_DESC] = ext_desc
         return ext_desc
         

@@ -265,8 +265,9 @@ namespace DVB {
             return events;
         }
 
-        public EventInfo GetInformations (uint32 event_id) {
-            EventInfo event_info = EventInfo();
+        public bool GetInformations (uint32 event_id, out EventInfo event_info) {
+            bool ret = false;
+            event_info = EventInfo();
             
             lock (this.events) {        
                 if (this.event_id_map.contains (event_id)) {
@@ -289,10 +290,11 @@ namespace DVB {
                     } else {
                         event_info.next = element.id;
                     }
+                    ret = true;
                 }
             }
             
-            return event_info;
+            return ret;
         }
         
         public uint32 NowPlaying () {
@@ -320,62 +322,68 @@ namespace DVB {
             return next_event;
         }
         
-        public string GetName (uint32 event_id) {
-            string name = "";
+        public bool GetName (uint32 event_id, out string name) {
+            bool ret = false;
 
             lock (this.events) {        
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    if (event.name != null)
+                    if (event.name != null) {
                         name = event.name;
+                        ret = true;
+                    }
                 } else {
                     debug ("No event with id %u", event_id);
                 }
             }
-        
-            return name;
+            if (!ret) name = "";
+            return ret;
         }
         
-        public string GetShortDescription (uint32 event_id) {
-            string desc = "";
+        public bool GetShortDescription (uint32 event_id, out string description) {
+            bool ret = false;
             
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    if (event.description != null)
-                        desc = event.description;
+                    if (event.description != null) {
+                        description = event.description;
+                        ret = true;
+                    }
                 } else {
                     debug ("No event with id %u", event_id);
                 }
             }
-            
-            return desc;
+            if (!ret) description = "";
+            return ret;
         }
         
-        public string GetExtendedDescription (uint32 event_id) {
-             string desc = "";
+        public bool GetExtendedDescription (uint32 event_id, out string description) {
+            bool ret = false;
             
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    if (event.extended_description != null)
-                        desc = event.extended_description;
+                    if (event.extended_description != null) {
+                        description = event.extended_description;
+                        ret = true;
+                    }
                 } else {
                     debug ("No event with id %u", event_id);
                 }
             }
-            
-            return desc;
+            if (!ret) description = "";
+            return ret;
         }
         
-        public uint GetDuration (uint32 event_id) {
-            uint duration = 0;
+        public bool GetDuration (uint32 event_id, out uint duration) {
+            bool ret = false;
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
@@ -383,16 +391,17 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
                     duration = event.duration;
+                    ret = true;
                 } else {
                     debug ("No event with id %u", event_id);
                 }
             }
             
-            return duration;
+            return ret;
         }
         
-        public uint[] GetLocalStartTime (uint32 event_id) {
-            uint[] start = new uint[] {};
+        public bool GetLocalStartTime (uint32 event_id, out uint[] start_time) {
+            bool ret = false;
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
@@ -400,61 +409,66 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
                     Time local_time = event.get_local_start_time ();
-                    start = to_time_array (local_time);
+                    start_time = to_time_array (local_time);
+                    ret = true;
                 } else {
                     debug ("No event with id %u", event_id);
+                    start_time = new uint[] {};
                 }
             }
             
-            return start;
+            return ret;
         }
         
-        public int64 GetLocalStartTimestamp (uint32 event_id) {
-            int64 ret = 0;
+        public bool GetLocalStartTimestamp (uint32 event_id, out int64 timestamp) {
+            bool ret = false;
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
                     Time local_time = event.get_local_start_time ();
-                    ret = (int64)local_time.mktime ();
+                    timestamp = (int64)local_time.mktime ();
+                    ret = true;
                 }
             }
             return ret;
         }
         
-        public bool IsRunning (uint32 event_id) {
-            bool val = false;
+        public bool IsRunning (uint32 event_id, out bool running) {
+            bool ret = false;
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    val = (event.is_running ());
+                    running = (event.is_running ());
+                    ret = true;
                 } else {
                     debug ("No event with id %u", event_id);
                 }
             }
             
-            return val;
+            return ret;
         }
         
-        public bool IsScrambled (uint32 event_id) {
-            bool val = false;
+        public bool IsScrambled (uint32 event_id, out bool scrambled) {
+            bool ret = false;
         
             lock (this.events) {
                 if (this.event_id_map.contains (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    val = (!event.free_ca_mode);
+                    scrambled = (!event.free_ca_mode);
+                    ret = true;
                 } else {
                     debug ("No event with id %u", event_id);
                 }
             }
             
-            return val;
+            return ret;
         }
         
         private static uint[] to_time_array (Time local_time) {

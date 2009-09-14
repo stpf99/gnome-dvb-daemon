@@ -37,7 +37,7 @@ namespace DVB {
         
         public abstract EventInfo[] GetAllEventInfos ();
         
-        public abstract EventInfo GetInformations (uint32 event_id);
+        public abstract bool GetInformations (uint32 event_id, out EventInfo event_info);
     
         /**
          * @returns: ID of currently running event
@@ -49,21 +49,21 @@ namespace DVB {
          */
         public abstract uint32 Next (uint32 event_id);
         
-        public abstract string GetName (uint32 event_id);
+        public abstract bool GetName (uint32 event_id, out string name);
         
-        public abstract string GetShortDescription (uint32 event_id);
+        public abstract bool GetShortDescription (uint32 event_id, out string description);
         
-        public abstract string GetExtendedDescription (uint32 event_id);
+        public abstract bool GetExtendedDescription (uint32 event_id, out string description);
         
-        public abstract uint GetDuration (uint32 event_id);
+        public abstract bool GetDuration (uint32 event_id, out uint duration);
         
-        public abstract uint[] GetLocalStartTime (uint32 event_id);
+        public abstract bool GetLocalStartTime (uint32 event_id, out uint[] start_time);
         
-        public abstract int64 GetLocalStartTimestamp (uint32 event_id);
+        public abstract bool GetLocalStartTimestamp (uint32 event_id, out int64 timestamp);
         
-        public abstract bool IsRunning (uint32 event_id);
+        public abstract bool IsRunning (uint32 event_id, out bool running);
         
-        public abstract bool IsScrambled (uint32 event_id);
+        public abstract bool IsScrambled (uint32 event_id, out bool scrambled);
         /*
         public abstract bool IsHighDefinition (uint32 event_id);
         
