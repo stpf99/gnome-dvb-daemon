@@ -32,7 +32,8 @@ class ChannelScanPage(BasePage):
     (COL_LOGO,
      COL_NAME,
      COL_ACTIVE,
-     COL_SID,) = range(4)
+     COL_SID,
+     COL_SCRAMBLED) = range(5)
 
     def __init__(self, model):
         BasePage.__init__(self)
@@ -43,14 +44,18 @@ class ChannelScanPage(BasePage):
         self._scanned_freqs = 0
         self._last_qsize = 0
         
+        self.set_spacing(12)
         self._theme = gtk.icon_theme_get_default()
         
         self.label = gtk.Label()
         self.label.set_line_wrap(True)
         self.pack_start(self.label, False)
+
+        topbox = gtk.VBox(spacing=6)
+        self.pack_start(topbox)
         
-        # Logo, Name, Frequency, active, SID
-        self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, bool, int)
+        # Logo, Name, Frequency, active, SID, scrambled
+        self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, bool, int, bool)
         self.tvchannelsview = gtk.TreeView(self.tvchannels)
         self.tvchannelsview.set_reorderable(True)
         
@@ -75,10 +80,19 @@ class ChannelScanPage(BasePage):
         scrolledtvview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         scrolledtvview.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
-        self.pack_start(scrolledtvview)
+        topbox.pack_start(scrolledtvview)
+
+        checkbutton = gtk.CheckButton(_("Select scrambled channels"))
+        checkbutton.set_active(True)
+        checkbutton.connect("toggled", self.__on_select_encrypted_toggled)
+        topbox.pack_start(checkbutton, False)
         
         self.progressbar = gtk.ProgressBar()
         self.pack_start(self.progressbar, False)
+
+        self._select_channels_label = gtk.Label()
+        self._select_channels_label.set_line_wrap(True)
+        self.pack_start(self._select_channels_label, False)
         
     def get_scanner(self):
         return self._scanner
@@ -107,7 +121,10 @@ class ChannelScanPage(BasePage):
         self._scanner.connect ("frequency-scanned", self.__on_freq_scanned)
         self._scanner.connect ("channel-added", self.__on_channel_added)
         self._scanner.connect ("finished", self.__on_finished)
-        
+
+        self.progressbar.show()
+        self._select_channels_label.hide()
+
         if isinstance(tuning_data, str):
             self._scanner.add_scanning_data_from_file (tuning_data, reply_handler=data_loaded, error_handler=global_error_handler)
         elif isinstance(tuning_data, list):
@@ -133,18 +150,15 @@ class ChannelScanPage(BasePage):
             icon = None
         
         name = name.replace("&", "&amp;")
-        self.tvchannels.append([icon, name, True, sid])
+        self.tvchannels.append([icon, name, True, sid, scrambled])
         
     def __on_finished(self, scanner):
-        self.remove(self.progressbar)
-        
-        select_channels_label = gtk.Label()
-        select_channels_label.set_line_wrap(True)
-        select_channels_label.set_markup(
+        self.progressbar.hide()
+    
+        self._select_channels_label.set_markup(
         _("Choose the channels you want to have in your list of channels. You can reorder the channels, too.")
         )
-        select_channels_label.show()
-        self.pack_start(select_channels_label, False)
+        self._select_channels_label.show()
         
         self.emit("finished", True)
         
@@ -161,4 +175,9 @@ class ChannelScanPage(BasePage):
         self.tvchannels[aiter][self.COL_ACTIVE] = \
             not self.tvchannels[aiter][self.COL_ACTIVE]
         
+    def __on_select_encrypted_toggled(self, checkbutton):
+        val = checkbutton.get_active()
+        for row in self.tvchannels:
+            if row[self.COL_SCRAMBLED]:
+                row[self.COL_ACTIVE] = val
 
