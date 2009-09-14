@@ -49,30 +49,34 @@ namespace DVB {
         
         /**
          * @channel_id: ID of channel
-         * @returns: Name of channel if channel with id exists
+         * @channel_name: Name of channel if channel with id exists
          * otherwise an empty string
+         * @returns: TRUE on success
          */
-        public abstract string GetChannelName (uint channel_id);
+        public abstract bool GetChannelName (uint channel_id, out string channel_name);
         
         /**
          * @channel_id: ID of channel
-         * @returns: Name of network the channel belongs to
+         * @network: Name of network the channel belongs to
          * if the channel with id exists, otherwise an empty
          * string
+         * @returns: TRUE on success
          */
-        public abstract string GetChannelNetwork (uint channel_id);
+        public abstract bool GetChannelNetwork (uint channel_id, out string network);
         
         /**
          * @channel_id: ID of channel
-         * @returns: Whether the channel is a radio channel or not
+         * @radio: Whether the channel is a radio channel or not
+         * @returns: TRUE on success
          */
-        public abstract bool IsRadioChannel (uint channel_id);
+        public abstract bool IsRadioChannel (uint channel_id, out bool radio);
         
         /**
          * @channel_id: ID of channel
-         * @returns: URL to watch the channel
+         * @url: URL to watch the channel
+         * @returns: TRUE on success
          */
-        public abstract string GetChannelURL (uint channel_id);
+        public abstract bool GetChannelURL (uint channel_id, out string url);
         
         public abstract ChannelInfo[] GetChannelInfos ();
         

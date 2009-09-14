@@ -151,69 +151,89 @@ namespace DVB {
         
         /**
          * @channel_id: ID of channel
-         * @returns: Name of channel if channel with id exists
+         * @channel_name: Name of channel if channel with id exists
          * otherwise an empty string
+         * @returns: TRUE on success
          */
-        public string GetChannelName (uint channel_id) {
+        public bool GetChannelName (uint channel_id, out string channel_name) {
+            bool ret = false;
             string val = "";
             
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
                     string name = this.channels.get (channel_id).Name;
-                    if (name != null) val = name;
+                    if (name != null) {
+                        val = name;
+                        ret = true;
+                    }
                 }
             }
+            channel_name = val;
             
-            return val;
+            return ret;
         }
         
         /**
          * @channel_id: ID of channel
-         * @returns: Name of network the channel belongs to
+         * @network: Name of network the channel belongs to
          * if the channel with id exists, otherwise an empty
          * string
+         * @returns: TRUE on success
          */
-        public string GetChannelNetwork (uint channel_id) {
+        public bool GetChannelNetwork (uint channel_id, out string network) {
             string val = "";
+            bool ret = false;
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
-                    string network = this.channels.get (channel_id).Network;
-                    if (network != null) val = network;
+                    string tmp = this.channels.get (channel_id).Network;
+                    if (tmp != null) {
+                        val = tmp;
+                        ret = true;
+                    }
                 }
             }
-            
-            return val;
+            network = val;
+            return ret;
         }
         
         /**
          * @channel_id: ID of channel
-         * @returns: Whether the channel is a radio channel or not
+         * @radio: Whether the channel is a radio channel or not
+         * @returns: TRUE on success
          */
-        public bool IsRadioChannel (uint channel_id) {
+        public bool IsRadioChannel (uint channel_id, out bool radio) {
             bool val = false;
+            bool ret = false;
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
                     val = (this.channels.get (channel_id).VideoPID == 0);   
+                    ret = true;
                 }
             }
-            
-            return val;
+            radio = val;
+            return ret;
         }
         
         /**
          * @channel_id: ID of channel
-         * @returns: URL to watch the channel
+         * @url: URL to watch the channel
+         * @returns: TRUE on success
          */
-        public string GetChannelURL (uint channel_id) {
-            string url = "";
+        public bool GetChannelURL (uint channel_id, out string url) {
+            Channel channel = null;
+
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
-                    Channel channel = this.channels.get (channel_id);
-                    url = channel.URL;
+                    channel = this.channels.get (channel_id);
                 }
             }
-            
-            return url;
+
+            if (channel != null) {
+                url = channel.URL;
+                return true;
+            }
+
+            return false;
         }
         
         public ChannelInfo[] GetChannelInfos () {
