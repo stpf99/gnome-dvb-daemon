@@ -24,6 +24,7 @@ pygst.require("0.10")
 import subprocess
 import totem
 import gnomedvb
+from cgi import escape
 
 from gnomedvb import global_error_handler
 from gnomedvb.DVBModel import DVBModel
@@ -78,10 +79,10 @@ class ScheduleDialog(gtk.Dialog):
                 if response == gtk.RESPONSE_YES:
                     event_id = model[aiter][model.COL_EVENT_ID]
                     recorder = self._group.get_recorder()
-                    rec_id = recorder.add_timer_for_epg_event(event_id, self._sid)
+                    rec_id, success = recorder.add_timer_for_epg_event(event_id, self._sid)
                 dialog.destroy()
                 
-                if response == gtk.RESPONSE_YES and rec_id == 0:
+                if response == gtk.RESPONSE_YES and not success:
                     dialog = NoTimerCreatedDialog(self)
                     dialog.run()
                     dialog.destroy()
@@ -374,11 +375,11 @@ class DVBDaemonPlugin(totem.Plugin):
                 group_id = model[aiter][model.COL_GROUP_ID]
                 sid = model[aiter][model.COL_SID]
                 if group_id == self.REC_GROUP_ID:
-                    url = self.recstore.get_location(sid)
+                    url, success = self.recstore.get_location(sid)
                 else:
                     group = gnomedvb.DVBManagerClient().get_device_group(group_id)
                     channellist = group.get_channel_list()
-                    url = channellist.get_channel_url(sid)
+                    url, success = channellist.get_channel_url(sid)
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_REPLACE, url)
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_PLAY, url)
                 # Totem adds the URL to recent manager, remove it again
@@ -427,9 +428,11 @@ class DVBDaemonPlugin(totem.Plugin):
             self.epg_button.set_sensitive(epg_status)
                 
     def _add_recording(self, rid):
-        name = self.recstore.get_name(rid)
+        name, success = self.recstore.get_name(rid)
         if name == "":
             name = _("Recording %d") % rid
+        else:
+            name = escape(name)
         self.channels.append(self.rec_iter, [self.REC_GROUP_ID, name, rid, None])
                 
     def _on_recstore_changed(self, recstore, rec_id, change_type):
