@@ -115,7 +115,6 @@ namespace DVB {
                 return false;
             }
 
-            bool ret = false;
             Settings settings = Factory.get_settings ();
             int start_margin = 0;
             uint end_margin = 0;
@@ -130,8 +129,9 @@ namespace DVB {
                 critical ("Could not retrieve start/end margins: %s",
                     e.message);
             }
-            
-            if (this.add_timer (new_timer, out timer_id)) {
+
+            bool ret = true;
+            if (!this.add_timer (new_timer, out timer_id)) {
                 // The timer conflicts, see what happens when we remove margins
                 new_timer.Duration -= end_margin;
                 new_timer.add_to_start_time (-1*start_margin);
