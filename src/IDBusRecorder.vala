@@ -46,31 +46,33 @@ namespace DVB {
          * @start_hour: The hour when recording should start
          * @start_minute: The minute when recording should start
          * @duration: How long the channel should be recorded (in minutes)
-         * @returns: The new timer's id on success, or 0 if timer couldn't
+         * @timer_id: The new timer's id on success, or 0 if timer couldn't
          * be created
+         * @returns: TRUE on success
          * 
          * Add a new timer
          */
-        public abstract uint32 AddTimer (uint channel,
+        public abstract bool AddTimer (uint channel,
             int start_year, int start_month, int start_day,
-            int start_hour, int start_minute, uint duration);
+            int start_hour, int start_minute, uint duration, out uint32 timer_id);
         
          /**
          * Works the same way as AddTimer() but adds a margin before and
          * after the timer.
          */
-        public abstract uint32 AddTimerWithMargin (uint channel,
+        public abstract bool AddTimerWithMargin (uint channel,
             int start_year, int start_month, int start_day,
-            int start_hour, int start_minute, uint duration);
+            int start_hour, int start_minute, uint duration, out uint32 timer_id);
         
         /**
          * @event_id: id of the EPG event
          * @channel_sid: SID of channel
-         * @returns: The new timer's id on success, or 0 if timer couldn't
+         * @timer_id: The new timer's id on success, or 0 if timer couldn't
          * be created
+         * @returns: TRUE on success
          */
-        public abstract uint32 AddTimerForEPGEvent (uint event_id,
-            uint channel_sid);
+        public abstract bool AddTimerForEPGEvent (uint event_id,
+            uint channel_sid, out uint32 timer_id);
             
         /**
          * @timer_id: The id of the timer you want to delete
@@ -89,46 +91,52 @@ namespace DVB {
         
         /**
          * @timer_id: Timer's id
-         * @returns: An array of length 5, where index 0 = year, 1 = month,
+         * @start_time: An array of length 5, where index 0 = year, 1 = month,
          * 2 = day, 3 = hour and 4 = minute.
+         * @returns: TRUE on success
          */
-        public abstract uint32[] GetStartTime (uint32 timer_id);
+        public abstract bool GetStartTime (uint32 timer_id, out uint32[] start_time);
         
         /**
          * @timer_id: Timer's id
-         * @returns: Same as dvb_recorder_GetStartTime()
+         * @end_time: Same as dvb_recorder_GetStartTime()
+         * @returns: TRUE on success
          */
-        public abstract uint[] GetEndTime (uint32 timer_id);
+        public abstract bool GetEndTime (uint32 timer_id, out uint[] end_time);
         
         /**
          * @timer_id: Timer's id
-         * @returns: Duration in seconds or 0 if there's no timer with
+         * @duration: Duration in seconds or 0 if there's no timer with
          * the given id
+         * @returns: TRUE on success
          */
-        public abstract uint GetDuration (uint32 timer_id);
+        public abstract bool GetDuration (uint32 timer_id, out uint duration);
         
         /**
          * @timer_id: Timer's id
-         * @returns: The name of the channel the timer belongs to or an
+         * @name: The name of the channel the timer belongs to or an
          * empty string when a timer with the given id doesn't exist
+         * @returns: TRUE on success
          */
-        public abstract string GetChannelName (uint32 timer_id);
+        public abstract bool GetChannelName (uint32 timer_id, out string name);
 
         /**
          * @timer_id: Timer's id
-         * @returns: The name of the show the timer belongs to or an
+         * @title: The name of the show the timer belongs to or an
          * empty string if the timer doesn't exist or has no information
          * about the title of the show
+         * @returns: TRUE on success
          */
-        public abstract string GetTitle (uint32 timer_id);
+        public abstract bool GetTitle (uint32 timer_id, out string title);
 
         /**
          * @timer_id: Timer's id
+         * @returns: TRUE on success
          *
          * This method can be used to retrieve all informations
          * about a particular timer at once
          */
-        public abstract TimerInfo GetAllInformations (uint32 timer_id);
+        public abstract bool GetAllInformations (uint32 timer_id, out TimerInfo info);
         
         /**
          * @returns: The currently active timers

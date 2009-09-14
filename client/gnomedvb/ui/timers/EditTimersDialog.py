@@ -123,12 +123,13 @@ class EditTimersDialog(gtk.Dialog):
         self.recorder.get_timers(reply_handler=add_timer, error_handler=global_error_handler)
             
     def _add_timer(self, timer_id):
-        start_list = self.recorder.get_start_time(timer_id)
-        starttime = "%04d-%02d-%02d %02d:%02d" % (start_list[0], start_list[1],
-                start_list[2], start_list[3], start_list[4])
-        (duration, active, channel, title) = self.recorder.get_all_informations(timer_id)[1:]
-        
-        self.timerslist.append([timer_id, channel, title, starttime, duration, active])
+        start_list, success = self.recorder.get_start_time(timer_id)
+        if success:
+            starttime = "%04d-%02d-%02d %02d:%02d" % (start_list[0], start_list[1],
+                    start_list[2], start_list[3], start_list[4])
+            (duration, active, channel, title) = self.recorder.get_all_informations(timer_id)[0][1:]
+            
+            self.timerslist.append([timer_id, channel, title, starttime, duration, active])
 
     def _remove_timer(self, timer_id):
         for row in self.timerslist:

@@ -72,22 +72,26 @@ namespace DVB {
          * @start_hour: The hour when recording should start
          * @start_minute: The minute when recording should start
          * @duration: How long the channel should be recorded (in minutes)
-         * @returns: The new timer's id on success, or 0 if timer couldn't
+         * @timer_id: The new timer's id on success, or 0 if timer couldn't
          * be created
+         * @returns: TRUE on success
          * 
          * Add a new timer
          */
-        public uint32 AddTimer (uint channel,
+        public bool AddTimer (uint channel,
                 int start_year, int start_month, int start_day,
-                int start_hour, int start_minute, uint duration) {
+                int start_hour, int start_minute, uint duration,
+                out uint32 timer_id) {
             
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
             
-            if (new_timer == null)
-                return 0;
-            else
-                return this.add_timer (new_timer);
+            if (new_timer == null) {
+                timer_id = 0;
+                return false;
+            } else {
+                return this.add_timer (new_timer, out timer_id);
+            }
         }
         
         /**
@@ -98,15 +102,20 @@ namespace DVB {
          * recording the margins are removed and adding the timer will
          * be tried again.
          */
-        public uint32 AddTimerWithMargin (uint channel,
-            int start_year, int start_month, int start_day,
-            int start_hour, int start_minute, uint duration) {
+        public bool AddTimerWithMargin (uint channel,
+                int start_year, int start_month, int start_day,
+                int start_hour, int start_minute, uint duration,
+                out uint32 timer_id) {
             
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
 
-            if (new_timer == null) return 0;
+            if (new_timer == null) {
+                timer_id = 0;
+                return false;
+            }
 
+            bool ret = false;
             Settings settings = Factory.get_settings ();
             int start_margin = 0;
             uint end_margin = 0;
@@ -121,21 +130,20 @@ namespace DVB {
                 critical ("Could not retrieve start/end margins: %s",
                     e.message);
             }
-
-            uint32 tid = this.add_timer (new_timer);
-            if (tid == 0) {
+            
+            if (this.add_timer (new_timer, out timer_id)) {
                 // The timer conflicts, see what happens when we remove margins
                 new_timer.Duration -= end_margin;
                 new_timer.add_to_start_time (-1*start_margin);
-                tid = this.add_timer (new_timer);
+                ret = this.add_timer (new_timer, out timer_id);
             }
-            return tid;
+            return ret;
         }
         
-        public uint32 add_timer (Timer new_timer) {
-            if (new_timer.has_expired()) return 0;
-            
-            uint32 timer_id = 0;
+        public bool add_timer (Timer new_timer, out uint32 timer_id) {
+            if (new_timer.has_expired()) return false;
+
+            bool ret = false;
             lock (this.timers) {
                 bool has_conflict = false;
                 int conflict_count = 0;
@@ -169,31 +177,35 @@ namespace DVB {
                     }
                     
                     timer_id = new_timer.Id;
+                    ret = true;
                 }
             }
             
-            return timer_id;
+            return ret;
         }
         
         /**
          * @event_id: id of the EPG event
          * @channel_sid: SID of channel
-         * @returns: The new timer's id on success, or 0 if timer couldn't
+         * @timer_id: The new timer's id on success, or 0 if timer couldn't
          * be created
+         * @returns: TRUE on success
          */
-        public uint32 AddTimerForEPGEvent (uint event_id, uint channel_sid) {
+        public bool AddTimerForEPGEvent (uint event_id, uint channel_sid,
+                out uint32 timer_id) {
             weak EPGStore epgstore = Factory.get_epg_store ();
             Event? event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
             if (event == null) {
                 debug ("Could not find event with id %u", event_id);
-                return 0;
+                timer_id = 0;
+                return false;
             }
             Time start = event.get_local_start_time ();
             
             return this.AddTimerWithMargin (channel_sid,
                 start.year + 1900, start.month + 1,
                 start.day, start.hour, start.minute,
-                event.duration / 60);
+                event.duration / 60, out timer_id);
         }
         
         /**
@@ -245,86 +257,107 @@ namespace DVB {
         
         /**
          * @timer_id: Timer's id
-         * @returns: An array of length 5, where index 0 = year, 1 = month,
+         * @start_time: An array of length 5, where index 0 = year, 1 = month,
          * 2 = day, 3 = hour and 4 = minute.
+         * @returns: TRUE on success
          */
-        public uint32[] GetStartTime (uint32 timer_id) {
-            uint32[] val;
+        public bool GetStartTime (uint32 timer_id, out uint32[] start_time) {
+            bool ret;
             lock (this.timers) {
-                if (this.timers.contains (timer_id))
-                    val = this.timers.get(timer_id).get_start_time ();
-                else
-                    val = new uint[] {};
+                if (this.timers.contains (timer_id)) {
+                    start_time = this.timers.get(timer_id).get_start_time ();
+                    ret = true;
+                } else {
+                    start_time = new uint[] {};
+                    ret = false;
+                }
             }
-            return val;
+            return ret;
         }
         
         /**
          * @timer_id: Timer's id
-         * @returns: Same as dvb_recorder_GetStartTime()
+         * @end_time: Same as dvb_recorder_GetStartTime()
+         * @returns: TRUE on success
          */
-        public uint[] GetEndTime (uint32 timer_id) {
-            uint[] val;
+        public bool GetEndTime (uint32 timer_id, out uint[] end_time) {
+            bool ret;
             lock (this.timers) {
-                if (this.timers.contains (timer_id))
-                    val = this.timers.get(timer_id).get_end_time ();
-                else
-                    val = new uint[] {};
+                if (this.timers.contains (timer_id)) {
+                    end_time = this.timers.get(timer_id).get_end_time ();
+                    ret = true;
+                } else {
+                    end_time = new uint[] {};
+                    ret = false;
+                }
             }
-            return val;
+            return ret;
         }
         
         /**
          * @timer_id: Timer's id
-         * @returns: Duration in seconds or 0 if there's no timer with
+         * @duration: Duration in seconds or 0 if there's no timer with
          * the given id
+         * @returns: TRUE on success
          */
-        public uint GetDuration (uint32 timer_id) {
-            uint val = 0;
+        public bool GetDuration (uint32 timer_id, out uint duration) {
+            bool ret = false;
             lock (this.timers) {
-                if (this.timers.contains (timer_id))
-                    val = this.timers.get(timer_id).Duration;
+                if (this.timers.contains (timer_id)) {
+                    duration = this.timers.get(timer_id).Duration;
+                    ret = true;
+                }
             }
-            return val;
+            return ret;
         }
         
         /**
          * @timer_id: Timer's id
-         * @returns: The name of the channel the timer belongs to or an
+         * @name: The name of the channel the timer belongs to or an
          * empty string when a timer with the given id doesn't exist
+         * @returns: TRUE on success
          */
-        public string GetChannelName (uint32 timer_id) {
-            string name = "";
+        public bool GetChannelName (uint32 timer_id, out string name) {
+            bool ret;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
                     name = t.Channel.Name;
+                    ret = true;
+                } else {
+                    name = "";
+                    ret = false;
                 }
             }
-            return name;
+            return ret;
         }
 
         /**
          * @timer_id: Timer's id
-         * @returns: The name of the show the timer belongs to or an
+         * @title: The name of the show the timer belongs to or an
          * empty string if the timer doesn't exist or has no information
          * about the title of the show
+         * @returns: TRUE on success
          */
-        public string GetTitle (uint32 timer_id) {
-            string title = "";
+        public bool GetTitle (uint32 timer_id, out string title) {
+            bool ret = false;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
                     Event? event = t.Channel.Schedule.get_event (t.EventID);
-                    if (event != null)
+                    if (event != null) {
                         title = event.name;
+                        ret = true;
+                    }
                 }
             }
-            return title;
+            if (!ret) title = "";
+            return ret;
         }
 
-        public TimerInfo GetAllInformations (uint32 timer_id) {
-            TimerInfo info = TimerInfo ();
+        public bool GetAllInformations (uint32 timer_id, out TimerInfo info) {
+            info = TimerInfo ();
+            bool ret = false;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
@@ -342,9 +375,10 @@ namespace DVB {
                         info.title = event.name;
                     else
                         info.title = "";
+                    ret = true;
                 }
             }
-            return info;
+            return ret;
         }
 
         /**

@@ -165,10 +165,10 @@ class TimerDialog(gtk.Dialog):
             channel = self.get_channel()
             
             recorder = self.device_group.get_recorder()
-            rec_id = recorder.add_timer (channel, start[0], start[1], start[2],
+            rec_id, success = recorder.add_timer (channel, start[0], start[1], start[2],
                 start[3], start[4], duration)
               
-            if rec_id == 0:
+            if not success:
                 dialog = NoTimerCreatedDialog(self)
                 dialog.run()
                 dialog.destroy()

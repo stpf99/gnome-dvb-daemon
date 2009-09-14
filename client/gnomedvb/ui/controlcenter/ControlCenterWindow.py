@@ -515,10 +515,10 @@ class ControlCenterWindow(gtk.Window):
                     group = self._get_selected_group()
                     channel_sid = self._get_selected_channel_sid()
                     recorder = group.get_recorder()
-                    rec_id = recorder.add_timer_for_epg_event(event_id, channel_sid)
+                    rec_id, success = recorder.add_timer_for_epg_event(event_id, channel_sid)
                 dialog.destroy()
                 
-                if rec_id == 0:
+                if not success:
                     dialog = NoTimerCreatedDialog(self)
                     dialog.run()
                     dialog.destroy()

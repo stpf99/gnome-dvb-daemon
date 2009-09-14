@@ -202,7 +202,8 @@ namespace Main {
                 Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
                 foreach (DVB.Timer t in timers) {
                     if (t.Id > max_id) max_id = t.Id;
-                    if (rec.add_timer (t) == 0)
+                    uint32 rec_id;
+                    if (rec.add_timer (t, out rec_id))
                         timers_store.remove_timer_from_device_group (t.Id, device_group);
                 }
             }
