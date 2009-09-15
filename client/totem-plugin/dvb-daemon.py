@@ -30,8 +30,8 @@ from gnomedvb import global_error_handler
 from gnomedvb.DVBModel import DVBModel
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsTreeStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
+from gnomedvb.ui.widgets.SchedulePaned import SchedulePaned
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
-from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.preferences.Preferences import Preferences
@@ -53,16 +53,12 @@ class ScheduleDialog(gtk.Dialog):
         self.set_default_size(640, 380)
         self.vbox.set_spacing(6)
             
-        self.scheduleview = ScheduleView()
-        self.scheduleview.connect("button-press-event", self._on_event_selected)
-        self.scheduleview.show()
+        self.schedulepaned = SchedulePaned()
+        self.schedulepaned.show()
+        self.vbox.pack_start(self.schedulepaned)
         
-        self.scrolledschedule = gtk.ScrolledWindow()
-        self.scrolledschedule.add(self.scheduleview)
-        self.scrolledschedule.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.scrolledschedule.set_shadow_type(gtk.SHADOW_IN)
-        self.vbox.pack_start(self.scrolledschedule)
-        self.scrolledschedule.show()
+        self.scheduleview = self.schedulepaned.get_treeview()
+        self.scheduleview.connect("button-press-event", self._on_event_selected)
         
         self.schedulestore = ScheduleStore(group, sid)
         self.scheduleview.set_model(self.schedulestore)
