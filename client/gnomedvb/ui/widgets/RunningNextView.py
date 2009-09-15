@@ -31,6 +31,7 @@ class RunningNextView(gtk.TreeView):
         col_channel.add_attribute(cell_channel, "markup",
             RunningNextStore.COL_CHANNEL)
         self.append_column(col_channel)
+        col_channel.index = RunningNextStore.COL_CHANNEL
         
         cell_now_start = gtk.CellRendererText()
         cell_now = gtk.CellRendererText()
@@ -42,6 +43,7 @@ class RunningNextView(gtk.TreeView):
         col_now.add_attribute(cell_now, "markup", RunningNextStore.COL_RUNNING)
         col_now.set_property("resizable", True)
         self.append_column(col_now)
+        col_now.index = RunningNextStore.COL_RUNNING
         
         cell_next_start = gtk.CellRendererText()
         cell_next = gtk.CellRendererText()
@@ -53,6 +55,7 @@ class RunningNextView(gtk.TreeView):
             RunningNextStore.COL_NEXT_START)
         col_next.add_attribute(cell_next, "markup", RunningNextStore.COL_NEXT)
         self.append_column(col_next)
+        col_next.index = RunningNextStore.COL_NEXT
     
     def _format_time(self, column, cell, model, aiter, col_id):
         timestamp = model[aiter][col_id]

@@ -27,10 +27,12 @@ class RunningNextStore(gtk.ListStore):
      COL_RUNNING,
      COL_NEXT_START,
      COL_NEXT,
-     COL_SID) = range(6)
+     COL_SID,
+     COL_RUNNING_EVENT,
+     COL_NEXT_EVENT) = range(8)
 
     def __init__(self, group):
-        gtk.ListStore.__init__(self, str, int, str, int, str, int)
+        gtk.ListStore.__init__(self, str, int, str, int, str, int, int, int)
         
         self.set_sort_column_id(self.COL_CHANNEL,
             gtk.SORT_ASCENDING)
@@ -53,10 +55,12 @@ class RunningNextStore(gtk.ListStore):
                     next, name, duration, short_desc = sched.get_informations(now)[0][1:]
                     self.set(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now)[0])
                     self.set(aiter, self.COL_RUNNING, escape(name))
+                    self.set(aiter, self.COL_RUNNING_EVENT, now)
                     if next != 0:
                         name, duration, short_desc = sched.get_informations(next)[0][2:]
                         self.set(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next)[0])
                         self.set(aiter, self.COL_NEXT, escape(name))
+                        self.set(aiter, self.COL_NEXT_EVENT, next)
         
         channellist.get_channel_infos(reply_handler=add_channels,
             error_handler=global_error_handler)

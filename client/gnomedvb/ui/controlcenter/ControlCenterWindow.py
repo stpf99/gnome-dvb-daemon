@@ -23,6 +23,7 @@ from gettext import gettext as _
 import gnomedvb
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
+from gnomedvb.ui.widgets.DetailsDialog import DetailsDialog
 from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.widgets.SchedulePaned import SchedulePaned
@@ -469,6 +470,7 @@ class ControlCenterWindow(gtk.Window):
         self.scrolledrunningnext.show()
         
         self.runningnextview = RunningNextView(self.runningnextstore)
+        self.runningnextview.connect("button-press-event", self._on_running_next_clicked)
         self.runningnextview.show()
         self.scrolledrunningnext.add(self.runningnextview)
     
@@ -599,5 +601,44 @@ class ControlCenterWindow(gtk.Window):
         about.set_screen(self.get_screen())
         about.run()
         about.destroy()
-        
     
+    def _on_running_next_clicked(self, treeview, event):
+            
+        def show_details(data, success):
+            if not success:
+                return
+            event_id, next, name, duration, desc = data
+            
+            ext_desc, success = schedule.get_extended_description(event_id)
+            if success:
+                desc += "\n%s" % ext_desc
+            
+            dialog = DetailsDialog(self)
+            dialog.set_description(desc)
+            dialog.set_title(name)
+            dialog.set_duration(duration)
+            dialog.set_channel(model[aiter][RunningNextStore.COL_CHANNEL])
+            start, success = schedule.get_local_start_timestamp(event_id)
+            if success:
+                dialog.set_date(start)
+            dialog.run()
+            dialog.destroy()
+        
+        if event.type == gtk.gdk._2BUTTON_PRESS:
+            model, aiter = treeview.get_selection().get_selected()
+            if aiter != None:
+                pos = treeview.get_path_at_pos(int(event.x), int(event.y))
+                if pos != None:
+                    col = pos[1]
+                    if col.index == RunningNextStore.COL_RUNNING:
+                        event_id = model[aiter][RunningNextStore.COL_RUNNING_EVENT]
+                    elif col.index == RunningNextStore.COL_NEXT:
+                        event_id = model[aiter][RunningNextStore.COL_NEXT_EVENT]
+                    else:
+                        return
+                    
+                    devgroup = self._get_selected_group()
+                    sid = model[aiter][RunningNextStore.COL_SID]
+                    schedule = devgroup.get_schedule(sid)
+                    schedule.get_informations(event_id, reply_handler=show_details, error_handler=gnomedvb.global_error_handler)
+

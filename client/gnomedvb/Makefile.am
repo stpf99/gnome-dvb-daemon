@@ -60,6 +60,7 @@ gnomedvbprefsmodel_PYTHON = \
     ui/widgets/__init__.py \
     ui/widgets/ChannelsStore.py \
     ui/widgets/ChannelsView.py \
+    ui/widgets/DetailsDialog.py \
     ui/widgets/RecordingsStore.py \
     ui/widgets/RecordingsView.py \
     ui/widgets/RunningNextStore.py \
