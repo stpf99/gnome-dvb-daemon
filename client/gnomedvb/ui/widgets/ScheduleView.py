@@ -32,7 +32,6 @@ class ScheduleView(gtk.TreeView):
         
         self.prev_selection = None
         self.set_property("headers-visible", False)
-        self.get_selection().connect("changed", self._on_selection_changed)
         
         cell_rec = gtk.CellRendererPixbuf()
         col_rec = gtk.TreeViewColumn("Recording", cell_rec)
@@ -71,15 +70,6 @@ class ScheduleView(gtk.TreeView):
                 short_desc += "\n"
             
             description = "<b>%s</b>\n%s<small><i>%s: %s</i></small>" % (title, short_desc, _("Duration"), duration)
-            
-            # Check if row is the selected row
-            sel_iter = self.get_selection().get_selected()[1]
-            if sel_iter != None and model.get_path(aiter) == model.get_path(sel_iter):
-                ext_desc = model[aiter][ScheduleStore.COL_EXTENDED_DESC]
-                if ext_desc == None:
-                    ext_desc = model.get_extended_description(aiter)
-                    model[aiter][ScheduleStore.COL_EXTENDED_DESC] = ext_desc
-                description += "\n<small>%s</small>" % ext_desc
         
         cell.set_property("markup", description)
         
@@ -106,13 +96,4 @@ class ScheduleView(gtk.TreeView):
             cell.set_property("icon-name", "stock_timer")
         else:
             cell.set_property("icon-name", None)
-
-    def _on_selection_changed(self, selection):
-        model, aiter = selection.get_selected()
-        # Update cell height of previously and currenlty selected row
-        if self.prev_selection != None:
-            model.emit ("row-changed", model.get_path(self.prev_selection), self.prev_selection)
-        if aiter != None:
-            model.emit ("row-changed", model.get_path(aiter), aiter)
-        self.prev_selection = aiter
 

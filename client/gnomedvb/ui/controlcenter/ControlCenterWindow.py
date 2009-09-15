@@ -25,8 +25,8 @@ from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
 from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.RunningNextView import RunningNextView
+from gnomedvb.ui.widgets.SchedulePaned import SchedulePaned
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
-from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
 from gnomedvb.ui.preferences.Preferences import Preferences
@@ -49,8 +49,7 @@ class HelpBox(gtk.EventBox):
         
     def set_markup(self, helptext):
         self._helpview.set_markup("<span foreground='grey50'>%s</span>" % helptext)
-
-
+       
 class ControlCenterWindow(gtk.Window):
 
     def __init__(self, model):
@@ -125,15 +124,10 @@ class ControlCenterWindow(gtk.Window):
         self.no_events_text = _("There is currently no schedule available for this channel")
         self.hpaned.pack2(self.help_eventbox)
         
-        self.scheduleview = ScheduleView()
+        self.schedulepaned = SchedulePaned()
+        self.schedulepaned.show()
+        self.scheduleview = self.schedulepaned.get_treeview()
         self.scheduleview.connect("button-press-event", self._on_event_selected)
-        self.scheduleview.show()
-        
-        self.scrolledschedule = gtk.ScrolledWindow()
-        self.scrolledschedule.add(self.scheduleview)
-        self.scrolledschedule.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.scrolledschedule.set_shadow_type(gtk.SHADOW_IN)
-        self.scrolledschedule.show()
         
         self.get_device_groups()
         if len(self.devgroupslist) == 0:
@@ -439,9 +433,9 @@ class ControlCenterWindow(gtk.Window):
                 
             self.scheduleview.set_model(self.schedulestore)
             # Display schedule if it isn't already displayed
-            if child != self.scrolledschedule:
+            if child != self.schedulepaned:
                 self.hpaned.remove(child)
-                self.hpaned.pack2(self.scrolledschedule)
+                self.hpaned.pack2(self.schedulepaned)
                 self._set_previous_day_sensitive(True)
                 self._set_next_day_sensitive(True)
                 self._set_refresh_sensitive(True)
@@ -510,6 +504,7 @@ class ControlCenterWindow(gtk.Window):
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
                 dialog.set_markup (_("<big><span weight=\"bold\">Schedule recording for the selected event?</span></big>"))
                 rec_id = -1
+                success = True
                 if dialog.run() == gtk.RESPONSE_YES:
                     event_id = model[aiter][model.COL_EVENT_ID]
                     group = self._get_selected_group()

@@ -64,6 +64,7 @@ gnomedvbprefsmodel_PYTHON = \
     ui/widgets/RecordingsView.py \
     ui/widgets/RunningNextStore.py \
     ui/widgets/RunningNextView.py \
+    ui/widgets/SchedulePaned.py \
     ui/widgets/ScheduleStore.py \
     ui/widgets/ScheduleView.py
 
