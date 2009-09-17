@@ -35,17 +35,17 @@ namespace DVB {
         /**
          * @returns: List of channel IDs aka SIDs of all channels
          */
-        public abstract uint[] GetChannels ();
+        public abstract uint[] GetChannels () throws DBus.Error;
         
         /**
          * @returns: List of channel IDs aka SIDs of radio channels
          */
-        public abstract uint[] GetRadioChannels ();
+        public abstract uint[] GetRadioChannels () throws DBus.Error;
         
         /**
          * @returns: List of channel IDs aka SIDs of TV channels
          */
-        public abstract uint[] GetTVChannels ();
+        public abstract uint[] GetTVChannels () throws DBus.Error;
         
         /**
          * @channel_id: ID of channel
@@ -53,7 +53,7 @@ namespace DVB {
          * otherwise an empty string
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelName (uint channel_id, out string channel_name);
+        public abstract bool GetChannelName (uint channel_id, out string channel_name) throws DBus.Error;
         
         /**
          * @channel_id: ID of channel
@@ -62,23 +62,23 @@ namespace DVB {
          * string
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelNetwork (uint channel_id, out string network);
+        public abstract bool GetChannelNetwork (uint channel_id, out string network) throws DBus.Error;
         
         /**
          * @channel_id: ID of channel
          * @radio: Whether the channel is a radio channel or not
          * @returns: TRUE on success
          */
-        public abstract bool IsRadioChannel (uint channel_id, out bool radio);
+        public abstract bool IsRadioChannel (uint channel_id, out bool radio) throws DBus.Error;
         
         /**
          * @channel_id: ID of channel
          * @url: URL to watch the channel
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelURL (uint channel_id, out string url);
+        public abstract bool GetChannelURL (uint channel_id, out string url) throws DBus.Error;
         
-        public abstract ChannelInfo[] GetChannelInfos ();
+        public abstract ChannelInfo[] GetChannelInfos () throws DBus.Error;
         
 	}
 

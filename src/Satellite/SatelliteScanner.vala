@@ -29,14 +29,14 @@ namespace DVB {
         public abstract signal void channel_added (uint frequency, uint sid,
             string name, string network, string type, bool scrambled);
         
-        public abstract void Run ();
-        public abstract void Destroy ();
-        public abstract bool WriteAllChannelsToFile (string path);
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path);
+        public abstract void Run () throws DBus.Error;
+        public abstract void Destroy () throws DBus.Error;
+        public abstract bool WriteAllChannelsToFile (string path) throws DBus.Error;
+        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBus.Error;
         
         public abstract void AddScanningData (uint frequency,
                                      string polarization, // "horizontal", "vertical"
-                                     uint symbol_rate);
+                                     uint symbol_rate) throws DBus.Error;
         
         /**
          * @path: Path to file containing scanning data
@@ -44,7 +44,7 @@ namespace DVB {
          *
          * Parses initial tuning data from a file as provided by dvb-apps
          */                            
-        public abstract bool AddScanningDataFromFile (string path);
+        public abstract bool AddScanningDataFromFile (string path) throws DBus.Error;
     }
     
     public class SatelliteScanner : Scanner, IDBusSatelliteScanner {
@@ -54,6 +54,11 @@ namespace DVB {
         }
      
         public void AddScanningData (uint frequency,
+                string polarization, uint symbol_rate) {
+            this.add_scanning_data (frequency, polarization, symbol_rate);
+        }
+                
+        private inline void add_scanning_data (uint frequency,
                 string polarization, uint symbol_rate) {
             var tuning_params = new Gst.Structure ("tuning_params",
             "frequency", typeof(uint), frequency,
@@ -106,7 +111,7 @@ namespace DVB {
                 
                 // TODO what about fec?
                 
-                this.AddScanningData (freq, pol, symbol_rate);
+                this.add_scanning_data (freq, pol, symbol_rate);
             }
             
             return true;

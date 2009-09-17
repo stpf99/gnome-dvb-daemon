@@ -29,13 +29,13 @@ namespace DVB {
         public abstract signal void channel_added (uint frequency, uint sid,
             string name, string network, string type, bool scrambled);
         
-        public abstract void Run ();
-        public abstract void Destroy ();
-        public abstract bool WriteAllChannelsToFile (string path);
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path);
+        public abstract void Run () throws DBus.Error;
+        public abstract void Destroy () throws DBus.Error;
+        public abstract bool WriteAllChannelsToFile (string path) throws DBus.Error;
+        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBus.Error;
         
         public abstract void AddScanningData (uint frequency, string modulation,
-            uint symbol_rate, string code_rate);
+            uint symbol_rate, string code_rate) throws DBus.Error;
         
         /**
          * @path: Path to file containing scanning data
@@ -43,7 +43,7 @@ namespace DVB {
          *
          * Parses initial tuning data from a file as provided by dvb-apps
          */    
-        public abstract bool AddScanningDataFromFile (string path);
+        public abstract bool AddScanningDataFromFile (string path) throws DBus.Error;
     }
     
     public class CableScanner : Scanner, IDBusCableScanner {
@@ -53,6 +53,12 @@ namespace DVB {
         }
         
         public void AddScanningData (uint frequency, string modulation,
+                uint symbol_rate, string code_rate) {
+            this.add_scanning_data (frequency, modulation,
+                symbol_rate, code_rate);
+        }
+                
+        private inline void add_scanning_data (uint frequency, string modulation,
                 uint symbol_rate, string code_rate) {
             var tuning_params = new Gst.Structure ("tuning_params",
             "frequency", typeof(uint), frequency,
@@ -97,7 +103,7 @@ namespace DVB {
                 uint symbol_rate = (uint)(cols[2].to_int () / 1000);
                 string code_rate = cols[3];
                 
-                this.AddScanningData (freq, modulation, symbol_rate, code_rate);
+                this.add_scanning_data (freq, modulation, symbol_rate, code_rate);
             }
             
             return true;

@@ -29,10 +29,10 @@ namespace DVB {
         public abstract signal void channel_added (uint frequency, uint sid,
             string name, string network, string type, bool scrambled);
         
-        public abstract void Run ();
-        public abstract void Destroy ();
-        public abstract bool WriteAllChannelsToFile (string path);
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path);
+        public abstract void Run () throws DBus.Error;
+        public abstract void Destroy () throws DBus.Error;
+        public abstract bool WriteAllChannelsToFile (string path) throws DBus.Error;
+        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBus.Error;
         
         public abstract void AddScanningData (uint frequency,
                                      uint hierarchy, // 0-3
@@ -41,7 +41,7 @@ namespace DVB {
                                      string code_rate_hp, // "1/2", "2/3", "3/4", ..., "8/9"
                                      string code_rate_lp,
                                      string constellation, // QPSK, QAM16, QAM64
-                                     uint guard);  // 4, 8, 16, 32
+                                     uint guard) throws DBus.Error;  // 4, 8, 16, 32
         
         /**
          * @path: Path to file containing scanning data
@@ -49,7 +49,7 @@ namespace DVB {
          *
          * Parses initial tuning data from a file as provided by dvb-apps
          */                             
-        public abstract bool AddScanningDataFromFile (string path);
+        public abstract bool AddScanningDataFromFile (string path) throws DBus.Error;
     }
     
     public class TerrestrialScanner : Scanner, IDBusTerrestrialScanner {
@@ -62,6 +62,15 @@ namespace DVB {
           * See enums in MpegTsEnums
           */
         public void AddScanningData (uint frequency, uint hierarchy,
+                uint bandwidth, string transmode, string code_rate_hp,
+                string code_rate_lp, string constellation, uint guard) {
+                
+                this.add_scanning_data (frequency, hierarchy,
+                    bandwidth, transmode, code_rate_hp,
+                    code_rate_lp, constellation, guard);
+        }
+                
+        private inline void add_scanning_data (uint frequency, uint hierarchy,
                 uint bandwidth, string transmode, string code_rate_hp,
                 string code_rate_lp, string constellation, uint guard) {
              
@@ -130,7 +139,7 @@ namespace DVB {
                 string guard_str = cols[7].split("/")[1];
                 uint guard = (uint)guard_str.to_int ();
                 
-                this.AddScanningData (freq, hierarchy,
+                this.add_scanning_data (freq, hierarchy,
                     bandwidth, transmode, code_rate_hp,
                     code_rate_lp, constellation, guard);
             }

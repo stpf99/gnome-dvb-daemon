@@ -37,19 +37,19 @@ namespace DVB {
          * Get the object path of the channel scanner for this device.
          */
         public abstract bool GetScannerForDevice (uint adapter, uint frontend,
-                out DBus.ObjectPath opath, out string dbusiface);
+                out DBus.ObjectPath opath, out string dbusiface) throws DBus.Error;
         
         /**
          * @returns: Device groups' DBus path
          */
-        public abstract DBus.ObjectPath[] GetRegisteredDeviceGroups ();
+        public abstract DBus.ObjectPath[] GetRegisteredDeviceGroups () throws DBus.Error;
         
         /**
          * @group_id: A group ID
          * @path: Device group's DBus path
          * @returns: TRUE on success
          */
-        public abstract bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath);
+        public abstract bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath) throws DBus.Error;
         
         /**
          * @adapter: Number of the device's adapter
@@ -65,7 +65,7 @@ namespace DVB {
          * of the reference device).
          */
         public abstract bool AddDeviceToNewGroup (uint adapter, uint frontend,
-                string channels_conf, string recordings_dir, string name);
+                string channels_conf, string recordings_dir, string name) throws DBus.Error;
 
         /**
          * @adapter: Adapter of device
@@ -76,12 +76,12 @@ namespace DVB {
          * The device must be part of group, otherwise "Unknown"
          * is returned.
          */
-        public abstract bool GetNameOfRegisteredDevice (uint adapter, uint frontend, out string name);
+        public abstract bool GetNameOfRegisteredDevice (uint adapter, uint frontend, out string name) throws DBus.Error;
         
         /**
          * @returns: the numner of configured device groups
          */
-        public abstract int GetDeviceGroupSize ();
+        public abstract int GetDeviceGroupSize () throws DBus.Error;
     }
 
 }
