@@ -284,10 +284,10 @@ namespace DVB {
                     event_info.local_start = to_time_array (local_time);
                     */
                     iter = iter.next ();
-                    element = this.events.get (iter);
                     if (iter.is_end ()) {
                         event_info.next = 0;
                     } else {
+                        element = this.events.get (iter);
                         event_info.next = element.id;
                     }
                     ret = true;
