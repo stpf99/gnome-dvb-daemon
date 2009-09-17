@@ -54,7 +54,7 @@ class ChannelScanPage(BasePage):
         topbox = gtk.VBox(spacing=6)
         self.pack_start(topbox)
         
-        # Logo, Name, Frequency, active, SID, scrambled
+        # Logo, Name, active, SID, scrambled
         self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, bool, int, bool)
         self.tvchannelsview = gtk.TreeView(self.tvchannels)
         self.tvchannelsview.set_reorderable(True)
@@ -82,10 +82,10 @@ class ChannelScanPage(BasePage):
 
         topbox.pack_start(scrolledtvview)
 
-        checkbutton = gtk.CheckButton(_("Select scrambled channels"))
-        checkbutton.set_active(True)
-        checkbutton.connect("toggled", self.__on_select_encrypted_toggled)
-        topbox.pack_start(checkbutton, False)
+        self.scrambledbutton = gtk.CheckButton(_("Select scrambled channels"))
+        self.scrambledbutton.set_active(True)
+        self.scrambledbutton.connect("toggled", self.__on_select_encrypted_toggled)
+        topbox.pack_start(self.scrambledbutton, False)
         
         self.progressbar = gtk.ProgressBar()
         self.pack_start(self.progressbar, False)
@@ -150,7 +150,11 @@ class ChannelScanPage(BasePage):
             icon = None
         
         name = name.replace("&", "&amp;")
-        self.tvchannels.append([icon, name, True, sid, scrambled])
+        if scrambled and not self.scrambledbutton.get_active():
+            active = False
+        else:
+            active = True
+        self.tvchannels.append([icon, name, active, sid, scrambled])
         
     def __on_finished(self, scanner):
         self.progressbar.hide()
