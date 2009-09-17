@@ -105,7 +105,7 @@ class DeviceGroup(gnomedvb.DVBDeviceGroupClient):
         elif key == "type":
             return self._type
         else:
-            raise KeyError("Unknown key "+key)
+            raise KeyError("Unknown key "+str(key))
     
     def get_members(self):
         devices = []
