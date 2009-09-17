@@ -70,9 +70,8 @@ namespace DVB {
             
             Channel t1_c = this.Channel;
             Channel t2_c = t2.Channel;
-            if (t1_c.on_same_transport_stream (t2_c) && !t1_c.equals(t2_c)) {
-                // Recordings on the same TS never conflict as long
-                // as it isn't the same channel
+            if (t1_c.on_same_transport_stream (t2_c)) {
+                // Recordings on the same TS never conflict
                 return false;
             }
             
