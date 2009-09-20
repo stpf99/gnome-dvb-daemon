@@ -116,6 +116,7 @@ EXTRA_DIST = \
 	intltool-merge.in \
 	$(gnome_dvb_daemon_VALASOURCES) \
 	src/gnome-dvb-daemon.vala.stamp \
+	vapi/config.vapi \
 	vapi/cutils.vapi \
 	vapi/cstuff.h \
 	$(NULL)
