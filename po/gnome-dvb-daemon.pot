@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 19:49+0200\n"
+"POT-Creation-Date: 2009-09-20 12:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -517,7 +517,7 @@ msgstr ""
 msgid "Scanning for channels on device %s"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:159
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:163
 msgid ""
 "Choose the channels you want to have in your list of channels. You can "
 "reorder the channels, too."
@@ -733,11 +733,15 @@ msgstr ""
 msgid "Configuring device"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:113
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:114
 msgid "TV"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:123
+msgid "An error occured while trying to setup the device."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:135
 #, python-format
 msgid "The device has been added to the group %s."
 msgstr ""
