@@ -154,7 +154,7 @@ class EditTimersDialog(gtk.Dialog):
                     if not self.recorder.delete_timer(timer_id):
                         error_dialog = gtk.MessageDialog(parent=self,
                             flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
                         error_dialog.set_markup(_("<big><span weight=\"bold\">Timer could not be deleted</big></span>"))
                         error_dialog.run()
                         error_dialog.destroy()

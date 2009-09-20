@@ -207,7 +207,7 @@ class Preferences(gtk.Dialog):
                         # "Error: remove device"
                         error_dialog = gtk.MessageDialog(parent=self,
                             flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
                         error_dialog.set_markup(_("<big><span weight=\"bold\">Device could not be removed from group</big></span>"))
                         error_dialog.run()
                         error_dialog.destroy()
@@ -234,7 +234,7 @@ class Preferences(gtk.Dialog):
                     # "Error: create group"
                     error_dialog = gtk.MessageDialog(parent=dialog,
                         flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                        type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                        type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
                     error_dialog.set_markup(_("<big><span weight=\"bold\">Group could not be created</big></span>"))
                     error_dialog.format_secondary_text(
                         _("Make sure that you selected the correct channels file and directory where recordings are stored and that both are readable.")
@@ -258,7 +258,7 @@ class Preferences(gtk.Dialog):
                     # "Error: add to group"
                     error_dialog = gtk.MessageDialog(parent=dialog,
                         flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                        type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_YES_NO)
+                        type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
                     error_dialog.set_markup(_("<big><span weight=\"bold\">Device could not be added to group</big></span>"))
                     error_dialog.format_secondary_text(
                         _("Make sure that the device isn't already assigned to a different group and that all devices in the group are of the same type.")
