@@ -109,12 +109,20 @@ class SetupDevicePage(BasePage):
 
     def create_group_automatically(self, reply_handler, error_handler):
         def write_channels_handler(success):
-            recordings_dir = gnomedvb.get_default_recordings_dir()
-            name = "%s %s" % (DVB_TYPE_TO_DESC[self.__adapter_info["type"]], _("TV"))
-            self.__model.add_device_to_new_group(self.__adapter_info['adapter'],
-                            self.__adapter_info['frontend'], channels_file,
-                            recordings_dir, name,
-                            reply_handler=reply_handler, error_handler=error_handler)
+            if success:
+                recordings_dir = gnomedvb.get_default_recordings_dir()
+                name = "%s %s" % (DVB_TYPE_TO_DESC[self.__adapter_info["type"]], _("TV"))
+                self.__model.add_device_to_new_group(self.__adapter_info['adapter'],
+                                self.__adapter_info['frontend'], channels_file,
+                                recordings_dir, name,
+                                reply_handler=reply_handler, error_handler=error_handler)
+            else:
+                dialog = gtk.MessageDialog(parent=self,
+                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                dialog.set_markup ("<big><span weight=\"bold\">%s</span></big>" % _("An error occured while trying to setup the device."))
+                dialog.run()
+                dialog.destroy()
             
         self.__summary = ''
         channels_file = os.path.join(gnomedvb.get_config_dir(),
