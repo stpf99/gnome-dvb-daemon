@@ -56,6 +56,18 @@ namespace DVB.database.sqlite {
         duration INTEGER,
         event_id INTEGER,
         PRIMARY KEY(timer_id))""";
+
+        private static const string CREATE_GROUPS =
+        """CREATE TABLE channel_groups (
+        channel_group_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(255))""";
+        
+        private static const string CREATE_CHANNELS =
+        """CREATE TABLE channels (
+        sid INTEGER,
+        group_id INTEGER,
+        channel_group_id INTEGER,
+        PRIMARY KEY(sid, group_id, channel_group_id))""";
         
         private static const string SELECT_ALL_GROUPS =
         "SELECT * FROM device_groups";
@@ -95,6 +107,24 @@ namespace DVB.database.sqlite {
         
         private static const string CONTAINS_TIMER =
         "SELECT COUNT(*) FROM timers WHERE timer_id=?";
+
+        private static const string INSERT_CHANNEL_GROUP =
+        "INSERT INTO channel_groups (name) VALUES (?)";
+
+        private static const string DELETE_CHANNEL_GROUP =
+        "DELETE FROM channel_groups WHERE channel_group_id=?";
+
+        private static const string REMOVE_ALL_CHANNEL_GROUP =
+        "DELETE FROM channels WHERE channel_group_id=?";
+
+        private static const string SELECT_CHANNEL_GROUP =
+        "SELECT cg.* FROM channel_groups cg NATURAL JOIN channels c WHERE c.sid=? AND c.group_id=?";
+
+        private static const string ADD_CHANNEL_GROUP =
+        "INSERT INTO channels VALUES (?, ?, ?)";
+
+        private static const string REMOVE_CHANNEL_GROUP =
+        "DELETE FROM channels WHERE sid=? AND group_id=? AND channel_group_id=?";
         
         private Statement select_devices_statement;
         private Statement delete_group_statement;
@@ -108,6 +138,12 @@ namespace DVB.database.sqlite {
         private Statement insert_timer_statement;
         private Statement contains_group_statement;
         private Statement contains_timer_statement;
+        private Statement insert_channel_group_statement;
+        private Statement delete_channel_group_statement;
+        private Statement remove_all_channel_group_statement;
+        private Statement select_channel_group_statement;
+        private Statement add_channel_group_statement;
+        private Statement remove_channel_group_statement;
 
         public SqliteConfigTimersStore () {
             File config_dir = File.new_for_path (
@@ -155,6 +191,18 @@ namespace DVB.database.sqlite {
                 out this.contains_group_statement);
             this.db.prepare (CONTAINS_TIMER, -1,
                 out this.contains_timer_statement);
+            this.db.prepare (INSERT_CHANNEL_GROUP, -1,
+                out this.insert_channel_group_statement);
+            this.db.prepare (DELETE_CHANNEL_GROUP, -1,
+                out this.delete_channel_group_statement);
+            this.db.prepare (REMOVE_ALL_CHANNEL_GROUP, -1,
+                out this.remove_all_channel_group_statement);
+            this.db.prepare (SELECT_CHANNEL_GROUP, -1,
+                out this.select_channel_group_statement);
+            this.db.prepare (ADD_CHANNEL_GROUP, -1,
+                out this.add_channel_group_statement);
+            this.db.prepare (REMOVE_CHANNEL_GROUP, -1,
+                out this.remove_channel_group_statement);
         }
 
         public Gee.List<DeviceGroup> get_all_device_groups () throws SqlError {
@@ -456,6 +504,93 @@ namespace DVB.database.sqlite {
             }
             
             if (this.update_group_statement.step () != Sqlite.DONE) {
+                this.throw_last_error ();
+                return false;
+            }
+            return true;
+        }
+
+        public bool add_channel_group (string name) throws SqlError {
+            this.insert_channel_group_statement.reset ();
+            if (this.insert_channel_group_statement.bind_text (1, name) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            if (this.insert_channel_group_statement.step () != Sqlite.DONE) {
+                this.throw_last_error ();
+                return false;
+            }
+            return true;
+        }
+
+        public bool remove_channel_group (int group_id) throws SqlError {
+            this.delete_channel_group_statement.reset ();
+            this.remove_all_channel_group_statement.reset ();
+            if (this.delete_channel_group_statement.bind_int (1, group_id) != Sqlite.DONE
+                || this.remove_all_channel_group_statement.bind_int (1, group_id) != Sqlite.DONE)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            if (this.delete_channel_group_statement.step () != Sqlite.DONE
+                || this.remove_all_channel_group_statement.step () != Sqlite.DONE)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            return true;
+        }
+        
+        public bool get_group_for_channel (Channel channel,
+                out ChannelGroup group) throws SqlError
+        {
+            this.select_channel_group_statement.reset ();
+            if (this.select_channel_group_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+                || this.select_channel_group_statement.bind_int (2, (int)channel.GroupId) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            group = ChannelGroup ();
+            while (this.select_channel_group_statement.step () == Sqlite.ROW) {
+                group.id = this.select_channel_group_statement.column_int (0);
+                group.name = this.select_channel_group_statement.column_text (1);
+            }
+            return true;
+        }
+
+        public bool add_channel_to_group (Channel channel, int group_id)
+                 throws SqlError
+        {
+            // Check if channel is already in group
+            this.add_channel_group_statement.reset ();
+            if (this.add_channel_group_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+                || this.add_channel_group_statement.bind_int (2, (int)channel.GroupId) != Sqlite.OK
+                || this.add_channel_group_statement.bind_int (3, group_id) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            if (this.add_channel_group_statement.step () != Sqlite.DONE) {
+                this.throw_last_error ();
+                return false;
+            }
+            return true;
+        }
+
+        public bool remove_channel_from_group (Channel channel, int group_id)
+                 throws SqlError
+        {
+            this.remove_channel_group_statement.reset ();
+            if (this.remove_channel_group_statement.bind_int (1, (int)channel.Sid) != Sqlite.OK
+                || this.remove_channel_group_statement.bind_int (2, (int)channel.GroupId) != Sqlite.OK
+                || this.remove_channel_group_statement.bind_int (3, group_id) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            if (this.remove_channel_group_statement.step () != Sqlite.DONE) {
                 this.throw_last_error ();
                 return false;
             }

@@ -29,6 +29,12 @@ namespace DVB.database {
         public abstract bool add_device_to_group (Device dev, DeviceGroup devgroup) throws SqlError;
         public abstract bool remove_device_from_group (Device dev, DeviceGroup devgroup) throws SqlError;
         public abstract bool update_from_group (DeviceGroup devgroup) throws SqlError;
+
+        public abstract bool add_channel_group (string name) throws SqlError;
+        public abstract bool remove_channel_group (int group_id) throws SqlError;
+        public abstract bool get_group_for_channel (Channel channel, out ChannelGroup group) throws SqlError;
+        public abstract bool add_channel_to_group (Channel channel, int group_id) throws SqlError;
+        public abstract bool remove_channel_from_group (Channel channel, int group_id) throws SqlError;
         
     }
 
