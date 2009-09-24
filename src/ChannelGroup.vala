@@ -19,9 +19,14 @@
 
 namespace DVB {
 
-    public struct ChannelGroup {
-        public int id;
-        public string name;
+    public class ChannelGroup : GLib.Object {
+        public int id {get; set;}
+        public string name {get; set;}
+
+        public ChannelGroup (int id, string name) {
+            this.id = id;
+            this.name = name;
+        }
     }
 
 }
