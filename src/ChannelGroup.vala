@@ -22,7 +22,6 @@ namespace DVB {
     public struct ChannelGroup {
         public int id;
         public string name;
-        public int parent;
     }
 
 }
