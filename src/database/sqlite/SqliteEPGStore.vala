@@ -18,13 +18,15 @@
  */
 
 using GLib;
-using Sqlite;
 using Gee;
+using Sqlite;
 
-namespace DVB {
+namespace DVB.database.sqlite {
 
-    public class SqliteEPGStore : GLib.Object, EPGStore {
-    
+    public class SqliteEPGStore : SqliteDatabase, EPGStore {
+
+        private static const int VERSION = 1;
+
         private static const string CREATE_EVENTS_TABLE_STATEMENT = 
             """CREATE TABLE events (group_id INTEGER,
             sid INTEGER,
@@ -37,7 +39,7 @@ namespace DVB {
             description VARCHAR(255),
             extended_description TEXT,
             PRIMARY KEY (group_id, sid, event_id))""";
-        
+
         private static const string INSERT_EVENT_SQL = 
             "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
@@ -77,14 +79,17 @@ namespace DVB {
         private Statement has_event_statement;
         private Statement select_event_statement;
         private Statement delete_events_group;
-        
-        // Database must be the last parameter, because the statements
-        // MUST be finalized first before the database is closed
-        private Database db;
-            
-        construct {
-            this.db = get_db_handler ();
-            
+
+        public SqliteEPGStore () {
+            File cache_dir = File.new_for_path (
+            Environment.get_user_cache_dir ());
+            File our_cache = cache_dir.get_child ("gnome-dvb-daemon");
+            File database_file = our_cache.get_child ("eventsdb.sqlite3");
+
+            base (database_file, VERSION);
+        }
+
+        public override void on_open () {
             this.db.prepare (TO_JULIAN_SQL, -1,
                 out this.to_julian_statement);
             this.db.prepare (INSERT_EVENT_SQL, -1,
@@ -100,18 +105,25 @@ namespace DVB {
             this.db.prepare (DELETE_EVENTS_GROUP, -1,
                 out this.delete_events_group);
         }
-        
-        public bool add_or_update_event (Event event, uint channel_sid, uint group_id) {
-            if (this.db == null) {
-                critical ("SQLite error: No database connection");
-                return false;
-            }
-        
+
+        public override void create () throws SqlError {
+            this.exec_sql (CREATE_EVENTS_TABLE_STATEMENT);
+        }
+
+        public override void upgrade (int old_version, int new_version)
+                throws SqlError
+        {
+            
+        }
+
+        public bool add_or_update_event (Event event, uint channel_sid,
+                uint group_id) throws SqlError
+        {
             int free_ca_mode = (event.free_ca_mode) ? 1 : 0;
             
-            string name = escape (event.name);
-            string desc = escape (event.description);
-            string ext_desc = escape (event.extended_description);
+            string name = SqliteUtils.escape (event.name);
+            string desc = SqliteUtils.escape (event.description);
+            string ext_desc = SqliteUtils.escape (event.extended_description);
             double julian_start = this.to_julian (event.year, event.month,
                 event.day, event.hour, event.minute, event.second);
             
@@ -131,12 +143,12 @@ namespace DVB {
                         || this.update_event_statement.bind_int (8, (int)group_id) != Sqlite.OK
                         || this.update_event_statement.bind_int (9, (int)channel_sid) != Sqlite.OK
                         || this.update_event_statement.bind_int (10, (int)event.id) != Sqlite.OK) {
-                    this.print_last_error ();
+                    this.throw_last_error ();
                     return false;
                 }
                 
                 if (this.update_event_statement.step () != Sqlite.DONE) {
-                    this.print_last_error ();
+                    this.throw_last_error ();
                     return false;
                 }
             } else {
@@ -152,32 +164,34 @@ namespace DVB {
                         || this.insert_event_statement.bind_text (8, name) != Sqlite.OK
                         || this.insert_event_statement.bind_text (9, desc) != Sqlite.OK
                         || this.insert_event_statement.bind_text (10, ext_desc) != Sqlite.OK) {
-                    this.print_last_error ();
+                    this.throw_last_error ();
                     return false;
                 }
                 
                 if (this.insert_event_statement.step () != Sqlite.DONE) {
-                    this.print_last_error ();
+                    this.throw_last_error ();
                     return false;
                 }
             }
             return true;
         }
         
-        public Event? get_event (uint event_id, uint channel_sid, uint group_id) {
+        public Event? get_event (uint event_id, uint channel_sid,
+                uint group_id) throws SqlError
+        {
             this.select_event_statement.reset ();
             
             if (this.select_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
                     || this.select_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
                     || this.select_event_statement.bind_int (3, (int)event_id) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return null;
             }
             
             int rc = this.select_event_statement.step ();
             
             if (rc != Sqlite.ROW && rc != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return null;
             }
             
@@ -186,36 +200,34 @@ namespace DVB {
             else return this.create_event_from_statement (this.select_event_statement);
         }
         
-        public bool remove_event (uint event_id, uint channel_sid, uint group_id) {
-            if (this.db == null) {
-                critical ("SQLite error: No database connection");
-                return false;
-            }
-            
+        public bool remove_event (uint event_id, uint channel_sid,
+                uint group_id) throws SqlError
+        {
             this.delete_event_statement.reset ();
             
             if (this.delete_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
                     || this.delete_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
                     || this.delete_event_statement.bind_int (3, (int)event_id) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.delete_event_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             return true;
         }
         
-        public bool contains_event (Event event, uint channel_sid, uint group_id) {
+        public bool contains_event (Event event, uint channel_sid, uint group_id) throws SqlError
+        {
             this.has_event_statement.reset ();
             
             if (this.has_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
                     || this.has_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
                     || this.has_event_statement.bind_int (3, (int)event.id) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
@@ -227,7 +239,9 @@ namespace DVB {
             return (c > 0);
         }
         
-        public Gee.List<Event> get_events (uint channel_sid, uint group_id) {
+        public Gee.List<Event> get_events (uint channel_sid, uint group_id)
+                throws SqlError
+        {
             Gee.List<Event> events = new ArrayList<Event> ();
             
             if (this.db == null) return events;
@@ -237,7 +251,7 @@ namespace DVB {
             
             Statement statement;
             if (this.db.prepare (statement_str, -1, out statement) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return events;
             }
             
@@ -249,16 +263,16 @@ namespace DVB {
             return events;
         }
         
-        public bool remove_events_of_group (uint group_id) {
+        public bool remove_events_of_group (uint group_id) throws SqlError {
             this.delete_events_group.reset ();
             
             if (this.delete_events_group.bind_int (1, (int)group_id) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.delete_events_group.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
@@ -292,14 +306,9 @@ namespace DVB {
             
             return event;
         }
-        
-        private inline void print_last_error () {
-            critical ("SQLite error: %d, %s",
-                this.db.errcode (), this.db.errmsg ());
-        }
-        
+
         private double to_julian (uint year, uint month, uint day,
-                uint hour, uint minute, uint second) {
+                uint hour, uint minute, uint second) throws SqlError {
             
             this.to_julian_statement.reset ();
             string datetime_str = "%04u-%02u-%02u %02u:%02u:%02u".printf (
@@ -307,79 +316,18 @@ namespace DVB {
             
             if (this.to_julian_statement.bind_text (1, datetime_str)
                     != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return 0;       
             }
             
             if (this.to_julian_statement.step () != Sqlite.ROW) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return 0;
             }
             
             return this.to_julian_statement.column_double (0);
         }
-        
-                
-        /**
-         * Replace "'" with "''"
-         */
-        private static string escape (string? text) {
-            if (text == null) return "";
-        
-            Regex regex;
-            try {
-                regex = new Regex ("'",
-                    RegexCompileFlags.MULTILINE,
-                    0);
-            } catch (RegexError e) {
-                warning ("RegexError: %s", e.message);
-                return text;
-            }
-            
-            string escaped_str;
-            try {
-                escaped_str = regex.replace_literal (text, -1,
-                    0, "''", 0);
-            } catch (RegexError e) {
-                warning ("RegexError: %s", e.message);
-                return text;
-            }
-            
-            return escaped_str;
-        }
-        
-        private static Database? get_db_handler () {
-            File cache_dir = File.new_for_path (
-                Environment.get_user_cache_dir ());
-            File our_cache = cache_dir.get_child ("gnome-dvb-daemon");
-            File eventsdb = our_cache.get_child ("eventsdb.sqlite3");
-           
-            if (!our_cache.query_exists (null)) {
-                try {
-                    Utils.mkdirs (our_cache);
-                } catch (Error e) {
-                    critical ("Could not create directory: %s", e.message);
-                    return null;
-                }
-            }
-            
-            bool create_tables = (!eventsdb.query_exists (null));
-            Database db;
-            Database.open (eventsdb.get_path (), out db);
-            if (create_tables) {
-                string errormsg;
-                int val = db.exec (CREATE_EVENTS_TABLE_STATEMENT,
-                    null, out errormsg);
-            
-                if (val != Sqlite.OK) {
-                    critical ("SQLite error: %s", errormsg);
-                    return null;
-                }
-            }
-            
-            return db;
-        }
-    
+
     }
 
 }

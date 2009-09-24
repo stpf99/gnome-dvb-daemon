@@ -19,6 +19,7 @@
 
 using GLib;
 using Gee;
+using DVB.database;
 
 namespace DVB {
 
@@ -220,8 +221,13 @@ namespace DVB {
                 adapter, frontend, group_id);
 
             if (this.add (device)) {
-                Factory.get_config_store ().add_device_to_group (device,
-                    this);
+                try {
+                    Factory.get_config_store ().add_device_to_group (device,
+                        this);
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                    return false;
+                }
                 
                 this.device_added (adapter, frontend);
             
@@ -275,8 +281,13 @@ namespace DVB {
                     // device we want to unregister
                     if (this.epgscanner != null) this.epgscanner.stop ();
 
-                    Factory.get_config_store ().remove_device_from_group (
-                        dev, this);
+                    try {
+                        Factory.get_config_store ().remove_device_from_group (
+                            dev, this);
+                    } catch (SqlError e) {
+                        critical ("%s", e.message);
+                        return false;
+                    }
                     // Group has no devices anymore, delete it
                     if (this.size > 0 && this.epgscanner != null) {
                         // We still have a device, start EPG scanner again
@@ -305,8 +316,13 @@ namespace DVB {
          */
         public bool SetName (string name) {
             this.Name = name;
-            ConfigStore config = Factory.get_config_store();
-            config.update_from_group (this);
+            try {
+                ConfigStore config = Factory.get_config_store();
+                config.update_from_group (this);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+                return false;
+            }
             return true;
         }
         
@@ -394,8 +410,13 @@ namespace DVB {
          */
         public bool SetRecordingsDirectory (string location) {
             this.RecordingsDirectory = File.new_for_path (location);
-            ConfigStore config = Factory.get_config_store();
-            config.update_from_group (this);
+            try {
+                ConfigStore config = Factory.get_config_store();
+                config.update_from_group (this);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+                return false;
+            }
             return true;
         }
         

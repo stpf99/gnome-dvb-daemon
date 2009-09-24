@@ -21,10 +21,12 @@ using GLib;
 using Gee;
 using Sqlite;
 
-namespace DVB {
+namespace DVB.database.sqlite {
 
-    public class SqliteConfigTimersStore : GLib.Object, ConfigStore, TimersStore {
-    
+    public class SqliteConfigTimersStore : SqliteDatabase, ConfigStore, TimersStore {
+
+        private static const int VERSION = 1;
+
         private static const string CREATE_DEVICE_GROUPS =
         """CREATE TABLE device_groups (
         group_id INTEGER,
@@ -106,14 +108,29 @@ namespace DVB {
         private Statement insert_timer_statement;
         private Statement contains_group_statement;
         private Statement contains_timer_statement;
-        
-        // Database must be the last parameter, because the statements
-        // MUST be finalized first before the database is closed
-        private Database db;
-        
-        construct {
-            this.db = get_db_handler ();
-            
+
+        public SqliteConfigTimersStore () {
+            File config_dir = File.new_for_path (
+                Environment.get_user_config_dir ());
+            File config_cache = config_dir.get_child ("gnome-dvb-daemon");
+            File dbfile = config_cache.get_child ("configtimers.sqlite3");
+
+            base (dbfile, VERSION);
+        }
+
+        public override void create () throws SqlError {
+            this.exec_sql (CREATE_DEVICE_GROUPS);
+            this.exec_sql (CREATE_DEVICES);
+            this.exec_sql (CREATE_TIMERS);
+        }
+
+        public override void upgrade (int old_version, int new_version) 
+                throws SqlError
+        {
+
+        }
+
+        public override void on_open () {
             this.db.prepare (SELECT_DEVICES, -1,
                 out this.select_devices_statement);
             this.db.prepare (DELETE_GROUP, -1,
@@ -139,13 +156,13 @@ namespace DVB {
             this.db.prepare (CONTAINS_TIMER, -1,
                 out this.contains_timer_statement);
         }
-        
-        public Gee.List<DeviceGroup> get_all_device_groups () {
+
+        public Gee.List<DeviceGroup> get_all_device_groups () throws SqlError {
             Gee.List<DeviceGroup> groups = new ArrayList<DeviceGroup> ();
         
             Statement statement;
             if (this.db.prepare (SELECT_ALL_GROUPS, -1, out statement) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return groups;
             }
             
@@ -154,7 +171,7 @@ namespace DVB {
                 
                 this.select_devices_statement.reset ();
                 if (this.select_devices_statement.bind_int (1, group_id) != Sqlite.OK) {
-                    this.print_last_error ();
+                    this.throw_last_error ();
                     continue;
                 }
                 
@@ -223,7 +240,7 @@ namespace DVB {
             return groups;
         }
         
-        public bool add_device_group (DeviceGroup dev_group) {
+        public bool add_device_group (DeviceGroup dev_group) throws SqlError {
             if (this.contains_group (dev_group.Id)) return false;
         
             string channels = dev_group.Channels.channels_file.get_path ();
@@ -235,12 +252,12 @@ namespace DVB {
                 || this.insert_group_statement.bind_text (3, channels) != Sqlite.OK
                 || this.insert_group_statement.bind_text (4, recdir) != Sqlite.OK
                 || this.insert_group_statement.bind_text (5, dev_group.Name) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.insert_group_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
@@ -250,37 +267,37 @@ namespace DVB {
             return true;
         }
         
-        public bool remove_device_group (DeviceGroup devgroup) {
+        public bool remove_device_group (DeviceGroup devgroup) throws SqlError {
             this.delete_group_statement.reset ();
             if (this.delete_group_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.delete_group_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             this.delete_group_devices_statement.reset ();
             if (this.delete_group_devices_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.delete_group_devices_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             return true;
         }
         
-        public bool contains_group (uint group_id) {
+        public bool contains_group (uint group_id) throws SqlError {
             this.contains_group_statement.reset ();
             if (this.contains_group_statement.bind_int (1, (int)group_id) != Sqlite.OK)
             {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
@@ -292,45 +309,51 @@ namespace DVB {
             return (c > 0);
         }
         
-        public bool add_device_to_group (Device dev, DeviceGroup devgroup) {
+        public bool add_device_to_group (Device dev, DeviceGroup devgroup)
+               throws SqlError
+        {
             this.insert_device_statement.reset ();
             if (this.insert_device_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK
                 || this.insert_device_statement.bind_int (2, (int)dev.Adapter) != Sqlite.OK
                 || this.insert_device_statement.bind_int (3, (int)dev.Frontend) != Sqlite.OK)
             {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.insert_device_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             return true;
         }
         
-        public bool remove_device_from_group (Device dev, DeviceGroup devgroup) {
+        public bool remove_device_from_group (Device dev, DeviceGroup devgroup)
+                throws SqlError
+        {
             this.delete_device_statement.reset ();
             if (this.delete_device_statement.bind_int (1, (int)dev.Adapter) != Sqlite.OK
                 || this.delete_device_statement.bind_int (2, (int)dev.Frontend) != Sqlite.OK)
             {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.delete_device_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             return true;
         }
         
-        public Gee.List<Timer> get_all_timers_of_device_group (DeviceGroup dev) {
+        public Gee.List<Timer> get_all_timers_of_device_group (DeviceGroup dev)
+                throws SqlError
+        {
             Gee.List<Timer> timers = new ArrayList<Timer> ();
             
             this.select_timers_statement.reset ();
             if (this.select_timers_statement.bind_int (1, (int)dev.Id) != Sqlite.OK) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return timers;
             }
             
@@ -358,7 +381,9 @@ namespace DVB {
             return timers;
         }
         
-        public bool add_timer_to_device_group (Timer timer, DeviceGroup dev) {
+        public bool add_timer_to_device_group (Timer timer, DeviceGroup dev)
+                throws SqlError
+        {
             if (this.contains_timer (timer.Id)) return false;
             
             this.insert_timer_statement.reset ();
@@ -373,38 +398,40 @@ namespace DVB {
                 || this.insert_timer_statement.bind_int (9, (int)timer.Duration) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (10, (int)timer.EventID) != Sqlite.OK)
             {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.insert_timer_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             return true;
         }
         
-        public bool remove_timer_from_device_group (uint timer_id, DeviceGroup dev) {
+        public bool remove_timer_from_device_group (uint timer_id,
+                DeviceGroup dev) throws SqlError
+        {
             this.delete_timer_statement.reset ();
             
             if (this.delete_timer_statement.bind_int (1, (int)timer_id) != Sqlite.OK)
             {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.delete_timer_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             return true;
         }
         
-        public bool contains_timer (uint timer_id) {
+        public bool contains_timer (uint timer_id) throws SqlError {
             this.contains_timer_statement.reset ();
             if (this.contains_timer_statement.bind_int (1, (int)timer_id) != Sqlite.OK)
             {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
@@ -416,7 +443,7 @@ namespace DVB {
             return (c > 0);
         }
         
-        public bool update_from_group (DeviceGroup devgroup) {
+        public bool update_from_group (DeviceGroup devgroup) throws SqlError {
             this.update_group_statement.reset ();
             if (this.update_group_statement.bind_int (1, (int)devgroup.Type) != Sqlite.OK
                 || this.update_group_statement.bind_text (2, devgroup.Channels.channels_file.get_path ()) != Sqlite.OK
@@ -424,65 +451,16 @@ namespace DVB {
                 || this.update_group_statement.bind_text (4, devgroup.Name) != Sqlite.OK
                 || this.update_group_statement.bind_int (5, (int)devgroup.Id) != Sqlite.OK)
             {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             
             if (this.update_group_statement.step () != Sqlite.DONE) {
-                this.print_last_error ();
+                this.throw_last_error ();
                 return false;
             }
             return true;
         }
-        
-        private void print_last_error () {
-            critical ("SQLite error: %d, %s",
-                this.db.errcode (), this.db.errmsg ());
-        }
-        
-        private static Database? get_db_handler () {
-            File config_dir = File.new_for_path (
-                Environment.get_user_config_dir ());
-            File config_cache = config_dir.get_child ("gnome-dvb-daemon");
-            File dbfile = config_cache.get_child ("configtimers.sqlite3");
-           
-            if (!config_cache.query_exists (null)) {
-                try {
-                    Utils.mkdirs (config_cache);
-                } catch (Error e) {
-                    critical ("Could not create directory: %s", e.message);
-                    return null;
-                }
-            }
-            
-            bool create_tables = (!dbfile.query_exists (null));
-            Database db;
-            Database.open (dbfile.get_path (), out db);
-            if (create_tables) {
-                string errormsg;
-                int val = db.exec (CREATE_DEVICE_GROUPS,
-                    null, out errormsg);
-                if (val != Sqlite.OK) {
-                    critical ("SQLite error: %s", errormsg);
-                    return null;
-                }
-                val = db.exec (CREATE_DEVICES,
-                    null, out errormsg);
-                if (val != Sqlite.OK) {
-                    critical ("SQLite error: %s", errormsg);
-                    return null;
-                }
-                val = db.exec (CREATE_TIMERS,
-                    null, out errormsg);
-                if (val != Sqlite.OK) {
-                    critical ("SQLite error: %s", errormsg);
-                    return null;
-                }
-            }
-            
-            return db;
-        }
-    
     }
 
 }
