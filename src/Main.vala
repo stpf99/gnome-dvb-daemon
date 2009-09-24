@@ -187,27 +187,31 @@ namespace Main {
         
         uint32 max_id = 0;
         
-        weak DVB.TimersStore timers_store = DVB.Factory.get_timers_store ();
-        weak DVB.ConfigStore config_store = DVB.Factory.get_config_store ();
+        weak DVB.database.TimersStore timers_store = DVB.Factory.get_timers_store ();
+        weak DVB.database.ConfigStore config_store = DVB.Factory.get_config_store ();
         
         message ("Restoring device groups");
-        Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
-        foreach (DVB.DeviceGroup device_group in device_groups) {
-            
-            if (manager.add_device_group (device_group)) {
-                DVB.Recorder rec = device_group.recorder;
-            
-                // Restore timers
-                message ("Restoring timers of device group %u", device_group.Id);
-                Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
-                foreach (DVB.Timer t in timers) {
-                    if (t.Id > max_id) max_id = t.Id;
-                    uint32 rec_id;
-                    if (rec.add_timer (t, out rec_id))
-                        timers_store.remove_timer_from_device_group (t.Id, device_group);
+        try {
+            Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
+            foreach (DVB.DeviceGroup device_group in device_groups) {
+                
+                if (manager.add_device_group (device_group)) {
+                    DVB.Recorder rec = device_group.recorder;
+                
+                    // Restore timers
+                    message ("Restoring timers of device group %u", device_group.Id);
+                    Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
+                    foreach (DVB.Timer t in timers) {
+                        if (t.Id > max_id) max_id = t.Id;
+                        uint32 rec_id;
+                        if (rec.add_timer (t, out rec_id))
+                            timers_store.remove_timer_from_device_group (t.Id, device_group);
+                    }
                 }
+                
             }
-            
+        } catch (DVB.database.SqlError e) {
+            critical ("%s", e.message);
         }
         timers_store = null;
         config_store = null;

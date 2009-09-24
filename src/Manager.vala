@@ -19,6 +19,7 @@
 
 using GLib;
 using Gee;
+using DVB.database;
 
 namespace DVB {
     
@@ -297,7 +298,12 @@ namespace DVB {
             lock (this.devices) {
                 this.devices.set (group_id, devgroup);
             }
-            Factory.get_config_store ().add_device_group (devgroup);
+            try {
+                Factory.get_config_store ().add_device_group (devgroup);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+                return false;
+            }
             devgroup.device_removed += this.on_device_removed_from_group;
             
             // Register D-Bus object
@@ -436,13 +442,16 @@ namespace DVB {
                 if (success) {
                     devgroup.destroy ();
                     
-                    Factory.get_config_store ().remove_device_group (
-                        devgroup);
-                    Factory.get_epg_store ().remove_events_of_group (
-                        devgroup.Id
-                    );
-                    
-                    this.group_removed (group_id);
+                    try {
+                        Factory.get_config_store ().remove_device_group (
+                            devgroup);
+                        Factory.get_epg_store ().remove_events_of_group (
+                            devgroup.Id
+                        );
+                        this.group_removed (group_id);
+                    } catch (SqlError e) {
+                        critical ("%s", e.message);
+                    }
                 }
            }
         }

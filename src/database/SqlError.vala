@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2009 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -17,16 +17,36 @@
  * along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using GLib;
+namespace DVB.database {
 
-namespace DVB {
-
-    public interface TimersStore : GLib.Object {
-        
-        public abstract Gee.List<Timer> get_all_timers_of_device_group (DeviceGroup dev);
-        public abstract bool add_timer_to_device_group (Timer timer, DeviceGroup dev);
-        public abstract bool remove_timer_from_device_group (uint timer_id, DeviceGroup dev);
-        
+    /* from http://sqlite.org/c3ref/c_abort.html */
+    errordomain SqlError {
+        ERROR,
+        INTERNAL,
+        PERM,
+        ABORT,
+        BUSY,
+        LOCKED,
+        NOMEN,
+        READONLY,
+        INTERRUPT,
+        IOERR,
+        CORRUPT,
+        NOTFOUND,
+        FULL,
+        CANTOPEN,
+        PROTOCOL,
+        EMPTY,
+        SCHEMA,
+        TOOBIG,
+        CONSTRAINT,
+        MISMATCH,
+        MISUSE,
+        NOLFS,
+        AUTH,
+        FORMAT,
+        RANGE,
+        NOTADB
     }
 
 }

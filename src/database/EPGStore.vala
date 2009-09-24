@@ -19,16 +19,16 @@
 
 using GLib;
 
-namespace DVB {
+namespace DVB.database {
 
-    public interface ConfigStore : GLib.Object {
-        
-        public abstract Gee.List<DeviceGroup> get_all_device_groups ();
-        public abstract bool add_device_group (DeviceGroup dev_group);
-        public abstract bool remove_device_group (DeviceGroup devgroup);
-        public abstract bool add_device_to_group (Device dev, DeviceGroup devgroup);
-        public abstract bool remove_device_from_group (Device dev, DeviceGroup devgroup);
-        public abstract bool update_from_group (DeviceGroup devgroup);
+    public interface EPGStore : GLib.Object {
+     
+        public abstract bool add_or_update_event (Event event, uint channel_sid, uint group_id) throws SqlError;
+        public abstract Event? get_event (uint event_id, uint channel_sid, uint group_id) throws SqlError;
+        public abstract bool remove_event (uint event_id, uint channel_sid, uint group_id) throws SqlError;
+        public abstract bool contains_event (Event event, uint channel_sid, uint group_id) throws SqlError;
+        public abstract Gee.List<Event> get_events (uint channel_sid, uint group_id) throws SqlError;
+        public abstract bool remove_events_of_group (uint group_id) throws SqlError;
         
     }
 

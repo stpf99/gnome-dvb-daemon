@@ -18,41 +18,61 @@
  */
 
 using GLib;
+using DVB.database;
+using DVB.database.sqlite;
 
 namespace DVB {
 
     [Compact]
     public class Factory {
 
-        private static DVB.SqliteConfigTimersStore store;
+        private static SqliteConfigTimersStore store;
         private static StaticRecMutex store_mutex = StaticRecMutex ();
-        private static DVB.EPGStore epgstore;
+        private static SqliteEPGStore epgstore;
         private static StaticRecMutex epgstore_mutex = StaticRecMutex ();
         private static DVB.Settings settings;
         private static StaticRecMutex settings_mutex = StaticRecMutex ();
         
-        public static weak DVB.TimersStore get_timers_store () {
+        public static weak TimersStore get_timers_store () {
         	store_mutex.lock ();
         	if (store == null) {
-        		store = new DVB.SqliteConfigTimersStore ();
+        		store = new SqliteConfigTimersStore ();
+                try {
+                    store.open ();
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                    store = null;
+                }
         	}
         	store_mutex.unlock ();
         	return store;
         }
         
-        public static weak DVB.ConfigStore get_config_store () {
+        public static weak ConfigStore get_config_store () {
         	store_mutex.lock ();
         	if (store == null) {
-        		store = new DVB.SqliteConfigTimersStore ();
+        		store = new SqliteConfigTimersStore ();
+                try {
+                    store.open ();
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                    store = null;
+                }
         	}
         	store_mutex.unlock ();
         	return store;
         }
         
-        public static weak DVB.EPGStore get_epg_store () {
+        public static weak EPGStore get_epg_store () {
         	epgstore_mutex.lock ();
         	if (epgstore == null) {
-        		epgstore = new DVB.SqliteEPGStore ();
+        		epgstore = new SqliteEPGStore ();
+                try {
+                    epgstore.open ();
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                    epgstore = null;
+                }
         	}
         	epgstore_mutex.unlock ();
         	return epgstore;

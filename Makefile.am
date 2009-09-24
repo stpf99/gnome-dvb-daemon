@@ -19,6 +19,14 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/Satellite/SatelliteScanner.vala \
 	src/Terrestrial/TerrestrialChannel.vala \
 	src/Terrestrial/TerrestrialScanner.vala \
+	src/database/sqlite/SqliteDatabase.vala \
+	src/database/sqlite/SqliteUtils.vala \
+	src/database/sqlite/SqliteConfigTimersStore.vala \
+	src/database/sqlite/SqliteEPGStore.vala \
+	src/database/SqlError.vala \
+	src/database/ConfigStore.vala \
+	src/database/EPGStore.vala \
+	src/database/TimersStore.vala \
 	src/ChangeType.vala \
 	src/Channel.vala \
 	src/ChannelFactory.vala \
@@ -26,12 +34,10 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/ChannelList.vala \
 	src/ChannelListReader.vala \
 	src/ChannelListWriter.vala \
-	src/ConfigStore.vala \
 	src/Constants.vala \
 	src/Device.vala \
 	src/DeviceGroup.vala \
 	src/EPGScanner.vala \
-	src/EPGStore.vala \
 	src/Event.vala \
 	src/Factory.vala \
 	src/IDBusChannelList.vala \
@@ -51,10 +57,7 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/ScannedItem.vala \
 	src/Schedule.vala \
 	src/Settings.vala \
-	src/SqliteConfigTimersStore.vala \
-	src/SqliteEPGStore.vala \
 	src/Timer.vala \
-	src/TimersStore.vala \
 	src/Utils.vala \
 	src/rtsp/MediaFactory.vala \
 	src/rtsp/MediaMapping.vala \

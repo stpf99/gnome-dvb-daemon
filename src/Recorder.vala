@@ -19,6 +19,7 @@
 
 using GLib;
 using Gee;
+using DVB.database;
 
 namespace DVB {
 
@@ -194,7 +195,12 @@ namespace DVB {
         public bool AddTimerForEPGEvent (uint event_id, uint channel_sid,
                 out uint32 timer_id) {
             weak EPGStore epgstore = Factory.get_epg_store ();
-            Event? event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
+            Event? event = null;
+            try {
+                event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+            }
             if (event == null) {
                 debug ("Could not find event with id %u", event_id);
                 timer_id = 0;
@@ -430,7 +436,13 @@ namespace DVB {
         
         public OverlapType HasTimerForEvent (uint event_id, uint channel_sid) {
             weak EPGStore epgstore = Factory.get_epg_store ();
-            Event? event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
+            Event? event = null;
+            try {
+                event = epgstore.get_event (event_id, channel_sid,
+                    this.DeviceGroup.Id);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+            }
             if (event == null) {
                 debug ("Could not find event with id %u", event_id);
                 return OverlapType.UNKNOWN;
