@@ -134,7 +134,12 @@ namespace DVB {
             debug ("Starting EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
 
             this.loop = new MainLoop (this.context, false);
-            this.worker_thread = Thread.create (this.worker, true);
+            try {
+                this.worker_thread = Thread.create (this.worker, true);
+            } catch (Error e) {
+                critical ("Could not create thread: %s", e.message);
+                return false;
+            }
             
             this.stop_counter -= 1;
             if (this.stop_counter > 0) return false;

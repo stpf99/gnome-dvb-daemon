@@ -148,7 +148,12 @@ namespace DVB {
             this.running = true;
         
             this.loop = new MainLoop (this.context, false);
-            this.worker_thread = Thread.create (this.worker, true);
+            try {
+                this.worker_thread = Thread.create (this.worker, true);
+            } catch (Error e) {
+                critical ("Could not create thread: %s", e.message);
+                return;
+            }
 
             this.channels = new ChannelList ();
             // pids: 0=pat, 16=nit, 17=sdt, 18=eit
