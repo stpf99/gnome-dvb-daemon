@@ -27,6 +27,12 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/database/ConfigStore.vala \
 	src/database/EPGStore.vala \
 	src/database/TimersStore.vala \
+	src/dbus/IDBusChannelList.vala \
+	src/dbus/IDBusDeviceGroup.vala \
+	src/dbus/IDBusManager.vala \
+	src/dbus/IDBusRecorder.vala \
+	src/dbus/IDBusRecordingsStore.vala \
+	src/dbus/IDBusSchedule.vala \
 	src/ChangeType.vala \
 	src/Channel.vala \
 	src/ChannelFactory.vala \
@@ -40,12 +46,6 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/EPGScanner.vala \
 	src/Event.vala \
 	src/Factory.vala \
-	src/IDBusChannelList.vala \
-	src/IDBusDeviceGroup.vala \
-	src/IDBusManager.vala \
-	src/IDBusRecorder.vala \
-	src/IDBusRecordingsStore.vala \
-	src/IDBusSchedule.vala \
 	src/Main.vala \
 	src/Manager.vala \
 	src/MpegTsEnums.vala \
