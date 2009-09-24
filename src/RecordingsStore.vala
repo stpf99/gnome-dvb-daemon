@@ -103,7 +103,7 @@ namespace DVB {
         /**
          * @returns: A list of ids for all recordings
          */
-        public uint32[] GetRecordings () {
+        public uint32[] GetRecordings () throws DBus.Error {
             uint32[] ids;
             lock (this.recordings) {
                 ids = new uint32[this.recordings.size];
@@ -123,7 +123,7 @@ namespace DVB {
          * @location: The location of the recording on the filesystem
          * @returns: TRUE on success
          */
-        public bool GetLocation (uint32 rec_id, out string location) {
+        public bool GetLocation (uint32 rec_id, out string location) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
@@ -141,7 +141,7 @@ namespace DVB {
          * a TV show)
          * @returns: TRUE on success
          */
-        public bool GetName (uint32 rec_id, out string name) {
+        public bool GetName (uint32 rec_id, out string name) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
@@ -162,7 +162,7 @@ namespace DVB {
          * (e.g. the description from EPG)
          * @returns: TRUE on success
          */
-        public bool GetDescription (uint32 rec_id, out string description) {
+        public bool GetDescription (uint32 rec_id, out string description) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
@@ -182,7 +182,7 @@ namespace DVB {
          * @start_time: The starting time of the recording
          * @returns: TRUE on success
          */
-        public bool GetStartTime (uint32 rec_id, out uint[] start_time) {
+        public bool GetStartTime (uint32 rec_id, out uint[] start_time) throws DBus.Error {
             bool ret;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
@@ -202,7 +202,7 @@ namespace DVB {
          * @timestamp: Start time as UNIX timestamp
          * @returns: TRUE on success
          */
-        public bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) {
+        public bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
@@ -219,7 +219,7 @@ namespace DVB {
          * @length: The length of the recording in seconds
          * @returns: TRUE on success
          */
-        public bool GetLength (uint32 rec_id, out int64 length) {
+        public bool GetLength (uint32 rec_id, out int64 length) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
@@ -238,7 +238,7 @@ namespace DVB {
          * Delete the recording. This deletes all files in the directory
          * created by the Recorder
          */
-        public bool Delete (uint32 rec_id) {
+        public bool Delete (uint32 rec_id) throws DBus.Error {
             bool val = false;
             lock (this.recordings) {
                 if (!this.recordings.contains (rec_id)) val = false;
@@ -266,7 +266,7 @@ namespace DVB {
          * rec_id doesn't exist
          * @returns: TRUE on success
          */
-        public bool GetChannelName (uint32 rec_id, out string name) {
+        public bool GetChannelName (uint32 rec_id, out string name) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
@@ -279,7 +279,7 @@ namespace DVB {
             return ret;
         }
         
-        public bool GetAllInformations (uint32 rec_id, out RecordingInfo info) {
+        public bool GetAllInformations (uint32 rec_id, out RecordingInfo info) throws DBus.Error {
             bool ret = false;
             info = RecordingInfo ();
             lock (this.recordings) {

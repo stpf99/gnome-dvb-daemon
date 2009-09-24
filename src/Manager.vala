@@ -93,7 +93,7 @@ namespace DVB {
          * Get the object path of the channel scanner for this device.
          */
         public bool GetScannerForDevice (uint adapter, uint frontend,
-                out DBus.ObjectPath opath, out string dbusiface) {
+                out DBus.ObjectPath opath, out string dbusiface) throws DBus.Error {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             opath = new DBus.ObjectPath (path);
             
@@ -184,7 +184,9 @@ namespace DVB {
          * @path: Device group's DBus path
          * @returns: TRUE on success
          */
-        public bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath) {
+        public bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath)
+                throws DBus.Error
+        {
             bool ret;
             lock (this.devices) {
                 if (this.devices.contains (group_id)) {
@@ -201,7 +203,7 @@ namespace DVB {
         /**
          * @returns: Device groups' DBus path
          */
-        public DBus.ObjectPath[] GetRegisteredDeviceGroups () {
+        public DBus.ObjectPath[] GetRegisteredDeviceGroups () throws DBus.Error {
             DBus.ObjectPath[] devs = new DBus.ObjectPath[this.devices.size];
             int i = 0;
             lock (this.devices) {
@@ -228,8 +230,9 @@ namespace DVB {
          * of the reference device).
          */
         public bool AddDeviceToNewGroup (uint adapter, uint frontend,
-                string channels_conf, string recordings_dir, string name) {
-            
+                string channels_conf, string recordings_dir, string name)
+                throws DBus.Error
+        {   
             Device device = this.create_device (adapter, frontend, channels_conf,
                 recordings_dir, device_group_counter + 1);
             
@@ -260,7 +263,8 @@ namespace DVB {
          * is returned.
          */
         public bool GetNameOfRegisteredDevice (uint adapter, uint frontend,
-                out string name) {
+                out string name) throws DBus.Error
+        {
             Device? dev = this.get_registered_device (adapter, frontend);
             
             if (dev == null) {
@@ -275,7 +279,7 @@ namespace DVB {
         /**
          * @returns: the numner of configured device groups
          */
-        public int GetDeviceGroupSize () {
+        public int GetDeviceGroupSize () throws DBus.Error {
             return this.devices.size;
         }
         

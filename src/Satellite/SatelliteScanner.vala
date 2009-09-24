@@ -54,7 +54,7 @@ namespace DVB {
         }
      
         public void AddScanningData (uint frequency,
-                string polarization, uint symbol_rate) {
+                string polarization, uint symbol_rate) throws DBus.Error {
             this.add_scanning_data (frequency, polarization, symbol_rate);
         }
                 
@@ -68,7 +68,7 @@ namespace DVB {
             base.add_structure_to_scan (tuning_params);
         }
         
-        public bool AddScanningDataFromFile (string path) {
+        public bool AddScanningDataFromFile (string path) throws DBus.Error {
             File datafile = File.new_for_path(path);
             
             debug ("Reading scanning data from %s", path);

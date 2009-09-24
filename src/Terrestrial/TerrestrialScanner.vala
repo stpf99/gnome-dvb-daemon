@@ -63,7 +63,9 @@ namespace DVB {
           */
         public void AddScanningData (uint frequency, uint hierarchy,
                 uint bandwidth, string transmode, string code_rate_hp,
-                string code_rate_lp, string constellation, uint guard) {
+                string code_rate_lp, string constellation, uint guard)
+                throws DBus.Error
+        {
                 
                 this.add_scanning_data (frequency, hierarchy,
                     bandwidth, transmode, code_rate_hp,
@@ -87,7 +89,7 @@ namespace DVB {
             base.add_structure_to_scan (tuning_params);
         }
         
-        public bool AddScanningDataFromFile (string path) {
+        public bool AddScanningDataFromFile (string path) throws DBus.Error {
             File datafile = File.new_for_path(path);
             
             debug ("Reading scanning data from %s", path);

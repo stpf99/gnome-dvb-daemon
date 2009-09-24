@@ -82,7 +82,7 @@ namespace DVB {
         public bool AddTimer (uint channel,
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration,
-                out uint32 timer_id) {
+                out uint32 timer_id) throws DBus.Error {
             
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
@@ -106,7 +106,7 @@ namespace DVB {
         public bool AddTimerWithMargin (uint channel,
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration,
-                out uint32 timer_id) {
+                out uint32 timer_id) throws DBus.Error {
             
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
@@ -193,7 +193,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool AddTimerForEPGEvent (uint event_id, uint channel_sid,
-                out uint32 timer_id) {
+                out uint32 timer_id) throws DBus.Error {
             weak EPGStore epgstore = Factory.get_epg_store ();
             Event? event = null;
             try {
@@ -221,7 +221,7 @@ namespace DVB {
          * Delete timer. If the id belongs to the currently
          * active timer recording is aborted.
          */
-        public bool DeleteTimer (uint32 timer_id) {
+        public bool DeleteTimer (uint32 timer_id) throws DBus.Error {
             bool val;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
@@ -246,7 +246,7 @@ namespace DVB {
          * dvb_recorder_GetTimers
          * @returns: A list of all timer ids
          */
-        public uint32[] GetTimers () {
+        public uint32[] GetTimers () throws DBus.Error {
             uint32[] timer_arr;
             lock (this.timers) {
                 timer_arr = new uint32[this.timers.size];
@@ -267,7 +267,9 @@ namespace DVB {
          * 2 = day, 3 = hour and 4 = minute.
          * @returns: TRUE on success
          */
-        public bool GetStartTime (uint32 timer_id, out uint32[] start_time) {
+        public bool GetStartTime (uint32 timer_id, out uint32[] start_time)
+                throws DBus.Error
+        {
             bool ret;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
@@ -286,7 +288,9 @@ namespace DVB {
          * @end_time: Same as dvb_recorder_GetStartTime()
          * @returns: TRUE on success
          */
-        public bool GetEndTime (uint32 timer_id, out uint[] end_time) {
+        public bool GetEndTime (uint32 timer_id, out uint[] end_time)
+                throws DBus.Error
+        {
             bool ret;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
@@ -306,7 +310,9 @@ namespace DVB {
          * the given id
          * @returns: TRUE on success
          */
-        public bool GetDuration (uint32 timer_id, out uint duration) {
+        public bool GetDuration (uint32 timer_id, out uint duration)
+            throws DBus.Error
+        {
             bool ret = false;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
@@ -323,7 +329,9 @@ namespace DVB {
          * empty string when a timer with the given id doesn't exist
          * @returns: TRUE on success
          */
-        public bool GetChannelName (uint32 timer_id, out string name) {
+        public bool GetChannelName (uint32 timer_id, out string name)
+            throws DBus.Error
+        {
             bool ret;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
@@ -345,7 +353,9 @@ namespace DVB {
          * about the title of the show
          * @returns: TRUE on success
          */
-        public bool GetTitle (uint32 timer_id, out string title) {
+        public bool GetTitle (uint32 timer_id, out string title)
+            throws DBus.Error
+        {
             bool ret = false;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
@@ -361,7 +371,9 @@ namespace DVB {
             return ret;
         }
 
-        public bool GetAllInformations (uint32 timer_id, out TimerInfo info) {
+        public bool GetAllInformations (uint32 timer_id, out TimerInfo info)
+                throws DBus.Error
+        {
             info = TimerInfo ();
             bool ret = false;
             lock (this.timers) {
@@ -390,7 +402,7 @@ namespace DVB {
         /**
          * @returns: The currently active timers
          */
-        public uint32[] GetActiveTimers () {
+        public uint32[] GetActiveTimers () throws DBus.Error {
             uint32[] val = new uint32[this.active_timers.size];
             
             int i=0;
@@ -406,7 +418,7 @@ namespace DVB {
          * @timer_id: Timer's id
          * @returns: TRUE if timer is currently active
          */
-        public bool IsTimerActive (uint32 timer_id) {
+        public bool IsTimerActive (uint32 timer_id) throws DBus.Error {
             return this.active_timers.contains (timer_id);
         }
         
@@ -415,7 +427,9 @@ namespace DVB {
          * period of time
          */
         public bool HasTimer (uint start_year, uint start_month, uint start_day,
-                uint start_hour, uint start_minute, uint duration) {
+                uint start_hour, uint start_minute, uint duration)
+                throws DBus.Error
+        {
             bool val = false;
             lock (this.timers) {
                 foreach (uint32 key in this.timers.get_keys()) {
@@ -434,7 +448,9 @@ namespace DVB {
             return val;
         }
         
-        public OverlapType HasTimerForEvent (uint event_id, uint channel_sid) {
+        public OverlapType HasTimerForEvent (uint event_id, uint channel_sid)
+                throws DBus.Error
+        {
             weak EPGStore epgstore = Factory.get_epg_store ();
             Event? event = null;
             try {

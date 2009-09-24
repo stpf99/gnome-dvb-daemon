@@ -202,7 +202,7 @@ namespace DVB {
          * The new device will inherit all settings from the group's
          * reference device.
          */
-        public bool AddDevice (uint adapter, uint frontend) {
+        public bool AddDevice (uint adapter, uint frontend)throws DBus.Error {
             // When the device is already registered we
             // might see some errors if the device is
             // currently in use
@@ -243,7 +243,7 @@ namespace DVB {
          * 
          * Returns the object path to the device's recorder.
          */
-        public DBus.ObjectPath GetRecorder () {
+        public DBus.ObjectPath GetRecorder () throws DBus.Error {
             return new DBus.ObjectPath (
                 Constants.DBUS_RECORDER_PATH.printf (this.Id));
         }   
@@ -273,7 +273,7 @@ namespace DVB {
          * Removes the device from the group. If the group contains
          * no devices after the removal it's removed as well.
          */
-        public bool RemoveDevice (uint adapter, uint frontend) {
+        public bool RemoveDevice (uint adapter, uint frontend) throws DBus.Error {
             Device dev = new Device (adapter, frontend, false);
             
             if (this.contains (dev)) {
@@ -307,7 +307,7 @@ namespace DVB {
         /**
          * @returns: Name of the device group
          */
-        public string GetName () {
+        public string GetName () throws DBus.Error {
             return this.Name;
         }
         
@@ -315,7 +315,7 @@ namespace DVB {
          * @name: Name of the group
          * @returns: TRUE on success
          */
-        public bool SetName (string name) {
+        public bool SetName (string name) throws DBus.Error {
             this.Name = name;
             try {
                 ConfigStore config = Factory.get_config_store();
@@ -330,7 +330,7 @@ namespace DVB {
         /**
          * @returns: Object path to the ChannelList service for this device
          */
-        public DBus.ObjectPath GetChannelList () {
+        public DBus.ObjectPath GetChannelList () throws DBus.Error {
             return new DBus.ObjectPath (
                 Constants.DBUS_CHANNEL_LIST_PATH.printf (this.Id));
         }
@@ -356,7 +356,7 @@ namespace DVB {
          * @returns: List of paths to the devices that are part of
          * the group (e.g. /dev/dvb/adapter0/frontend0)
          */
-        public string[] GetMembers () {
+        public string[] GetMembers () throws DBus.Error {
             string[] groupdevs = new string[this.size];
             
             int i=0;
@@ -374,7 +374,7 @@ namespace DVB {
          * @channel_sid: ID of the channel
          * @returns: Object path to Schedule service
          */
-        public DBus.ObjectPath GetSchedule (uint channel_sid) {
+        public DBus.ObjectPath GetSchedule (uint channel_sid) throws DBus.Error {
             if (this.Channels.contains (channel_sid)) {
                 string path = Constants.DBUS_SCHEDULE_PATH.printf (this.Id, channel_sid);
                 
@@ -401,7 +401,7 @@ namespace DVB {
         /**
          * @returns: Location of the recordings directory
          */
-        public string GetRecordingsDirectory () {
+        public string GetRecordingsDirectory () throws DBus.Error {
             return this.RecordingsDirectory.get_path ();
         }
         
@@ -409,7 +409,7 @@ namespace DVB {
          * @location: Location of the recordings directory
          * @returns: TRUE on success
          */
-        public bool SetRecordingsDirectory (string location) {
+        public bool SetRecordingsDirectory (string location) throws DBus.Error {
             this.RecordingsDirectory = File.new_for_path (location);
             try {
                 ConfigStore config = Factory.get_config_store();

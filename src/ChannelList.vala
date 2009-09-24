@@ -95,7 +95,7 @@ namespace DVB {
         /**
          * @returns: List of channel IDs aka SIDs
          */
-        public uint[] GetChannels () {
+        public uint[] GetChannels () throws DBus.Error {
             uint[] ids = new uint[this.size];
             int i=0;
             lock (this.channels) {
@@ -111,7 +111,7 @@ namespace DVB {
         /**
          * @returns: List of channel IDs aka SIDs of radio channels
          */
-        public uint[] GetRadioChannels () {
+        public uint[] GetRadioChannels () throws DBus.Error {
             SList<uint> radio_channels = new SList<uint> ();
             lock (this.channels) {
                 foreach (uint id in this.channels.get_keys ()) {
@@ -133,7 +133,7 @@ namespace DVB {
         /**
          * @returns: List of channel IDs aka SIDs of TV channels
          */
-        public uint[] GetTVChannels () {
+        public uint[] GetTVChannels () throws DBus.Error {
             SList<uint> video_channels = new SList<uint> ();
             lock (this.channels) {
                 foreach (uint id in this.channels.get_keys ()) {
@@ -158,7 +158,9 @@ namespace DVB {
          * otherwise an empty string
          * @returns: TRUE on success
          */
-        public bool GetChannelName (uint channel_id, out string channel_name) {
+        public bool GetChannelName (uint channel_id, out string channel_name)
+                throws DBus.Error
+        {
             bool ret = false;
             string val = "";
             
@@ -183,7 +185,8 @@ namespace DVB {
          * string
          * @returns: TRUE on success
          */
-        public bool GetChannelNetwork (uint channel_id, out string network) {
+        public bool GetChannelNetwork (uint channel_id, out string network)
+                throws DBus.Error {
             string val = "";
             bool ret = false;
             lock (this.channels) {
@@ -204,7 +207,9 @@ namespace DVB {
          * @radio: Whether the channel is a radio channel or not
          * @returns: TRUE on success
          */
-        public bool IsRadioChannel (uint channel_id, out bool radio) {
+        public bool IsRadioChannel (uint channel_id, out bool radio)
+                throws DBus.Error
+        {
             bool val = false;
             bool ret = false;
             lock (this.channels) {
@@ -222,7 +227,9 @@ namespace DVB {
          * @url: URL to watch the channel
          * @returns: TRUE on success
          */
-        public bool GetChannelURL (uint channel_id, out string url) {
+        public bool GetChannelURL (uint channel_id, out string url)
+                throws DBus.Error
+        {
             Channel channel = null;
 
             lock (this.channels) {
@@ -239,7 +246,7 @@ namespace DVB {
             return false;
         }
         
-        public ChannelInfo[] GetChannelInfos () {
+        public ChannelInfo[] GetChannelInfos () throws DBus.Error {
             ChannelInfo[] channels = new ChannelInfo[this.channels.size];
             int i = 0;
             lock (this.channels) {
@@ -257,7 +264,7 @@ namespace DVB {
         /**
 		 * @returns: ID and name of each channel group
          */
-		public ChannelGroupInfo[] GetChannelGroups () {
+		public ChannelGroupInfo[] GetChannelGroups () throws DBus.Error {
             ConfigStore config = Factory.get_config_store ();
             Gee.List<ChannelGroup> groups;
             try {
@@ -281,7 +288,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
 		public bool GetChannelsOfGroup (int channel_group_id,
-                out uint[] channel_ids)
+                out uint[] channel_ids) throws DBus.Error
         {
             ConfigStore config = Factory.get_config_store ();
             Gee.List<uint> channels;
@@ -305,7 +312,7 @@ namespace DVB {
          * @name: Name of the new group
          * @returns: TRUE on success
          */
-		public bool AddChannelGroup (string name) {
+		public bool AddChannelGroup (string name) throws DBus.Error {
             ConfigStore config = Factory.get_config_store ();
             try {
                 config.add_channel_group (name);
@@ -320,7 +327,7 @@ namespace DVB {
 	     * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
-		public bool RemoveChannelGroup (int channel_group_id) {
+		public bool RemoveChannelGroup (int channel_group_id) throws DBus.Error {
             ConfigStore config = Factory.get_config_store ();
             try {
                 config.remove_channel_group (channel_group_id);
@@ -336,7 +343,9 @@ namespace DVB {
 	     * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
-		public bool AddChannelToGroup (uint channel_id, int channel_group_id) {
+		public bool AddChannelToGroup (uint channel_id, int channel_group_id)
+                throws DBus.Error
+        {
             ConfigStore config = Factory.get_config_store ();
             Channel? chan = this.get_channel (channel_id);
             if (chan == null)
@@ -357,7 +366,7 @@ namespace DVB {
          * @returns: TRUE on success
          */       
 		public bool RemoveChannelFromGroup (uint channel_id,
-                int channel_group_id)
+                int channel_group_id) throws DBus.Error
         {
             ConfigStore config = Factory.get_config_store ();
             Channel? chan = this.get_channel (channel_id);

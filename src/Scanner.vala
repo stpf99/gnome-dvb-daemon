@@ -143,7 +143,7 @@ namespace DVB {
         /**
          * Start the scanner
          */
-        public void Run () {
+        public void Run () throws DBus.Error {
             if (this.running) return;
             this.running = true;
         
@@ -175,7 +175,7 @@ namespace DVB {
         /**
          * Abort scanning and cleanup
          */
-        public void Destroy () {
+        public void Destroy () throws DBus.Error {
             this.remove_check_for_lock_timeout ();
             this.remove_wait_for_tables_timeout ();
             this.clear_and_reset_all ();
@@ -196,7 +196,7 @@ namespace DVB {
          *
          * Write all the channels stored in this.Channels to file
          */
-        public bool WriteAllChannelsToFile (string path) {
+        public bool WriteAllChannelsToFile (string path) throws DBus.Error {
             bool success = true;
             var writer = new ChannelListWriter (File.new_for_path (path));
             foreach (DVB.Channel c in this.channels) {
@@ -224,7 +224,9 @@ namespace DVB {
          *
          * Write the channels with the given SIDs to file @path
          */
-        public bool WriteChannelsToFile (uint[] channel_sids, string path) {
+        public bool WriteChannelsToFile (uint[] channel_sids, string path)
+                throws DBus.Error
+        {
             bool success = true;
             var writer = new ChannelListWriter (File.new_for_path (path));
             foreach (uint sid in channel_sids) {
