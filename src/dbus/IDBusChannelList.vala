@@ -24,11 +24,6 @@ namespace DVB {
 		public string name;
 	}
 
-	public struct ChannelGroupInfo {
-		public int id;
-		public string name;
-	}
-	
 	[DBus (name = "org.gnome.DVB.ChannelList")]
 	public interface IDBusChannelList : GLib.Object {
 	
@@ -86,28 +81,11 @@ namespace DVB {
         public abstract ChannelInfo[] GetChannelInfos () throws DBus.Error;
 
 		/**
-		 * @returns: ID and name of each channel group
-         */
-		public abstract ChannelGroupInfo[] GetChannelGroups () throws DBus.Error;
-
-		/**
          * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
 		public abstract bool GetChannelsOfGroup (int channel_group_id,
 			out uint[] channel_ids) throws DBus.Error;
-
-        /**
-         * @name: Name of the new group
-         * @returns: TRUE on success
-         */
-		public abstract bool AddChannelGroup (string name) throws DBus.Error;
-
-		/**
-	     * @channel_group_id: ID of the ChannelGroup
-         * @returns: TRUE on success
-         */
-		public abstract bool RemoveChannelGroup (int channel_group_id) throws DBus.Error;
 
 		/**
          * @channel_id: ID of channel

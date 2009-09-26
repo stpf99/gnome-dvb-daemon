@@ -261,28 +261,6 @@ namespace DVB {
             return channels;
         }
 
-        /**
-		 * @returns: ID and name of each channel group
-         */
-		public ChannelGroupInfo[] GetChannelGroups () throws DBus.Error {
-            ConfigStore config = Factory.get_config_store ();
-            Gee.List<ChannelGroup> groups;
-            try {
-                groups = config.get_channel_groups ();
-            } catch (SqlError e) {
-                critical ("%s", e.message);
-                return new ChannelGroupInfo[] {};
-            }
-            ChannelGroupInfo[] arr = new ChannelGroupInfo[groups.size];
-            for (int i=0; i<arr.length; i++) {
-                ChannelGroup cg = groups.get (i);
-                arr[i] = ChannelGroupInfo ();
-                arr[i].id = cg.id;
-                arr[i].name = cg.name;
-            }
-            return arr;
-        }
-
 		/**
          * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
@@ -305,36 +283,6 @@ namespace DVB {
                 channel_ids[i] = channels.get (i);
             }
 
-            return true;
-        }
-
-        /**
-         * @name: Name of the new group
-         * @returns: TRUE on success
-         */
-		public bool AddChannelGroup (string name) throws DBus.Error {
-            ConfigStore config = Factory.get_config_store ();
-            try {
-                config.add_channel_group (name);
-            } catch (SqlError e) {
-                critical ("%s", e.message);
-                return false;
-            }
-            return true;
-        }
-
-		/**
-	     * @channel_group_id: ID of the ChannelGroup
-         * @returns: TRUE on success
-         */
-		public bool RemoveChannelGroup (int channel_group_id) throws DBus.Error {
-            ConfigStore config = Factory.get_config_store ();
-            try {
-                config.remove_channel_group (channel_group_id);
-            } catch (SqlError e) {
-                critical ("%s", e.message);
-                return false;
-            }
             return true;
         }
 
