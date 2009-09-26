@@ -41,17 +41,19 @@ namespace DVB.database.sqlite {
             if (this.db != null) return;
 
             File dbfile = this.database_file;
+            bool create_tables = (!dbfile.query_exists (null));
 
             if (Database.open (dbfile.get_path (), out this.db) != Sqlite.OK) {
                 this.throw_last_error ();
             }
 
             int version = this.get_version ();
-
-            bool create_tables = (!dbfile.query_exists (null));
+            
             if (create_tables) {
+                debug ("Creating tables");
                 this.create ();
             } else if (this.new_version > version) {
+                debug ("Updating tables");
                 this.upgrade (version, this.new_version);
             }
             this.set_version (this.new_version);
