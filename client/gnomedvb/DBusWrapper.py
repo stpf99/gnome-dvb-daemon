@@ -148,6 +148,15 @@ class DVBManagerClient(gobject.GObject):
         
     def get_device_group_size(self):
         return self.manager.GetDeviceGroupSize()
+        
+    def get_channel_groups(self, **kwargs):
+        return self.manager.GetChannelGroups(**kwargs)
+        
+    def add_channel_group(self, name, **kwargs):
+        return self.manager.AddChannelGroup(name, **kwargs)
+        
+    def remove_channel_group(self, group_id, **kwargs):
+        return self.manager.RemoveChannelGroup(group_id, **kwargs)
     
     def on_group_added(self, group_id):
         self.emit("group-added", group_id)
@@ -435,6 +444,15 @@ class DVBChannelListClient:
         
     def get_channel_infos(self, **kwargs):
         return self.channels.GetChannelInfos(**kwargs)
+        
+    def get_channels_of_group(self, group_id, **kwargs):
+        return self.channels.GetChannelsOfGroup(group_id, **kwargs)
+        
+    def add_channel_to_group(self, cid, group_id, **kwargs):
+        return self.channels.AddChannelToGroup(cid, group_id, **kwargs)
+        
+    def remove_channel_from_group(self, cid, group_id, **kwargs):
+        return self.channels.RemoveChannelFromGroup(cid, group_id, **kwargs)
         
 class DVBScheduleClient(gobject.GObject):
 
