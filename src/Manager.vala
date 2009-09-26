@@ -311,13 +311,14 @@ namespace DVB {
          */
 		public bool AddChannelGroup (string name) throws DBus.Error {
             ConfigStore config = Factory.get_config_store ();
+            bool ret;
             try {
-                config.add_channel_group (name);
+                ret =config.add_channel_group (name);
             } catch (SqlError e) {
                 critical ("%s", e.message);
-                return false;
+                ret = false;
             }
-            return true;
+            return ret;
         }
 
         /**
@@ -326,13 +327,14 @@ namespace DVB {
          */
 		public bool RemoveChannelGroup (int channel_group_id) throws DBus.Error {
             ConfigStore config = Factory.get_config_store ();
+            bool ret;
             try {
-                config.remove_channel_group (channel_group_id);
+                ret = config.remove_channel_group (channel_group_id);
             } catch (SqlError e) {
                 critical ("%s", e.message);
-                return false;
+                ret = false;
             }
-            return true;
+            return ret;
         }
 
         /**

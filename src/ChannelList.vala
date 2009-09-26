@@ -299,13 +299,14 @@ namespace DVB {
             if (chan == null)
                 return false;
 
+            bool ret;
             try {
-                config.add_channel_to_group (chan, channel_group_id);
+                ret = config.add_channel_to_group (chan, channel_group_id);
             } catch (SqlError e) {
                 critical ("%s", e.message);
-                return false;
+                ret = false;
             }
-            return true;
+            return ret;
         }
 
  		/**
@@ -321,13 +322,14 @@ namespace DVB {
             if (chan == null)
                 return false;
 
+            bool ret;
             try {
-                config.remove_channel_from_group (chan, channel_group_id);
+                ret = config.remove_channel_from_group (chan, channel_group_id);
             } catch (SqlError e) {
                 critical ("%s", e.message);
-                return false;
+                ret = false;
             }
-            return true;
+            return ret;
         }
     }
 
