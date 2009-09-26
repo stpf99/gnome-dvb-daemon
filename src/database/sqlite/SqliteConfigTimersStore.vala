@@ -535,14 +535,22 @@ namespace DVB.database.sqlite {
         public bool remove_channel_group (int group_id) throws SqlError {
             this.delete_channel_group_statement.reset ();
             this.remove_all_channel_group_statement.reset ();
-            if (this.delete_channel_group_statement.bind_int (1, group_id) != Sqlite.DONE
-                || this.remove_all_channel_group_statement.bind_int (1, group_id) != Sqlite.DONE)
+            if (this.delete_channel_group_statement.bind_int (1, group_id) != Sqlite.OK)
             {
                 this.throw_last_error ();
                 return false;
             }
-            if (this.delete_channel_group_statement.step () != Sqlite.DONE
-                || this.remove_all_channel_group_statement.step () != Sqlite.DONE)
+            if (this.remove_all_channel_group_statement.bind_int (1, group_id) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            if (this.delete_channel_group_statement.step () != Sqlite.DONE)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            if (this.remove_all_channel_group_statement.step () != Sqlite.DONE)
             {
                 this.throw_last_error ();
                 return false;
