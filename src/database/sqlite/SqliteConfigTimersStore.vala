@@ -162,6 +162,8 @@ namespace DVB.database.sqlite {
             this.exec_sql (CREATE_DEVICE_GROUPS);
             this.exec_sql (CREATE_DEVICES);
             this.exec_sql (CREATE_TIMERS);
+            this.exec_sql (CREATE_GROUPS);
+            this.exec_sql (CREATE_CHANNELS);
         }
 
         public override void upgrade (int old_version, int new_version) 
