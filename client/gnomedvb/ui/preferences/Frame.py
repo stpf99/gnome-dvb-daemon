@@ -18,7 +18,29 @@
 
 import gtk
 
-__all__ = ["AlignedLabel", "AlignedScrolledWindow", "Frame"]
+__all__ = ["AlignedLabel", "Frame", "BaseFrame"]
+
+class AlignedChild(gtk.Alignment):
+    
+    def __init__(self, child):
+        gtk.Alignment.__init__(self, xscale=1.0, yscale=1.0)
+        
+        self.set_padding(0, 0, 12, 0)
+        self.add(child)
+        child.show()
+       
+class BaseFrame(gtk.VBox):
+
+    def __init__(self, markup, child):
+        gtk.VBox.__init__(self, spacing=6)
+    
+        label = AlignedLabel(markup)
+        label.show()
+        self.pack_start(label, False, False, 0)
+        
+        achild = AlignedChild(child)
+        achild.show()
+        self.pack_start(achild)
 
 class AlignedLabel (gtk.Alignment):
 
@@ -30,31 +52,13 @@ class AlignedLabel (gtk.Alignment):
         self.label.show()
         self.add(self.label)
 
+class Frame (BaseFrame):
 
-class AlignedScrolledWindow (gtk.Alignment):
-
-    def __init__(self, treeview):
-        gtk.Alignment.__init__(self, xscale=1.0, yscale=1.0)
-        
-        self.set_padding(0, 0, 12, 0)
-        
+    def __init__(self, markup, treeview):
         scrolled = gtk.ScrolledWindow()
         scrolled.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrolled.add(treeview)
-        scrolled.show()
-        self.add(scrolled)
-
-class Frame (gtk.VBox):
-
-    def __init__(self, markup, child):
-        gtk.VBox.__init__(self, spacing=6)
-    
-        label = AlignedLabel(markup)
-        label.show()
-        self.pack_start(label, False, False, 0)
         
-        view = AlignedScrolledWindow(child)
-        view.show()
-        self.pack_start(view)
+        BaseFrame.__init__(self, markup, scrolled)
         
