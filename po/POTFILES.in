@@ -12,7 +12,7 @@ client/gnomedvb/ui/timers/EditTimersDialog.py
 client/gnomedvb/ui/timers/TimerDialog.py
 client/gnomedvb/ui/wizard/__init__.py
 client/gnomedvb/ui/widgets/ChannelsView.py
-client/gnomedvb/ui/widgets/ChannelsGroupView.py
+client/gnomedvb/ui/widgets/ChannelGroupsView.py
 client/gnomedvb/ui/widgets/DetailsDialog.py
 client/gnomedvb/ui/widgets/RecordingsView.py
 client/gnomedvb/ui/widgets/RunningNextView.py

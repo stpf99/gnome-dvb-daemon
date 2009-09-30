@@ -17,13 +17,24 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+from gettext import gettext as _
+from gnomedvb.ui.widgets.ChannelGroupsStore import ChannelGroupsStore
 
-class ChannelsGroupStore(gtk.ListStore):
+class ChannelGroupsView(gtk.TreeView):
 
-    (COL_ID,
-     COL_NAME,
-     COL_EDITABLE,) = range(3)
-
-    def __init__(self):
-        gtk.ListStore.__init__(self, int, str, bool)
+    def __init__(self, model=None):
+        if model == None:
+            gtk.TreeView.__init__(self)
+        else:
+            gtk.TreeView.__init__(self, model)
+            
+        col_name = gtk.TreeViewColumn(_("Channel group"))
+        self.cell_name = gtk.CellRendererText()
+        col_name.pack_start(self.cell_name)
+        col_name.add_attribute(self.cell_name, "markup", ChannelGroupsStore.COL_NAME)
+        col_name.add_attribute(self.cell_name, "editable", ChannelGroupsStore.COL_EDITABLE)
+        self.append_column(col_name)
+        
+    def get_renderer(self):
+        return self.cell_name
 

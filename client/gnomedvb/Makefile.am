@@ -63,8 +63,8 @@ gnomedvbtimersui_PYTHON = \
 gnomedvbprefsmodeldir = $(pythondir)/gnomedvb/ui/widgets
 gnomedvbprefsmodel_PYTHON = \
     ui/widgets/__init__.py \
-	ui/widgets/ChannelsGroupStore.py \
-    ui/widgets/ChannelsGroupView.py \
+	ui/widgets/ChannelGroupsStore.py \
+    ui/widgets/ChannelGroupsView.py \
     ui/widgets/ChannelsStore.py \
     ui/widgets/ChannelsView.py \
     ui/widgets/DetailsDialog.py \

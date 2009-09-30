@@ -22,8 +22,8 @@ import gtk
 from gettext import gettext as _
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
-from gnomedvb.ui.widgets.ChannelsGroupStore import ChannelsGroupStore
-from gnomedvb.ui.widgets.ChannelsGroupView import ChannelsGroupView
+from gnomedvb.ui.widgets.ChannelGroupsStore import ChannelGroupsStore
+from gnomedvb.ui.widgets.ChannelGroupsView import ChannelGroupsView
 from gnomedvb.ui.widgets.Frame import Frame, BaseFrame
 from gnomedvb.ui.widgets.HelpBox import HelpBox
 
@@ -66,8 +66,8 @@ class ChannelListEditorDialog(gtk.Dialog):
             groups_box)
         self.vbox_main.pack_start(groups_frame, False)
 
-        self.channel_groups = ChannelsGroupStore()
-        self.channel_groups_view = ChannelsGroupView(self.channel_groups)
+        self.channel_groups = ChannelGroupsStore()
+        self.channel_groups_view = ChannelGroupsView(self.channel_groups)
         self.channel_groups_view.set_headers_visible(False)
         self.channel_groups_view.get_selection().connect("changed",
             self.on_group_changed)
