@@ -36,7 +36,7 @@ namespace DVB {
         public unowned DVB.DeviceGroup DeviceGroup {get; set;}
         
         private Gst.Element? pipeline;
-        private Queue<Channel> channels;
+        private GLib.Queue<Channel> channels;
         private Source scan_source;
         private Source queue_source;
         private int stop_counter;
@@ -46,7 +46,7 @@ namespace DVB {
         private uint bus_watch_id;
         
         construct {
-            this.channels = new Queue<Channel> ();
+            this.channels = new GLib.Queue<Channel> ();
             this.stop_counter = 0;
             this.context = new MainContext ();
         }

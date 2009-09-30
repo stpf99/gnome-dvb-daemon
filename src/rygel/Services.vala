@@ -102,7 +102,7 @@ namespace DVB {
             owned get {
                 DBus.ObjectPath[] paths = new DBus.ObjectPath[this.containers.size];
                 int i = 0;
-                foreach (ChannelsMediaContainer container in this.containers.get_values ()) {
+                foreach (ChannelsMediaContainer container in this.containers.values) {
                     paths[i] = new DBus.ObjectPath (container.Path);
                     i++;
                 }
@@ -197,7 +197,7 @@ namespace DVB {
             owned get {
                 DBus.ObjectPath[] paths = new DBus.ObjectPath[this.items.size];
                 int i = 0;
-                foreach (ChannelMediaItem item in this.items.get_values ()) {
+                foreach (ChannelMediaItem item in this.items.values) {
                     paths[i] = new DBus.ObjectPath (item.Path);
                     i++;
                 }

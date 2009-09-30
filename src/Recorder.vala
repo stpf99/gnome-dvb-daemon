@@ -62,7 +62,7 @@ namespace DVB {
 	public Type element_type { get { return typeof (Timer); } }
     
         public Gee.Iterator<Timer> iterator () {
-            return this.timers.get_values().iterator ();
+            return this.timers.values.iterator ();
         }
         
         /**
@@ -150,7 +150,7 @@ namespace DVB {
                 int conflict_count = 0;
                 
                 // Check for conflicts
-                foreach (uint32 key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.keys) {
                     if (this.timers.get(key).conflicts_with (new_timer)) {
                         conflict_count++;
                         
@@ -252,7 +252,7 @@ namespace DVB {
                 timer_arr = new uint32[this.timers.size];
                 
                 int i=0;
-                foreach (uint32 key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.keys) {
                     timer_arr[i] = this.timers.get(key).Id;
                     i++;
                 }
@@ -432,7 +432,7 @@ namespace DVB {
         {
             bool val = false;
             lock (this.timers) {
-                foreach (uint32 key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.keys) {
                     OverlapType overlap = this.timers.get(key).get_overlap_local (
                         start_year, start_month, start_day, start_hour,
                         start_minute, duration);
@@ -466,7 +466,7 @@ namespace DVB {
             
             OverlapType val= OverlapType.NONE;
             lock (this.timers) {
-                foreach (uint32 key in this.timers.get_keys ()) {
+                foreach (uint32 key in this.timers.keys) {
                     Timer timer = this.timers.get (key);
                     
                     if (timer.Channel.Sid == channel_sid) {
@@ -694,7 +694,7 @@ namespace DVB {
                 // Store items we want to delete in here
                 SList<uint32> deleteable_items = new SList<uint32> ();
 
-                foreach (uint32 key in this.timers.get_keys()) {
+                foreach (uint32 key in this.timers.keys) {
                     Timer timer = this.timers.get (key);
 
                     debug ("Checking timer: %s", timer.to_string());
@@ -737,7 +737,7 @@ namespace DVB {
             
             lock (this.recordings) {
                 // Find name and description for recordings
-                foreach (Recording rec in this.recordings.get_values ()) {
+                foreach (Recording rec in this.recordings.values) {
                     if (rec.Name == null && sid == rec.ChannelSid) {
                         Channel chan = this.DeviceGroup.Channels.get_channel (sid);
                         Schedule sched = chan.Schedule;

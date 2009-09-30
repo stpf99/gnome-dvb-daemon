@@ -83,7 +83,7 @@ namespace DVB {
         public Type element_type { get { return typeof (Channel); } }
       
         public Iterator<Channel> iterator () {
-            return this.channels.get_values().iterator();
+            return this.channels.values.iterator();
         }
         
         public static ChannelList restore_from_file (File channelsfile,
@@ -99,7 +99,7 @@ namespace DVB {
             uint[] ids = new uint[this.size];
             int i=0;
             lock (this.channels) {
-                foreach (uint id in this.channels.get_keys ()) {
+                foreach (uint id in this.channels.keys) {
                     ids[i] = id;
                     i++;
                 }
@@ -114,7 +114,7 @@ namespace DVB {
         public uint[] GetRadioChannels () throws DBus.Error {
             SList<uint> radio_channels = new SList<uint> ();
             lock (this.channels) {
-                foreach (uint id in this.channels.get_keys ()) {
+                foreach (uint id in this.channels.keys) {
                     Channel chan = this.channels.get (id);
                     if (chan.VideoPID == 0)
                         radio_channels.prepend (id);
@@ -136,7 +136,7 @@ namespace DVB {
         public uint[] GetTVChannels () throws DBus.Error {
             SList<uint> video_channels = new SList<uint> ();
             lock (this.channels) {
-                foreach (uint id in this.channels.get_keys ()) {
+                foreach (uint id in this.channels.keys) {
                     Channel chan = this.channels.get (id);
                     if (chan.VideoPID != 0)
                         video_channels.prepend (id);
@@ -250,7 +250,7 @@ namespace DVB {
             ChannelInfo[] channels = new ChannelInfo[this.channels.size];
             int i = 0;
             lock (this.channels) {
-                foreach (uint id in this.channels.get_keys ()) {
+                foreach (uint id in this.channels.keys) {
                     ChannelInfo channel = ChannelInfo();
                     channel.id = id;
                     channel.name = this.channels.get (id).Name;

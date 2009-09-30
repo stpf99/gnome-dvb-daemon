@@ -27,7 +27,7 @@ namespace DVB {
         
         public Gee.Collection<DeviceGroup> device_groups {
             owned get {
-                return this.devices.get_values ();
+                return this.devices.values;
             }
         }
         
@@ -64,7 +64,7 @@ namespace DVB {
             
             if (instance != null) {
                 lock (m.scanners) {
-                    foreach (Scanner scanner in m.scanners.get_values ()) {
+                    foreach (Scanner scanner in m.scanners.values) {
                         debug ("Stopping scanner");
                         scanner.Destroy ();
                     }
@@ -72,7 +72,7 @@ namespace DVB {
                 }
                 
                 lock (m.devices) {
-                    foreach (DeviceGroup devgrp in m.devices.get_values ()) {
+                    foreach (DeviceGroup devgrp in m.devices.values) {
                         devgrp.destroy ();
                     }
                     m.devices.clear ();
@@ -207,7 +207,7 @@ namespace DVB {
             DBus.ObjectPath[] devs = new DBus.ObjectPath[this.devices.size];
             int i = 0;
             lock (this.devices) {
-                foreach (uint key in this.devices.get_keys ()) {
+                foreach (uint key in this.devices.keys) {
                     devs[i] = new DBus.ObjectPath (
                         Constants.DBUS_DEVICE_GROUP_PATH.printf (key));
                     i++;
@@ -419,7 +419,7 @@ namespace DVB {
         public bool device_is_in_any_group (Device device) {
             bool result = false;
             lock (this.devices) {
-                foreach (uint group_id in this.devices.get_keys ()) {
+                foreach (uint group_id in this.devices.keys) {
                     DeviceGroup devgroup = this.devices.get (group_id);
                     if (devgroup.contains (device)) {
                         result = true;
@@ -454,7 +454,7 @@ namespace DVB {
             Device? result = null;
             Device fake_device = new Device (adapter, frontend, false);
             lock (this.devices) {
-                foreach (uint group_id in this.devices.get_keys ()) {
+                foreach (uint group_id in this.devices.keys) {
                     DeviceGroup devgroup = this.devices.get (group_id);
                     if (devgroup.contains (fake_device)) {
                         foreach (Device device in devgroup) {
@@ -473,7 +473,7 @@ namespace DVB {
         private DeviceGroup? get_device_group_of_device (Device device) {
             DeviceGroup? result = null;
             lock (this.devices) {
-                foreach (uint group_id in this.devices.get_keys ()) {
+                foreach (uint group_id in this.devices.keys) {
                     DeviceGroup devgroup = this.devices.get (group_id);
                     if (devgroup.contains (device)) {
                         foreach (Device grp_device in devgroup) {

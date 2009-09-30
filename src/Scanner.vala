@@ -77,7 +77,7 @@ namespace DVB {
         /**
          * Contains the tuning parameters we use for scanning
          */
-        protected Queue<Gst.Structure> frequencies;
+        protected GLib.Queue<Gst.Structure> frequencies;
         
         /**
          * The tuning paramters we're currently using
@@ -113,7 +113,7 @@ namespace DVB {
             this.scanned_frequencies =
                 new HashSet<ScannedItem> (ScannedItem.hash, ScannedItem.equal);
             this.new_channels = new ArrayList<uint> ();
-            this.frequencies = new Queue<Gst.Structure> ();
+            this.frequencies = new GLib.Queue<Gst.Structure> ();
             this.transport_streams = new HashMap<uint, Gst.Structure> ();
             this.context = new MainContext ();
             this.running = false;

@@ -57,7 +57,7 @@ namespace DVB {
             get {
                 bool val = false;
                 lock (this.elements_map) {
-                    foreach (ChannelElements celem in this.elements_map.get_values ()) {
+                    foreach (ChannelElements celem in this.elements_map.values) {
                         if (celem.forced) {
                             val = true;
                             break;
@@ -377,7 +377,7 @@ namespace DVB {
             lock (this.destroyed) {
                 if (forced) {
                     lock (this.elements_map) {
-                        foreach (ChannelElements celems in this.elements_map.get_values ()) {
+                        foreach (ChannelElements celems in this.elements_map.values) {
                             if (celems.notify_func != null) {
                                 Channel channel = this.device.Channels.get_channel (
                                     celems.sid);

@@ -109,7 +109,7 @@ namespace DVB {
                 ids = new uint32[this.recordings.size];
                 
                 int i = 0;
-                foreach (uint32 key in this.recordings.get_keys ()) {
+                foreach (uint32 key in this.recordings.keys) {
                     ids[i] = key;
                     i++;
                 }
@@ -402,7 +402,7 @@ namespace DVB {
             bool result = false;
             uint32 rec_id = 0;
             lock (this.recordings) {
-                foreach (uint32 id  in this.recordings.get_keys ()) {
+                foreach (uint32 id  in this.recordings.keys) {
                     Recording rec = this.recordings.get (id);
                     if (rec.Location.get_path () == location) {
                         rec_id = id;
