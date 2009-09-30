@@ -1,3 +1,31 @@
+==============
+Version 0.1.10
+==============
+
+This release features an improved D-Bus API.
+When scanning for channels all scrambled channels can be
+unselected at once. Channels can be assigned to any number of groups.
+You have to delete your configuration at ~/.config/gnome-dvb-daemon in order
+to use this version. Future versions will provide a way to update the database
+scheme.
+This version depens on libgee 0.5.0.
+
+- Added	CheckButton to (de)select scrambled channels
+- Updated DBus API for ChannelList: Use out parameter and return TRUE on success where applicable
+- Use out parameters and return true on	success for GetScannerForDevice, GetDeviceGroup and	GetNameOfRegisteredDevice Manager
+- Use out parameters and return true on	success for AddTimer, AddTimerWithMargin, AddTimerForEPGEvent, GetStartTime, GetEndTime, GetDuration, GetChannelName, GetTitle, GetAllInformations in Recorder
+- Use out parameters and return true on success for GetLocation, GetName, GetDescription, GetStartTime,	GetStartTimestamp, GetLength, GetChannelName, GetAllInformations in RecordingsStore
+- Use out parameters and return true for GetInformations, GetName, GetShortDescription, GetExtendedDescription,	GetDuration, GetLocalStartTime, GetLocalStartTimestamp, IsRunning and IsScrambled in Schedule
+- Display extended event description in textview instead of	expanding the selected row
+- Display dialog with details when double-clicking on an event in What's on now view on control center
+- Overlapping timers on the same channel never conflict
+- Added vapi/config.vapi to EXTRA_DIST target
+- Display error dialog if writing channels.conf fails
+- Refactored Sqlite database access: This adds support for versioned database schemes and the possibility to upgrade them.
+- Added support for assigning channels to one or more groups
+- Added ChannelListEditorDialog
+- Moved to libgee 0.5.0
+
 =============
 Version 0.1.9
 =============
