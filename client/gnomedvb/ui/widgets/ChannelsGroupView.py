@@ -28,7 +28,7 @@ class ChannelsGroupView(gtk.TreeView):
         else:
             gtk.TreeView.__init__(self, model)
             
-        col_name = gtk.TreeViewColumn(_("Channel Group"))
+        col_name = gtk.TreeViewColumn(_("Channel group"))
         self.cell_name = gtk.CellRendererText()
         col_name.pack_start(self.cell_name)
         col_name.add_attribute(self.cell_name, "markup", ChannelsGroupStore.COL_NAME)
