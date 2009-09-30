@@ -106,13 +106,7 @@ namespace DVB {
         public uint32[] GetRecordings () throws DBus.Error {
             uint32[] ids;
             lock (this.recordings) {
-                ids = new uint32[this.recordings.size];
-                
-                int i = 0;
-                foreach (uint32 key in this.recordings.keys) {
-                    ids[i] = key;
-                    i++;
-                }
+                ids = (uint32[])this.recordings.keys.to_array ();
             }
             
             return ids;

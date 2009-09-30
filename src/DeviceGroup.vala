@@ -362,9 +362,8 @@ namespace DVB {
             int i=0;
             lock (this.devices) {
                 foreach (Device dev in this.devices) {
-                    groupdevs[i] = Constants.DVB_DEVICE_PATH.printf (
+                    groupdevs[i++] = Constants.DVB_DEVICE_PATH.printf (
                         dev.Adapter, dev.Frontend);
-                    i++;
                 }
             }
             
