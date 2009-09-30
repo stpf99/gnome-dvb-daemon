@@ -31,7 +31,7 @@ class AlignedChild(gtk.Alignment):
        
 class BaseFrame(gtk.VBox):
 
-    def __init__(self, markup, child):
+    def __init__(self, markup, child, expand=True, fill=True, padding=0):
         gtk.VBox.__init__(self, spacing=6)
     
         label = AlignedLabel(markup)
@@ -40,7 +40,7 @@ class BaseFrame(gtk.VBox):
         
         achild = AlignedChild(child)
         achild.show()
-        self.pack_start(achild)
+        self.pack_start(achild, expand, fill, padding)
 
 class AlignedLabel (gtk.Alignment):
 
