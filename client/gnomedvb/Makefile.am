@@ -36,7 +36,6 @@ gnomedvbprefsui_PYTHON = \
     ui/preferences/__init__.py \
     ui/preferences/DeviceGroupsView.py \
     ui/preferences/Dialogs.py \
-    ui/preferences/Frame.py \
     ui/preferences/Preferences.py
 
 ### ui/recordings ###
@@ -61,6 +60,7 @@ gnomedvbprefsmodel_PYTHON = \
     ui/widgets/ChannelsStore.py \
     ui/widgets/ChannelsView.py \
     ui/widgets/DetailsDialog.py \
+    ui/widgets/Frame.py \
     ui/widgets/HelpBox.py \
     ui/widgets/RecordingsStore.py \
     ui/widgets/RecordingsView.py \

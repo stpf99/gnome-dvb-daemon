@@ -18,9 +18,9 @@
 
 import gtk
 import subprocess
-from gnomedvb.ui.preferences.Frame import Frame
 from gnomedvb.ui.preferences.Dialogs import *
 from gnomedvb.ui.preferences.DeviceGroupsView import *
+from gnomedvb.ui.widgets.Frame import Frame
 from gettext import gettext as _
 from gnomedvb.Device import Device
 
