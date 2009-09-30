@@ -17,7 +17,6 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-import pango
 import gobject
 from gettext import gettext as _
 import gnomedvb
@@ -28,29 +27,12 @@ from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.widgets.SchedulePaned import SchedulePaned
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
+from gnomedvb.ui.widgets.HelpBox import HelpBox
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
 from gnomedvb.ui.preferences.Preferences import Preferences
 from gnomedvb.ui.recordings.RecordingsDialog import RecordingsDialog
-
-class HelpBox(gtk.EventBox):
-
-    def __init__(self):
-        gtk.EventBox.__init__(self)
-        self.modify_bg(gtk.STATE_NORMAL, self.style.base[gtk.STATE_NORMAL])
-                
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_IN)
-        self.add(frame)
-        
-        self._helpview = gtk.Label()
-        self._helpview.set_ellipsize(pango.ELLIPSIZE_END)
-        self._helpview.set_alignment(0.50, 0.50)
-        frame.add(self._helpview)
-        
-    def set_markup(self, helptext):
-        self._helpview.set_markup("<span foreground='grey50'>%s</span>" % helptext)
-       
+   
 class ControlCenterWindow(gtk.Window):
 
     def __init__(self, model):
