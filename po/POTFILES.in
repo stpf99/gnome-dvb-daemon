@@ -1,6 +1,7 @@
 [encoding: UTF-8]
 # List of source files which contain translatable strings.
 client/gnomedvb/__init__.py
+client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py
 client/gnomedvb/ui/controlcenter/ControlCenterWindow.py
 client/gnomedvb/ui/preferences/DeviceGroupsView.py
 client/gnomedvb/ui/preferences/Dialogs.py
@@ -11,6 +12,7 @@ client/gnomedvb/ui/timers/EditTimersDialog.py
 client/gnomedvb/ui/timers/TimerDialog.py
 client/gnomedvb/ui/wizard/__init__.py
 client/gnomedvb/ui/widgets/ChannelsView.py
+client/gnomedvb/ui/widgets/ChannelsGroupView.py
 client/gnomedvb/ui/widgets/DetailsDialog.py
 client/gnomedvb/ui/widgets/RecordingsView.py
 client/gnomedvb/ui/widgets/RunningNextView.py

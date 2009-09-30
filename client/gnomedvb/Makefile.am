@@ -24,6 +24,12 @@ gnomedvbuidir = $(pythondir)/gnomedvb/ui
 gnomedvbui_PYTHON = \
     ui/__init__.py
 
+## ui/channellisteditor ##
+gnomedvbchannellisteditordir = $(pythondir)/gnomedvb/ui/channellisteditor
+gnomedvbchannellisteditor_PYTHON = \
+	ui/channellisteditor/__init__.py \
+	ui/channellisteditor/ChannelListEditorDialog.py
+
 ## ui/controlcenter ##
 gnomedvbcontrolcenterdir = $(pythondir)/gnomedvb/ui/controlcenter
 gnomedvbcontrolcenter_PYTHON = \
@@ -57,6 +63,8 @@ gnomedvbtimersui_PYTHON = \
 gnomedvbprefsmodeldir = $(pythondir)/gnomedvb/ui/widgets
 gnomedvbprefsmodel_PYTHON = \
     ui/widgets/__init__.py \
+	ui/widgets/ChannelsGroupStore.py \
+    ui/widgets/ChannelsGroupView.py \
     ui/widgets/ChannelsStore.py \
     ui/widgets/ChannelsView.py \
     ui/widgets/DetailsDialog.py \

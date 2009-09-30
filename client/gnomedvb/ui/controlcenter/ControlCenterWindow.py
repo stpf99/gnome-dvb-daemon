@@ -28,6 +28,7 @@ from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.widgets.SchedulePaned import SchedulePaned
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.HelpBox import HelpBox
+from gnomedvb.ui.channellisteditor.ChannelListEditorDialog import ChannelListEditorDialog
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
 from gnomedvb.ui.preferences.Preferences import Preferences
@@ -128,6 +129,8 @@ class ControlCenterWindow(gtk.Window):
             <menuitem action="Quit"/>
           </menu>
           <menu action="Edit">
+            <menuitem action="EditChannelLists"/>
+            <separator/>
             <menuitem action="Preferences"/>
           </menu>
           <menu action="View">
@@ -173,6 +176,8 @@ class ControlCenterWindow(gtk.Window):
         
         actiongroup = gtk.ActionGroup('Edit')
         actiongroup.add_actions([
+            ('EditChannelLists', None, _('Channel lists'), None,
+             _('Edit channel lists'), self._on_edit_channellists_clicked),
             ('Preferences', gtk.STOCK_PREFERENCES, _('_Preferences'), None,
              _('Display preferences'), self._on_button_prefs_clicked),
         ])
@@ -583,6 +588,11 @@ class ControlCenterWindow(gtk.Window):
         about.set_screen(self.get_screen())
         about.run()
         about.destroy()
+        
+    def _on_edit_channellists_clicked(self, action):
+        dialog = ChannelListEditorDialog(self.manager, parent=self)
+        dialog.run()
+        dialog.destroy()
     
     def _on_running_next_clicked(self, treeview, event):
             
