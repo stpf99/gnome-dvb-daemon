@@ -38,9 +38,14 @@ class BaseFrame(gtk.VBox):
         label.show()
         self.pack_start(label, False, False, 0)
         
-        achild = AlignedChild(child)
-        achild.show()
-        self.pack_start(achild, expand, fill, padding)
+        self.child_widget = AlignedChild(child)
+        self.child_widget.show()
+        self.pack_start(self.child_widget, expand, fill, padding)
+        
+    def set_aligned_child(self, child, expand=True, fill=True, padding=0):
+        self.child_widget.remove(self.child_widget.get_children()[0])
+        self.child_widget.add(child)
+        child.show()
 
 class AlignedLabel (gtk.Alignment):
 
