@@ -206,7 +206,7 @@ class ControlCenterWindow(gtk.Window):
         action.set_active(True)
         uimanager.insert_action_group(actiongroup, 3)
         
-        actiongroup = gtk.ActionGroup('Edit')
+        actiongroup = gtk.ActionGroup('Help')
         actiongroup.add_actions([
             ('About', gtk.STOCK_ABOUT, _('_About'), None,
              _('Display informations about the program'),
