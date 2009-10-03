@@ -43,6 +43,16 @@ namespace DVB.database.sqlite {
             File dbfile = this.database_file;
             bool create_tables = (!dbfile.query_exists (null));
 
+            File dbfile_dir = dbfile.get_parent ();
+            if (!dbfile_dir.query_exists (null)) {
+                try {
+                    Utils.mkdirs (dbfile_dir);
+                } catch (Error e) {
+                    critical ("Could not create directory: %s", e.message);
+                    return;
+                }
+            }                
+
             if (Database.open (dbfile.get_path (), out this.db) != Sqlite.OK) {
                 this.throw_last_error ();
             }
