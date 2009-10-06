@@ -1,4 +1,17 @@
 ==============
+Version 0.1.11
+==============
+
+This release fixes a couple of bugs that made the last
+release partly unusable.
+
+- Fixed bug #442490: Use iso_3166 to translate countries.
+- Use locale.strcoll to sort country names.
+- Fixed bug #442428: Import AlignedLabel from the correct module
+- Create parent directories of databse file if they don't exist
+- Fixed duplicate actiongroup name
+
+==============
 Version 0.1.10
 ==============
 
