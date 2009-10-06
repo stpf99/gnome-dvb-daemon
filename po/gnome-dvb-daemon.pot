@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-30 16:09+0200\n"
+"POT-Creation-Date: 2009-10-06 16:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -577,178 +577,74 @@ msgid ""
 "reorder the channels, too."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:54
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:83
 msgid "Missing requirements"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:60
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:63
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:89
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:92
 msgid "Country and antenna selection"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:66
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:95
 msgid "Country and provider selection"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:68
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:97
 msgid "Unsupported adapter"
 msgstr ""
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:95
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:124
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:102
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
 msgid "Could not find initial tuning data."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:103
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:132
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:111
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:140
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:112
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:141
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:113
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
 msgid "However, searching for channels will take considerably longer this way."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:120
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:149
 msgid "Not listed"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:121
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
-msgid "Austria"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:121
-msgid "Australia"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:121
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
-msgid "Belgium"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:122
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:196
-msgid "Switzerland"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:122
-msgid "Czech Republic"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:122
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:196
-msgid "Germany"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:123
-msgid "Denmark"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:123
-msgid "Spain"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:123
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:196
-msgid "Finland"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:123
-msgid "France"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:124
-msgid "Greece"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:124
-msgid "Hungary"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:124
-msgid "Iceland"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:124
-msgid "Italy"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:125
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
-msgid "Luxemburg"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:125
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
-msgid "Netherlands"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:125
-msgid "New Zealand"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
-msgid "Poland"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
-msgid "Sweden"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
-msgid "Slovakia"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
-msgid "Taiwan"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:127
-msgid "United Kingdom"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:127
-msgid "Hong Kong"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:132
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:204
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:160
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:232
 msgid "<b>Country:</b>"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:154
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:182
 msgid "<b>Antenna:</b>"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:177
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
 msgid "<b>Satellite:</b>"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
-msgid "Norway"
-msgstr ""
-
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:223
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:252
 msgid "<b>Providers:</b>"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:250
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:279
 msgid "Don't know"
 msgstr ""
 
