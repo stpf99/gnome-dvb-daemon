@@ -64,8 +64,8 @@ class DeviceGroupsView (gtk.TreeView):
         if isinstance(device, Device):
             # translators: first is device's name, second its type
             text = _("<b>%s (%s)</b>\n") % (device.name, device.type)
-            text += _("<small>Adapter: %d, Frontend: %d</small>") % (device.adapter,
-                device.frontend)
+            text += "<small>%s</small>" % (_("Adapter: %d, Frontend: %d") % (device.adapter,
+                device.frontend))
         else:
             if device == "":
                 group = model[aiter][model.COL_GROUP]

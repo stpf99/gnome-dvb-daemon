@@ -120,7 +120,7 @@ class Preferences(gtk.Dialog):
         self.devicegroupsview.get_selection().connect("changed", self._on_groups_selection_changed)
         self.devicegroupsview.show()
         
-        groups_frame = Frame(_("<b>Configured devices</b>"), self.devicegroupsview)
+        groups_frame = Frame("<b>%s</b>" % _("Configured devices"), self.devicegroupsview)
         groups_frame.show()
         self.groups_box.pack_start(groups_frame)
     
@@ -131,7 +131,7 @@ class Preferences(gtk.Dialog):
             self._on_unassigned_selection_changed)
         self.unassigned_view.show()
         
-        unassigned_frame = Frame(_("<b>Unconfigured devices</b>"), self.unassigned_view)
+        unassigned_frame = Frame("<b>%s</b>" % _("Unconfigured devices"), self.unassigned_view)
         unassigned_frame.show()
         self.vbox_main.pack_start(unassigned_frame)
         
@@ -208,7 +208,8 @@ class Preferences(gtk.Dialog):
                         error_dialog = gtk.MessageDialog(parent=self,
                             flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                             type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                        error_dialog.set_markup(_("<big><span weight=\"bold\">Device could not be removed from group</big></span>"))
+                        error_dialog.set_markup(
+                            "<big><span weight=\"bold\">%s</big></span>" % _("Device could not be removed from group"))
                         error_dialog.run()
                         error_dialog.destroy()
                         
@@ -235,7 +236,8 @@ class Preferences(gtk.Dialog):
                     error_dialog = gtk.MessageDialog(parent=dialog,
                         flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                         type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                    error_dialog.set_markup(_("<big><span weight=\"bold\">Group could not be created</big></span>"))
+                    error_dialog.set_markup(
+                        "<big><span weight=\"bold\">%s</big></span>" % _("Group could not be created"))
                     error_dialog.format_secondary_text(
                         _("Make sure that you selected the correct channels file and directory where recordings are stored and that both are readable.")
                     )
@@ -259,7 +261,8 @@ class Preferences(gtk.Dialog):
                     error_dialog = gtk.MessageDialog(parent=dialog,
                         flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                         type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                    error_dialog.set_markup(_("<big><span weight=\"bold\">Device could not be added to group</big></span>"))
+                    error_dialog.set_markup(
+                        "<big><span weight=\"bold\">%s</big></span>" % _("Device could not be added to group"))
                     error_dialog.format_secondary_text(
                         _("Make sure that the device isn't already assigned to a different group and that all devices in the group are of the same type.")
                     )

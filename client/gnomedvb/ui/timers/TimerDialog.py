@@ -47,7 +47,7 @@ class TimerDialog(gtk.Dialog):
         self.vbox.add(table)
                          
         label_channel = gtk.Label()
-        label_channel.set_markup(_("<b>Channel:</b>"))
+        label_channel.set_markup("<b>%s</b>" % _("Channel:"))
         table.attach(label_channel, 0, 1, 0, 1)
         
         self.channels = ChannelsStore(device_group)
@@ -62,7 +62,7 @@ class TimerDialog(gtk.Dialog):
         scrolledchannels.add(self.channelsview)
         
         label_start = gtk.Label()
-        label_start.set_markup(_("<b>Start time:</b>"))
+        label_start.set_markup("<b>%s</b>" % _("Start time:"))
         table.attach(label_start, 0, 1, 1, 2)
         
         hbox = gtk.HBox(spacing=3)
@@ -95,7 +95,7 @@ class TimerDialog(gtk.Dialog):
         hbox.pack_start(self.minute)
         
         label_duration = gtk.Label()
-        label_duration.set_markup(_("<b>Duration:</b>"))
+        label_duration.set_markup("<b>%s</b>" % _("Duration:"))
         table.attach(label_duration, 0, 1, 2, 3)
         
         duration_hbox = gtk.HBox(spacing=3)

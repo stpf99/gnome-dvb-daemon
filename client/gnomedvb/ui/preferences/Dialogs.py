@@ -36,7 +36,7 @@ class AddToGroupDialog (gtk.Dialog):
         self.vbox.set_spacing(6)
                 
         label = gtk.Label()
-        label.set_markup(_("<b>Select a group:</b>"))
+        label.set_markup("<b>%s</b>" % _("Select a group:"))
         label.show()
         self.vbox.pack_start(label, False, False, 0)
         
@@ -82,7 +82,7 @@ class NewGroupDialog (gtk.Dialog):
         
         self.set_default_size(400, 150)
         
-        name = AlignedLabel(_("<b>Name</b>"))
+        name = AlignedLabel("<b>%s</b>" % _("Name"))
         name.show()
         self.vbox.pack_start(name, False, False, 0)
         
@@ -95,7 +95,7 @@ class NewGroupDialog (gtk.Dialog):
         self.name_entry.show()
         name_ali.add(self.name_entry)
         
-        self.channels = AlignedLabel(_("<b>Channels File</b>"))
+        self.channels = AlignedLabel("<b>%s</b>" % _("Channels File"))
         self.channels.show()
         self.vbox.pack_start(self.channels, False, False, 0)
         self.vbox.set_spacing(6)
@@ -118,7 +118,7 @@ class NewGroupDialog (gtk.Dialog):
         channels_open.show()
         channelsbox.pack_start(channels_open, False, False, 0)
         
-        recordings = AlignedLabel(_("<b>Recordings' Directory</b>"))
+        recordings = AlignedLabel("<b>%s</b>" % _("Recordings' Directory"))
         recordings.show()
         self.vbox.pack_start(recordings, False, False, 0)
         

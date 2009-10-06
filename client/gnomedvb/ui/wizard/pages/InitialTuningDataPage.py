@@ -157,7 +157,7 @@ class InitialTuningDataPage(BasePage):
         self._create_table()
         
         country = gtk.Label()
-        country.set_markup(_("<b>Country:</b>"))
+        country.set_markup("<b>%s</b>" % _("Country:"))
         country.show()
         self.table.attach(country, 0, 1, 0, 1, yoptions=0)
 
@@ -179,7 +179,7 @@ class InitialTuningDataPage(BasePage):
         self.country_combo.set_active(0)
         
         self.providers_label = gtk.Label()
-        self.providers_label.set_markup(_("<b>Antenna:</b>"))
+        self.providers_label.set_markup("<b>%s</b>" % _("Antenna:"))
         self.providers_label.show()
         self.table.attach(self.providers_label, 0, 1, 1, 2, yoptions=0)
         
@@ -202,7 +202,7 @@ class InitialTuningDataPage(BasePage):
         self.pack_start(hbox, False)
         
         satellite = gtk.Label()
-        satellite.set_markup(_("<b>Satellite:</b>"))
+        satellite.set_markup("<b>%s</b>" % _("Satellite:"))
         satellite.show()
         hbox.pack_start(satellite, False, False, 0)
         
@@ -229,7 +229,7 @@ class InitialTuningDataPage(BasePage):
         self._create_table()
             
         country = gtk.Label()
-        country.set_markup(_("<b>Country:</b>"))
+        country.set_markup("<b>%s</b>" % _("Country:"))
         country.show()
         self.table.attach(country, 0, 1, 0, 1, yoptions=0)
     
@@ -249,7 +249,7 @@ class InitialTuningDataPage(BasePage):
         self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
         
         self.providers_label = gtk.Label()
-        self.providers_label.set_markup(_("<b>Providers:</b>"))
+        self.providers_label.set_markup("<b>%s</b>" % _("Providers:"))
         self.providers_label.show()
         self.table.attach(self.providers_label, 0, 1, 1, 2, yoptions=0)
         

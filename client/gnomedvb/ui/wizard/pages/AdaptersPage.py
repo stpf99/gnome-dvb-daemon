@@ -59,7 +59,7 @@ class AdaptersPage(BasePage):
         self._label.show()
     
     def show_devices(self):
-        text = _("Select device you want to configure.")
+        text = _("Select the device you want to configure.")
         self._label.set_markup (text)
         self._label.show()
     

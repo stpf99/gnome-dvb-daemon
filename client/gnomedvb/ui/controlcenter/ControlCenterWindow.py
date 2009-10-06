@@ -104,7 +104,7 @@ class ControlCenterWindow(gtk.Window):
                 
         self.help_eventbox = HelpBox()
         self.choose_group_text = _("Choose a device group and channel on the left to view the program guide")
-        self.create_group_text = _("No devices are configured. Please go to preferences and to configure them.")
+        self.create_group_text = _("No devices are configured. Please go to preferences to configure them.")
         self.no_events_text = _("There is currently no schedule available for this channel")
         self.hpaned.pack2(self.help_eventbox)
         
@@ -491,7 +491,8 @@ class ControlCenterWindow(gtk.Window):
                 dialog = gtk.MessageDialog(parent=self,
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
-                dialog.set_markup (_("<big><span weight=\"bold\">Schedule recording for the selected event?</span></big>"))
+                dialog.set_markup (
+                    "<big><span weight=\"bold\">%s</span></big>" % _("Schedule recording for the selected event?"))
                 rec_id = -1
                 success = True
                 if dialog.run() == gtk.RESPONSE_YES:

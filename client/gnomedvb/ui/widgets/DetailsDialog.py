@@ -52,28 +52,28 @@ class DetailsDialog(gtk.Dialog):
         self.set_default_size(440, 350)
         self.vbox.set_spacing(6)
         
-        title_hbox = PairBox(_("<b>Title:</b>"))
+        title_hbox = PairBox("<b>%s</b>" % _("Title:"))
         self.title_label = title_hbox.get_text_label()
         title_hbox.show_all()
         self.vbox.pack_start(title_hbox, False)
         
-        channel_hbox = PairBox(_("<b>Channel:</b>"))
+        channel_hbox = PairBox("<b>%s</b>" % _("Channel:"))
         self.channel = channel_hbox.get_text_label()
         channel_hbox.show_all()
         self.vbox.pack_start(channel_hbox, False)
         
-        date_hbox = PairBox(_("<b>Date:</b>"))
+        date_hbox = PairBox("<b>%s</b>" % _("Date:"))
         self.date = date_hbox.get_text_label()
         date_hbox.show_all()
         self.vbox.pack_start(date_hbox, False)
         
-        duration_hbox = PairBox(_("<b>Duration:</b>"))
+        duration_hbox = PairBox("<b>%s</b>" % _("Duration:"))
         self.duration = duration_hbox.get_text_label()
         duration_hbox.show_all()
         self.vbox.pack_start(duration_hbox, False)
         
         label_description = gtk.Label()
-        label_description.set_markup(_("<b>Description:</b>"))
+        label_description.set_markup("<b>%s</b>" % _("Description:"))
         label_description.show()
         
         ali_desc = gtk.Alignment()

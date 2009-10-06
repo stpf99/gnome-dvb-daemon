@@ -144,7 +144,8 @@ class EditTimersDialog(gtk.Dialog):
                 dialog = gtk.MessageDialog(parent=self,
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
-                dialog.set_markup(_("<big><span weight=\"bold\">Abort active recording?</span></big>"))
+                dialog.set_markup(
+                    "<big><span weight=\"bold\">%s</big></span>" % _("Abort active recording?"))
                 dialog.format_secondary_text(
                     _("The timer you selected belongs to a currently active recording.") + " " +
                     _("Deleting this timer will abort the recording."))
@@ -155,7 +156,8 @@ class EditTimersDialog(gtk.Dialog):
                         error_dialog = gtk.MessageDialog(parent=self,
                             flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                             type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                        error_dialog.set_markup(_("<big><span weight=\"bold\">Timer could not be deleted</big></span>"))
+                        error_dialog.set_markup(
+                            "<big><span weight=\"bold\">%s</big></span>" % _("Timer could not be deleted"))
                         error_dialog.run()
                         error_dialog.destroy()
             else:
