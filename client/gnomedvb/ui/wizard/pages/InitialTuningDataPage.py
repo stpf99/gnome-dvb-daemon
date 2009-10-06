@@ -20,12 +20,41 @@ import os
 import os.path
 import gtk
 import gobject
+import gettext
+import locale
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 DVB_APPS_DIRS = ("/usr/share/dvb",
                  "/usr/share/dvb-apps",
                  "/usr/share/doc/dvb-utils/examples/scan")
+                 
+COUNTRIES = {
+    "at": "Austria",
+    "au": "Australia",
+    "be": "Belgium",
+    "ch": "Switzerland",
+    "cz": "Czech Republic",
+    "de": "Germany",
+    "dk": "Denmark",
+    "es": "Spain",
+    "fi": "Finland",
+    "fr": "France",
+    "gr": "Greece",
+    "hk": "Hong Kong",
+    "hr": "Hungary",
+    "is": "Iceland",
+    "it": "Italy",
+    "lu": "Luxemburg",
+    "nl": "Netherlands",
+    "no": "Norway",
+    "nz": "New Zealand",
+    "pl": "Poland",
+    "se": "Sweden",
+    "sk": "Slovakia",
+    "tw": "Taiwan",
+    "uk": "United Kingdom",
+}
 
 class InitialTuningDataPage(BasePage):
     
@@ -117,15 +146,14 @@ class InitialTuningDataPage(BasePage):
     
         self.providers_combo = None
         
-        countries = {self.NOT_LISTED: _("Not listed"),
-             "at": _("Austria"), "au": _("Australia"), "be": _("Belgium"),
-             "ch": _("Switzerland"), "cz": _("Czech Republic"), "de": _("Germany"),
-             "dk": _("Denmark"), "es": _("Spain"), "fi": _("Finland"), "fr": _("France"),
-             "gr": _("Greece"), "hr": _("Hungary"), "is": _("Iceland"), "it": _("Italy"),
-             "lu": _("Luxemburg"), "nl": _("Netherlands"), "nz": _("New Zealand"),
-             "pl": _("Poland"), "se": _("Sweden"), "sk": _("Slovakia"), "tw": _("Taiwan"),
-             "uk": _("United Kingdom"), "hk": _("Hong Kong") }
-    
+        countries = {self.NOT_LISTED: _("Not listed")}
+        country_codes = ("at", "au", "be", "ch", "cz", "de", "dk", "es", "fi", "fr",
+            "gr", "hr", "hk", "is", "it", "lu", "nl", "nz", "pl", "se", "sk",
+            "tw", "uk",)
+        t = gettext.translation("iso_3166", fallback=True)
+        for lang in country_codes:
+            countries[lang] = t.ugettext(COUNTRIES[lang])
+        
         self._create_table()
         
         country = gtk.Label()
@@ -192,11 +220,11 @@ class InitialTuningDataPage(BasePage):
         self.read_satellites()
         
     def setup_dvb_c(self):
-        countries = {"at": _("Austria"), "be": _("Belgium"),
-             "ch": _("Switzerland"), "de": _("Germany"), "fi": _("Finland"),
-             "lu": _("Luxemburg"), "nl": _("Netherlands"), "se": _("Sweden"),
-             "no": _("Norway")
-             }
+        countries = {}
+        country_codes = ("at", "be", "ch", "de", "fi", "lu", "nl", "se", "no",)
+        t = gettext.translation("iso_3166", fallback=True)
+        for lang in country_codes:
+            countries[lang] = t.ugettext(COUNTRIES[lang])
             
         self._create_table()
             
@@ -207,6 +235,7 @@ class InitialTuningDataPage(BasePage):
     
         self.countries = gtk.ListStore(str, str)
         self.countries.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.countries.set_sort_func(0, self.combobox_sort_func)
         
         for code, name in countries.items():
             self.countries.append([name, code])
@@ -328,5 +357,5 @@ class InitialTuningDataPage(BasePage):
         elif code2 == self.NOT_LISTED:
             return 1
         else:
-            return cmp(name1, name2)
+            return locale.strcoll(name1, name2)
     
