@@ -226,12 +226,13 @@ namespace DVB {
                 }
             }
 
-            if (channel != null) {
+            if (channel == null) {
+                url = "";
+                return false;
+            } else {
                 url = channel.URL;
                 return true;
             }
-
-            return false;
         }
         
         public ChannelInfo[] GetChannelInfos () throws DBus.Error {
