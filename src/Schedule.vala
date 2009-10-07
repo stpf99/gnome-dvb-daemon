@@ -118,8 +118,13 @@ namespace DVB {
         }
         
         public Event? get_event (uint event_id) {
-            return this.epgstore.get_event (event_id,
-                this.channel.Sid, this.channel.GroupId);
+            try {
+                return this.epgstore.get_event (event_id,
+                    this.channel.Sid, this.channel.GroupId);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+                return null;
+            }
         }
         
         /**
