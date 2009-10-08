@@ -96,9 +96,13 @@ namespace DVB {
          * @returns: List of channel IDs aka SIDs
          */
         public uint[] GetChannels () throws DBus.Error {
-            uint[] ids;
+            uint[] ids = new uint[this.size];
+            int i=0;
             lock (this.channels) {
-                ids = (uint[])this.channels.keys.to_array();
+                foreach (uint id in this.channels.keys) {
+                    ids[i] = id;
+                    i++;
+                }
             }
             
             return ids;
@@ -108,16 +112,20 @@ namespace DVB {
          * @returns: List of channel IDs aka SIDs of radio channels
          */
         public uint[] GetRadioChannels () throws DBus.Error {
-            ArrayList<uint> radio_channels = new ArrayList<uint> ();
+            SList<uint> radio_channels = new SList<uint> ();
             lock (this.channels) {
                 foreach (uint id in this.channels.keys) {
                     Channel chan = this.channels.get (id);
                     if (chan.VideoPID == 0)
-                        radio_channels.add (id);
+                        radio_channels.prepend (id);
                 }
             }
+            radio_channels.reverse ();
             
-            uint[] ids = (uint[])radio_channels.to_array ();
+            uint[] ids = new uint[radio_channels.length ()];
+            for (int i=0; i<radio_channels.length (); i++) {
+                ids[i] = radio_channels.nth_data (i);
+            }
             
             return ids;
         }
@@ -126,16 +134,20 @@ namespace DVB {
          * @returns: List of channel IDs aka SIDs of TV channels
          */
         public uint[] GetTVChannels () throws DBus.Error {
-            ArrayList<uint> video_channels = new ArrayList<uint> ();
+            SList<uint> video_channels = new SList<uint> ();
             lock (this.channels) {
                 foreach (uint id in this.channels.keys) {
                     Channel chan = this.channels.get (id);
                     if (chan.VideoPID != 0)
-                        video_channels.add (id);
+                        video_channels.prepend (id);
                 }
             }
+            video_channels.reverse ();
             
-            uint[] ids = (uint[])video_channels.to_array ();
+            uint[] ids = new uint[video_channels.length ()];
+            for (int i=0; i<video_channels.length (); i++) {
+                ids[i] = video_channels.nth_data (i);
+            }
             
             return ids;
         }
@@ -243,7 +255,8 @@ namespace DVB {
                     ChannelInfo channel = ChannelInfo();
                     channel.id = id;
                     channel.name = this.channels.get (id).Name;
-                    channels[i++] = channel;
+                    channels[i] = channel;
+                    i++;
                 }
             }
             return channels;
@@ -266,7 +279,10 @@ namespace DVB {
                 return false;
             }
 
-            channel_ids = (uint[])channels.to_array ();
+            channel_ids = new uint[channels.size];
+            for (int i=0; i<channel_ids.length; i++) {
+                channel_ids[i] = channels.get (i);
+            }
 
             return true;
         }

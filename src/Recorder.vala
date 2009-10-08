@@ -253,7 +253,8 @@ namespace DVB {
                 
                 int i=0;
                 foreach (uint32 key in this.timers.keys) {
-                    timer_arr[i++] = this.timers.get(key).Id;
+                    timer_arr[i] = this.timers.get(key).Id;
+                    i++;
                 }
             }
         
