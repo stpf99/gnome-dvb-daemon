@@ -51,7 +51,8 @@ class ChannelsStore(gtk.ListStore):
                 self.append([name, channel_id])
             self.emit("loading-finished")
         
-        channellist.get_channel_infos(reply_handler=append_channel, error_handler=global_error_handler)
+        channellist.get_channel_infos(reply_handler=append_channel,
+            error_handler=global_error_handler)
 
 
 class ChannelsTreeStore(gtk.TreeStore):
@@ -65,12 +66,16 @@ class ChannelsTreeStore(gtk.TreeStore):
         "loading-finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
     }
     
-    def __init__(self):
+    def __init__(self, use_channel_groups=False):
         gtk.TreeStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
         
         self.set_sort_column_id(self.COL_NAME,
             gtk.SORT_ASCENDING)
             
+        self._use_channel_groups = use_channel_groups
+        self._manager = gnomedvb.DVBManagerClient ()
+        self._manager.connect('group-added', self._on_manager_group_added)
+        self._manager.connect('group-removed', self._on_manager_group_removed)
         self._add_channels()
             
     def _add_channels(self):
@@ -78,10 +83,8 @@ class ChannelsTreeStore(gtk.TreeStore):
             for dev_group in dev_groups:
                 self._append_group(dev_group)
 
-        manager = gnomedvb.DVBManagerClient ()
-        manager.connect('group-added', self._on_manager_group_added)
-        manager.connect('group-removed', self._on_manager_group_removed)
-        manager.get_registered_device_groups(reply_handler=append_groups, error_handler=global_error_handler)
+        self._manager.get_registered_device_groups(reply_handler=append_groups,
+            error_handler=global_error_handler)
     
     def _append_group(self, dev_group):
         group_id = dev_group.get_id()
@@ -89,16 +92,49 @@ class ChannelsTreeStore(gtk.TreeStore):
         group_iter = self.append(None, [group_id, group_name, 0, dev_group])
         channellist = dev_group.get_channel_list()
         
-        def append_channel(channels):
-            for channel_id, name in channels:
-                self.append(group_iter,
-                    [group_id,
-                    name,
-                    channel_id,
-                    dev_group])
-            self.emit("loading-finished", group_id)
+        d = Callback()
+        if self._use_channel_groups:   
+            d.add_callback(self._append_channel_groups, channellist, group_id,
+                group_iter, dev_group)
+            self._manager.get_channel_groups(
+                reply_handler=lambda x: d.callback(x),
+                error_handler=global_error_handler)
+        else:
+            d.add_callback(self._append_channels, group_id, group_iter,
+                dev_group)
+            channellist.get_channel_infos(
+                reply_handler=lambda x: d.callback(x),
+                error_handler=global_error_handler)
+     
+    def _append_channels(self, channels, group_id, group_iter, dev_group):
+        for channel_id, name in channels:
+            self.append(group_iter,
+                [group_id,
+                name,
+                channel_id,
+                dev_group])
+        self.emit("loading-finished", group_id)   
 
-        channellist.get_channel_infos(reply_handler=append_channel, error_handler=global_error_handler)
+    def _append_channel_groups(self, channel_groups, channellist, group_id, group_iter, dev_group):
+        def append_channel(channels, chan_group_iter):
+            for channel_id in channels:
+                name, success = channellist.get_channel_name(channel_id)
+                if success:
+                    self.append(chan_group_iter,
+                        [group_id,
+                        name,
+                        channel_id,
+                        dev_group])
+        
+        for chan_group_id, name in channel_groups:
+            chan_group_iter = self.append(group_iter, [group_id, name, 0, dev_group])
+            d = Callback()
+            d.add_callback(append_channel, chan_group_iter)
+            channellist.get_channels_of_group(chan_group_id,
+                reply_handler=lambda x, success: d.callback(x),
+                error_handler=global_error_handler)
+                
+        self.emit("loading-finished", group_id)
        
     def _on_manager_group_added(self, manager, group_id):
         group, success = manager.get_device_group(group_id)
@@ -111,4 +147,18 @@ class ChannelsTreeStore(gtk.TreeStore):
                 self.remove(row.iter)
                 break
 
+
+class Callback:
+
+    def __init__(self):
+        self.callbacks = []
         
+    def add_callback(self, callback_function, *args):
+        if not callable(callback_function):
+            raise TypeError("first argument must be callable")
+        self.callbacks.append((callback_function, args))
+        
+    def callback(self, result):
+        for cb, args in self.callbacks:
+            cb(result, *args)
+
