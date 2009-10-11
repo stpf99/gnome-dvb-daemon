@@ -167,10 +167,8 @@ namespace DVB {
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
                     string name = this.channels.get (channel_id).Name;
-                    if (name != null) {
-                        val = name;
-                        ret = true;
-                    }
+                    val = (name == null) ? "" : name;
+                    ret = true;
                 }
             }
             channel_name = val;
@@ -192,10 +190,8 @@ namespace DVB {
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
                     string tmp = this.channels.get (channel_id).Network;
-                    if (tmp != null) {
-                        val = tmp;
-                        ret = true;
-                    }
+                    val = (tmp == null) ? "" : tmp;
+                    ret = true;
                 }
             }
             network = val;
