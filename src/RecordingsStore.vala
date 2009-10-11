@@ -146,10 +146,8 @@ namespace DVB {
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     string val = this.recordings.get(rec_id).Name;
-                    if (val != null) {
-                        name = val;
-                        ret = true;
-                    }
+                    name = (val == null) ? "" : val;
+                    ret = true;
                 }
             }
             if (!ret) name = "";
@@ -167,10 +165,8 @@ namespace DVB {
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     string val = this.recordings.get(rec_id).Description;
-                    if (val != null) {
-                        description = val;
-                        ret = true;
-                    }
+                    description = (val == null) ? "" : val;
+                    ret = true;
                 }
             }
             if (!ret) description = "";
@@ -280,12 +276,13 @@ namespace DVB {
         }
         
         public bool GetAllInformations (uint32 rec_id, out RecordingInfo info) throws DBus.Error {
-            bool ret = false;
+            bool ret;
             info = RecordingInfo ();
             lock (this.recordings) {
                 if (this.recordings.contains (rec_id)) {
                     Recording rec = this.recordings.get (rec_id);
-                    info.name = (rec.Name == null) ? "" : rec.Name;
+                    string name = rec.Name;
+                    info.name = (name == null) ? "" : name;
                     info.id = rec_id;
                     info.length = rec.Length;
                     info.description = (rec.Description == null) ? "" : rec.Description;
@@ -293,6 +290,15 @@ namespace DVB {
                     info.start_timestamp = (int64)rec.StartTime.mktime ();
                     info.channel = rec.ChannelName;
                     ret = true;
+                } else {
+                    info.name = "";
+                    info.id = 0;
+                    info.length = 0;
+                    info.description = "";
+                    info.location = "";
+                    info.start_timestamp = 0;
+                    info.channel = "";
+                    ret = false;
                 }
             }
             return ret;
