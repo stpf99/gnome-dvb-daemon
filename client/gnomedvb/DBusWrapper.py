@@ -135,10 +135,20 @@ class DVBManagerClient(gobject.GObject):
         else:
             return None
         
-    def get_registered_device_groups(self, reply_handler, error_handler):
+    def get_registered_device_groups(self, **kwargs):
+        if "reply_handler" in kwargs:
+            reply_handler = kwargs["reply_handler"]
+        else:
+            reply_handler = None
+
         def groups_handler(paths):
             reply_handler([DVBDeviceGroupClient(path) for path in paths])
-        self.manager.GetRegisteredDeviceGroups(reply_handler=groups_handler, error_handler=error_handler)
+        
+        if reply_handler != None:
+            self.manager.GetRegisteredDeviceGroups(reply_handler=groups_handler,
+                error_handler=kwargs["error_handler"])
+        else:
+            return [DVBDeviceGroupClient(path) for path in self.manager.GetRegisteredDeviceGroups()]
        
     def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir, name, **kwargs):
         return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir, name, **kwargs)
