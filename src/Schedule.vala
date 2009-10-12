@@ -278,7 +278,7 @@ namespace DVB {
         public bool GetInformations (uint32 event_id, out EventInfo event_info)
                 throws DBus.Error
         {
-            bool ret = false;
+            bool ret;
             event_info = EventInfo();
             
             lock (this.events) {        
@@ -303,6 +303,13 @@ namespace DVB {
                         event_info.next = element.id;
                     }
                     ret = true;
+                } else {
+                    event_info.id = 0;
+                    event_info.name = "";
+                    event_info.duration = 0;
+                    event_info.short_description = "";
+                    event_info.next = 0;
+                    ret = false;
                 }
             }
             
