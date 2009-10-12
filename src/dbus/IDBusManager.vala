@@ -51,7 +51,7 @@ namespace DVB {
         
         /**
          * @group_id: A group ID
-         * @path: Device group's DBus path
+         * @opath: Device group's DBus path
          * @returns: TRUE on success
          */
         public abstract bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath) throws DBus.Error;
@@ -81,7 +81,8 @@ namespace DVB {
          * The device must be part of group, otherwise "Unknown"
          * is returned.
          */
-        public abstract bool GetNameOfRegisteredDevice (uint adapter, uint frontend, out string name) throws DBus.Error;
+        public abstract bool GetNameOfRegisteredDevice (uint adapter, uint frontend,
+        	out string name) throws DBus.Error;
         
         /**
          * @returns: the numner of configured device groups
@@ -95,9 +96,10 @@ namespace DVB {
 
         /**
          * @name: Name of the new group
+         * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
-        public abstract bool AddChannelGroup (string name) throws DBus.Error;
+        public abstract bool AddChannelGroup (string name, out int channel_group_id) throws DBus.Error;
 
         /**
          * @channel_group_id: ID of the ChannelGroup

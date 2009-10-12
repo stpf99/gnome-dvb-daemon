@@ -518,7 +518,7 @@ namespace DVB.database.sqlite {
             return true;
         }
 
-        public bool add_channel_group (string name) throws SqlError {
+        public bool add_channel_group (string name, out int channel_group_id) throws SqlError {
             this.insert_channel_group_statement.reset ();
             if (this.insert_channel_group_statement.bind_text (1, name) != Sqlite.OK)
             {
@@ -529,6 +529,7 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
+            channel_group_id = (int)this.db.last_insert_rowid ();
             return true;
         }
 

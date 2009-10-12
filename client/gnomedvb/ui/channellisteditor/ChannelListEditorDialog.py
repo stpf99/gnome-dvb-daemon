@@ -227,7 +227,7 @@ class ChannelListEditorDialog(gtk.Dialog):
             self.channel_groups_view.get_column(0), True)
         self.channel_groups_view.scroll_to_cell(path)
         
-    def on_add_channel_group_finished(self, success):
+    def on_add_channel_group_finished(self, group_id, success):
         if success:
             self.refill_channel_groups()
         else:

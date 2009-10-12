@@ -309,11 +309,11 @@ namespace DVB {
          * @name: Name of the new group
          * @returns: TRUE on success
          */
-		public bool AddChannelGroup (string name) throws DBus.Error {
+		public bool AddChannelGroup (string name, out int channel_group_id) throws DBus.Error {
             ConfigStore config = Factory.get_config_store ();
             bool ret;
             try {
-                ret =config.add_channel_group (name);
+                ret = config.add_channel_group (name, out channel_group_id);
             } catch (SqlError e) {
                 critical ("%s", e.message);
                 ret = false;

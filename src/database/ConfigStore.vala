@@ -30,7 +30,7 @@ namespace DVB.database {
         public abstract bool remove_device_from_group (Device dev, DeviceGroup devgroup) throws SqlError;
         public abstract bool update_from_group (DeviceGroup devgroup) throws SqlError;
 
-        public abstract bool add_channel_group (string name) throws SqlError;
+        public abstract bool add_channel_group (string name, out int channel_group_id) throws SqlError;
         public abstract bool remove_channel_group (int group_id) throws SqlError;
         public abstract Gee.List<ChannelGroup> get_channel_groups () throws SqlError;
         public abstract Gee.List<uint> get_channels_of_group (uint dev_group_id, int channel_group_id) throws SqlError;
