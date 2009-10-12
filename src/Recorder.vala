@@ -361,10 +361,8 @@ namespace DVB {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
                     Event? event = t.Channel.Schedule.get_event (t.EventID);
-                    if (event != null) {
-                        title = event.name;
-                        ret = true;
-                    }
+                    title = (event == null) ? "" : event.name;
+                    ret = true;
                 }
             }
             if (!ret) title = "";
@@ -375,7 +373,7 @@ namespace DVB {
                 throws DBus.Error
         {
             info = TimerInfo ();
-            bool ret = false;
+            bool ret;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
                     Timer t = this.timers.get (timer_id);
@@ -394,6 +392,13 @@ namespace DVB {
                     else
                         info.title = "";
                     ret = true;
+                } else {
+                    info.id = 0;
+                    info.duration = 0;
+                    info.active = false;
+                    info.channel_name = "";
+                    info.title = "";
+                    ret = false;
                 }
             }
             return ret;
