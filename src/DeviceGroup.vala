@@ -372,9 +372,10 @@ namespace DVB {
         }
         /**
          * @channel_sid: ID of the channel
-         * @returns: Object path to Schedule service
+         * @opath: Device group's DBus path
+         * @returns: TRUE on success
          */
-        public DBus.ObjectPath GetSchedule (uint channel_sid) throws DBus.Error {
+        public bool GetSchedule (uint channel_sid, out DBus.ObjectPath opath) throws DBus.Error {
             if (this.Channels.contains (channel_sid)) {
                 string path = Constants.DBUS_SCHEDULE_PATH.printf (this.Id, channel_sid);
                 
@@ -392,10 +393,12 @@ namespace DVB {
                     this.schedules.add (path);
                 }
                 
-                return new DBus.ObjectPath (path);
+                opath = new DBus.ObjectPath (path);
+                return true;
             }
         
-            return new DBus.ObjectPath ("");
+            opath = new DBus.ObjectPath ("");
+            return false;
         }
 
         /**

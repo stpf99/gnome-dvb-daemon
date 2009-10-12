@@ -226,8 +226,11 @@ class DVBDeviceGroupClient(gobject.GObject):
         return self.devgroup.GetType()
         
     def get_schedule(self, channel_sid):
-        path = self.devgroup.GetSchedule(channel_sid)
-        return DVBScheduleClient(path)
+        path, success = self.devgroup.GetSchedule(channel_sid)
+        if success:
+            return DVBScheduleClient(path)
+        else:
+            return None
         
     def get_recordings_directory (self):
         return self.devgroup.GetRecordingsDirectory()

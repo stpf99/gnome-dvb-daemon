@@ -86,9 +86,10 @@ namespace DVB {
         
         /**
          * @channel_sid: ID of the channel
-         * @returns: Object path to Schedule service
+         * @opath: Object path to Schedule service
+         * @returns: TRUE on success
          */
-        public abstract DBus.ObjectPath GetSchedule (uint channel_sid) throws DBus.Error;
+        public abstract bool GetSchedule (uint channel_sid, out DBus.ObjectPath opath) throws DBus.Error;
 
         /**
          * @returns: Location of the recordings directory
