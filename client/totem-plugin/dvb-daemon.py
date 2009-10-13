@@ -18,12 +18,14 @@
 
 import pygtk
 pygtk.require("2.0")
+from glib import GError
 import gtk
 import pygst
 pygst.require("0.10")
 import subprocess
 import totem
 import gnomedvb
+import sys
 from cgi import escape
 
 from gnomedvb import global_error_handler
@@ -147,6 +149,7 @@ class DVBDaemonPlugin(totem.Plugin):
         self.manager = DVBModel()
         self._size = self.manager.get_device_group_size()
         self._loaded_groups = 0
+        self.recentmanager = gtk.recent_manager_get_default()
         
         self._setup_sidebar()
         self._setup_menu()
@@ -379,14 +382,20 @@ class DVBDaemonPlugin(totem.Plugin):
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_REPLACE, url)
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_PLAY, url)
                 # Totem adds the URL to recent manager, remove it again
-                recentmanager = gtk.recent_manager_get_default()
-                recentmanager.remove_item (url)
-                recentmanager.add_full (url,
+                try:
+                    self.recentmanager.remove_item (url)
+                except GError, e:
+                    print >> sys.stderr, \
+                        "Error removing recently used item: %s" % str(e)
+                success = self.recentmanager.add_full (url,
                     {"display_name": model[aiter][model.COL_NAME],
                      "app_name": _("Totem Movie Player"),
                      "app_exec": "totem %u",
                      "mime_type": "video",
                      "groups": ("Totem", "gnome-dvb-daemon",)})
+                if not success:
+                    print >> sys.stderr, \
+                        "Error adding recently used item"
         elif event.button == 3:
             # right click button
             x = int(event.x)
