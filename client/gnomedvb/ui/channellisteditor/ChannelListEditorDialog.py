@@ -235,7 +235,7 @@ class ChannelListEditorDialog(gtk.Dialog):
                 flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                 type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
             error_dialog.set_markup(
-                "<big><span weight=\"bold\">%s</big></span>" % _("An error occured while adding the group"))
+                "<big><span weight=\"bold\">%s</span></big>" % _("An error occured while adding the group"))
             error_dialog.run()
             error_dialog.destroy()
             
@@ -262,7 +262,7 @@ class ChannelListEditorDialog(gtk.Dialog):
                 flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                 type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
             error_dialog.set_markup(
-                "<big><span weight=\"bold\">%s</big></span>" % _("An error occured while removing the group"))
+                "<big><span weight=\"bold\">%s</span></big>" % _("An error occured while removing the group"))
             error_dialog.run()
             error_dialog.destroy()
             

@@ -239,7 +239,7 @@ class Preferences(gtk.Dialog):
                         flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                         type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
                     error_dialog.set_markup(
-                        "<big><span weight=\"bold\">%s</big></span>" % _("Group could not be created"))
+                        "<big><span weight=\"bold\">%s</span></big>" % _("Group could not be created"))
                     error_dialog.format_secondary_text(
                         _("Make sure that you selected the correct channels file and directory where recordings are stored and that both are readable.")
                     )
@@ -264,7 +264,7 @@ class Preferences(gtk.Dialog):
                         flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                         type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
                     error_dialog.set_markup(
-                        "<big><span weight=\"bold\">%s</big></span>" % _("Device could not be added to group"))
+                        "<big><span weight=\"bold\">%s</span></big>" % _("Device could not be added to group"))
                     error_dialog.format_secondary_text(
                         _("Make sure that the device isn't already assigned to a different group and that all devices in the group are of the same type.")
                     )
