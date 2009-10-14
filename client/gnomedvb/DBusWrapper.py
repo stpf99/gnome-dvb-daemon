@@ -153,11 +153,11 @@ class DVBManagerClient(gobject.GObject):
     def add_device_to_new_group (self, adapter, frontend, channels_file, recordings_dir, name, **kwargs):
         return self.manager.AddDeviceToNewGroup(adapter, frontend, channels_file, recordings_dir, name, **kwargs)
        
-    def get_name_of_registered_device(self, adapter, frontend):
-        return self.manager.GetNameOfRegisteredDevice(adapter, frontend)
+    def get_name_of_registered_device(self, adapter, frontend, **kwargs):
+        return self.manager.GetNameOfRegisteredDevice(adapter, frontend, **kwargs)
         
-    def get_device_group_size(self):
-        return self.manager.GetDeviceGroupSize()
+    def get_device_group_size(self, **kwargs):
+        return self.manager.GetDeviceGroupSize(**kwargs)
         
     def get_channel_groups(self, **kwargs):
         return self.manager.GetChannelGroups(**kwargs)
@@ -206,24 +206,24 @@ class DVBDeviceGroupClient(gobject.GObject):
     def add_device (self, adapter, frontend, **kwargs):
         return self.devgroup.AddDevice(adapter, frontend, **kwargs)
         
-    def remove_device(self, adapter, frontend):
-        return self.devgroup.RemoveDevice(adapter, frontend)
+    def remove_device(self, adapter, frontend, **kwargs):
+        return self.devgroup.RemoveDevice(adapter, frontend, **kwargs)
     
     def get_channel_list(self):
         path = self.devgroup.GetChannelList()
         return DVBChannelListClient(path)
     
-    def get_members(self):
-        return self.devgroup.GetMembers()
+    def get_members(self, **kwargs):
+        return self.devgroup.GetMembers(**kwargs)
         
-    def get_name(self):
-        return self.devgroup.GetName()
+    def get_name(self, **kwargs):
+        return self.devgroup.GetName(**kwargs)
     
-    def set_name(self, name):
-        return self.devgroup.SetName(name)
+    def set_name(self, name, **kwargs):
+        return self.devgroup.SetName(name, **kwargs)
         
-    def get_type(self):
-        return self.devgroup.GetType()
+    def get_type(self, **kwargs):
+        return self.devgroup.GetType(**kwargs)
         
     def get_schedule(self, channel_sid):
         path, success = self.devgroup.GetSchedule(channel_sid)
@@ -232,11 +232,11 @@ class DVBDeviceGroupClient(gobject.GObject):
         else:
             return None
         
-    def get_recordings_directory (self):
-        return self.devgroup.GetRecordingsDirectory()
+    def get_recordings_directory (self, **kwargs):
+        return self.devgroup.GetRecordingsDirectory(**kwargs)
         
-    def set_recordings_directory (self, location):
-        return self.devgroup.SetRecordingsDirectory(location)
+    def set_recordings_directory (self, location, **kwargs):
+        return self.devgroup.SetRecordingsDirectory(location, **kwargs)
      
     def on_device_added(self, adapter, frontend):
         self.emit("device-added", adapter, frontend)
@@ -264,17 +264,17 @@ class DVBScannerClient(gobject.GObject):
         self.scanner.connect_to_signal ("ChannelAdded", self.on_channel_added)
         self.scanner.connect_to_signal ("Destroyed", self.on_destroyed)
         
-    def add_scanning_data(self, data):
-        self.scanner.AddScanningData (*data)
+    def add_scanning_data(self, data, **kwargs):
+        self.scanner.AddScanningData (*data, **kwargs)
         
     def add_scanning_data_from_file(self, path, **kwargs):
         return self.scanner.AddScanningDataFromFile(path, **kwargs)
         
-    def run(self):
-        self.scanner.Run()
+    def run(self, **kwargs):
+        self.scanner.Run(**kwargs)
         
-    def destroy(self):
-        self.scanner.Destroy()
+    def destroy(self, **kwargs):
+        self.scanner.Destroy(**kwargs)
         
     def write_channels_to_file(self, channel_sids, channelfile, **kwargs):
         self.scanner.WriteChannelsToFile(channel_sids, channelfile, **kwargs)
@@ -313,32 +313,32 @@ class DVBRecordingsStoreClient(gobject.GObject):
     def get_recordings(self, **kwargs):
         return self.recstore.GetRecordings(**kwargs)
         
-    def get_location(self, rid):
-        return self.recstore.GetLocation(rid)
+    def get_location(self, rid, **kwargs):
+        return self.recstore.GetLocation(rid, **kwargs)
         
-    def get_name(self, rid):
-        return self.recstore.GetName(rid)
+    def get_name(self, rid, **kwargs):
+        return self.recstore.GetName(rid, **kwargs)
         
-    def get_description(self, rid):
-        return self.recstore.GetDescription(rid)
+    def get_description(self, rid, **kwargs):
+        return self.recstore.GetDescription(rid, **kwargs)
         
-    def get_length(self, rid):
-        return self.recstore.GetLength(rid)
+    def get_length(self, rid, **kwargs):
+        return self.recstore.GetLength(rid, **kwargs)
         
-    def get_start_time(self, rid):
-        return self.recstore.GetStartTime(rid)
+    def get_start_time(self, rid, **kwargs):
+        return self.recstore.GetStartTime(rid, **kwargs)
         
-    def get_start_timestamp(self, rid):
-        return self.recstore.GetStartTimestamp(rid)
+    def get_start_timestamp(self, rid, **kwargs):
+        return self.recstore.GetStartTimestamp(rid, **kwargs)
         
     def delete(self, rid, **kwargs):
         return self.recstore.Delete(rid, **kwargs)
         
-    def get_channel_name(self, rid):
-        return self.recstore.GetChannelName(rid)
+    def get_channel_name(self, rid, **kwargs):
+        return self.recstore.GetChannelName(rid, **kwargs)
         
-    def get_all_informations(self, rid):
-        return self.recstore.GetAllInformations(rid)
+    def get_all_informations(self, rid, **kwargs):
+        return self.recstore.GetAllInformations(rid, **kwargs)
         
     def on_changed(self, rid, typeid):
         self.emit("changed", rid, typeid)
@@ -367,50 +367,50 @@ class DVBRecorderClient(gobject.GObject):
     def get_path(self):
         return self.object_path
         
-    def add_timer (self, channel, year, month, day, hour, minute, duration):
-        return self.recorder.AddTimer(channel, year, month, day, hour, minute, duration)
+    def add_timer (self, channel, year, month, day, hour, minute, duration, **kwargs):
+        return self.recorder.AddTimer(channel, year, month, day, hour, minute, duration, **kwargs)
         
-    def add_timer_with_margin (self, channel, year, month, day, hour, minute, duration):
-        return self.recorder.AddTimerWithMargin(channel, year, month, day, hour, minute, duration)
+    def add_timer_with_margin (self, channel, year, month, day, hour, minute, duration, **kwargs):
+        return self.recorder.AddTimerWithMargin(channel, year, month, day, hour, minute, duration, **kwargs)
         
-    def add_timer_for_epg_event(self, event_id, channel_sid):
-        return self.recorder.AddTimerForEPGEvent(event_id, channel_sid)
+    def add_timer_for_epg_event(self, event_id, channel_sid, **kwargs):
+        return self.recorder.AddTimerForEPGEvent(event_id, channel_sid, **kwargs)
         
-    def delete_timer(self, tid):
-        return self.recorder.DeleteTimer(tid)
+    def delete_timer(self, tid, **kwargs):
+        return self.recorder.DeleteTimer(tid, **kwargs)
         
     def get_timers(self, **kwargs):
         return self.recorder.GetTimers(**kwargs)
         
-    def get_start_time(self, tid):
-        return self.recorder.GetStartTime(tid)
+    def get_start_time(self, tid, **kwargs):
+        return self.recorder.GetStartTime(tid, **kwargs)
         
-    def get_end_time(self, tid):
-        return self.recorder.GetEndTime(tid)
+    def get_end_time(self, tid, **kwargs):
+        return self.recorder.GetEndTime(tid, **kwargs)
         
-    def get_duration(self, tid):
-        return self.recorder.GetDuration(tid)
+    def get_duration(self, tid, **kwargs):
+        return self.recorder.GetDuration(tid, **kwargs)
         
-    def get_channel_name(self, tid):
-        return self.recorder.GetChannelName(tid)
+    def get_channel_name(self, tid, **kwargs):
+        return self.recorder.GetChannelName(tid, **kwargs)
 
-    def get_title(self, tid):
-        return self.recorder.GetTitle(tid)
+    def get_title(self, tid, **kwargs):
+        return self.recorder.GetTitle(tid, **kwargs)
 
-    def get_all_informations(self, tid):
-        return self.recorder.GetAllInformations(tid)
+    def get_all_informations(self, tid, **kwargs):
+        return self.recorder.GetAllInformations(tid, **kwargs)
         
-    def get_active_timers(self):
-        return self.recorder.GetActiveTimers()
+    def get_active_timers(self, **kwargs):
+        return self.recorder.GetActiveTimers(**kwargs)
         
-    def is_timer_active(self, tid):
-        return self.recorder.IsTimerActive(tid)
+    def is_timer_active(self, tid, **kwargs):
+        return self.recorder.IsTimerActive(tid, **kwargs)
         
-    def has_timer(self, year, month, day, hour, minute, duration):
-        return self.recorder.HasTimer(year, month, day, hour, minute, duration)
+    def has_timer(self, year, month, day, hour, minute, duration, **kwargs):
+        return self.recorder.HasTimer(year, month, day, hour, minute, duration, **kwargs)
         
-    def has_timer_for_event(self, event_id, channel_sid):
-        return self.recorder.HasTimerForEvent(event_id, channel_sid)
+    def has_timer_for_event(self, event_id, channel_sid, **kwargs):
+        return self.recorder.HasTimerForEvent(event_id, channel_sid, **kwargs)
         
     def on_recording_started(self, timer_id):
         self.emit("recording-started", timer_id)
@@ -443,17 +443,17 @@ class DVBChannelListClient:
     def get_tv_channels(self, **kwargs):
         return self.channels.GetTVChannels(**kwargs)
         
-    def get_channel_name(self, cid):
-        return self.channels.GetChannelName(cid)
+    def get_channel_name(self, cid, **kwargs):
+        return self.channels.GetChannelName(cid, **kwargs)
         
-    def get_channel_network(self, cid):
-        return self.channels.GetChannelNetwork(cid)
+    def get_channel_network(self, cid, **kwargs):
+        return self.channels.GetChannelNetwork(cid, **kwargs)
         
-    def is_radio_channel(self, cid):
-        return self.channels.IsRadioChannel(cid)
+    def is_radio_channel(self, cid, **kwargs):
+        return self.channels.IsRadioChannel(cid, **kwargs)
         
-    def get_channel_url(self, cid):
-        return self.channels.GetChannelURL(cid)
+    def get_channel_url(self, cid, **kwargs):
+        return self.channels.GetChannelURL(cid, **kwargs)
         
     def get_channel_infos(self, **kwargs):
         return self.channels.GetChannelInfos(**kwargs)
@@ -499,35 +499,35 @@ class DVBScheduleClient(gobject.GObject):
     def get_informations(self, eid, **kwargs):
         return self.schedule.GetInformations(eid, **kwargs)
         
-    def now_playing(self):
-        return self.schedule.NowPlaying()
+    def now_playing(self, **kwargs):
+        return self.schedule.NowPlaying(**kwargs)
         
-    def next(self, eid):
-        return self.schedule.Next(eid)
+    def next(self, eid, **kwargs):
+        return self.schedule.Next(eid, **kwargs)
         
-    def get_name(self, eid):
-        return self.schedule.GetName(eid)
+    def get_name(self, eid, **kwargs):
+        return self.schedule.GetName(eid, **kwargs)
         
-    def get_short_description(self, eid):
-        return self.schedule.GetShortDescription(eid)
+    def get_short_description(self, eid, **kwargs):
+        return self.schedule.GetShortDescription(eid, **kwargs)
         
-    def get_extended_description(self, eid):
-        return self.schedule.GetExtendedDescription(eid)
+    def get_extended_description(self, eid, **kwargs):
+        return self.schedule.GetExtendedDescription(eid, **kwargs)
         
-    def get_duration(self, eid):
-        return self.schedule.GetDuration(eid)
+    def get_duration(self, eid, **kwargs):
+        return self.schedule.GetDuration(eid, **kwargs)
         
     def get_local_start_time(self, eid):
         return self.schedule.GetLocalStartTime(eid)
         
-    def get_local_start_timestamp(self, eid):
-        return self.schedule.GetLocalStartTimestamp(eid)
+    def get_local_start_timestamp(self, eid, **kwargs):
+        return self.schedule.GetLocalStartTimestamp(eid, **kwargs)
         
-    def is_running(self, eid):
-        return self.schedule.IsRunning(eid)
+    def is_running(self, eid, **kwargs):
+        return self.schedule.IsRunning(eid, **kwargs)
         
-    def is_scrambled(self, eid):
-        return self.schedule.IsScrambled(eid)
+    def is_scrambled(self, eid, **kwargs):
+        return self.schedule.IsScrambled(eid, **kwargs)
         
 if __name__ == '__main__':
     loop = gobject.MainLoop()
