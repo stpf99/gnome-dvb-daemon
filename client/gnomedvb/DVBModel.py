@@ -121,7 +121,7 @@ class DeviceGroup(gnomedvb.DVBDeviceGroupClient):
                 devices.append(dev)
         return devices
 
-    def remove_device(self, device):
+    def remove_device(self, device, **kwargs):
         return gnomedvb.DVBDeviceGroupClient.remove_device(self, device.adapter,
-            device.frontend)
+            device.frontend, **kwargs)
      
