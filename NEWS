@@ -1,4 +1,37 @@
 ==============
+Version 0.1.12
+==============
+
+This is mainly another bug fix release which
+fixes a couple of crasher bugs. In addition,
+the D-Bus API is now more consistent.
+
+- Removed most markups from the	translatable strings
+- Fixed crash in GetChannelURL if channel_id doesn't exist
+- Reverted r756: Use libgee's to_array methods where applicable
+- Added option to display channel groups to ChannelsTreeStore
+- Fixed crasher in GetAllInformations if id doesn't exist
+- Return true if id is valid but channel has no name/network in GetChannelName and GetChannelNetwork
+- Fixed crasher in GetAllInformations in Recorder if provided id does not exist
+- GetTitle in Recorder returns true if the id is valid but no title is available
+- Fixed crasher in GetInformations in Schedule if invalid id was provided
+- GetSchedule returns true on success, ObjectPath is returned as out parameter
+- AddChannelGroup returns the id of	the group in an out parameter
+- Catch exception when removing item from GtkRecentManager in Totem plugin
+- Remove device	from unassigned devices if device or group is added
+
+Updated Translations:
+---------------------
+- Finnish
+- French
+- German
+- Polish
+- Serbian
+- Spanish
+- Swedish
+- Telugu
+
+==============
 Version 0.1.11
 ==============
 
