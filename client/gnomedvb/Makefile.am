@@ -2,6 +2,7 @@
 gnomedvbdir = $(pythondir)/gnomedvb
 gnomedvb_PYTHON = \
     __init__.py \
+    Callback.py \
     DBusWrapper.py \
     Device.py \
     DVBModel.py \

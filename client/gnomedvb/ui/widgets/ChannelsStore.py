@@ -20,6 +20,7 @@ import gtk
 import gobject
 import gnomedvb
 from gnomedvb import global_error_handler
+from gnomedvb.Callback import Callback
 
 class ChannelsStore(gtk.ListStore):
 
@@ -146,19 +147,4 @@ class ChannelsTreeStore(gtk.TreeStore):
             if row[self.COL_GROUP_ID] == group_id:
                 self.remove(row.iter)
                 break
-
-
-class Callback:
-
-    def __init__(self):
-        self.callbacks = []
-        
-    def add_callback(self, callback_function, *args):
-        if not callable(callback_function):
-            raise TypeError("first argument must be callable")
-        self.callbacks.append((callback_function, args))
-        
-    def callback(self, result):
-        for cb, args in self.callbacks:
-            cb(result, *args)
 
