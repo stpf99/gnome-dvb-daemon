@@ -20,7 +20,7 @@ import gtk
 from gettext import gettext as _
 import gnomedvb
 from gnomedvb import global_error_handler
-from gnomedvb.ui.timers.TimerDialog import TimerDialog
+from gnomedvb.ui.timers.TimerDialog import TimerDialog, NoTimerCreatedDialog
 
 class EditTimersDialog(gtk.Dialog):
 
@@ -137,6 +137,16 @@ class EditTimersDialog(gtk.Dialog):
                 self.timerslist.remove(row.iter)
 
     def _on_button_delete_clicked(self, button):
+        def delete_timer_callback(success):
+            if not success:
+                error_dialog = gtk.MessageDialog(parent=self,
+                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
+                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                error_dialog.set_markup(
+                    "<big><span weight=\"bold\">%s</span></big>" % _("Timer could not be deleted"))
+                error_dialog.run()
+                error_dialog.destroy()
+    
         model, aiter = self.timersview.get_selection().get_selected()
         if aiter != None:
             timer_id = model[aiter][self.COL_ID]
@@ -145,28 +155,41 @@ class EditTimersDialog(gtk.Dialog):
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
                 dialog.set_markup(
-                    "<big><span weight=\"bold\">%s</big></span>" % _("Abort active recording?"))
+                    "<big><span weight=\"bold\">%s</span></big>" % _("Abort active recording?"))
                 dialog.format_secondary_text(
                     _("The timer you selected belongs to a currently active recording.") + " " +
                     _("Deleting this timer will abort the recording."))
                 response = dialog.run()
                 dialog.destroy()
                 if response == gtk.RESPONSE_YES:
-                    if not self.recorder.delete_timer(timer_id):
-                        error_dialog = gtk.MessageDialog(parent=self,
-                            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                        error_dialog.set_markup(
-                            "<big><span weight=\"bold\">%s</big></span>" % _("Timer could not be deleted"))
-                        error_dialog.run()
-                        error_dialog.destroy()
+                    self.recorder.delete_timer(timer_id,
+                        reply_handler=delete_timer_callback,
+                        error_handler=global_error_handler)
             else:
-                self.recorder.delete_timer(timer_id)
+                self.recorder.delete_timer(timer_id,
+                    reply_handler=delete_timer_callback,
+                    error_handler=global_error_handler)
         
     def _on_button_add_clicked(self, button):
-        d = TimerDialog(self, self.device_group)
-        d.run()
-        d.destroy()
+        def add_timer_callback(rec_id, success):
+            if not success:
+                err_dialog = NoTimerCreatedDialog(self)
+                err_dialog.run()
+                err_dialog.destroy()
+    
+        dialog = TimerDialog(self, self.device_group)
+        response_id = dialog.run()
+        if response_id == gtk.RESPONSE_ACCEPT:
+            duration = dialog.get_duration()
+            start = dialog.get_start_time()
+            channel = dialog.get_channel()
+            
+            self.recorder.add_timer (channel, start[0],
+                start[1], start[2], start[3], start[4], duration,
+                reply_handler=add_timer_callback,
+                error_handler=global_error_handler)
+            
+        dialog.destroy()
    
     def _on_recorder_changed(self, recorder, timer_id, typeid):
         if recorder == self.recorder:

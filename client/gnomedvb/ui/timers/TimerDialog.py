@@ -38,7 +38,6 @@ class TimerDialog(gtk.Dialog):
         
         self.device_group = device_group
         self._start_date = None
-        self.connect("response", self._on_response)
         
         table = gtk.Table(rows=3, columns=2)
         table.set_row_spacings(6)
@@ -157,22 +156,6 @@ class TimerDialog(gtk.Dialog):
             self._set_date(date[0], date[1]+1, date[2])
         
         d.destroy()
-        
-    def _on_response(self, dialog, response_id):
-        if (response_id == gtk.RESPONSE_ACCEPT):
-            duration = self.get_duration()
-            start = self.get_start_time()
-            channel = self.get_channel()
-            
-            recorder = self.device_group.get_recorder()
-            rec_id, success = recorder.add_timer (channel, start[0], start[1], start[2],
-                start[3], start[4], duration)
-              
-            if not success:
-                dialog = NoTimerCreatedDialog(self)
-                dialog.run()
-                dialog.destroy()
-
                
 class NoTimerCreatedDialog(gtk.MessageDialog):
 
