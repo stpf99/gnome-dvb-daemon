@@ -147,7 +147,7 @@ class Preferences(gtk.Dialog):
         self._model.get_unregistered_devices(reply_handler=append_unassigned)
         self._model.get_registered_device_groups(reply_handler=append_registered)
 
-    def _append_group(self, group):
+    def _append_group(self, group, remove_unassigned=False):
         group.connect("device-added", self._on_group_device_added)
         group.connect("device-removed", self._on_group_device_removed)
         
@@ -159,6 +159,8 @@ class Preferences(gtk.Dialog):
             dev_iter = self.devicegroups.append(group_iter)
             self.devicegroups.set(dev_iter, self.devicegroups.COL_GROUP, group)
             self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
+            if remove_unassigned:
+                self._remove_unassigned_device(device.adapter, device.frontend)
 
     def _on_groups_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
@@ -290,7 +292,7 @@ class Preferences(gtk.Dialog):
     def _on_manager_group_added(self, manager, group_id):
         group = manager.get_device_group(group_id)
         if group:
-            self._append_group(group)
+            self._append_group(group, remove_unassigned=True)
     
     def _on_manager_group_removed(self, manager, group_id):        
         aiter = self.devicegroups.get_iter_first()
@@ -303,6 +305,7 @@ class Preferences(gtk.Dialog):
             aiter = self.devicegroups.iter_next(aiter)
         
     def _on_group_device_added(self, group, adapter, frontend):
+        self._remove_unassigned_device(adapter, frontend)
         # Iterate over groups
         for list_group, aiter in self.devicegroups.get_groups():
             if group["id"] == list_group["id"]:
@@ -327,4 +330,11 @@ class Preferences(gtk.Dialog):
                         self.devicegroups.remove(child_iter)
                         return
                     child_iter = self.devicegroups.iter_next(child_iter)
+                    
+    def _remove_unassigned_device(self, adapter, frontend):
+        # Remove device from unassigned
+        for row in self.unassigned_devices:
+            dev = row[self.unassigned_devices.COL_DEVICE]
+            if dev.adapter == adapter and dev.frontend == frontend:
+                self.unassigned_devices.remove(row.iter)
 
