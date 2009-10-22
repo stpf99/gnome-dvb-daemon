@@ -71,7 +71,7 @@ class ChannelsTreeStore(gtk.TreeStore):
         gtk.TreeStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
         
         self.set_sort_order(gtk.SORT_ASCENDING)
-            
+        
         self._use_channel_groups = use_channel_groups
         self._manager = gnomedvb.DVBManagerClient ()
         self._manager.connect('group-added', self._on_manager_group_added)
@@ -93,18 +93,24 @@ class ChannelsTreeStore(gtk.TreeStore):
         channellist = dev_group.get_channel_list()
         
         d = Callback()
-        if self._use_channel_groups:   
+        if self._use_channel_groups:
             d.add_callback(self._append_channel_groups, channellist, group_id,
                 group_iter, dev_group)
             self._manager.get_channel_groups(
                 reply_handler=lambda x: d.callback(x),
                 error_handler=global_error_handler)
+            # Put all available channels in virtual group
+            all_group_iter = self.append(group_iter,
+                [group_id, _("All Channels"), 0, dev_group])
         else:
-            d.add_callback(self._append_channels, group_id, group_iter,
-                dev_group)
-            channellist.get_channel_infos(
-                reply_handler=lambda x: d.callback(x),
-                error_handler=global_error_handler)
+            all_group_iter = group_iter
+
+        d_all = Callback()
+        d_all.add_callback(self._append_channels, group_id, all_group_iter,
+            dev_group)
+        channellist.get_channel_infos(
+            reply_handler=lambda x: d_all.callback(x),
+            error_handler=global_error_handler)
      
     def _append_channels(self, channels, group_id, group_iter, dev_group):
         for channel_id, name in channels:
@@ -113,7 +119,7 @@ class ChannelsTreeStore(gtk.TreeStore):
                 name,
                 channel_id,
                 dev_group])
-        self.emit("loading-finished", group_id)   
+        self.emit("loading-finished", group_id)
 
     def _append_channel_groups(self, channel_groups, channellist, group_id, group_iter, dev_group):
         def append_channel(channels, chan_group_iter):
