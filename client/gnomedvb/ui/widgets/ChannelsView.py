@@ -19,7 +19,7 @@
 import gtk
 from gettext import gettext as _
 
-from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
+from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore, ChannelsTreeStore
 
 class ChannelsView(gtk.TreeView):
 
@@ -39,7 +39,8 @@ class ChannelsView(gtk.TreeView):
         self.append_column(col_name)
         
     def set_model(self, model=None):
-        if model != None and not isinstance(model, ChannelsStore):
-            raise TypeError("model must be a ChannelsStore instance")
+        if model != None and not (isinstance(model, ChannelsStore) \
+                or isinstance(model, ChannelsTreeStore)):
+            raise TypeError("model must be a ChannelsStore or ChannelsTreeStore instance")
         gtk.TreeView.set_model(self, model)
         
