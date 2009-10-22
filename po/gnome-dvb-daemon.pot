@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-06 20:39+0200\n"
+"POT-Creation-Date: 2009-10-22 17:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,7 +117,7 @@ msgid "There is currently no schedule available for this channel"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
-#: ../client/totem-plugin/dvb-daemon.py:205
+#: ../client/totem-plugin/dvb-daemon.py:211
 msgid "_Recording schedule"
 msgstr ""
 
@@ -176,8 +176,8 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:295
-#: ../client/totem-plugin/dvb-daemon.py:187
-#: ../client/totem-plugin/dvb-daemon.py:207
+#: ../client/totem-plugin/dvb-daemon.py:193
+#: ../client/totem-plugin/dvb-daemon.py:213
 msgid "What's on now"
 msgstr ""
 
@@ -246,12 +246,12 @@ msgstr ""
 #. Add recordings
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:286
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:30
-#: ../client/totem-plugin/dvb-daemon.py:155
+#: ../client/totem-plugin/dvb-daemon.py:161
 msgid "Recordings"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:495
-#: ../client/totem-plugin/dvb-daemon.py:73
+#: ../client/totem-plugin/dvb-daemon.py:75
 msgid "Schedule recording for the selected event?"
 msgstr ""
 
@@ -317,75 +317,75 @@ msgstr ""
 msgid "Edit group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:35
-#: ../client/totem-plugin/dvb-daemon.py:208
+#: ../client/gnomedvb/ui/preferences/Preferences.py:36
+#: ../client/totem-plugin/dvb-daemon.py:214
 msgid "Digital TV Preferences"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:68
+#: ../client/gnomedvb/ui/preferences/Preferences.py:69
 msgid "Edit selected group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:75
+#: ../client/gnomedvb/ui/preferences/Preferences.py:76
 msgid "Remove selected device"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:84
+#: ../client/gnomedvb/ui/preferences/Preferences.py:85
 msgid "Setup"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:86
+#: ../client/gnomedvb/ui/preferences/Preferences.py:87
 msgid "Setup devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:93
+#: ../client/gnomedvb/ui/preferences/Preferences.py:94
 msgid "Create new group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:97
+#: ../client/gnomedvb/ui/preferences/Preferences.py:98
 msgid "Create new group for selected device"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:103
+#: ../client/gnomedvb/ui/preferences/Preferences.py:104
 msgid "Add to group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:107
+#: ../client/gnomedvb/ui/preferences/Preferences.py:108
 msgid "Add selected device to existing group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:123
+#: ../client/gnomedvb/ui/preferences/Preferences.py:124
 msgid "Configured devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:134
+#: ../client/gnomedvb/ui/preferences/Preferences.py:135
 msgid "Unconfigured devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:196
+#: ../client/gnomedvb/ui/preferences/Preferences.py:200
+msgid "Device could not be removed from group"
+msgstr ""
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:214
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:212
-msgid "Device could not be removed from group"
-msgstr ""
-
-#: ../client/gnomedvb/ui/preferences/Preferences.py:240
+#: ../client/gnomedvb/ui/preferences/Preferences.py:236
 msgid "Group could not be created"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:242
+#: ../client/gnomedvb/ui/preferences/Preferences.py:238
 msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:265
+#: ../client/gnomedvb/ui/preferences/Preferences.py:267
 msgid "Device could not be added to group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:267
+#: ../client/gnomedvb/ui/preferences/Preferences.py:269
 msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
@@ -413,53 +413,53 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:148
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:146
+msgid "Timer could not be deleted"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:158
 msgid "Abort active recording?"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:150
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:160
 msgid "The timer you selected belongs to a currently active recording."
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:151
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:161
 msgid "Deleting this timer will abort the recording."
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:160
-msgid "Timer could not be deleted"
 msgstr ""
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:34
 msgid "Timer"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:50
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:49
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:60
 msgid "Channel:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:65
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:64
 msgid "Start time:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:76
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:75
 msgid "Pick date"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:98
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:97
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:70
 msgid "Duration:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:114
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:113
 msgid "minutes"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:183
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:166
 msgid "Timer could not be created"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:185
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:168
 msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
@@ -717,49 +717,65 @@ msgid ""
 "All process will be lost."
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:45
-#: ../client/totem-plugin/dvb-daemon.py:89
-#: ../client/totem-plugin/dvb-daemon.py:193
+#: ../client/totem-plugin/dvb-daemon.py:47
+#: ../client/totem-plugin/dvb-daemon.py:91
+#: ../client/totem-plugin/dvb-daemon.py:199
 msgid "Program Guide"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:161
+#: ../client/totem-plugin/dvb-daemon.py:167
 msgid "Digital TV"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:204
+#: ../client/totem-plugin/dvb-daemon.py:210
 msgid "Digital _TV"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:206
+#: ../client/totem-plugin/dvb-daemon.py:212
 msgid "_Program Guide"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:209
+#: ../client/totem-plugin/dvb-daemon.py:215
 msgid "_Delete"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:210
+#: ../client/totem-plugin/dvb-daemon.py:216
 msgid "D_etails"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:279
+#: ../client/totem-plugin/dvb-daemon.py:217
+msgid "_Order channels"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:220
+msgid "By _name"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:221
+msgid "By _group"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:224
+msgid "_Reverse order"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:319
 msgid "DVB card is not configured"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:280
+#: ../client/totem-plugin/dvb-daemon.py:320
 msgid "Do you want to search for channels now?"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:346
+#: ../client/totem-plugin/dvb-daemon.py:386
 msgid "Delete selected recording?"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:386
+#: ../client/totem-plugin/dvb-daemon.py:429
 msgid "Totem Movie Player"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:429
+#: ../client/totem-plugin/dvb-daemon.py:475
 #, python-format
 msgid "Recording %d"
 msgstr ""
