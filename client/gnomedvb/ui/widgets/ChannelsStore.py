@@ -70,8 +70,7 @@ class ChannelsTreeStore(gtk.TreeStore):
     def __init__(self, use_channel_groups=False):
         gtk.TreeStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
         
-        self.set_sort_column_id(self.COL_NAME,
-            gtk.SORT_ASCENDING)
+        self.set_sort_order(gtk.SORT_ASCENDING)
             
         self._use_channel_groups = use_channel_groups
         self._manager = gnomedvb.DVBManagerClient ()
@@ -147,4 +146,7 @@ class ChannelsTreeStore(gtk.TreeStore):
             if row[self.COL_GROUP_ID] == group_id:
                 self.remove(row.iter)
                 break
+                
+    def set_sort_order(self, order):
+        self.set_sort_column_id(self.COL_NAME, order)
 
