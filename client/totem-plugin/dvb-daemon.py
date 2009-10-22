@@ -124,6 +124,9 @@ class DVBDaemonPlugin(totem.Plugin):
     </popup>
     </ui>
     '''
+    
+    (ORDER_BY_NAME_ID,
+     ORDER_BY_GROUP_ID,) = range(2)
 
     def __init__ (self):
         totem.Plugin.__init__(self)
@@ -211,6 +214,15 @@ class DVBDaemonPlugin(totem.Plugin):
             ('dvb-preferences', gtk.STOCK_PREFERENCES, _('Digital TV Preferences'), None, None, self._on_action_preferences),
             ('dvb-delete-recording', None, _('_Delete'), None, None, self._on_action_delete),
             ('dvb-detail-recording', None, _('D_etails'), None, None, self._on_action_details),
+            ('dvb-order-channels', None, _('_Order channels')),
+        ])
+        actiongroup.add_radio_actions([
+            ('dvb-order-by-name', None, _('By _name'), None, None, self.ORDER_BY_NAME_ID),
+            ('dvb-order-by-group', None, _('By _group'), None, None, self.ORDER_BY_GROUP_ID),
+        ], 0, self._on_order_by_changed)
+        actiongroup.add_toggle_actions([
+            ('dvb-order-reverse', None, _('_Reverse order'), None, None,
+             self._on_order_reverse_toggled)
         ])
         uimanager.insert_action_group(actiongroup)
         
@@ -242,6 +254,31 @@ class DVBDaemonPlugin(totem.Plugin):
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/sidebar', 'dvb-sep-2', None,
             gtk.UI_MANAGER_AUTO, True)
+
+        # Order by menu
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/show-controls', 'dvb-order-channels',
+            'dvb-order-channels', gtk.UI_MANAGER_MENU, False)
+            
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels',
+            'dvb-order-by-name', 'dvb-order-by-name', gtk.UI_MANAGER_AUTO, False)
+            
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels',
+            'dvb-order-by-group', 'dvb-order-by-group', gtk.UI_MANAGER_AUTO, False)
+        
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels', 'dvb-sep-3', None,
+            gtk.UI_MANAGER_AUTO, False)
+            
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels',
+            'dvb-order-reverse', 'dvb-order-reverse', gtk.UI_MANAGER_AUTO, False)
+        
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/view/show-controls', 'dvb-sep-4', None,
+            gtk.UI_MANAGER_AUTO, False)
         
         self.popup_menu = uimanager.get_widget('/dvb-popup')
         self.popup_recordings = uimanager.get_widget('/dvb-recording-popup')
@@ -468,4 +505,18 @@ class DVBDaemonPlugin(totem.Plugin):
     def _delete_callback(self, success):
         if not success:
             global_error_handler("Could not delete recording")
-       
+            
+    def _on_order_by_changed(self, action, current):
+        val = current.get_current_value()
+        if val == self.ORDER_BY_NAME_ID:
+            self.channels = ChannelsTreeStore(False)
+        elif val == self.ORDER_BY_GROUP_ID:
+            self.channels = ChannelsTreeStore(True)
+        self.channels_view.set_model(self.channels)
+        
+    def _on_order_reverse_toggled(self, action):
+        if action.get_active():
+            self.channels.set_sort_order(gtk.SORT_DESCENDING)
+        else:
+            self.channels.set_sort_order(gtk.SORT_ASCENDING)
+
