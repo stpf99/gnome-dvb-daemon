@@ -204,7 +204,7 @@ namespace Main {
                     foreach (DVB.Timer t in timers) {
                         if (t.Id > max_id) max_id = t.Id;
                         uint32 rec_id;
-                        if (rec.add_timer (t, out rec_id))
+                        if (!rec.add_timer (t, out rec_id))
                             timers_store.remove_timer_from_device_group (t.Id, device_group);
                     }
                 }
