@@ -506,6 +506,9 @@ namespace DVB {
                         Factory.get_epg_store ().remove_events_of_group (
                             devgroup.Id
                         );
+                        Factory.get_timers_store ().remove_all_timers_from_device_group (
+                            devgroup.Id
+                        );
                         this.group_removed (group_id);
                     } catch (SqlError e) {
                         critical ("%s", e.message);

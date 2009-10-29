@@ -102,6 +102,9 @@ namespace DVB.database.sqlite {
         private static const string DELETE_TIMER =
         "DELETE FROM timers WHERE timer_id=?";
         
+        private static const string DELETE_GROUP_TIMERS =
+        "DELETE FROM timers WHERE group_id=?";
+        
         private static const string INSERT_TIMER =
         "INSERT INTO timers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
@@ -138,6 +141,7 @@ namespace DVB.database.sqlite {
         private Statement insert_device_statement;
         private Statement select_timers_statement;
         private Statement delete_timer_statement;
+        private Statement delete_group_timers_statement;
         private Statement insert_timer_statement;
         private Statement contains_group_statement;
         private Statement contains_timer_statement;
@@ -191,6 +195,8 @@ namespace DVB.database.sqlite {
                 out this.select_timers_statement);
             this.db.prepare (DELETE_TIMER, -1,
                 out this.delete_timer_statement);
+            this.db.prepare (DELETE_GROUP_TIMERS, -1,
+                out delete_group_timers_statement);
             this.db.prepare (INSERT_TIMER, -1,
                 out this.insert_timer_statement);
             this.db.prepare (CONTAINS_GROUP, -1,
@@ -477,6 +483,24 @@ namespace DVB.database.sqlite {
             }
             
             if (this.delete_timer_statement.step () != Sqlite.DONE) {
+                this.throw_last_error ();
+                return false;
+            }
+            return true;
+        }
+        
+        public bool remove_all_timers_from_device_group (uint group_id)
+                throws SqlError 
+        {
+            this.delete_group_timers_statement.reset ();
+            
+            if (this.delete_group_timers_statement.bind_int (1, (int)group_id) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+            
+            if (this.delete_group_timers_statement.step () != Sqlite.DONE) {
                 this.throw_last_error ();
                 return false;
             }
