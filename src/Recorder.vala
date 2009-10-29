@@ -39,6 +39,7 @@ namespace DVB {
         private Set<uint32> active_timers;
         
         private bool have_check_timers_timeout;
+        private uint check_timers_event_id;
         // Maps timer id to timer
         private HashMap<uint32, Timer> timers;
         // Maps timer id to Recording
@@ -171,7 +172,7 @@ namespace DVB {
                                    
                     if (this.timers.size == 1 && !this.have_check_timers_timeout) {
                         debug ("Creating new check timers");
-                        Timeout.add_seconds (
+                        this. check_timers_event_id = Timeout.add_seconds (
                             CHECK_TIMERS_INTERVAL, this.check_timers
                         );
                         this.have_check_timers_timeout = true;
@@ -492,6 +493,7 @@ namespace DVB {
         }
         
         public void stop () {
+            Source.remove (this.check_timers_event_id);
             lock (this.timers) {
                 foreach (uint32 timer_id in this.active_timers) {
                     Timer timer = this.timers.get (timer_id);
