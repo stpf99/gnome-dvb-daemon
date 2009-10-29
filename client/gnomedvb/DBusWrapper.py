@@ -66,6 +66,7 @@ def get_adapter_info(adapter):
     pipeline.get_state()
     bus = pipeline.get_bus()
     info = {}
+    success = False
     while bus.have_pending():
         msg = bus.pop()
         if msg.type == gst.MESSAGE_ELEMENT and msg.src == dvbelement:
@@ -73,9 +74,13 @@ def get_adapter_info(adapter):
             if structure.get_name() == "dvb-adapter":
                 info["type"] = structure["type"]
                 info["name"] = structure["name"]
+                success = True
                 break
+        elif msg.type == gst.MESSAGE_ERROR:
+            info = msg.structure["debug"]
+            global_error_handler(info)
     pipeline.set_state(gst.STATE_NULL)
-    return info
+    return (success, info)
 
 def get_dvb_devices(reply_handler, error_handler):
     def find_devices_handler(objects):

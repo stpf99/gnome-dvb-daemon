@@ -101,6 +101,20 @@ class AdaptersPage(BasePage):
         self._label.set_markup (text)
         self._label.show()
         
+    def show_error(self, error):
+        if self.scrolledview:
+            self.scrolledview.hide()
+            
+        text = "<big><span weight=\"bold\">%s</span></big>" % _('An error occured while retrieving devices.')
+        text += "\n\n"
+        text += _("Make sure other applications don't access DVB devices and you have permissions to access them.")
+        text += "\n\n"
+        text += _('The detailed error message is:')
+        text += "\n<i>%s</i>" % error
+        self._label.set_selectable(True)
+        self._label.set_markup (text)
+        self._label.show()
+        
     def show_progressbar(self):
         self._label.hide()
         self._progressbar = gtk.ProgressBar()
@@ -156,17 +170,21 @@ class AdaptersPage(BasePage):
             self.__model.get_all_devices(reply_handler=devices_handler)
         
         def devices_handler(devices):
+            error = None
             for dev in devices:
                 if dev not in registered:
-                    info = gnomedvb.get_adapter_info(dev.adapter)
-                    dev.name = info["name"]
-                    dev.type = info["type"]
-                    dev.type_name = DVB_TYPE_TO_DESC[info["type"]]
-                    dev.registered = False
-                    unregistered.add(dev)
+                    success, info = gnomedvb.get_adapter_info(dev.adapter)
+                    if success:
+                        dev.name = info["name"]
+                        dev.type = info["type"]
+                        dev.type_name = DVB_TYPE_TO_DESC[info["type"]]
+                        dev.registered = False
+                        unregistered.add(dev)
+                    else:
+                        error = info
                
             if self.__use_configured:
-                devs =  registered | unregistered
+                devs = registered | unregistered
             else:
                 devs = unregistered
 
@@ -176,8 +194,10 @@ class AdaptersPage(BasePage):
                     dev.type, dev.adapter, dev.frontend, dev.registered])
 
             self.destroy_progressbar()
-
-            if len(devs) == 0:
+            
+            if error != None:
+                self.show_error(error)
+            elif len(devs) == 0:
                 if self.__use_configured:
                     self.show_no_devices()
                 else:

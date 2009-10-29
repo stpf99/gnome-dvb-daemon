@@ -68,10 +68,11 @@ class DVBModel (gnomedvb.DVBManagerClient):
             unregistered = set()
             for dev in devices:
                 if dev not in registered:
-                    info = gnomedvb.get_adapter_info(dev.adapter)
-                    dev.name = info["name"]
-                    dev.type = info["type"]
-                    unregistered.add(dev)
+                    success, info = gnomedvb.get_adapter_info(dev.adapter)
+                    if success:
+                        dev.name = info["name"]
+                        dev.type = info["type"]
+                        unregistered.add(dev)
             reply_handler(unregistered)
         
         def registered_handler(devgroups):
