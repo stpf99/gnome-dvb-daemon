@@ -54,6 +54,7 @@ namespace DVB {
             RecordingsStore.get_instance ().restore_from_dir (
                 this.DeviceGroup.RecordingsDirectory);
             this.recordings = new HashMap<uint, Recording> ();
+            this.check_timers_event_id = 0;
         }
         
         public Recorder (DVB.DeviceGroup dev) {
@@ -493,7 +494,8 @@ namespace DVB {
         }
         
         public void stop () {
-            Source.remove (this.check_timers_event_id);
+            if (this.check_timers_event_id > 0)
+                Source.remove (this.check_timers_event_id);
             lock (this.timers) {
                 foreach (uint32 timer_id in this.active_timers) {
                     Timer timer = this.timers.get (timer_id);
@@ -726,6 +728,7 @@ namespace DVB {
                     // We don't have any timers and no recording is in progress
                     debug ("No timers left and no recording in progress");
                     this.have_check_timers_timeout = false;
+                    this.check_timers_event_id = 0;
                     val = false;
                 } else {
                     // We still have timers
