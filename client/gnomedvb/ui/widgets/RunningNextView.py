@@ -19,7 +19,9 @@
 import datetime
 import gtk
 from gettext import gettext as _
+from gnomedvb import global_error_handler
 from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
+from gnomedvb.ui.widgets.DetailsDialog import DetailsDialog
        
 class RunningNextView(gtk.TreeView):
 
@@ -56,6 +58,8 @@ class RunningNextView(gtk.TreeView):
         col_next.add_attribute(cell_next, "markup", RunningNextStore.COL_NEXT)
         self.append_column(col_next)
         col_next.index = RunningNextStore.COL_NEXT
+        
+        self.connect("button-press-event", self._on_button_press_event)
     
     def _format_time(self, column, cell, model, aiter, col_id):
         timestamp = model[aiter][col_id]
@@ -67,4 +71,45 @@ class RunningNextView(gtk.TreeView):
         
         cell.set_property("text", time_str)
         
+    def _on_button_press_event(self, treeview, event):
+            
+        def show_details(data, success):
+            if not success:
+                return
+            event_id, next, name, duration, desc = data
+            
+            ext_desc, success = schedule.get_extended_description(event_id)
+            if success:
+                desc += "\n%s" % ext_desc
+            
+            dialog = DetailsDialog(self.get_toplevel())
+            dialog.set_description(desc)
+            dialog.set_title(name)
+            dialog.set_duration(duration)
+            dialog.set_channel(model[aiter][RunningNextStore.COL_CHANNEL])
+            start, success = schedule.get_local_start_timestamp(event_id)
+            if success:
+                dialog.set_date(start)
+            dialog.run()
+            dialog.destroy()
+        
+        if event.type == gtk.gdk._2BUTTON_PRESS:
+            model, aiter = treeview.get_selection().get_selected()
+            if aiter != None:
+                pos = treeview.get_path_at_pos(int(event.x), int(event.y))
+                if pos != None:
+                    col = pos[1]
+                    if col.index == RunningNextStore.COL_RUNNING:
+                        event_id = model[aiter][RunningNextStore.COL_RUNNING_EVENT]
+                    elif col.index == RunningNextStore.COL_NEXT:
+                        event_id = model[aiter][RunningNextStore.COL_NEXT_EVENT]
+                    else:
+                        return
+                    
+                    devgroup = model.get_device_group()
+                    sid = model[aiter][RunningNextStore.COL_SID]
+                    schedule = devgroup.get_schedule(sid)
+                    schedule.get_informations(event_id,
+                        reply_handler=show_details,
+                        error_handler=global_error_handler)
         
