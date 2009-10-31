@@ -40,6 +40,9 @@ class RunningNextStore(gtk.ListStore):
         self._group = group
         self._fill()
         
+    def get_device_group(self):
+        return self._group
+        
     def _fill(self):
         channellist = self._group.get_channel_list()
     
