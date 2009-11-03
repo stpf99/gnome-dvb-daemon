@@ -28,12 +28,6 @@ namespace DVB {
     
         public uint32 Id {get; construct;}
         public Channel Channel {get; construct;}
-        // TODO Create values from starttime
-        public uint Year {get; set;}
-        public uint Month {get; set;}
-        public uint Day {get; set;}
-        public uint Hour {get; set;}
-        public uint Minute {get; set;}
         public uint Duration {get; set;}
         public Gst.Element sink {get; set;}
         public uint EventID {get; set;}
@@ -44,12 +38,7 @@ namespace DVB {
         int year, int month, int day, int hour, int minute, uint duration) {
             this.Id = id;
             this.Channel = channel;
-            
-            this.Year = (uint)year;
-            this.Month = (uint)month;
-            this.Day = (uint)day;
-            this.Hour = (uint)hour;
-            this.Minute = (uint)minute;
+
             this.EventID = 0;
            
             this.Duration = duration;
@@ -162,21 +151,15 @@ namespace DVB {
         public void add_to_start_time (int minutes) {
             this.starttime.minute += minutes;
             this.starttime.mktime ();
-            
-            this.Year = this.starttime.year + 1900;
-            this.Month = this.starttime.month + 1;
-            this.Day = this.starttime.day;
-            this.Hour = this.starttime.hour;
-            this.Minute = this.starttime.minute;
         }
               
         public uint[] get_start_time () {
             uint[] start = new uint[] {
-                this.Year,
-                this.Month,
-                this.Day,
-                this.Hour,
-                this.Minute
+                this.starttime.year + 1900,
+                this.starttime.month + 1,
+                this.starttime.day,
+                this.starttime.hour,
+                this.starttime.minute
             };
             return start;
         }
@@ -231,9 +214,10 @@ namespace DVB {
         }
         
         public string to_string () {
+            uint[] start = this.get_start_time ();
             return "channel: %u, start: %04u-%02u-%02u %02u:%02u, duration: %u".printf (
-                this.Channel.Sid, this.Year, this.Month, this.Day, this.Hour,
-                this.Minute, this.Duration);
+                this.Channel.Sid, start[0], start[1], start[2], start[3],
+                start[4], this.Duration);
         }
         
         private time_t get_end_time_timestamp () {

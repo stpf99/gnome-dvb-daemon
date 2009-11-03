@@ -449,14 +449,15 @@ namespace DVB.database.sqlite {
             if (this.contains_timer (timer.Id)) return false;
             
             this.insert_timer_statement.reset ();
+            uint[] start = timer.get_start_time ();
             if (this.insert_timer_statement.bind_int (1, (int)timer.Id) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (2, (int)dev.Id) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (3, (int)timer.Channel.Sid) != Sqlite.OK
-                || this.insert_timer_statement.bind_int (4, (int)timer.Year) != Sqlite.OK
-                || this.insert_timer_statement.bind_int (5, (int)timer.Month) != Sqlite.OK
-                || this.insert_timer_statement.bind_int (6, (int)timer.Day) != Sqlite.OK
-                || this.insert_timer_statement.bind_int (7, (int)timer.Hour) != Sqlite.OK
-                || this.insert_timer_statement.bind_int (8, (int)timer.Minute) != Sqlite.OK
+                || this.insert_timer_statement.bind_int (4, (int)start[0]) != Sqlite.OK
+                || this.insert_timer_statement.bind_int (5, (int)start[1]) != Sqlite.OK
+                || this.insert_timer_statement.bind_int (6, (int)start[2]) != Sqlite.OK
+                || this.insert_timer_statement.bind_int (7, (int)start[3]) != Sqlite.OK
+                || this.insert_timer_statement.bind_int (8, (int)start[4]) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (9, (int)timer.Duration) != Sqlite.OK
                 || this.insert_timer_statement.bind_int (10, (int)timer.EventID) != Sqlite.OK)
             {
