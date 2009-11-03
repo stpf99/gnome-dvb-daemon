@@ -524,8 +524,7 @@ namespace DVB {
             var new_timer = new Timer (timer_id,
                this.DeviceGroup.Channels.get_channel (channel),
                start_year, start_month, start_day,
-               start_hour, start_minute, duration,
-               null);
+               start_hour, start_minute, duration);
             // See if we can find an EPG event belonging to this recording
             Event? event = schedule.get_event_around (
                 new_timer.get_start_time_time (), duration);

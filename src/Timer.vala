@@ -28,7 +28,6 @@ namespace DVB {
     
         public uint32 Id {get; construct;}
         public Channel Channel {get; construct;}
-        public string? Name {get; set;}
         // TODO Create values from starttime
         public uint Year {get; set;}
         public uint Month {get; set;}
@@ -42,11 +41,9 @@ namespace DVB {
         private Time starttime;
         
         public Timer (uint32 id, Channel channel,
-        int year, int month, int day, int hour, int minute, uint duration,
-        string? name=null) {
+        int year, int month, int day, int hour, int minute, uint duration) {
             this.Id = id;
             this.Channel = channel;
-            this.Name = name;
             
             this.Year = (uint)year;
             this.Month = (uint)month;
