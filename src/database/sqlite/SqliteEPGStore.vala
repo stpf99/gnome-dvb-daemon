@@ -296,9 +296,11 @@ namespace DVB.database.sqlite {
             event.running_status = (uint)statement.column_int (3);
             event.free_ca_mode = (statement.column_int (4) == 1);
             // Duplicate strings
-            event.name = "%s".printf (statement.column_text (5));
-            event.description = "%s".printf (statement.column_text (6));
-            event.extended_description = "%s".printf (statement.column_text (7));
+            event.name = SqliteUtils.unescape (statement.column_text (5));
+            event.description = SqliteUtils.unescape (
+                statement.column_text (6));
+            event.extended_description = SqliteUtils.unescape (
+                statement.column_text (7));
             // We don't save those
             event.audio_components = null;
             event.video_components = null;

@@ -48,5 +48,31 @@ namespace DVB.database.SqliteUtils {
         
         return escaped_str;
     }
+    
+    /**
+     * Replace "''" with "'"
+     */
+    public static string unescape (string text) {
+        Regex regex;
+        try {
+            regex = new Regex ("''",
+                RegexCompileFlags.MULTILINE,
+                0);
+        } catch (RegexError e) {
+            warning ("RegexError: %s", e.message);
+            return text;
+        }
+        
+        string new_str;
+        try {
+            new_str = regex.replace_literal (text, -1,
+                0, "'", 0);
+        } catch (RegexError e) {
+            warning ("RegexError: %s", e.message);
+            return text;
+        }
+        
+        return new_str;
+    }
 
 }
