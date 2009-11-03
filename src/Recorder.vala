@@ -676,7 +676,12 @@ namespace DVB {
                 return null;
             }
             
-            return dir.get_child ("001.mpeg");
+            File recording = dir.get_child ("001.mpeg");
+            if (recording.query_exists (null)) {
+                warning ("Recording %s already exists", recording.get_path ());
+                return null;
+            }
+            return recording;
         }
         
         private bool check_timers () {
