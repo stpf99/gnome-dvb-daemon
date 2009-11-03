@@ -144,15 +144,9 @@ namespace DVB {
             this.stop_counter -= 1;
             if (this.stop_counter > 0) return false;
             this.stop_counter = 0;
-        
-            // TODO scan all channels?
-            HashSet<uint> unique_frequencies = new HashSet<uint> ();
+
             foreach (Channel c in this.DeviceGroup.Channels) {
-                uint freq = c.Frequency;
-                if (!unique_frequencies.contains (freq)) {
-                    unique_frequencies.contains (freq);
-                    this.channels.push_tail (c);
-                }
+                this.channels.push_tail (c);
             }
             
             DVB.Device? device = this.DeviceGroup.get_next_free_device ();
