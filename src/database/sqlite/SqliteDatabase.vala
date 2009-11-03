@@ -129,7 +129,7 @@ namespace DVB.database.sqlite {
                 case 4: throw new SqlError.ABORT (msg);
                 case 5: throw new SqlError.BUSY (msg);
                 case 6: throw new SqlError.LOCKED (msg);
-                case 7: throw new SqlError.NOMEN (msg);
+                case 7: throw new SqlError.NOMEM (msg);
                 case 8: throw new SqlError.READONLY (msg);
                 case 9: throw new SqlError.INTERRUPT (msg);
                 case 10: throw new SqlError.IOERR (msg);

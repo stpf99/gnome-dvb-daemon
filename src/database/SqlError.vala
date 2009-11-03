@@ -27,7 +27,7 @@ namespace DVB.database {
         ABORT,
         BUSY,
         LOCKED,
-        NOMEN,
+        NOMEM,
         READONLY,
         INTERRUPT,
         IOERR,
