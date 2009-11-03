@@ -385,11 +385,19 @@ namespace DVB {
         
         private static Device? create_device (uint adapter, uint frontend,
                 string channels_conf, string recordings_dir, uint group_id) {
-            // TODO Check if adapter and frontend exists
+
             File channelsfile = File.new_for_path (channels_conf);
             File recdir = File.new_for_path (recordings_dir);
             
             Device device = new Device (adapter, frontend);
+            
+            /* The type of the device is checked in creation of
+             * Device class. If the device does not exist the type
+             * will be AdapterType.UNKNOWN
+             */
+            if (device.Type == AdapterType.UNKNOWN)
+                return null;
+            
             device.RecordingsDirectory = recdir;
             
             ChannelList channels;
