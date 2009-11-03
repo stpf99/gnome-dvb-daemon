@@ -49,6 +49,14 @@ class TestManager(DVBTestCase):
                 break
         self.assertTrue(has_group)
         self.assertTrue(self.manager.remove_channel_group(data[0]))
+        
+    def testAddDeviceNotExists(self):
+        adapter = 9
+        frontend = 0
+        
+        self.assertFalse(self.manager.add_device_to_new_group (
+            adapter, frontend,
+            "channels.conf", "Recordings", "Test Group"))
 
 
 class DeviceGroupTestCase(DVBTestCase):
