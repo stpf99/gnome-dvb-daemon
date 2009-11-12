@@ -184,21 +184,22 @@ namespace DVB {
                     ChannelElements c_element;
                     lock (this.elements_map) {
                         c_element = this.elements_map.get (channel_sid);
-                    }
-                    tee = c_element.tee;
 
-                    lock (this.pipeline) {
-                        this.pipeline.set_state (State.PAUSED);
-                        bin = this.add_sink_bin (sink_element);
-                    }
+                        tee = c_element.tee;
 
-                    debug ("Linking %s with %s", tee.get_name (), bin.get_name ());
-                    if (!tee.link (bin)) {
-                        critical ("Could not link tee and bin");
-                        return null;
-                    }
+                        lock (this.pipeline) {
+                            this.pipeline.set_state (State.PAUSED);
+                            bin = this.add_sink_bin (sink_element);
+                        }
 
-                    c_element.sinks.add (bin);
+                        debug ("Linking %s with %s", tee.get_name (), bin.get_name ());
+                        if (!tee.link (bin)) {
+                            critical ("Could not link tee and bin");
+                            return null;
+                        }
+
+                        c_element.sinks.add (bin);
+                    }
                     create_channel = false;
                 }
             }
@@ -369,18 +370,18 @@ namespace DVB {
                 return;
             }
 
-            ChannelElements? celems;
             lock (this.elements_map) {
-                celems = this.elements_map.get (channel_sid);
-            }
+                ChannelElements celems = this.elements_map.get (channel_sid);
 
-            debug ("Setting state of queue and sink %s (%p) to NULL", 
-                sink.get_name (), sink);
-            celems.tee.unlink (sink_bin);
-            sink_bin.set_state (State.NULL);
-            if (!celems.sinks.remove (sink_bin)) {
-                critical ("Could not find sink bin %s (%p)",
-                    sink_bin.get_name (), sink_bin);
+                debug ("Setting state of queue and sink %s (%p) to NULL", 
+                    sink.get_name (), sink);
+                celems.tee.unlink (sink_bin);
+                sink_bin.set_state (State.NULL);
+            
+                if (!celems.sinks.remove (sink_bin)) {
+                    critical ("Could not find sink bin %s (%p)",
+                        sink_bin.get_name (), sink_bin);
+                }
             }
 
             debug ("Removing queue and sink from pipeline");
@@ -393,6 +394,7 @@ namespace DVB {
         public virtual void destroy (bool forced=false) {
             if (this.destroyed) return;
             lock (this.destroyed) {
+                this.destroyed = true;
                 if (forced) {
                     lock (this.elements_map) {
                         foreach (ChannelElements celems in this.elements_map.values) {
@@ -418,7 +420,6 @@ namespace DVB {
                     this.elements_map.clear ();
                 }
                 this.active_channels.clear ();
-                this.destroyed = true;
             }
         }
 
