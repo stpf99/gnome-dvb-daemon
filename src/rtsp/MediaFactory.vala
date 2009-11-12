@@ -76,13 +76,13 @@ namespace DVB {
           	Gst.Element? bin = player.get_sink_bin (sidnr, payload);
 
             // Construct media
-          	Gst.RTSPMedia media = new DVBMedia (devgrp, channel);
+          	Gst.RTSPMedia media = new DVBMedia (devgrp, channel, payload);
             media.element = bin;
             // Set pipeline
             media.pipeline = player.get_pipeline ();
             
             this.collect_streams (url, media);
-            
+
             return media;
         }
 
@@ -96,16 +96,19 @@ namespace DVB {
     
         public DeviceGroup group {get; construct;}
         public Channel channel {get; construct;}
+        public Gst.Element payloader {get; construct;}
         
-        public DVBMedia (DeviceGroup group, Channel channel) {
+        public DVBMedia (DeviceGroup group, Channel channel,
+                Gst.Element payloader) {
             this.group = group;
             this.channel = channel;
+            this.payloader = payloader;
         }
     
         public override bool unprepare () {
             this.remove_elements ();
             ChannelFactory channels_factory = this.group.channel_factory;
-            channels_factory.stop_channel (this.channel, this.element);
+            channels_factory.stop_channel (this.channel, this.payloader);
             return true;
         }
     }
