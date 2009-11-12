@@ -468,15 +468,19 @@ namespace DVB {
             }
             
             StringBuilder new_pids = new StringBuilder ();
+            int i = 0;
             foreach (uint pid in pid_set) {
-                new_pids.append ("%u:".printf (pid));
+                if (i+1 == pid_set.size)
+                    new_pids.append ("%u".printf (pid));
+                else
+                    new_pids.append ("%u:".printf (pid));
+                i++;
             }
-            string pids = new_pids.str.substring (0, new_pids.len - 1);
             
-            debug ("Setting %d pids: %s", pid_set.size, pids);
+            debug ("Setting %d pids: %s", pid_set.size, new_pids.str);
             // We want to parse the pmt as well
             Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
-            dvbsrc.set ("pids", pids);
+            dvbsrc.set ("pids", new_pids.str);
             
             this.pat_arrived = true;
         }
