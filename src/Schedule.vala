@@ -226,60 +226,69 @@ namespace DVB {
         }
 
         public uint32[] GetAllEvents () throws DBus.Error {
-            uint32[] event_ids = new uint32[this.events.get_length ()];
-            
+            ArrayList<uint32> events = new ArrayList<uint32> ();
             lock (this.events) {
                  for (int i=0; i<this.events.get_length (); i++) {
                     SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     EventElement element = this.events.get (iter);
-                    event_ids[i] = element.id;
+                    Event? event = this.get_event (element.id);
+                    if (event.has_expired ()) continue;
+                    events.add (element.id);
                  }
             }
-            
+
+            uint32[] event_ids = new uint32[events.size];
+            for (int i=0; i<event_ids.length; i++) {
+                event_ids[i] = events.get (i);
+            }
             return event_ids;
         }
 
         public EventInfo[] GetAllEventInfos () throws DBus.Error {
-            EventInfo[] events = new EventInfo[this.events.get_length ()];
+            ArrayList<Event> events = new ArrayList<Event> ();
             lock (this.events) {
                 SequenceIter<EventElement> iter = this.events.get_begin_iter ();
                 if (!iter.is_end ()) {
                     EventElement element = this.events.get (iter);
-                    int i = 0;
+
                     while (!iter.is_end ()) {
-                        EventInfo event_info = EventInfo();
                         Event? event = this.get_event (element.id);
-                        
-                        event_info.id = element.id;
-                        event_info.name = event.name;
-                        event_info.duration = event.duration;
-                        event_info.short_description = event.description;
-                        /*
-                        Time local_time = event.get_local_start_time ();
-                        event_info.local_start = to_time_array (local_time);
-                        */
+                        if (!event.has_expired ())
+                            events.add (event);
+
                         iter = iter.next ();
-                        if (iter.is_end ()) {
-                            event_info.next = 0;
-                        } else {
+                        if (!iter.is_end ())
                             element = this.events.get (iter);
-                            event_info.next = element.id;
-                        }
-                        events[i] = event_info;
-                        
-                        i++;
                      }
                 }
             }
-            
-            return events;
+
+            int n_events = events.size;
+            EventInfo[] event_infos = new EventInfo[n_events];
+            int i = 0;
+            Event event = null;
+            if (n_events > i)
+                event = events.get (i);
+            while (event != null) {
+                event_infos[i] = event_to_event_info (event);
+
+                if (i+1 == n_events) {
+                    event_infos[i].next = 0;
+                    event = null;
+                } else {
+                    event = events.get (i+1);
+                    event_infos[i].next = event.id;
+                }
+                i++;
+            }
+
+            return event_infos;
         }
 
         public bool GetInformations (uint32 event_id, out EventInfo event_info)
                 throws DBus.Error
         {
             bool ret;
-            event_info = EventInfo();
             
             lock (this.events) {        
                 if (this.event_id_map.contains (event_id)) {
@@ -287,14 +296,7 @@ namespace DVB {
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
                     
-                    event_info.id = element.id;
-                    event_info.name = event.name;
-                    event_info.duration = event.duration;
-                    event_info.short_description = event.description;
-                    /*
-                    Time local_time = event.get_local_start_time ();
-                    event_info.local_start = to_time_array (local_time);
-                    */
+                    event_info = event_to_event_info (event);
                     iter = iter.next ();
                     if (iter.is_end ()) {
                         event_info.next = 0;
@@ -514,6 +516,20 @@ namespace DVB {
             start[5] = local_time.second;
             return start;
         }
+
+        private static EventInfo event_to_event_info (Event event) {
+            EventInfo event_info = EventInfo();
+            event_info.id = event.id;
+            event_info.name = event.name;
+            event_info.duration = event.duration;
+            event_info.short_description = event.description;
+            /*
+            Time local_time = event.get_local_start_time ();
+            event_info.local_start = to_time_array (local_time);
+            */
+            return event_info;
+        }
+
     }
 
 }
