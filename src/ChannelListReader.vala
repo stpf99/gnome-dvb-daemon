@@ -28,9 +28,7 @@ namespace DVB {
         public uint GroupId {get; construct;}
         
         public ChannelListReader (File file, AdapterType type, uint group_id) {
-            this.ChannelFile = file;
-            this.Type = type;
-            this.GroupId = group_id;
+            base (ChannelFile: file, Type: type, GroupId: group_id);
         }
         
         public ChannelList? read () throws Error {

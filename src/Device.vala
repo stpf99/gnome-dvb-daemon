@@ -47,8 +47,7 @@ namespace DVB {
         private AdapterType adapter_type;
 
         public Device (uint adapter, uint frontend, bool get_type_and_name=true) {
-            this.Adapter = adapter;
-            this.Frontend = frontend;
+            base (Adapter: adapter, Frontend: frontend);
             
             setAdapterTypeAndName(adapter, get_type_and_name);
         }

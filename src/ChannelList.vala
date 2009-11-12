@@ -42,7 +42,7 @@ namespace DVB {
         }
         
         public ChannelList (File? channels=null) {
-            this.channels_file = channels;
+            base (channels_file: channels);
         }
         
         public Channel? get_channel (uint sid) {

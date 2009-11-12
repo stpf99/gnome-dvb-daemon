@@ -85,7 +85,7 @@ namespace DVB {
         }
         
         public Schedule (Channel channel) {
-            this.channel = channel;
+            base (channel: channel);
         }
         
         public void remove_expired_events () {

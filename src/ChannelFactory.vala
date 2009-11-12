@@ -85,7 +85,7 @@ namespace DVB {
          * @epgscanner: #EPGScanner to forward EIT to
          */
         public PlayerThread (Device device, EPGScanner? epgscanner) {
-            this.device = device;
+            base (device: device);
             this.epgscanner = epgscanner;
         }
         
@@ -503,7 +503,7 @@ namespace DVB {
         private HashSet<PlayerThread> active_players;
         
         public ChannelFactory (DeviceGroup devgroup) {
-            this.device_group = devgroup;
+            base (device_group: devgroup);
             this.active_players = new HashSet<PlayerThread> ();
         }
         

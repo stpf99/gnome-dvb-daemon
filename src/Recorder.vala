@@ -58,7 +58,7 @@ namespace DVB {
         }
         
         public Recorder (DVB.DeviceGroup dev) {
-            this.DeviceGroup = dev;
+            base (DeviceGroup: dev);
         }
         
 	public Type element_type { get { return typeof (Timer); } }

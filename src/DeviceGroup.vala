@@ -85,8 +85,7 @@ namespace DVB {
          */
         public DeviceGroup (uint id, Device reference_device,
                 bool with_epg_scanner=true) {
-            this.Id = id;
-            this.reference_device = reference_device;
+            base (Id: id, reference_device: reference_device);
             this.reference_device.Channels.GroupId = id;
             if (with_epg_scanner) {
                 this._epgscanner = new EPGScanner (this);

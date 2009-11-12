@@ -36,8 +36,7 @@ namespace DVB {
         
         public Timer (uint32 id, Channel channel,
         int year, int month, int day, int hour, int minute, uint duration) {
-            this.Id = id;
-            this.Channel = channel;
+            base (Id: id, Channel: channel);
 
             this.EventID = 0;
            

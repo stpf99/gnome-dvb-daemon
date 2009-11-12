@@ -52,7 +52,7 @@ namespace DVB {
         }
         
         public ChannelListWriter (File file) {
-            this.file = file;
+            base (file: file);
         }
         
         public void write (Channel channel) throws Error {
