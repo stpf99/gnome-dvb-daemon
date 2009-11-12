@@ -266,6 +266,8 @@ namespace DVB {
                             break;
                         }
                     }
+                } else {
+                    warning ("Could not find any sinks of channel %u", sid);
                 }
             }
             
@@ -277,80 +279,84 @@ namespace DVB {
          */
         public bool remove_channel (Channel channel, Gst.Element sink) {
             uint channel_sid = channel.Sid;
-        
+
             if (!this.active_channels.contains (channel)) {
                 critical ("Could not find channel with SID %u", channel_sid);
                 return false;
             }
-            
+
+            ChannelElements celements;
+            bool stop_channel;
+            lock (this.elements_map) {
+                celements = this.elements_map.get (channel_sid);
+                /* check if this is the last sink
+                 * (no one watches this channel anymore)
+                 * or if we still have sinks left
+                 * (others are still watching this channel)
+                 */
+                stop_channel = (celements.sinks.size == 1);
+            }
+
             // Check if that's the only channel in use
             if (this.active_channels.size > 1) {
-                string channel_sid_string = channel_sid.to_string ();
-                
-                lock (this.pipeline) {
-                    bool stop_channel;
-                    lock (this.elements_map) {
-                        ChannelElements celements = this.elements_map.get (channel_sid);
-                        if (celements.sinks.size == 1) {
-                            // this is the last sink
-                            // (no one watches this channel anymore)
-                            this.elements_map.remove (channel_sid);
-                            stop_channel = true;
-                        } else {
-                            // we still have sinks left
-                            // (others are still watching this channel)
-                            celements.sinks.remove (sink);
-                            stop_channel = false;
-                        }
-                    }
-                   
-                    if (stop_channel) { 
+
+                if (stop_channel) {
+                    string channel_sid_string = channel_sid.to_string ();
+
+                    lock (this.pipeline) {
                         string programs;
                         dvbbasebin.get ("program-numbers", out programs);
                         string[] programs_arr = programs.split (":");
-                        
+
                         // Remove SID of channel from program-numbers
-                        SList<string> new_programs_list = new SList<string> ();
+                        ArrayList<string> new_programs_list = new ArrayList<string> ();
                         for (int i=0; i<programs_arr.length; i++) {
-                            string val = programs_arr[i];
-                            if (val != channel_sid_string)
-                                new_programs_list.prepend (val);
+                            if (programs_arr[i] != channel_sid_string)
+                                new_programs_list.add (programs_arr[i]);
                         }
-                        
-                        StringBuilder new_programs = new StringBuilder (new_programs_list.nth_data (0));
-                        for (int i=1; i<new_programs_list.length (); i++) {
-                            new_programs.append (":" + new_programs_list.nth_data (i));
+
+                        StringBuilder new_programs = new StringBuilder (new_programs_list.get (0));
+                        for (int i=1; i<new_programs_list.size; i++) {
+                            new_programs.append (":" + new_programs_list.get (i));
                         }
-                    
+
                         debug ("Changing program-numbers from %s to %s", programs,
                                 new_programs.str);
                         this.pipeline.set_state (State.PAUSED);
-                        
+
                         dvbbasebin.set ("program-numbers", new_programs.str);
                         
                         this.pipeline.set_state (State.PLAYING);
-                        
+
                         this.active_channels.remove (channel);
                     }
-
-                    this.remove_sink_bin (channel_sid, sink);
                 }
-            } else {
-                lock (this.elements_map) {
-                    ChannelElements celements = this.elements_map.get (channel_sid);
-                    if (celements.sinks.size == 1) {
-                        // this is the last sink
-                        // (no one watches this channel anymore)
-                        this.destroy ();
-                    } else {
-                        // we still have sinks left
-                        // (others are still watching this channel)
-                        this.remove_sink_bin (channel_sid, sink);
-                        celements.sinks.remove (sink);
+
+                this.remove_sink_bin (channel_sid, sink);
+
+                if (stop_channel) {            
+                    /* No one watches the channel anymore */
+                    debug ("Removing tee %s from pipeline",
+                        celements.tee.get_name ());
+                    celements.tee.set_state (State.NULL);
+                    ((Bin)this.pipeline).remove (celements.tee);
+                    lock (this.elements_map) {
+                        this.elements_map.remove (channel_sid);
                     }
                 }
+
+            } else {
+                if (stop_channel) {
+                    // this is the last sink
+                    // (no one watches any channel anymore)
+                    this.destroy ();
+                } else {
+                    // we still have sinks left
+                    // (others are still watching this channel)
+                    this.remove_sink_bin (channel_sid, sink);
+                }
             }
-        
+
             return true;
         }
         
@@ -358,13 +364,25 @@ namespace DVB {
             Gst.Element? sink_bin = this.get_sink_bin (channel_sid, sink);
 
             if (sink_bin == null) {
-                warning ("Could not find sink bin for channel %u and sink %p",
-                    channel_sid, sink);
+                critical ("Could not find sink bin for channel %u and sink %s (%p)",
+                    channel_sid, sink.get_name (), sink);
                 return;
             }
-            debug ("Setting state of queue and sink to NULL");
+
+            ChannelElements? celems;
+            lock (this.elements_map) {
+                celems = this.elements_map.get (channel_sid);
+            }
+
+            debug ("Setting state of queue and sink %s (%p) to NULL", 
+                sink.get_name (), sink);
+            celems.tee.unlink (sink_bin);
             sink_bin.set_state (State.NULL);
-            
+            if (!celems.sinks.remove (sink_bin)) {
+                critical ("Could not find sink bin %s (%p)",
+                    sink_bin.get_name (), sink_bin);
+            }
+
             debug ("Removing queue and sink from pipeline");
             ((Bin)this.pipeline).remove (sink_bin);
         }
@@ -563,7 +581,7 @@ namespace DVB {
             lock (this.active_players) {
                 this.active_players.add (player);
             }
-            
+
             return player;
         }
         
@@ -574,7 +592,7 @@ namespace DVB {
          */
         public bool stop_channel (Channel channel, Gst.Element sink) {
             debug ("Stopping channel %s (%u)", channel.Name, channel.Sid);
-        
+
             bool success = false;
             PlayerThread? player = null;
             lock (this.active_players) {
@@ -595,6 +613,7 @@ namespace DVB {
                     if (epgscanner != null) epgscanner.start ();
                 }
             }
+
             return success;
         }
         
