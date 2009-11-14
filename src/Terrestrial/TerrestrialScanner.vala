@@ -55,7 +55,7 @@ namespace DVB {
     public class TerrestrialScanner : Scanner, IDBusTerrestrialScanner {
     
         public TerrestrialScanner (DVB.Device device) {
-            base.Device = device;
+            Object (Device: device);
         }
         
         /**

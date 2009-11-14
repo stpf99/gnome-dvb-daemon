@@ -31,7 +31,7 @@ namespace DVB {
         private static const int PRIME = 31;
         
         public ScannedItem (uint frequency) {
-            this.Frequency = frequency;
+            Object (Frequency: frequency);
         }
         
         public static uint hash (ScannedItem* o) {
@@ -76,8 +76,7 @@ namespace DVB {
         public string Polarization {get; construct;}
         
         public ScannedSatteliteItem (uint frequency, string polarization) {
-            this.Frequency = frequency;
-            this.Polarization = polarization;
+            Object (Frequency: frequency, Polarization: polarization);
         }
     }
 

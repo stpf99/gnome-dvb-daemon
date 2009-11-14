@@ -136,17 +136,15 @@ namespace DVB {
      * It only contains items only and no containers
      */
     public class ChannelsMediaContainer : GLib.Object, MediaContainer1, MediaObject1 {
-    
-        public DeviceGroup device_group {
-            get; construct;
-        }
+
         public string Path {
             owned get {
                 return GROUP_PATH.printf (this.device_group.Id);
             }
         }
         public DBus.ObjectPath parent;
-        
+
+        private DeviceGroup device_group;
         private HashMap<uint, ChannelMediaItem> items;
         
         construct {
@@ -229,18 +227,16 @@ namespace DVB {
      * Holds a single channel
      */
     public class ChannelMediaItem : GLib.Object, MediaItem1, MediaObject1 {
-    
-        public Channel channel {
-            get; construct;
-        }
+
+        private Channel channel;
+        private DBus.ObjectPath parent;
+
         public string Path {
             owned get {
                 return CHANNEL_PATH.printf (channel.GroupId, channel.Sid);
             }
         }
-        
-        private DBus.ObjectPath parent;
-        
+
         public ChannelMediaItem(Channel channel, DBus.ObjectPath parent) {
             this.channel = channel;
             this.parent = parent;

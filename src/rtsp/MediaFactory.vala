@@ -93,18 +93,18 @@ namespace DVB {
 
 
     public class DVBMedia : Gst.RTSPMedia {
-    
-        public DeviceGroup group {get; construct;}
-        public Channel channel {get; construct;}
-        public Gst.Element payloader {get; construct;}
-        
+
+        protected DeviceGroup group;
+        protected Channel channel;
+        protected Gst.Element payloader;
+
         public DVBMedia (DeviceGroup group, Channel channel,
                 Gst.Element payloader) {
             this.group = group;
             this.channel = channel;
             this.payloader = payloader;
         }
-    
+
         public override bool unprepare () {
             this.remove_elements ();
             ChannelFactory channels_factory = this.group.channel_factory;

@@ -49,7 +49,7 @@ namespace DVB {
     public class CableScanner : Scanner, IDBusCableScanner {
         
         public CableScanner (DVB.Device device) {
-            base.Device = device;
+            Object (Device: device);
         }
         
         public void AddScanningData (uint frequency, string modulation,

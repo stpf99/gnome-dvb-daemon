@@ -50,7 +50,7 @@ namespace DVB {
     public class SatelliteScanner : Scanner, IDBusSatelliteScanner {
     
         public SatelliteScanner (DVB.Device device) {
-            base.Device = device;
+            Object (Device: device);
         }
      
         public void AddScanningData (uint frequency,
