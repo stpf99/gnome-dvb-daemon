@@ -88,7 +88,7 @@ class RecordingsDialog(gtk.Dialog):
             dialog = gtk.MessageDialog(parent=self,
                     flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
                     type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
-            dialog.set_markup(_("<big><span weight=\"bold\">Delete selected recordings?</span></big>"))
+            dialog.set_markup("<big><span weight=\"bold\">%s</span></big>" % _("Delete selected recordings?"))
             response = dialog.run()
             dialog.destroy()
             if response == gtk.RESPONSE_YES:
