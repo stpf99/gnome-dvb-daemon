@@ -32,9 +32,9 @@ namespace DVB {
         // pids: 0=pat, 16=nit, 17=sdt, 18=eit
         private static const string PIPELINE_TEMPLATE =
         "dvbsrc name=dvbsrc adapter=%u frontend=%u pids=0:16:17:18 stats-reporting-interval=0 ! mpegtsparse ! fakesink silent=true";
-        
-        public unowned DVB.DeviceGroup DeviceGroup {get; set;}
-        
+
+        private unowned DVB.DeviceGroup DeviceGroup;
+
         private Gst.Element? pipeline;
         private GLib.Queue<Channel> channels;
         private Source scan_source;
