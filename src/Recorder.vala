@@ -29,11 +29,11 @@ namespace DVB {
      */
     public class Recorder : GLib.Object, IDBusRecorder, Iterable<Timer> {
 
+        public unowned DVB.DeviceGroup DeviceGroup { get; construct; }
+        
         public uint count {
             get { return this.recordings.size; }
         }
-        
-        private unowned DVB.DeviceGroup DeviceGroup;
         
         // Contains timer ids
         private Set<uint32> active_timers;
@@ -58,7 +58,7 @@ namespace DVB {
         }
         
         public Recorder (DVB.DeviceGroup dev) {
-            this.DeviceGroup = dev;
+            base (DeviceGroup: dev);
         }
         
 	public Type element_type { get { return typeof (Timer); } }
