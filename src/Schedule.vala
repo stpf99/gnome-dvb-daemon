@@ -57,7 +57,7 @@ namespace DVB {
     public class Schedule : GLib.Object, IDBusSchedule {
     
         // Use weak to avoid ref cycle
-        public weak Channel channel {get; construct;}
+        private unowned Channel channel;
     
         private Sequence<EventElement> events;
         private Map<uint, weak SequenceIter<EventElement>> event_id_map;
@@ -85,7 +85,7 @@ namespace DVB {
         }
         
         public Schedule (Channel channel) {
-            base (channel: channel);
+            this.channel = channel;
         }
         
         public void remove_expired_events () {
