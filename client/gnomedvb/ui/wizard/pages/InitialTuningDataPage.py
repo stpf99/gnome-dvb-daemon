@@ -27,6 +27,7 @@ from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 DVB_APPS_DIRS = ("/usr/share/dvb",
                  "/usr/share/dvb-apps",
+                 "/usr/share/dvb-apps/scan",
                  "/usr/share/doc/dvb-utils/examples/scan")
                  
 COUNTRIES = {
