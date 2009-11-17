@@ -192,31 +192,32 @@ namespace DVB {
          */
         public Event? get_event_around (Time start, uint duration) {
             Event? result = null;
-            time_t start_t = start.mktime ();
-            time_t end_t = start_t + duration * 60;
+            time_t timer_start = start.mktime ();
+            time_t timer_end = timer_start + duration * 60;
             lock (this.events) {
                 // Difference between end of timer and end of event
-                time_t last_diff = -3600;
+                time_t last_diff = 0;
                 for (int i=0; i<this.events.get_length (); i++) {
                     SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     EventElement element = this.events.get (iter);
                     // convert UTC to local time
                     time_t event_start = cUtils.timegm (Time.local (element.starttime));
+                    Event? event = this.get_event (element.id);
+                    if (event == null) continue;
 
-                    // Check if event starts after timer and ends before timer
-                    if (event_start >= start_t && event_start <= end_t) {
-                        Event? event = this.get_event (element.id);
-                        if (event != null) {
-                            time_t event_end = event_start + event.duration;
-                            time_t end_diff = end_t - event_end;
-                            // If the difference is bigger we are sure that
-                            // this one is the right event
-                            if (last_diff < end_diff) {
-                                last_diff = end_diff;
-                                result = event;
-                            }
-                        }
-                    } else if (event_start > end_t) {
+                    time_t event_end = event_start + event.duration;
+
+                    time_t min_end = (timer_end < event_end) ? timer_end : event_end;
+                    time_t max_start = (timer_start > event_start) ? timer_start : event_start;
+                    time_t overlap = min_end - max_start;
+
+                    // If the difference is bigger we are sure that
+                    // this one is the right event
+                    if (last_diff < overlap) {
+                        last_diff = overlap;
+                        result = event;
+                    }
+                    if (event_start > timer_end) {
                         // All other events are too far in the future
                         break;
                     }
