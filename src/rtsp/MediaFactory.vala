@@ -70,9 +70,10 @@ namespace DVB {
           	PlayerThread? player = channels_factory.watch_channel (channel,
           	    payload, false, DVB.RTSPServer.stop_streaming);
           	if (player == null) {
-          	    critical ("Could not create player");
+          	    debug ("Could not create player");
           	    return null;
           	}
+          	debug ("Retrieving sink bin with payloader");
           	Gst.Element? bin = player.get_sink_bin (sidnr, payload);
 
             // Construct media
