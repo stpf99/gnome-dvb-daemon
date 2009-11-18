@@ -1,4 +1,33 @@
 ==============
+Version 0.1.13
+==============
+
+This release adds the option to display channel groups in the Totem
+plugin. Additionally, it contains major bug fixes.
+This version depends on gst-rtsp-server 0.1.5 and GStreamer 0.10.25.
+
+- Added option to order channels by name or group to Totem plugin
+- Display error message if retrieving devices fails
+- Handle displaying DetailsDialog when clicking on event directly in RunningNextView
+- Check if recording doesn't already exist before starting the actual recording
+- Don't allow to create devices where retrieving the adapter's type failed
+- Unescape ' when retrieving text from sqlite db
+- Don't return expired events in GetAllEvents and GetAllEventInfos
+- Fixed a couple of bugs when recording/watching multiple channels at the same time on the same	device
+- Fixed crash when streaming is forced to stop because a recording is about to start
+- Fixed compiler warnings with latest Vala
+- Fixed bug in getting EPG information for timer if the timer was completely contained in the event
+- Added Mandriva specific directory /usr/share/dvb-apps/scan containing initial tuning data
+
+Updated Translations:
+---------------------
+- French
+- German
+- Polish
+- Spanish
+- Swedish
+
+==============
 Version 0.1.12
 ==============
 
