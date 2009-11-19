@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-10-06 20:39+0200\n"
-"PO-Revision-Date: 2009-09-06 20:54+0000\n"
+"POT-Creation-Date: 2009-11-14 16:01+0100\n"
+"PO-Revision-Date: 2009-10-14 19:38+0000\n"
 "Last-Translator: Eetu Huisman <eh@iki.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2009-10-14 17:28+0000\n"
+"X-Launchpad-Export-Date: 2009-11-18 23:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -67,7 +67,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:59
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:36
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:30
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:32
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:62
 msgid "Channel"
 msgstr ""
@@ -97,169 +97,169 @@ msgstr ""
 msgid "An error occured while removing the group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:53
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:52
 msgid "DVB Control Center"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:76
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:75
 msgid "Device groups:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:106
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
 msgid ""
 "Choose a device group and channel on the left to view the program guide"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:107
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:106
 msgid ""
 "No devices are configured. Please go to preferences to configure them."
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:108
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:107
 msgid "There is currently no schedule available for this channel"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
-#: ../client/totem-plugin/dvb-daemon.py:205
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
+#: ../client/totem-plugin/dvb-daemon.py:211
 msgid "_Recording schedule"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
 msgid "_Edit"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:161
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
 msgid "_View"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:162
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:161
 msgid "Help"
 msgstr "Ohje"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
 msgid "_Manage"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:277
 msgid "Manage recording schedule"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
 msgid "_Recordings"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
 msgid "Manage recordings"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:173
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
 msgid "_Quit"
 msgstr "_Lopeta"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:174
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:173
 msgid "Quit the Program"
 msgstr "Lopeta ohjelma"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
 msgid "Channel lists"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
 msgid "Edit channel lists"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:181
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
 msgid "_Preferences"
 msgstr "_Asetukset"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:182
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:181
 msgid "Display preferences"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:295
-#: ../client/totem-plugin/dvb-daemon.py:187
-#: ../client/totem-plugin/dvb-daemon.py:207
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:294
+#: ../client/totem-plugin/dvb-daemon.py:193
+#: ../client/totem-plugin/dvb-daemon.py:213
 msgid "What's on now"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
 msgid "See what's currently on and is coming next"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
 msgid "Refresh"
 msgstr "Päivitä"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:307
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:306
 msgid "Refresh program guide"
 msgstr "Päivitä ohjelmaopas"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:313
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:312
 msgid "Previous Day"
 msgstr "Edellinen päivä"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:315
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:314
 msgid "Go to previous day"
 msgstr "Näytä edellinen päivä"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:322
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:321
 msgid "Next Day"
 msgstr "Seuraava päivä"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:195
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:324
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:323
 msgid "Go to next day"
 msgstr "Näytä seuraava päivä"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
 msgid "Channels"
 msgstr "Kanavat"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
 msgid "View/Hide channels"
 msgstr "Näytä/piilota kanavat"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:200
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
 msgid "Toolbar"
 msgstr "Työkalupalkki"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:201
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:200
 msgid "View/Hide toolbar"
 msgstr "Näytä/piilota työkalupalkki"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
 msgid "_About"
 msgstr "_Tietoja"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:212
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
 msgid "Display informations about the program"
 msgstr "Näytä tietoja ohjelmasta"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:274
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:273
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:41
 msgid "Recording schedule"
 msgstr ""
 
 #. Add recordings
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:286
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:285
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:30
-#: ../client/totem-plugin/dvb-daemon.py:155
+#: ../client/totem-plugin/dvb-daemon.py:161
 msgid "Recordings"
 msgstr "Nauhoitukset"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:495
-#: ../client/totem-plugin/dvb-daemon.py:73
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:493
+#: ../client/totem-plugin/dvb-daemon.py:75
 msgid "Schedule recording for the selected event?"
 msgstr ""
 
 #. translators: These appear in the About dialog, usual format applies.
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:584
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:582
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
@@ -322,82 +322,82 @@ msgstr "Valitse kansio"
 msgid "Edit group"
 msgstr "Muokkaa ryhmää"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:35
-#: ../client/totem-plugin/dvb-daemon.py:208
+#: ../client/gnomedvb/ui/preferences/Preferences.py:36
+#: ../client/totem-plugin/dvb-daemon.py:214
 msgid "Digital TV Preferences"
 msgstr "Digi-tv-asetukset"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:68
+#: ../client/gnomedvb/ui/preferences/Preferences.py:69
 msgid "Edit selected group"
 msgstr "Muokkaa valittua ryhmää"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:75
+#: ../client/gnomedvb/ui/preferences/Preferences.py:76
 msgid "Remove selected device"
 msgstr "Poista valittu laite"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:84
+#: ../client/gnomedvb/ui/preferences/Preferences.py:85
 msgid "Setup"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:86
+#: ../client/gnomedvb/ui/preferences/Preferences.py:87
 msgid "Setup devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:93
+#: ../client/gnomedvb/ui/preferences/Preferences.py:94
 msgid "Create new group"
 msgstr "Luo uusi ryhmä"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:97
+#: ../client/gnomedvb/ui/preferences/Preferences.py:98
 msgid "Create new group for selected device"
 msgstr "Luo uusi ryhmä valitulle laitteelle"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:103
+#: ../client/gnomedvb/ui/preferences/Preferences.py:104
 msgid "Add to group"
 msgstr "Lisää ryhmään"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:107
+#: ../client/gnomedvb/ui/preferences/Preferences.py:108
 msgid "Add selected device to existing group"
 msgstr "Lisää valittu laite olemassaolevaan ryhmään"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:123
+#: ../client/gnomedvb/ui/preferences/Preferences.py:124
 msgid "Configured devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:134
+#: ../client/gnomedvb/ui/preferences/Preferences.py:135
 msgid "Unconfigured devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:196
+#: ../client/gnomedvb/ui/preferences/Preferences.py:200
+msgid "Device could not be removed from group"
+msgstr ""
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:214
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:212
-msgid "Device could not be removed from group"
-msgstr ""
-
-#: ../client/gnomedvb/ui/preferences/Preferences.py:240
+#: ../client/gnomedvb/ui/preferences/Preferences.py:236
 msgid "Group could not be created"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:242
+#: ../client/gnomedvb/ui/preferences/Preferences.py:238
 msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:265
+#: ../client/gnomedvb/ui/preferences/Preferences.py:267
 msgid "Device could not be added to group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:267
+#: ../client/gnomedvb/ui/preferences/Preferences.py:269
 msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
 msgstr ""
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:91
-msgid "<big><span weight=\"bold\">Delete selected recordings?</span></big>"
+msgid "Delete selected recordings?"
 msgstr ""
 
 #: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
@@ -418,53 +418,53 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:148
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:146
+msgid "Timer could not be deleted"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:158
 msgid "Abort active recording?"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:150
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:160
 msgid "The timer you selected belongs to a currently active recording."
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:151
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:161
 msgid "Deleting this timer will abort the recording."
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:160
-msgid "Timer could not be deleted"
 msgstr ""
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:34
 msgid "Timer"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:50
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:49
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:60
 msgid "Channel:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:65
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:64
 msgid "Start time:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:76
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:75
 msgid "Pick date"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:98
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:97
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:70
 msgid "Duration:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:114
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:113
 msgid "minutes"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:183
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:166
 msgid "Timer could not be created"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:185
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:168
 msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
@@ -510,11 +510,11 @@ msgstr ""
 msgid "Length"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:38
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:40
 msgid "Now"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:50
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:52
 msgid "Next"
 msgstr ""
 
@@ -547,11 +547,25 @@ msgid ""
 "configured devices."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:107
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
+msgid "An error occured while retrieving devices."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
+msgid ""
+"Make sure other applications don't access DVB devices and you have "
+"permissions to access them."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
+msgid "The detailed error message is:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
 msgid "Searching for devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:123
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
 msgstr ""
 
@@ -723,49 +737,65 @@ msgid ""
 "All process will be lost."
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:45
-#: ../client/totem-plugin/dvb-daemon.py:89
-#: ../client/totem-plugin/dvb-daemon.py:193
+#: ../client/totem-plugin/dvb-daemon.py:47
+#: ../client/totem-plugin/dvb-daemon.py:91
+#: ../client/totem-plugin/dvb-daemon.py:199
 msgid "Program Guide"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:161
+#: ../client/totem-plugin/dvb-daemon.py:167
 msgid "Digital TV"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:204
+#: ../client/totem-plugin/dvb-daemon.py:210
 msgid "Digital _TV"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:206
+#: ../client/totem-plugin/dvb-daemon.py:212
 msgid "_Program Guide"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:209
+#: ../client/totem-plugin/dvb-daemon.py:215
 msgid "_Delete"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:210
+#: ../client/totem-plugin/dvb-daemon.py:216
 msgid "D_etails"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:279
+#: ../client/totem-plugin/dvb-daemon.py:217
+msgid "_Order channels"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:220
+msgid "By _name"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:221
+msgid "By _group"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:224
+msgid "_Reverse order"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:319
 msgid "DVB card is not configured"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:280
+#: ../client/totem-plugin/dvb-daemon.py:320
 msgid "Do you want to search for channels now?"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:346
+#: ../client/totem-plugin/dvb-daemon.py:386
 msgid "Delete selected recording?"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:386
+#: ../client/totem-plugin/dvb-daemon.py:429
 msgid "Totem Movie Player"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:429
+#: ../client/totem-plugin/dvb-daemon.py:475
 #, python-format
 msgid "Recording %d"
 msgstr ""
