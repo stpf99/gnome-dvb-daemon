@@ -1,4 +1,4 @@
-AC_INIT([gnome-dvb-daemon], [0.1.13],
+AC_INIT([gnome-dvb-daemon], [0.1.14],
 	[http://bugzilla.gnome.org/browse.cgi?product=dvb-daemon])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
