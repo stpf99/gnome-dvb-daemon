@@ -330,7 +330,13 @@ namespace DVB {
 
                         dvbbasebin.set ("program-numbers", new_programs.str);
 
-                        this.pipeline.set_state (State.PLAYING);
+                        Gst.StateChangeReturn ret =
+                            this.pipeline.set_state (State.PLAYING);
+                        if (ret == Gst.StateChangeReturn.FAILURE) {
+                            critical ("Failed setting pipeline to playing");
+                            this.destroy ();
+                            return false;
+                        }
                         this.active_channels.remove (channel);
                     }
 

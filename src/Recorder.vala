@@ -557,7 +557,13 @@ namespace DVB {
                 filesink, true);
             if (player != null) {
                 debug ("Setting pipeline to playing");
-                player.get_pipeline().set_state (Gst.State.PLAYING);
+                Gst.StateChangeReturn ret = player.get_pipeline().set_state (
+                    Gst.State.PLAYING);
+                if (ret == Gst.StateChangeReturn.FAILURE) {
+                    critical ("Failed setting pipeline to playing");
+                    this.stop_recording (timer);
+                    return;
+                }
                 player.eit_structure += this.on_eit_structure;
                 
                 Recording recording = new Recording ();
