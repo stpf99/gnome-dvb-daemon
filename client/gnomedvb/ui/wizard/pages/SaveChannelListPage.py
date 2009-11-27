@@ -33,8 +33,7 @@ class SaveChannelListPage(BasePage):
         self.__channels = None
         
         text = _("Choose a location where you want to save the list of channels.")
-        label = gtk.Label(text)
-        self.pack_start(label)
+        self._label.set_text(text)
 
         button_box = gtk.HButtonBox()
         self.pack_start(button_box)

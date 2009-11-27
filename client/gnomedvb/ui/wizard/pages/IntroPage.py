@@ -31,9 +31,8 @@ class IntroPage(BasePage):
         text += _('It will automatically configure your devices and search for channels, if necessary.')
         text += "\n\n"
         text += _("Click \"Forward\" to begin.")
-        label = gtk.Label(text)
-        label.set_line_wrap(True)
-        self.pack_start(label)
+        self._label.set_text(text)
+        self.set_child_packing(self._label, True, True, 0, gtk.PACK_START)
         
         self.expert_mode = gtk.CheckButton(label=_('Expert mode'))
         self.pack_start(self.expert_mode, False, False, 0)

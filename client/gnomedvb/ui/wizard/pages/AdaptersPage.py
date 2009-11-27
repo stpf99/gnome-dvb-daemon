@@ -41,10 +41,6 @@ class AdaptersPage(BasePage):
         self.devicesview = None
         self.scrolledview = None
         
-        self._label = gtk.Label()
-        self._label.set_line_wrap(True)
-        self.pack_start(self._label)
-        
         # Name, Type Name, Type, adapter, frontend, registered
         self.deviceslist = gtk.ListStore(str, str, str, int, int, bool)
         

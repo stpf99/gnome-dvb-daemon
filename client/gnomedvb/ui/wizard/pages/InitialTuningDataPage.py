@@ -76,8 +76,8 @@ class InitialTuningDataPage(BasePage):
         
     def set_adapter_info(self, info):
         self.__adapter_info = info
-        
-        for widget in self.get_children():
+        # skip label
+        for widget in self.get_children()[1:]:
             widget.destroy()
 
         if not self.is_dvb_apps_installed():
@@ -119,31 +119,20 @@ class InitialTuningDataPage(BasePage):
         return val
     
     def setup_unknown(self, devtype):
-        label = gtk.Label()
-        label.set_line_wrap(True)
         # translators: first %s is the DVB type, e.g. DVB-S
         text = _("Sorry, but '%s' cards aren't supported.") % devtype
-        label.set_markup(text)
-        label.show()
-        self.pack_start(label)
+        self._label.set_markup(text)
 
     def setup_dvb_apps_missing(self):
-        label = gtk.Label()
         text = "<big><b>%s</b></big>\n%s" % (_("Could not find initial tuning data."),
             _("Please make sure that the dvb-apps package is installed."))
-        label.set_markup(text)
-        label.show()
-        self.pack_start(label)
+        self._label.set_markup(text)
         
     def setup_dvb_t(self):
-        label = gtk.Label()
-        label.set_line_wrap(True)
         text = "%s %s %s" %(_('Please choose a country and the antenna that is closest to your location.'),
             _("If you don't know which antenna to choose select \"Don't know\" from the list of providers."),
             _("However, searching for channels will take considerably longer this way."))
-        label.set_markup(text)
-        label.show()
-        self.pack_start(label)
+        self._label.set_markup(text)
     
         self.providers_combo = None
         

@@ -100,7 +100,6 @@ class SetupWizard(gtk.Assistant):
         elif isinstance(page, ChannelScanPage):
             self.__ask_on_exit = True
             if self.__adapter_info["name"] != None:
-                page.set_name(self.__adapter_info["name"])
                 page.start_scanning(self.__adapter_info["adapter"],
                     self.__adapter_info["frontend"], self.tuning_data_page.get_tuning_data ())
         elif isinstance(page, SetupDevicePage):

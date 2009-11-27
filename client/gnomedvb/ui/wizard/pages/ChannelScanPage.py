@@ -34,6 +34,12 @@ class ChannelScanPage(BasePage):
      COL_ACTIVE,
      COL_SID,
      COL_SCRAMBLED) = range(5)
+     
+    MENU = '''<ui>
+    <popup name="channels-popup">
+        <menuitem name="channels-select-all" action="channels-select-all" />
+        <menuitem name="channels-deselect-all" action="channels-deselect-all" />
+    </popup></ui>'''
 
     def __init__(self, model):
         BasePage.__init__(self)
@@ -47,9 +53,23 @@ class ChannelScanPage(BasePage):
         self.set_spacing(12)
         self._theme = gtk.icon_theme_get_default()
         
-        self.label = gtk.Label()
-        self.label.set_line_wrap(True)
-        self.pack_start(self.label, False)
+        self._label.set_markup (
+            _("Choose the channels you want to have in your list of channels. You can reorder the channels, too.")
+        )
+        
+        actiongroup = gtk.ActionGroup('channels')
+        actiongroup.add_actions([
+            ('channels-select-all', None, _('Select all'), None, None,
+                lambda x: self.__set_all_checked(True)),
+            ('channels-deselect-all', None, _('Deselect all'), None, None,
+                lambda x: self.__set_all_checked(False)),
+        ])
+        
+        uimanager = gtk.UIManager()
+        uimanager.add_ui_from_string(self.MENU)
+        uimanager.insert_action_group(actiongroup)
+        
+        self.popup_menu = uimanager.get_widget("/channels-popup")
 
         topbox = gtk.VBox(spacing=6)
         self.pack_start(topbox)
@@ -57,6 +77,8 @@ class ChannelScanPage(BasePage):
         # Logo, Name, active, SID, scrambled
         self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, bool, int, bool)
         self.tvchannelsview = gtk.TreeView(self.tvchannels)
+        self.tvchannelsview.connect("button-press-event",
+            self.__on_treeview_button_press_event)
         self.tvchannelsview.set_reorderable(True)
         
         col_name = gtk.TreeViewColumn(_("Channel"))
@@ -79,7 +101,7 @@ class ChannelScanPage(BasePage):
         scrolledtvview.add(self.tvchannelsview)
         scrolledtvview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         scrolledtvview.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-
+        
         topbox.pack_start(scrolledtvview)
 
         self.scrambledbutton = gtk.CheckButton(_("Select scrambled channels"))
@@ -89,10 +111,6 @@ class ChannelScanPage(BasePage):
         
         self.progressbar = gtk.ProgressBar()
         self.pack_start(self.progressbar, False)
-
-        self._select_channels_label = gtk.Label()
-        self._select_channels_label.set_line_wrap(True)
-        self.pack_start(self._select_channels_label, False)
         
     def get_scanner(self):
         return self._scanner
@@ -105,9 +123,6 @@ class ChannelScanPage(BasePage):
         
     def get_selected_channel_sids(self):
         return [row[self.COL_SID] for row in self.tvchannels if row[self.COL_ACTIVE]]
-        
-    def set_name(self, name):
-        self.label.set_text(_("Scanning for channels on device %s") % name)
         
     def start_scanning(self, adapter, frontend, tuning_data):
         def data_loaded(success):
@@ -123,10 +138,10 @@ class ChannelScanPage(BasePage):
         self._scanner.connect ("finished", self.__on_finished)
 
         self.progressbar.show()
-        self._select_channels_label.hide()
 
         if isinstance(tuning_data, str):
-            self._scanner.add_scanning_data_from_file (tuning_data, reply_handler=data_loaded, error_handler=global_error_handler)
+            self._scanner.add_scanning_data_from_file (tuning_data,
+                reply_handler=data_loaded, error_handler=global_error_handler)
         elif isinstance(tuning_data, list):
             for data in tuning_data:
                 self._scanner.add_scanning_data(data)
@@ -158,11 +173,6 @@ class ChannelScanPage(BasePage):
         
     def __on_finished(self, scanner):
         self.progressbar.hide()
-    
-        self._select_channels_label.set_markup(
-        _("Choose the channels you want to have in your list of channels. You can reorder the channels, too.")
-        )
-        self._select_channels_label.show()
         
         self.emit("finished", True)
         
@@ -184,4 +194,21 @@ class ChannelScanPage(BasePage):
         for row in self.tvchannels:
             if row[self.COL_SCRAMBLED]:
                 row[self.COL_ACTIVE] = val
+                
+    def __on_treeview_button_press_event(self, treeview, event):
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                self.popup_menu.popup(None, None, None, event.button, time)
+            return True
+
+    def __set_all_checked(self, val):
+        for row in self.tvchannels:
+            row[self.COL_ACTIVE] = val
 

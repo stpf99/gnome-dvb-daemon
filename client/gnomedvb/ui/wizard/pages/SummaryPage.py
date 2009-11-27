@@ -25,10 +25,6 @@ class SummaryPage(BasePage):
     def __init__(self):
         BasePage.__init__(self)
         
-        self.label = gtk.Label()
-        self.label.set_line_wrap(True)
-        self.pack_start(self.label)
-        
         button_alignment = gtk.Alignment(xalign=0.5)
         self.pack_start(button_alignment, False)
         
@@ -45,6 +41,5 @@ class SummaryPage(BasePage):
         text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)
         text += "\n%s" % details
         
-        self.label.set_markup(text)
-        self.label.show()
+        self._label.set_markup(text)
     
