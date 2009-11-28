@@ -41,6 +41,7 @@ class ControlCenterWindow(gtk.Window):
         self.runningnextstore = None
         self.scrolledrunningnext = None
         self.runningnextview = None
+        self.__single_group = None
         
         self.channellists = {}
         self.manager = model
@@ -71,10 +72,7 @@ class ControlCenterWindow(gtk.Window):
         
         self.vbox_left = gtk.VBox(spacing=6)
         self.hpaned.pack1(self.vbox_left)
-        
-        groups_label = gtk.Label(_("Device groups:"))
-        self.vbox_left.pack_start(groups_label, False)
-        
+
         self.devgroupslist = gtk.ListStore(str, int, gobject.TYPE_PYOBJECT)
         self.devgroupslist.connect("row-inserted", self._on_devgroupslist_inserted)
         
@@ -84,7 +82,6 @@ class ControlCenterWindow(gtk.Window):
         cell_adapter = gtk.CellRendererText()
         self.devgroupscombo.pack_start(cell_adapter)
         self.devgroupscombo.add_attribute(cell_adapter, "markup", 0)
-        
         self.vbox_left.pack_start(self.devgroupscombo, False)
         
         self.channelsstore = None
@@ -329,7 +326,18 @@ class ControlCenterWindow(gtk.Window):
         def append_groups(groups):
             for group in groups:
                 self._append_group(group)
+            self.check_single_group_mode()
         self.manager.get_registered_device_groups(reply_handler=append_groups)
+        
+    def check_single_group_mode(self):
+        val = len(self.devgroupslist) == 1
+        if val:
+            aiter = self.devgroupslist.get_iter_first()
+            self.__single_group = self.devgroupslist[aiter][2]
+            self.devgroupscombo.hide()
+        else:
+            self.__single_group = None
+            self.devgroupscombo.show()
     
     def _select_first_group(self):
         self.devgroupscombo.set_active(0)
@@ -372,11 +380,16 @@ class ControlCenterWindow(gtk.Window):
         group = self.manager.get_device_group(group_id)
         if group:
             self._append_group(group)
+            self.check_single_group_mode()
         
     def _on_manager_group_removed(self, manager, group_id):
         self._remove_group(group_id)
+        self.check_single_group_mode()
+        self._select_first_group()
             
     def _get_selected_group(self):
+        if self.__single_group != None:
+            return self.__single_group
         aiter = self.devgroupscombo.get_active_iter()
         if aiter == None:
             return None
