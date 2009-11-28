@@ -173,7 +173,10 @@ class AdaptersPage(BasePage):
                     if success:
                         dev.name = info["name"]
                         dev.type = info["type"]
-                        dev.type_name = DVB_TYPE_TO_DESC[info["type"]]
+                        if info["type"] in DVB_TYPE_TO_DESC:
+                            dev.type_name = DVB_TYPE_TO_DESC[info["type"]]
+                        else:
+                            dev.type_name = info["type"]
                         dev.registered = False
                         unregistered.add(dev)
                     else:
