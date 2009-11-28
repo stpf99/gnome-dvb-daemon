@@ -47,19 +47,6 @@ class ChannelListEditorDialog(gtk.Dialog):
         self.vbox_main.set_border_width(6)
         self.vbox.pack_start(self.vbox_main)
 
-        # device groups
-        self.devgroupslist = gtk.ListStore(str, int, gobject.TYPE_PYOBJECT)
-        
-        self.devgroupscombo = gtk.ComboBox(self.devgroupslist)
-        self.devgroupscombo.connect("changed", self.on_devgroupscombo_changed)
-        cell_adapter = gtk.CellRendererText()
-        self.devgroupscombo.pack_start(cell_adapter)
-        self.devgroupscombo.add_attribute(cell_adapter, "markup", 0)
-        
-        devgroups_frame = BaseFrame("<b>%s</b>" % _("Device groups"),
-            self.devgroupscombo, False, False)
-        self.vbox_main.pack_start(devgroups_frame, False)
-
         # channel groups
         groups_box = gtk.HBox(spacing=6)
         groups_frame = BaseFrame("<b>%s</b>" % _("Channel groups"),
@@ -92,7 +79,29 @@ class ChannelListEditorDialog(gtk.Dialog):
         self.del_group_button = gtk.Button(stock=gtk.STOCK_REMOVE)
         self.del_group_button.connect("clicked", self.on_delete_group_clicked)
         groups_buttonbox.pack_start(self.del_group_button)
+   
+        # device groups
+        self.devgroupslist = gtk.ListStore(str, int, gobject.TYPE_PYOBJECT)
         
+        self.devgroupscombo = gtk.ComboBox(self.devgroupslist)
+        self.devgroupscombo.connect("changed", self.on_devgroupscombo_changed)
+        cell_adapter = gtk.CellRendererText()
+        self.devgroupscombo.pack_start(cell_adapter)
+        self.devgroupscombo.add_attribute(cell_adapter, "markup", 0)
+        
+        groups_label = gtk.Label()
+        groups_label.set_markup_with_mnemonic(_("_Group:"))
+        groups_label.set_mnemonic_widget(self.devgroupscombo)
+        
+        groups_box = gtk.HBox(spacing=6)
+        groups_box.pack_start(groups_label, False)
+        groups_box.pack_start(self.devgroupscombo)
+        
+        self.devgroups_frame = BaseFrame("<b>%s</b>" % _("Device groups"),
+            groups_box, False, False)
+        self.vbox_main.pack_start(self.devgroups_frame, False)
+     
+        # channels
         channels_box = gtk.VBox(spacing=6)
         self.vbox_main.pack_start(channels_box)
 
@@ -175,6 +184,11 @@ class ChannelListEditorDialog(gtk.Dialog):
         def append_groups(groups):
             for group in groups:
                 self.devgroupslist.append([group["name"], group["id"], group])
+            if len(groups) == 1:
+                self.devgroup = groups[0]
+                self.devgroups_frame.hide()
+            else:
+                self.devgroups_frame.show()
             self.devgroupscombo.set_active(0)
                 
         self.model.get_registered_device_groups(reply_handler=append_groups,
@@ -313,6 +327,8 @@ class ChannelListEditorDialog(gtk.Dialog):
                 error_handler=gnomedvb.global_error_handler)
                 
     def get_selected_group(self):
+        if self.devgroup != None:
+            return self.devgroup
         aiter = self.devgroupscombo.get_active_iter()
         if aiter == None:
             return None
@@ -322,9 +338,8 @@ class ChannelListEditorDialog(gtk.Dialog):
     def on_devgroupscombo_changed(self, combo):
         group = self.get_selected_group()
         if group != None:
-            self.devgroup = group
             self.channel_list = group.get_channel_list()
-            self.channels_store = ChannelsStore(self.devgroup)
+            self.channels_store = ChannelsStore(group)
             self.channels_view.set_model(self.channels_store)
             
     def on_channels_view_activated(self, treeview, aiter, path):
