@@ -21,25 +21,16 @@ import gtk
 import gnomedvb
 from gettext import gettext as _
 
-class PairBox(gtk.HBox):
-    def __init__(self, name, text=None):
-        gtk.HBox.__init__(self, spacing=3)
+class AlignedLabel (gtk.Alignment):
+
+    def __init__(self, markup=None):
+        gtk.Alignment.__init__(self, 0, 0.5)
         
-        name_label = gtk.Label()
-        name_label.set_markup(name)
-        name_label.show()
-        self.pack_start(name_label, False)
-        
-        text_ali = gtk.Alignment()
-        text_ali.show()
-        self.pack_start(text_ali)
-        
-        self.text_label = gtk.Label(text)
-        self.text_label.show()
-        text_ali.add(self.text_label)
-        
-    def get_text_label(self):
-        return self.text_label
+        self.label = gtk.Label()
+        if markup:
+            self.label.set_markup(markup)
+        self.label.show()
+        self.add(self.label)
 
 class DetailsDialog(gtk.Dialog):
 
@@ -51,35 +42,37 @@ class DetailsDialog(gtk.Dialog):
         
         self.set_default_size(440, 350)
         self.vbox.set_spacing(6)
+        self.set_border_width(6)
         
-        title_hbox = PairBox("<b>%s</b>" % _("Title:"))
-        self.title_label = title_hbox.get_text_label()
-        title_hbox.show_all()
-        self.vbox.pack_start(title_hbox, False)
+        self.table = gtk.Table(6, 2)
+        self.table.set_col_spacings(16)
+        self.table.set_row_spacings(6)
+        self.vbox.pack_start(self.table)
         
-        channel_hbox = PairBox("<b>%s</b>" % _("Channel:"))
-        self.channel = channel_hbox.get_text_label()
-        channel_hbox.show_all()
-        self.vbox.pack_start(channel_hbox, False)
+        self._title = AlignedLabel()
+        self._channel = AlignedLabel()
+        self._date = AlignedLabel()
+        self._duration = AlignedLabel()
         
-        date_hbox = PairBox("<b>%s</b>" % _("Date:"))
-        self.date = date_hbox.get_text_label()
-        date_hbox.show_all()
-        self.vbox.pack_start(date_hbox, False)
+        title_label = AlignedLabel("<i>%s</i>" % _("Title:"))
+        self.table.attach(title_label, 0, 1, 0, 1, gtk.FILL, gtk.FILL)
+        self.table.attach(self._title, 1, 2, 0, 1, yoptions=gtk.FILL)
         
-        duration_hbox = PairBox("<b>%s</b>" % _("Duration:"))
-        self.duration = duration_hbox.get_text_label()
-        duration_hbox.show_all()
-        self.vbox.pack_start(duration_hbox, False)
+        channel_label = AlignedLabel("<i>%s</i>" % _("Channel:"))
+        self.table.attach(channel_label, 0, 1, 1, 2, gtk.FILL, gtk.FILL)
+        self.table.attach(self._channel, 1, 2, 1, 2, yoptions=gtk.FILL)
         
-        label_description = gtk.Label()
-        label_description.set_markup("<b>%s</b>" % _("Description:"))
-        label_description.show()
+        date_label = AlignedLabel("<i>%s</i>" % _("Date:"))
+        self.table.attach(date_label, 0, 1, 2, 3, gtk.FILL, gtk.FILL)
+        self.table.attach(self._date, 1, 2, 2, 3, yoptions=gtk.FILL)
         
-        ali_desc = gtk.Alignment()
-        ali_desc.show()
-        ali_desc.add(label_description)
-        self.vbox.pack_start(ali_desc, False)
+        duration_label = AlignedLabel("<i>%s</i>" % _("Duration:"))
+        self.table.attach(duration_label, 0, 1, 3, 4, gtk.FILL, gtk.FILL)
+        self.table.attach(self._duration, 1, 2, 3, 4, yoptions=gtk.FILL)
+        
+        description_label = AlignedLabel("<i>%s</i>" % _("Description:"))
+        self.table.attach(description_label, 0, 1, 4, 5, gtk.FILL,
+            yoptions=gtk.FILL)
             
         self.textview = gtk.TextView()
         self.textview.set_editable(False)
@@ -89,7 +82,7 @@ class DetailsDialog(gtk.Dialog):
         desc_text_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
         desc_text_ali.set_padding(0, 0, 12, 0)
         desc_text_ali.show()
-        self.vbox.pack_start(desc_text_ali)
+        self.table.attach(desc_text_ali, 0, 2, 5, 6)
         
         scrolledwin = gtk.ScrolledWindow()
         scrolledwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -98,21 +91,23 @@ class DetailsDialog(gtk.Dialog):
         scrolledwin.show()
         desc_text_ali.add(scrolledwin)
         
+        self.table.show_all()
+        
     def set_description(self, text):
         self.textview.get_buffer().set_text(text)
         
     def set_title(self, title):
         gtk.Dialog.set_title(self, title)
-        self.title_label.set_text(title)
+        self._title.label.set_text(title)
 
     def set_channel(self, channel):
-        self.channel.set_text(channel)
+        self._channel.label.set_text(channel)
         
     def set_duration(self, duration):
         duration_str = gnomedvb.seconds_to_time_duration_string(duration)
-        self.duration.set_text(duration_str)
+        self._duration.label.set_text(duration_str)
         
     def set_date(self, timestamp):
         date = datetime.datetime.fromtimestamp(timestamp)
-        self.date.set_text(date.strftime("%c"))
+        self._date.label.set_text(date.strftime("%c"))
 
