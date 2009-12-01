@@ -29,12 +29,14 @@ class RecordingsDialog(gtk.Dialog):
     def __init__(self, parent=None):
         gtk.Dialog.__init__(self, title=_("Recordings"),
             parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
             
         self.set_size_request(600, 400)
         self.set_has_separator(False)
         self.vbox.set_spacing(12)
+        
+        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button.grab_default()
             
         hbox_main = gtk.HBox(spacing=12)
         hbox_main.set_border_width(6)
