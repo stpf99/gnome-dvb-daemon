@@ -18,7 +18,7 @@
 
 import gtk
 
-__all__ = ["AlignedLabel", "Frame", "BaseFrame"]
+__all__ = ["AlignedLabel", "Frame", "BaseFrame", "TextFieldLabel"]
 
 class AlignedChild(gtk.Alignment):
     
@@ -49,13 +49,24 @@ class BaseFrame(gtk.VBox):
 
 class AlignedLabel (gtk.Alignment):
 
-    def __init__(self, markup):
+    def __init__(self, markup=None):
         gtk.Alignment.__init__(self)
         
         self.label = gtk.Label()
-        self.label.set_markup(markup)
+        if markup:
+            self.label.set_markup(markup)
         self.label.show()
         self.add(self.label)
+        
+    def get_label(self):
+        return self.label
+        
+class TextFieldLabel (AlignedLabel):
+
+    def __init__(self, markup=None):
+        AlignedLabel.__init__(self, markup)
+        
+        self.set_property("yalign", 0.5)
 
 class Frame (BaseFrame):
 
