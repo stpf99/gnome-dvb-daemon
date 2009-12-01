@@ -20,17 +20,7 @@ import datetime
 import gtk
 import gnomedvb
 from gettext import gettext as _
-
-class AlignedLabel (gtk.Alignment):
-
-    def __init__(self, markup=None):
-        gtk.Alignment.__init__(self, 0, 0.5)
-        
-        self.label = gtk.Label()
-        if markup:
-            self.label.set_markup(markup)
-        self.label.show()
-        self.add(self.label)
+from gnomedvb.ui.widgets.Frame import TextFieldLabel
 
 class DetailsDialog(gtk.Dialog):
 
@@ -51,28 +41,28 @@ class DetailsDialog(gtk.Dialog):
         self.table.set_border_width(6)
         self.vbox.pack_start(self.table)
         
-        self._title = AlignedLabel()
-        self._channel = AlignedLabel()
-        self._date = AlignedLabel()
-        self._duration = AlignedLabel()
+        self._title = TextFieldLabel()
+        self._channel = TextFieldLabel()
+        self._date = TextFieldLabel()
+        self._duration = TextFieldLabel()
         
-        title_label = AlignedLabel("<i>%s</i>" % _("Title:"))
+        title_label = TextFieldLabel("<i>%s</i>" % _("Title:"))
         self.table.attach(title_label, 0, 1, 0, 1, gtk.FILL, gtk.FILL)
         self.table.attach(self._title, 1, 2, 0, 1, yoptions=gtk.FILL)
         
-        channel_label = AlignedLabel("<i>%s</i>" % _("Channel:"))
+        channel_label = TextFieldLabel("<i>%s</i>" % _("Channel:"))
         self.table.attach(channel_label, 0, 1, 1, 2, gtk.FILL, gtk.FILL)
         self.table.attach(self._channel, 1, 2, 1, 2, yoptions=gtk.FILL)
         
-        date_label = AlignedLabel("<i>%s</i>" % _("Date:"))
+        date_label = TextFieldLabel("<i>%s</i>" % _("Date:"))
         self.table.attach(date_label, 0, 1, 2, 3, gtk.FILL, gtk.FILL)
         self.table.attach(self._date, 1, 2, 2, 3, yoptions=gtk.FILL)
         
-        duration_label = AlignedLabel("<i>%s</i>" % _("Duration:"))
+        duration_label = TextFieldLabel("<i>%s</i>" % _("Duration:"))
         self.table.attach(duration_label, 0, 1, 3, 4, gtk.FILL, gtk.FILL)
         self.table.attach(self._duration, 1, 2, 3, 4, yoptions=gtk.FILL)
         
-        description_label = AlignedLabel("<i>%s</i>" % _("Description:"))
+        description_label = TextFieldLabel("<i>%s</i>" % _("Description:"))
         self.table.attach(description_label, 0, 1, 4, 5, gtk.FILL,
             yoptions=gtk.FILL)
             
