@@ -41,12 +41,14 @@ class DetailsDialog(gtk.Dialog):
             buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
         
         self.set_default_size(440, 350)
-        self.vbox.set_spacing(6)
         self.set_border_width(6)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(12)
         
         self.table = gtk.Table(6, 2)
-        self.table.set_col_spacings(16)
+        self.table.set_col_spacings(18)
         self.table.set_row_spacings(6)
+        self.table.set_border_width(6)
         self.vbox.pack_start(self.table)
         
         self._title = AlignedLabel()

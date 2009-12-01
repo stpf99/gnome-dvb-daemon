@@ -33,9 +33,11 @@ class RecordingsDialog(gtk.Dialog):
             buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
             
         self.set_size_request(600, 400)
-        self.vbox.set_spacing(6)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(12)
             
-        hbox_main = gtk.HBox(spacing=6)
+        hbox_main = gtk.HBox(spacing=12)
+        hbox_main.set_border_width(6)
         hbox_main.show()
         self.vbox.pack_start(hbox_main)
             
@@ -58,7 +60,7 @@ class RecordingsDialog(gtk.Dialog):
         hbox_main.pack_start(scrolledwindow)
         
         buttonbox = gtk.VButtonBox()
-        buttonbox.set_spacing(3)
+        buttonbox.set_spacing(6)
         buttonbox.set_layout(gtk.BUTTONBOX_START)
         buttonbox.show()
         hbox_main.pack_start(buttonbox, False)
