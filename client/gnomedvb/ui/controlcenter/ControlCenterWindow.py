@@ -162,9 +162,9 @@ class ControlCenterWindow(gtk.Window):
         
         actiongroup = gtk.ActionGroup('Timers')
         actiongroup.add_actions([
-            ('EditTimers', None, _('_Manage'), None,
+            ('EditTimers', None, _('_Manage'), '<Control>T',
              _('Manage recording schedule'), self._on_button_display_timers_clicked),
-            ('Recordings', None, _('_Recordings'), None,
+            ('Recordings', None, _('_Recordings'), '<Control>W',
              _('Manage recordings'), self._on_button_recordings_clicked),
             ('Quit', gtk.STOCK_QUIT, _('_Quit'), None,
              _('Quit the Program'), gtk.main_quit)])
@@ -172,7 +172,7 @@ class ControlCenterWindow(gtk.Window):
         
         actiongroup = gtk.ActionGroup('Edit')
         actiongroup.add_actions([
-            ('EditChannelLists', None, _('Channel lists'), None,
+            ('EditChannelLists', None, _('_Channel Lists'), None,
              _('Edit channel lists'), self._on_edit_channellists_clicked),
             ('Preferences', gtk.STOCK_PREFERENCES, _('_Preferences'), None,
              _('Display preferences'), self._on_button_prefs_clicked),
@@ -181,19 +181,19 @@ class ControlCenterWindow(gtk.Window):
         
         actiongroup = gtk.ActionGroup('View')
         actiongroup.add_actions([
-            ('WhatsOnNow', None, _("What's on now"), None,
+            ('WhatsOnNow', None, _("_What's on now"), None,
              _("See what's currently on and is coming next"), self._on_whats_on_now_clicked),
-            ('Refresh', gtk.STOCK_REFRESH, _('Refresh'), None,
+            ('Refresh', gtk.STOCK_REFRESH, _('_Refresh'), '<Control>R',
              _('Refresh program guide'), self._on_refresh_clicked),
-            ('PrevDay', None, _('Previous Day'), '<Control>B',
+            ('PrevDay', None, _('_Previous Day'), '<Alt>Left',
              _('Go to previous day'), self._on_button_prev_day_clicked),
-            ('NextDay', None, _('Next Day'), '<Control>N',
+            ('NextDay', None, _('_Next Day'), '<Alt>Right',
              _('Go to next day'), self._on_button_next_day_clicked),
         ])
         actiongroup.add_toggle_actions([
-            ('Channels', None, _('Channels'), None,
+            ('Channels', None, _('_Channels'), None,
              _('View/Hide channels'), self._on_view_channels_clicked),
-            ('Toolbar', None, _('Toolbar'), None,
+            ('Toolbar', None, _('_Toolbar'), None,
              _('View/Hide toolbar'), self._on_view_toolbar_clicked),
         ])
         action = actiongroup.get_action('Toolbar')
