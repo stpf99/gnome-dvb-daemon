@@ -19,26 +19,40 @@
 import gtk
 import gobject
 from gettext import gettext as _
-from gnomedvb.ui.widgets.Frame import AlignedLabel
+from gnomedvb.ui.widgets.Frame import BaseFrame, TextFieldLabel
 
 __all__ = ["AddToGroupDialog", "NewGroupDialog", "EditGroupDialog"]
 
 class AddToGroupDialog (gtk.Dialog):
 
     def __init__(self, parent, model, device_type):
-        gtk.Dialog.__init__(self, title=_("Add To Group"),
+        gtk.Dialog.__init__(self, title=_("Add to Group"),
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                       gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
                 
         self.__selected_group = None
-        self.vbox.set_spacing(6)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(12)
+        
+        self.vbox_main = gtk.VBox(spacing=12)
+        self.vbox_main.set_border_width(6)
+        self.vbox_main.show()
+        self.vbox.pack_start(self.vbox_main)
+        
+        groupbox = gtk.HBox(spacing=18)
+        groupbox.show()
+        
+        group_frame = BaseFrame("<b>%s</b>" % _("Add Device to Group"), groupbox)
+        group_frame.show()
+        self.vbox_main.pack_start(group_frame)
                 
-        label = gtk.Label()
-        label.set_markup("<b>%s</b>" % _("Select a group:"))
-        label.show()
-        self.vbox.pack_start(label, False, False, 0)
+        group_label = TextFieldLabel()
+        group_label.show()
+        label = group_label.get_label()
+        label.set_markup_with_mnemonic(_("_Group:"))
+        groupbox.pack_start(group_label, False, False, 0)
         
         self.groups = gtk.ListStore(str, gobject.TYPE_PYOBJECT)
         
@@ -48,7 +62,8 @@ class AddToGroupDialog (gtk.Dialog):
         combo.pack_start(cell)
         combo.add_attribute(cell, "text", 0)
         combo.show()
-        self.vbox.pack_start(combo)
+        label.set_mnemonic_widget(combo)
+        groupbox.pack_start(combo)
                      
         def append_groups(groups):
             for group in groups:
@@ -74,80 +89,99 @@ class AddToGroupDialog (gtk.Dialog):
 class NewGroupDialog (gtk.Dialog):
 
     def __init__(self, parent):
-        gtk.Dialog.__init__(self, title=_("Create Group"),
+        gtk.Dialog.__init__(self, title=_("Create new Group"),
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
                       gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
         
         self.set_default_size(400, 150)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(12)
         
-        name = AlignedLabel("<b>%s</b>" % _("Name"))
+        self.vbox_main = gtk.VBox(spacing=12)
+        self.vbox_main.set_border_width(6)
+        self.vbox_main.show()
+        self.vbox.pack_start(self.vbox_main)
+        
+        self.table = gtk.Table(3, 2)
+        self.table.set_col_spacings(18)
+        self.table.set_row_spacings(6)
+        self.table.show()
+        
+        general_frame = BaseFrame("<b>%s</b>" % _("General"), self.table)
+        general_frame.show()
+        self.vbox_main.pack_start(general_frame)
+        
+        name = TextFieldLabel()
+        label = name.get_label()
+        label.set_markup_with_mnemonic(_("_Name:"))
         name.show()
-        self.vbox.pack_start(name, False, False, 0)
-        
-        name_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
-        name_ali.set_padding(0, 0, 12, 0)
-        name_ali.show()
-        self.vbox.pack_start(name_ali)
         
         self.name_entry = gtk.Entry()
         self.name_entry.show()
-        name_ali.add(self.name_entry)
+        label.set_mnemonic_widget(self.name_entry)
         
-        self.channels = AlignedLabel("<b>%s</b>" % _("Channels File"))
+        self.table.attach(name, 0, 1, 0, 1, gtk.FILL, gtk.FILL)
+        self.table.attach(self.name_entry, 1, 2, 0, 1, yoptions=gtk.FILL)
+        
+        self.channels = TextFieldLabel()
+        label = self.channels.get_label()
+        label.set_markup_with_mnemonic(_("Channels _file:"))
         self.channels.show()
-        self.vbox.pack_start(self.channels, False, False, 0)
-        self.vbox.set_spacing(6)
         
-        self.channels_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
-        self.channels_ali.set_padding(0, 0, 12, 0)
-        self.channels_ali.show()
-        self.vbox.pack_start(self.channels_ali)
-        
-        channelsbox = gtk.HBox(spacing=3)
-        channelsbox.show()
-        self.channels_ali.add(channelsbox)
+        self.channelsbox = gtk.HBox(spacing=6)
+        self.channelsbox.show()
+
         self.channels_entry = gtk.Entry()
         self.channels_entry.set_editable(False)
         self.channels_entry.show()
-        channelsbox.pack_start(self.channels_entry)
+        self.channelsbox.pack_start(self.channels_entry)
+        label.set_mnemonic_widget(self.channels_entry)
         
         channels_open = gtk.Button(stock=gtk.STOCK_OPEN)
         channels_open.connect("clicked", self._on_channels_open_clicked)
         channels_open.show()
-        channelsbox.pack_start(channels_open, False, False, 0)
+        self.channelsbox.pack_start(channels_open, False, False, 0)
         
-        recordings = AlignedLabel("<b>%s</b>" % _("Recordings' Directory"))
-        recordings.show()
-        self.vbox.pack_start(recordings, False, False, 0)
+        self.table.attach(self.channels, 0, 1, 1, 2, gtk.FILL, gtk.FILL)
+        self.table.attach(self.channelsbox, 1, 2, 1, 2, yoptions=gtk.FILL)
         
-        rec_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
-        rec_ali.set_padding(0, 0, 12, 0)
-        rec_ali.show()
-        self.vbox.pack_start(rec_ali)
-        
-        recbox = gtk.HBox(spacing=6)
+        recbox = gtk.HBox(spacing=18)
         recbox.show()
-        rec_ali.add(recbox)
+        
+        recordings_frame = BaseFrame("<b>%s</b>" % _("Recordings"), recbox)
+        recordings_frame.show()
+        self.vbox_main.pack_start(recordings_frame)
+        
+        recordings = TextFieldLabel()
+        label = recordings.get_label()
+        label.set_markup_with_mnemonic(_("_Directory:"))
+        recordings.show()
+        recbox.pack_start(recordings, False)
+        
+        recentrybox = gtk.HBox(spacing=6)
+        recentrybox.show()
+        recbox.pack_start(recentrybox)
         
         self.recordings_entry = gtk.Entry()
         self.recordings_entry.set_editable(False)
         self.recordings_entry.show()
-        recbox.pack_start(self.recordings_entry)
+        recentrybox.pack_start(self.recordings_entry)
+        label.set_mnemonic_widget(self.recordings_entry)
         
         recordings_open = gtk.Button(stock=gtk.STOCK_OPEN)
         recordings_open.connect("clicked", self._on_recordings_open_clicked)
         recordings_open.show()
-        recbox.pack_start(recordings_open, False, False, 0)
+        recentrybox.pack_start(recordings_open, False, False, 0)
         
     def show_channels_section(self, val):
         if val:
             self.channels.show()
-            self.channels_ali.show()
+            self.channelsbox.show()
         else:
             self.channels.hide()
-            self.channels_ali.hide()
+            self.channelsbox.hide()
         
     def _on_channels_open_clicked(self, button):
         dialog = gtk.FileChooserDialog (title = _("Select File"),
