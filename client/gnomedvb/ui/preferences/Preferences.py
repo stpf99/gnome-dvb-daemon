@@ -47,7 +47,7 @@ class Preferences(gtk.Dialog):
         self.__create_toolbar()
         
         self.vbox_main = gtk.VBox(spacing=12)
-        self.vbox_main.set_border_width(6)
+        self.vbox_main.set_border_width(12)
         self.vbox_main.show()
         self.vbox.pack_start(self.vbox_main)
         
