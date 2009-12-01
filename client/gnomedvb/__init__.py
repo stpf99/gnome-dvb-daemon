@@ -81,13 +81,12 @@ def seconds_to_time_duration_string(duration):
     hours = duration / 3600
     minutes = (duration / 60) % 60
     seconds = duration % 60
-    if hours == 0:
-        if minutes == 0:
-            return gettext.ngettext("%d second", "%d seconds", seconds) % seconds
-        else:
-            return gettext.ngettext("%d minute", "%d minutes", minutes) % minutes
-    else:
-        h_txt = gettext.ngettext("%d hour", "%d hours", hours) % hours
-        m_txt = gettext.ngettext("%d minute", "%d minutes", minutes) % minutes
-        return "%s %s" % (h_txt, m_txt)
+    text = []
+    if hours != 0:
+        text.append(gettext.ngettext("%d hour", "%d hours", hours) % hours)
+    if minutes != 0:
+        text.append(gettext.ngettext("%d minute", "%d minutes", minutes) % minutes)
+    if seconds != 0:
+        text.append(gettext.ngettext("%d second", "%d seconds", seconds) % seconds)
+    return " ".join(text)
 
