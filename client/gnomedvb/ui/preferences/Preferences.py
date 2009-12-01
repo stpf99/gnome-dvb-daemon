@@ -35,19 +35,23 @@ class Preferences(gtk.Dialog):
     def __init__(self, model, parent=None):
         gtk.Dialog.__init__(self, title=_('Digital TV Preferences'),
             parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
         
         self._model = model
         self._model.connect("group-added", self._on_manager_group_added)
         self._model.connect("group-removed", self._on_manager_group_removed)
         
         self.set_default_size(600, 450)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(12)
+        
+        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button.grab_default()
         
         self.__create_toolbar()
         
         self.vbox_main = gtk.VBox(spacing=12)
-        self.vbox_main.set_border_width(12)
+        self.vbox_main.set_border_width(6)
         self.vbox_main.show()
         self.vbox.pack_start(self.vbox_main)
         

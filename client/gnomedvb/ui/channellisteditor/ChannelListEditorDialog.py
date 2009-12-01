@@ -30,18 +30,21 @@ from gnomedvb.ui.widgets.HelpBox import HelpBox
 class ChannelListEditorDialog(gtk.Dialog):
 
     def __init__(self, model, parent=None):
-        gtk.Dialog.__init__(self, title=_("Channel List Editor"),
+        gtk.Dialog.__init__(self, title=_("Edit Channel Lists"),
             parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
 
         self.model = model
         self.devgroup = None
         self.channel_list = None
 
         self.set_size_request(600, 500)
+        self.set_has_separator(False)
         self.connect("destroy-event", gtk.main_quit)
         self.connect("delete-event", gtk.main_quit)
+        
+        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button.grab_default()
 
         self.vbox_main = gtk.VBox(spacing=12)
         self.vbox_main.set_border_width(6)
