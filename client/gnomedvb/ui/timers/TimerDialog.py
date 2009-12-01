@@ -22,6 +22,7 @@ from gettext import gettext as _
 from gnomedvb.ui.timers.CalendarDialog import CalendarDialog
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
+from gnomedvb.ui.widgets.Frame import TextFieldLabel
 
 class TimerDialog(gtk.Dialog):
 
@@ -31,46 +32,57 @@ class TimerDialog(gtk.Dialog):
         @type parent: gtk.Window
         @param device_group: DeviceGroup instance
         """
-        gtk.Dialog.__init__(self, title=_("Timer"), parent=parent,
-                flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                 gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+        gtk.Dialog.__init__(self, title=_("Add Timer"), parent=parent,
+                flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
         
         self.device_group = device_group
         self._start_date = None
         
-        table = gtk.Table(rows=3, columns=2)
+        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)
+        self.ok_button = self.add_button(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT)
+        self.ok_button.set_sensitive(False)
+        
+        self.set_has_separator(False)
+        self.vbox.set_spacing(12)
+        
+        table = gtk.Table(rows=4, columns=2)
+        table.set_col_spacings(18)
         table.set_row_spacings(6)
-        table.set_col_spacings(6)
-        table.set_border_width(3)
-        self.vbox.add(table)
+        table.set_border_width(6)
+        self.vbox.pack_start(table)
                          
-        label_channel = gtk.Label()
-        label_channel.set_markup("<b>%s</b>" % _("Channel:"))
-        table.attach(label_channel, 0, 1, 0, 1)
+        label_channel = TextFieldLabel()
+        label = label_channel.get_label()
+        label.set_markup_with_mnemonic(_("_Channel:"))
+        table.attach(label_channel, 0, 1, 0, 1, gtk.FILL, gtk.FILL)
         
         self.channels = ChannelsStore(device_group)
         
         scrolledchannels = gtk.ScrolledWindow()
         scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrolledchannels.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        table.attach(scrolledchannels, 1, 2, 0, 1)
+        table.attach(scrolledchannels, 0, 2, 1, 2)
         
         self.channelsview = ChannelsView(self.channels)
         self.channelsview.set_headers_visible(False)
+        self.channelsview.get_selection().connect("changed",
+            self._on_channel_changed)
         scrolledchannels.add(self.channelsview)
+        label.set_mnemonic_widget(self.channelsview)
         
-        label_start = gtk.Label()
-        label_start.set_markup("<b>%s</b>" % _("Start time:"))
-        table.attach(label_start, 0, 1, 1, 2)
+        label_start = TextFieldLabel()
+        label = label_start.get_label()
+        label.set_markup_with_mnemonic(_("_Start time:"))
+        table.attach(label_start, 0, 1, 2, 3)
         
-        hbox = gtk.HBox(spacing=3)
-        table.attach(hbox, 1, 2, 1, 2, yoptions=0)
+        hbox = gtk.HBox(spacing=6)
+        table.attach(hbox, 1, 2, 2, 3, yoptions=0)
         
         self.entry = gtk.Entry()
         self.entry.set_editable(False)
         self.entry.set_width_chars(10)
         hbox.pack_start(self.entry)
+        label.set_mnemonic_widget(self.entry)
         
         calendar_button = gtk.Button(_("Pick date"))
         calendar_button.connect("clicked", self._on_calendar_button_clicked)
@@ -93,12 +105,13 @@ class TimerDialog(gtk.Dialog):
         self.minute.set_width_chars(2)
         hbox.pack_start(self.minute)
         
-        label_duration = gtk.Label()
-        label_duration.set_markup("<b>%s</b>" % _("Duration:"))
-        table.attach(label_duration, 0, 1, 2, 3)
+        label_duration = TextFieldLabel()
+        label = label_duration.get_label()
+        label.set_markup_with_mnemonic(_("_Duration:"))
+        table.attach(label_duration, 0, 1, 3, 4, gtk.FILL, gtk.FILL)
         
-        duration_hbox = gtk.HBox(spacing=3)
-        table.attach(duration_hbox, 1, 2, 2, 3)
+        duration_hbox = gtk.HBox(spacing=6)
+        table.attach(duration_hbox, 1, 2, 3, 4)
         
         self.duration = gtk.SpinButton()
         self.duration.set_range(1, 65535)
@@ -106,16 +119,15 @@ class TimerDialog(gtk.Dialog):
         self.duration.set_width_chars(3)
         self.duration.set_value(60)
         duration_hbox.pack_start(self.duration, False)
+        label.set_mnemonic_widget(self.duration)
         
-        ali = gtk.Alignment(0, 0.5)
-        duration_hbox.pack_start(ali)
-        
-        minutes_label = gtk.Label(_("minutes"))
-        ali.add(minutes_label)
+        minutes_label = TextFieldLabel(_("minutes"))
+        duration_hbox.pack_start(minutes_label)
         
         self._set_default_time_and_date()
         
         table.show_all()
+        self.channelsview.grab_focus()
       
     def get_duration(self):
         return self.duration.get_value_as_int()
@@ -156,6 +168,10 @@ class TimerDialog(gtk.Dialog):
             self._set_date(date[0], date[1]+1, date[2])
         
         d.destroy()
+        
+    def _on_channel_changed(self, treeselection):
+        model, aiter = treeselection.get_selected()
+        self.ok_button.set_sensitive(aiter != None)
                
 class NoTimerCreatedDialog(gtk.MessageDialog):
 

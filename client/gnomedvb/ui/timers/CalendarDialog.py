@@ -23,11 +23,12 @@ class CalendarDialog(gtk.Dialog):
 
     def __init__(self, parent):
         gtk.Dialog.__init__(self, title=_("Pick a date"), parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-             gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))     
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)     
         
         self.set_position(gtk.WIN_POS_MOUSE)
+        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)
+        ok_button = self.add_button(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT)
+        ok_button.grab_default()
         
         self.calendar = gtk.Calendar()
         self.calendar.show()

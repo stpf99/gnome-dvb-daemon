@@ -40,14 +40,22 @@ class EditTimersDialog(gtk.Dialog):
         """
         gtk.Dialog.__init__(self, title=_("Recording schedule"),
             parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
         
         self.device_group = device_group
         self.set_recorder(device_group)
         
-        self.vbox.set_spacing(6)
+        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button.grab_default()
+        
         self.set_size_request(550, 400)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(12)
+        
+        self.vbox_main = gtk.VBox(spacing=12)
+        self.vbox_main.set_border_width(6)
+        self.vbox_main.show()
+        self.vbox.pack_start(self.vbox_main)
         
         self.timerslist = gtk.ListStore(int, str, str, str, int, bool)
         self.timerslist.set_sort_column_id(self.COL_START, gtk.SORT_ASCENDING)
@@ -92,7 +100,7 @@ class EditTimersDialog(gtk.Dialog):
         self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.scrolledwindow.set_shadow_type(gtk.SHADOW_ETCHED_IN)
         self.scrolledwindow.add(self.timersview)
-        self.vbox.pack_start(self.scrolledwindow)
+        self.vbox_main.pack_start(self.scrolledwindow)
         
         self.buttonbox = gtk.HButtonBox()
         self.button_add = gtk.Button(stock=gtk.STOCK_ADD)
@@ -104,7 +112,7 @@ class EditTimersDialog(gtk.Dialog):
         self.button_delete.set_sensitive(False)
         self.buttonbox.pack_start(self.button_delete)
         
-        self.vbox.pack_start(self.buttonbox, False, False, 0)
+        self.vbox_main.pack_start(self.buttonbox, False, False, 0)
         
         self.get_timers()
         
