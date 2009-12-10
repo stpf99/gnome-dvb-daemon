@@ -156,6 +156,8 @@ namespace DVB {
                         return null;
                     }
 
+                    this.pipeline.set_state (State.PAUSED);
+
                     if (!this.active_channels.contains (channel)) {
                         // existing pipeline and new channel
                         
@@ -167,8 +169,6 @@ namespace DVB {
                             critical ("Could not link tee and bin");
                             return null;
                         }
-
-                        this.pipeline.set_state (State.PAUSED);
 
                         string programs;
                         dvbbasebin.get ("program-numbers", out programs);
