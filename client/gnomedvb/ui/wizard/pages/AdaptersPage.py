@@ -181,9 +181,11 @@ class AdaptersPage(BasePage):
                         unregistered.add(dev)
                     else:
                         error = info
-               
+
+            all_devs = registered | unregistered
+            has_device = len(all_devs) > 0
             if self.__use_configured:
-                devs = registered | unregistered
+                devs = all_devs
             else:
                 devs = unregistered
 
@@ -197,7 +199,7 @@ class AdaptersPage(BasePage):
             if error != None:
                 self.show_error(error)
             elif len(devs) == 0:
-                if self.__use_configured:
+                if not has_device:
                     self.show_no_devices()
                 else:
                     self.show_all_configured()
