@@ -16,13 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
+import dbus
+import dbus.glib
 import pygtk
 pygtk.require("2.0")
 from glib import GError
+import glib
 import gtk
+import os
+import os.path
 import pygst
 pygst.require("0.10")
-import subprocess
 import totem
 import gnomedvb
 import sys
@@ -40,6 +44,102 @@ from gnomedvb.ui.preferences.Preferences import Preferences
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
 from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
 from gnomedvb.ui.recordings.DetailsDialog import DetailsDialog
+
+DBUS_DVB_SERVICE = "org.gnome.DVB"
+
+def spawn_on_screen(argv, screen, flags=0):
+
+    def set_environment (display):
+        os.environ["DISPLAY"] = display
+
+    return glib.spawn_async(argv,
+		      flags=flags,
+		      child_setup=set_environment,
+		      user_data=screen.make_display_name())
+
+class DvbSetup:
+
+    (MISSING,
+	 STARTED_OK,
+	 CRASHED,
+	 FAILURE,
+	 SUCCESS) = range(5)
+
+    def __init__(self):
+        self._in_progress = False
+
+    def run(self, parent_window, callback=None, user_data=None):
+        if self._dbus_service_available(DBUS_DVB_SERVICE):
+            return self._start_setup(parent_window, callback, user_data)
+        else:
+            return self.MISSING
+
+    def _start_setup(self, parent_window, callback, user_data):
+        if self._in_progress:
+            return self.FAILURE
+
+        setup_cmd = self._find_program_in_path("gnome-dvb-setup")
+        if setup_cmd == None:
+            return self.MISSING
+
+        screen = parent_window.get_screen()
+        xid = parent_window.window.xid
+        argv = [setup_cmd, "--transient-for=%d" % xid]
+
+        pid = spawn_on_screen (argv, screen,
+            flags=glib.SPAWN_FILE_AND_ARGV_ZERO | glib.SPAWN_DO_NOT_REAP_CHILD)[0]
+
+        self._in_progress = True
+
+        glib.child_watch_add (pid, self._child_watch_func,
+            (callback, user_data))
+
+        return self.STARTED_OK
+
+    def _child_watch_func(self, pid, status, data):
+        func, user_data = data
+
+        if not os.WIFEXITED(status):
+            ret = TOTEM_DVB_SETUP_CRASHED
+        else:
+            ret = os.WEXITSTATUS (status)
+
+        if func:
+            if user_data:
+	            func (ret, user_data)
+            else:
+                func (ret)
+
+        self._in_progress = False
+
+    def _find_program_in_path(self, file):
+        path = os.environ.get("PATH", os.defpath)
+        mode=os.F_OK | os.X_OK
+
+        for dir in path.split(os.pathsep):
+            full_path = os.path.join(dir, file)
+            if os.path.exists(full_path) and os.access(full_path, mode):
+                return full_path
+        return None
+
+    def _dbus_service_available(self, name):
+        bus = dbus.SessionBus()
+        # Get proxy object
+        proxy = bus.get_object("org.freedesktop.DBus",
+            "/org/freedesktop/DBus")
+        # Apply the correct interace to the proxy object
+        dbusobj = dbus.Interface(proxy, "org.freedesktop.DBus")
+
+        for iname in dbusobj.ListNames():
+            if iname == name:
+                return True
+
+        for iname in dbusobj.ListActivatableNames():
+            if iname == name:
+                return True
+
+        return False
+
 
 class ScheduleDialog(gtk.Dialog):
 
@@ -144,31 +244,36 @@ class DVBDaemonPlugin(totem.Plugin):
         self.whatson_item = None
         self.manager = None
         self.single_group = None
+        self.setup = None
         self.sidebar = None
+        self._size = 0
+        self._loaded_groups = 0
 
     def activate (self, totem_object):
         self.totem_object = totem_object
+        self.setup = DvbSetup()
         
         self.manager = DVBModel()
-        self._size = self.manager.get_device_group_size()
-        self._loaded_groups = 0
         self.recentmanager = gtk.recent_manager_get_default()
-        
-        self._setup_sidebar()
-        self._setup_menu()
-        
-        # Add recordings
-        self.rec_iter = self.channels.append(None, [self.REC_GROUP_ID, _("Recordings"), 0, None])
-        self.recstore = gnomedvb.DVBRecordingsStoreClient()
-        self.recstore.connect("changed", self._on_recstore_changed)
-        add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
-        self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
-        
-        totem_object.add_sidebar_page ("dvb-daemon", _("Digital TV"), self.sidebar)
-        self.sidebar.show_all()
 
-        if self._size == 0:
-            self._show_configure_dialog()  
+        self.manager.get_all_devices(lambda devs: self.enable_dvb_support(len(devs) > 0))
+
+    def enable_dvb_support(self, val):
+        if val:
+            self._size = self.manager.get_device_group_size()
+
+            self._setup_sidebar()
+            self._setup_menu()
+
+            # Add recordings
+            self.rec_iter = self.channels.append(None, [self.REC_GROUP_ID, _("Recordings"), 0, None])
+            self.recstore = gnomedvb.DVBRecordingsStoreClient()
+            self.recstore.connect("changed", self._on_recstore_changed)
+            add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
+            self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
+            
+            self.totem_object.add_sidebar_page ("dvb-daemon", _("Digital TV"), self.sidebar)
+            self.sidebar.show_all()
         
     def _setup_sidebar(self):
         self.sidebar = gtk.VBox(spacing=6)
@@ -207,6 +312,7 @@ class DVBDaemonPlugin(totem.Plugin):
         # Create actions
         actiongroup = gtk.ActionGroup('dvb')
         actiongroup.add_actions([
+            ('dvbdevice', None, _('Watch TV'), None, None, self._on_play_dvb_activated),
             ('dvb-menu', None, _('Digital _TV')),
             ('dvb-timers', None, _('_Recording schedule'), None, None, self._on_action_timers),
             ('dvb-epg', None, _('_Program Guide'), None, None, self._on_action_epg),
@@ -228,7 +334,12 @@ class DVBDaemonPlugin(totem.Plugin):
         
         uimanager.add_ui_from_string(self.MENU)
         uimanager.ensure_update()
-        
+
+        # Movie menu
+        merge_id = uimanager.new_merge_id()
+        uimanager.add_ui(merge_id, '/tmw-menubar/movie/devices-placeholder',
+            'dvbdevice', 'dvbdevice', gtk.UI_MANAGER_MENUITEM, False)
+
         # Edit menu
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/edit/plugins', 'dvb-timers', 'dvb-timers',
@@ -282,11 +393,14 @@ class DVBDaemonPlugin(totem.Plugin):
         
         self.popup_menu = uimanager.get_widget('/dvb-popup')
         self.popup_recordings = uimanager.get_widget('/dvb-recording-popup')
+
+        totemtv_image = gtk.image_new_from_icon_name("totem-tv", gtk.ICON_SIZE_MENU)
+        totemtv_image.show()
+
+        watch_item = uimanager.get_widget('/tmw-menubar/movie/devices-placeholder/dvbdevice')
+        watch_item.set_image(totemtv_image)
         
-        icon_theme = gtk.icon_theme_get_default()
-        
-        pixbuf = icon_theme.load_icon("stock_timer", gtk.ICON_SIZE_MENU, gtk.ICON_LOOKUP_USE_BUILTIN)
-        timers_image = gtk.image_new_from_pixbuf(pixbuf)
+        timers_image = gtk.image_new_from_icon_name("stock_timer", gtk.ICON_SIZE_MENU)
         timers_image.show()
         
         self.timers_item = uimanager.get_widget('/tmw-menubar/edit/dvb-timers')
@@ -298,7 +412,7 @@ class DVBDaemonPlugin(totem.Plugin):
         
         self.whatson_item = uimanager.get_widget('/tmw-menubar/view/dvb-whatson')
         self.whatson_item.set_sensitive(False)
-
+        
     def _configure_mode(self):
         if self._size == 1:
             # Activate single group mode
@@ -310,18 +424,6 @@ class DVBDaemonPlugin(totem.Plugin):
         # Monitor if channels are added (don't monitor it when channels are added when loading)
         self.channels.connect('row-deleted', self._on_channels_row_inserted_deleted)
         self.channels.connect('row-inserted', self._on_channels_row_inserted_deleted)
-
-    def _show_configure_dialog(self):
-        dialog = gtk.MessageDialog(parent=self.totem_object.get_main_window(),
-            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-            type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
-        dialog.set_markup (
-            "<big><span weight=\"bold\">%s</span></big>" % _("DVB card is not configured"))
-        dialog.format_secondary_text(_("Do you want to search for channels now?"))
-        response = dialog.run()
-        if response == gtk.RESPONSE_YES:
-            self._on_action_setup(None)
-        dialog.destroy()
             
     def _enable_single_group_mode(self, val):
         self.timers_item.set_sensitive(val)
@@ -336,11 +438,6 @@ class DVBDaemonPlugin(totem.Plugin):
             return (None, 0)
         else:
             return (model[aiter][model.COL_GROUP], model[aiter][model.COL_SID],)
-        
-    def _on_action_setup(self, action):
-        main_window = self.totem_object.get_main_window()
-        xid = main_window.window.xid
-        subprocess.Popen(["gnome-dvb-setup", "--transient-for=%d" % xid])
 
     def _on_action_timers(self, action):
         group = self._get_selected_group_and_channel()[0]
@@ -519,4 +616,26 @@ class DVBDaemonPlugin(totem.Plugin):
             self.channels.set_sort_order(gtk.SORT_DESCENDING)
         else:
             self.channels.set_sort_order(gtk.SORT_ASCENDING)
+
+    def _on_play_dvb_activated(self, action):
+        main_window = self.totem_object.get_main_window()
+        # Only run setup if no devices are configured, yet
+        if self._size == 0:
+            status = self.setup.run (main_window, self._on_setup_dvb_finished)
+            if status == DvbSetup.MISSING:
+                dialog = gtk.MessageDialog(main_window,
+                    gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                    gtk.MESSAGE_ERROR,
+                    gtk.BUTTONS_CLOSE,
+                    _("GNOME DVB Daemon is not installed"))
+                dialog.set_resizable(False)
+                dialog.run()
+                dialog.destroy()
+
+            print "DVB SETUP STARTED", status
+
+        # TODO select dvb-daemon page from totem sidebar
+
+    def _on_setup_dvb_finished(self, status):
+        print "DVB SETUP FINISHED", status
 
