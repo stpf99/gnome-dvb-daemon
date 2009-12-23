@@ -143,8 +143,8 @@ class ChannelsTreeStore(gtk.TreeStore):
         self.emit("loading-finished", group_id)
        
     def _on_manager_group_added(self, manager, group_id):
-        group, success = manager.get_device_group(group_id)
-        if success:
+        group = manager.get_device_group(group_id)
+        if group != None:
             self._append_group(group)
         
     def _on_manager_group_removed(self, manager, group_id):
