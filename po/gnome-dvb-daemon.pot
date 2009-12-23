@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-01 20:33+0100\n"
+"POT-Creation-Date: 2009-12-23 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -118,7 +118,7 @@ msgid "There is currently no schedule available for this channel"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:155
-#: ../client/totem-plugin/dvb-daemon.py:211
+#: ../client/totem-plugin/dvb-daemon.py:317
 msgid "_Recording schedule"
 msgstr ""
 
@@ -139,7 +139,7 @@ msgid "_Manage"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:166
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:274
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:267
 msgid "Manage recording schedule"
 msgstr ""
 
@@ -188,7 +188,7 @@ msgid "_Refresh"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:303
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:295
 msgid "Refresh program guide"
 msgstr ""
 
@@ -197,7 +197,7 @@ msgid "_Previous Day"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:311
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:303
 msgid "Go to previous day"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgid "_Next Day"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:320
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:312
 msgid "Go to next day"
 msgstr ""
 
@@ -234,40 +234,40 @@ msgstr ""
 msgid "Display informations about the program"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:270
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:263
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:41
 msgid "Recording schedule"
 msgstr ""
 
 #. Add recordings
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:282
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:274
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:153
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:30
-#: ../client/totem-plugin/dvb-daemon.py:161
+#: ../client/totem-plugin/dvb-daemon.py:269
 msgid "Recordings"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:291
-#: ../client/totem-plugin/dvb-daemon.py:193
-#: ../client/totem-plugin/dvb-daemon.py:213
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:283
+#: ../client/totem-plugin/dvb-daemon.py:298
+#: ../client/totem-plugin/dvb-daemon.py:319
 msgid "What's on now"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:309
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:301
 msgid "Previous Day"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:318
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:310
 msgid "Next Day"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:506
-#: ../client/totem-plugin/dvb-daemon.py:75
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:498
+#: ../client/totem-plugin/dvb-daemon.py:175
 msgid "Schedule recording for the selected event?"
 msgstr ""
 
 #. translators: These appear in the About dialog, usual format applies.
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:595
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:587
 msgid "translator-credits"
 msgstr ""
 
@@ -332,7 +332,7 @@ msgid "Edit group"
 msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:36
-#: ../client/totem-plugin/dvb-daemon.py:214
+#: ../client/totem-plugin/dvb-daemon.py:320
 msgid "Digital TV Preferences"
 msgstr ""
 
@@ -758,65 +758,65 @@ msgid ""
 "All process will be lost."
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:47
-#: ../client/totem-plugin/dvb-daemon.py:91
-#: ../client/totem-plugin/dvb-daemon.py:199
+#: ../client/totem-plugin/dvb-daemon.py:147
+#: ../client/totem-plugin/dvb-daemon.py:191
+#: ../client/totem-plugin/dvb-daemon.py:304
 msgid "Program Guide"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:167
+#: ../client/totem-plugin/dvb-daemon.py:275
 msgid "Digital TV"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:210
+#: ../client/totem-plugin/dvb-daemon.py:315
+msgid "Watch TV"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:316
 msgid "Digital _TV"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:212
+#: ../client/totem-plugin/dvb-daemon.py:318
 msgid "_Program Guide"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:215
+#: ../client/totem-plugin/dvb-daemon.py:321
 msgid "_Delete"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:216
+#: ../client/totem-plugin/dvb-daemon.py:322
 msgid "D_etails"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:217
+#: ../client/totem-plugin/dvb-daemon.py:323
 msgid "_Order channels"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:220
+#: ../client/totem-plugin/dvb-daemon.py:326
 msgid "By _name"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:221
+#: ../client/totem-plugin/dvb-daemon.py:327
 msgid "By _group"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:224
+#: ../client/totem-plugin/dvb-daemon.py:330
 msgid "_Reverse order"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:319
-msgid "DVB card is not configured"
-msgstr ""
-
-#: ../client/totem-plugin/dvb-daemon.py:320
-msgid "Do you want to search for channels now?"
-msgstr ""
-
-#: ../client/totem-plugin/dvb-daemon.py:386
+#: ../client/totem-plugin/dvb-daemon.py:483
 msgid "Delete selected recording?"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:429
+#: ../client/totem-plugin/dvb-daemon.py:526
 msgid "Totem Movie Player"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:475
+#: ../client/totem-plugin/dvb-daemon.py:572
 #, python-format
 msgid "Recording %d"
+msgstr ""
+
+#: ../client/totem-plugin/dvb-daemon.py:630
+msgid "GNOME DVB Daemon is not installed"
 msgstr ""
