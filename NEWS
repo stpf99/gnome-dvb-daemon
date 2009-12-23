@@ -1,4 +1,29 @@
 ==============
+Version 0.1.14
+==============
+
+The main focus for this release was to make the GUI more
+consistent and accessible. In addition, the Totem plugin
+now replaces Totem's own DVB capabilities.
+
+- Link against gstreamer-rtsp-0.10 as well
+- Added right-click menu to ChannelScanPage to de-/select all channels; https://launchpad.net/bugs/486610 fixed
+- Fixed crash when not supported adapter type was used
+- Don't	display device groups combobox if there's only one group
+- Lots of improvements to the UI regarding HIG conformance
+- Fixed bug when recording and rtsp	streaming of the same channel took place at the same time and the pipeline stalled
+- Display message if no devices could be found even if not in expert mode;	https://launchpad.net/bugs/497376 fixed
+- Totem plugin: Removed dialog asking the user to start the setup
+- Totem plugin: Only display DVB related stuff if at least one device has been detected on startup
+- Totem plugin: Marked Totem plugin as builtin so it is enabled by default;	https://launchpad.net/bugs/497381 fixed
+
+Updated Translations:
+---------------------
+- German
+- Polish
+- Turkish
+
+==============
 Version 0.1.13
 ==============
 
