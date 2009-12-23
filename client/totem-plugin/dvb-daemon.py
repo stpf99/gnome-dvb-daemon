@@ -605,10 +605,12 @@ class DVBDaemonPlugin(totem.Plugin):
             
     def _on_order_by_changed(self, action, current):
         val = current.get_current_value()
+        sort_order = self.channels.get_sort_column_id()[1]
         if val == self.ORDER_BY_NAME_ID:
             self.channels = ChannelsTreeStore(False)
         elif val == self.ORDER_BY_GROUP_ID:
             self.channels = ChannelsTreeStore(True)
+        self.channels.set_sort_order(sort_order)
         self.channels_view.set_model(self.channels)
         
     def _on_order_reverse_toggled(self, action):
