@@ -30,9 +30,8 @@ class DetailsDialog(gtk.Dialog):
             flags=gtk.DIALOG_DESTROY_WITH_PARENT)
         
         self.set_default_size(440, 350)
-        self.set_border_width(6)
+        self.set_border_width(5)
         self.set_has_separator(False)
-        self.vbox.set_spacing(12)
         
         close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         close_button.grab_default()
@@ -40,7 +39,7 @@ class DetailsDialog(gtk.Dialog):
         self.table = gtk.Table(6, 2)
         self.table.set_col_spacings(18)
         self.table.set_row_spacings(6)
-        self.table.set_border_width(6)
+        self.table.set_border_width(5)
         self.vbox.pack_start(self.table)
         
         self._title = TextFieldLabel()

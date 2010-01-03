@@ -43,12 +43,12 @@ class TimerDialog(gtk.Dialog):
         self.ok_button.set_sensitive(False)
         
         self.set_has_separator(False)
-        self.vbox.set_spacing(12)
+        self.set_border_width(5)
         
         table = gtk.Table(rows=4, columns=2)
         table.set_col_spacings(18)
         table.set_row_spacings(6)
-        table.set_border_width(6)
+        table.set_border_width(5)
         self.vbox.pack_start(table)
                          
         label_channel = TextFieldLabel()

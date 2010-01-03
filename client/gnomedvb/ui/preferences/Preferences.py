@@ -25,7 +25,7 @@ from gnomedvb.ui.widgets.Frame import Frame
 from gettext import gettext as _
 from gnomedvb.Device import Device
 
-class Preferences(gtk.Dialog):
+class Preferences(gtk.Window):
 
     (BUTTON_EDIT,
      BUTTON_REMOVE,
@@ -33,27 +33,42 @@ class Preferences(gtk.Dialog):
      BUTTON_PREFERENCES,) = range(4)
 
     def __init__(self, model, parent=None):
-        gtk.Dialog.__init__(self, title=_('Digital TV Preferences'),
-            parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
+        gtk.Window.__init__(self)
+
+        self.set_title(_('Digital TV Preferences'))
+        if parent:
+            self.set_transient_for(parent)
+
+        self.set_modal(True)
+        self.set_destroy_with_parent(True)
+        self.set_default_size(600, 450)
+        
+        self.vbox = gtk.VBox()
+        self.add(self.vbox)
+        self.vbox.show()
+        
+        self.__create_toolbar()
+
+        self.vbox_main = gtk.VBox(spacing=12)
+        self.vbox_main.set_border_width(12)
+        self.vbox_main.show()
+        self.vbox.pack_start(self.vbox_main)
+        
+        self.action_area = gtk.HButtonBox()
+        self.action_area.set_layout(gtk.BUTTONBOX_END)
+        self.vbox_main.pack_end(self.action_area, False, True, 0)
+        self.action_area.show()
         
         self._model = model
         self._model.connect("group-added", self._on_manager_group_added)
         self._model.connect("group-removed", self._on_manager_group_removed)
         
-        self.set_default_size(600, 450)
-        self.set_has_separator(False)
-        self.vbox.set_spacing(12)
-        
-        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close_button.connect("clicked", lambda w: self.destroy())
+        close_button.set_flags(gtk.CAN_DEFAULT)
+        close_button.show()
+        self.action_area.pack_end(close_button, False, True, 0)
         close_button.grab_default()
-        
-        self.__create_toolbar()
-        
-        self.vbox_main = gtk.VBox(spacing=12)
-        self.vbox_main.set_border_width(6)
-        self.vbox_main.show()
-        self.vbox.pack_start(self.vbox_main)
         
         self.__create_registered_groups()
         self.__create_unassigned_devices()

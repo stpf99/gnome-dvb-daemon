@@ -34,10 +34,10 @@ class AddToGroupDialog (gtk.Dialog):
                 
         self.__selected_group = None
         self.set_has_separator(False)
-        self.vbox.set_spacing(12)
+        self.set_border_width(5)
         
         self.vbox_main = gtk.VBox(spacing=12)
-        self.vbox_main.set_border_width(6)
+        self.vbox_main.set_border_width(5)
         self.vbox_main.show()
         self.vbox.pack_start(self.vbox_main)
         
@@ -97,10 +97,10 @@ class NewGroupDialog (gtk.Dialog):
         
         self.set_default_size(400, 150)
         self.set_has_separator(False)
-        self.vbox.set_spacing(12)
+        self.set_border_width(5)
         
         self.vbox_main = gtk.VBox(spacing=12)
-        self.vbox_main.set_border_width(6)
+        self.vbox_main.set_border_width(5)
         self.vbox_main.show()
         self.vbox.pack_start(self.vbox_main)
         

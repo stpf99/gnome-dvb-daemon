@@ -40,6 +40,7 @@ class ChannelListEditorDialog(gtk.Dialog):
 
         self.set_size_request(600, 500)
         self.set_has_separator(False)
+        self.set_border_width(5)
         self.connect("destroy-event", gtk.main_quit)
         self.connect("delete-event", gtk.main_quit)
         
@@ -47,7 +48,7 @@ class ChannelListEditorDialog(gtk.Dialog):
         close_button.grab_default()
 
         self.vbox_main = gtk.VBox(spacing=12)
-        self.vbox_main.set_border_width(6)
+        self.vbox_main.set_border_width(5)
         self.vbox.pack_start(self.vbox_main)
 
         # channel groups

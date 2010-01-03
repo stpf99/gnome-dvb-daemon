@@ -558,8 +558,7 @@ class ControlCenterWindow(gtk.Window):
     
     def _on_button_prefs_clicked(self, button):
         prefs = Preferences(self.manager, self)
-        prefs.run()
-        prefs.destroy()
+        prefs.show()
         
     def _on_button_recordings_clicked(self, button):
         dialog = RecordingsDialog(self)
