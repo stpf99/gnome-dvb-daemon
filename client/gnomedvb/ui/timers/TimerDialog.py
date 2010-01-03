@@ -172,15 +172,4 @@ class TimerDialog(gtk.Dialog):
     def _on_channel_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         self.ok_button.set_sensitive(aiter != None)
-               
-class NoTimerCreatedDialog(gtk.MessageDialog):
-
-    def __init__(self, parent_window):
-        gtk.MessageDialog.__init__(self, parent=parent_window,
-            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-        self.set_markup ("<big><span weight=\"bold\">%s</span></big>" % _("Timer could not be created"))
-        self.format_secondary_text(
-            _("Make sure that the timer doesn't conflict with another one and doesn't start in the past.")
-        )
 

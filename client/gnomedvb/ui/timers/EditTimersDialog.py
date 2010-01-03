@@ -20,7 +20,7 @@ import gtk
 from gettext import gettext as _
 import gnomedvb
 from gnomedvb import global_error_handler
-from gnomedvb.ui.timers.TimerDialog import TimerDialog, NoTimerCreatedDialog
+from gnomedvb.ui.timers.TimerDialog import TimerDialog
 
 class EditTimersDialog(gtk.Dialog):
 

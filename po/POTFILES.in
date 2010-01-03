@@ -9,6 +9,7 @@ client/gnomedvb/ui/preferences/Preferences.py
 client/gnomedvb/ui/recordings/RecordingsDialog.py
 client/gnomedvb/ui/timers/CalendarDialog.py
 client/gnomedvb/ui/timers/EditTimersDialog.py
+client/gnomedvb/ui/timers/MessageDialogs.py
 client/gnomedvb/ui/timers/TimerDialog.py
 client/gnomedvb/ui/wizard/__init__.py
 client/gnomedvb/ui/widgets/ChannelsView.py

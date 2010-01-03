@@ -58,6 +58,7 @@ gnomedvbtimersui_PYTHON = \
     ui/timers/__init__.py \
     ui/timers/CalendarDialog.py \
     ui/timers/EditTimersDialog.py \
+    ui/timers/MessageDialogs.py \
     ui/timers/TimerDialog.py
 
 ### ui/widgets ###

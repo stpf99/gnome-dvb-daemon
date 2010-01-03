@@ -42,7 +42,7 @@ from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.RunningNextView import RunningNextView
 from gnomedvb.ui.preferences.Preferences import Preferences
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
-from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
+from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog
 from gnomedvb.ui.recordings.DetailsDialog import DetailsDialog
 
 DBUS_DVB_SERVICE = "org.gnome.DVB"
@@ -181,7 +181,7 @@ class ScheduleDialog(gtk.Dialog):
                 dialog.destroy()
                 
                 if response == gtk.RESPONSE_YES and not success:
-                    dialog = NoTimerCreatedDialog(self)
+                    dialog = TimerFailureDialog(self)
                     dialog.run()
                     dialog.destroy()
 

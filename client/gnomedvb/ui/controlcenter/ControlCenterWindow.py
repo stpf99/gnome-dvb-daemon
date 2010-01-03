@@ -29,7 +29,7 @@ from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.HelpBox import HelpBox
 from gnomedvb.ui.channellisteditor.ChannelListEditorDialog import ChannelListEditorDialog
 from gnomedvb.ui.timers.EditTimersDialog import EditTimersDialog
-from gnomedvb.ui.timers.TimerDialog import NoTimerCreatedDialog
+from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog
 from gnomedvb.ui.preferences.Preferences import Preferences
 from gnomedvb.ui.recordings.RecordingsDialog import RecordingsDialog
    
@@ -507,7 +507,7 @@ class ControlCenterWindow(gtk.Window):
                 dialog.destroy()
                 
                 if not success:
-                    dialog = NoTimerCreatedDialog(self)
+                    dialog = TimerFailureDialog(self)
                     dialog.run()
                     dialog.destroy()
         
