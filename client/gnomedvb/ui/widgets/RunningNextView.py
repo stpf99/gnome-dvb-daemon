@@ -80,7 +80,10 @@ class RunningNextView(gtk.TreeView):
             
             ext_desc, success = schedule.get_extended_description(event_id)
             if success:
-                desc += "\n%s" % ext_desc
+                if len(desc) == 0:
+                    desc = ext_desc
+                else:
+                    desc += "\n%s" % ext_desc
             
             dialog = DetailsDialog(self.get_toplevel())
             dialog.set_description(desc)
