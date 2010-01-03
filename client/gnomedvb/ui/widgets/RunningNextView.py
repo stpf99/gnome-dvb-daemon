@@ -22,6 +22,7 @@ from gettext import gettext as _
 from gnomedvb import global_error_handler
 from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.DetailsDialog import DetailsDialog
+from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog, TimerSuccessDialog
        
 class RunningNextView(gtk.TreeView):
 
@@ -93,8 +94,11 @@ class RunningNextView(gtk.TreeView):
             start, success = schedule.get_local_start_timestamp(event_id)
             if success:
                 dialog.set_date(start)
-            dialog.run()
-            dialog.destroy()
+            dialog.get_record_button().connect("clicked",
+                self._on_record_clicked,
+                (devgroup.get_recorder(), event_id, sid,))
+            dialog.show()
+            dialog.connect("response", lambda d, resp: d.destroy())
         
         if event.type == gtk.gdk._2BUTTON_PRESS:
             model, aiter = treeview.get_selection().get_selected()
@@ -115,4 +119,18 @@ class RunningNextView(gtk.TreeView):
                     schedule.get_informations(event_id,
                         reply_handler=show_details,
                         error_handler=global_error_handler)
+
+    def _on_record_clicked(self, button, data):
+        def on_reply(timer_id, success):
+            if success:
+                dialog = TimerSuccessDialog(self.get_toplevel())
+            else:
+                dialog = TimerFailureDialog(self.get_toplevel())
+            dialog.run()
+            dialog.destroy()
+
+        recorder, event_id, channel_sid = data
+        recorder.add_timer_for_epg_event(event_id, channel_sid,
+            reply_handler=on_reply,
+            error_handler=global_error_handler)
         

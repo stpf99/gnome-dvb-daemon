@@ -25,6 +25,9 @@ class DetailsDialog(gnomedvb.ui.widgets.DetailsDialog.DetailsDialog):
     def __init__(self, rec_id, parent=None):
         gnomedvb.ui.widgets.DetailsDialog.DetailsDialog.__init__(self, parent=parent)
         
+        self.rec_button.hide()
+        self.action_area.set_layout(gtk.BUTTONBOX_END)
+
         self._fill(rec_id)
         
     def _fill(self, rec_id):

@@ -32,6 +32,12 @@ class DetailsDialog(gtk.Dialog):
         self.set_default_size(440, 350)
         self.set_border_width(5)
         self.set_has_separator(False)
+
+        self.action_area.set_layout(gtk.BUTTONBOX_EDGE)
+
+        self.rec_button = gtk.Button(stock=gtk.STOCK_MEDIA_RECORD)
+        self.rec_button.show()
+        self.action_area.pack_start(self.rec_button)
         
         close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         close_button.grab_default()
@@ -103,4 +109,7 @@ class DetailsDialog(gtk.Dialog):
     def set_date(self, timestamp):
         date = datetime.datetime.fromtimestamp(timestamp)
         self._date.label.set_text(date.strftime("%c"))
+
+    def get_record_button(self):
+        return self.rec_button
 

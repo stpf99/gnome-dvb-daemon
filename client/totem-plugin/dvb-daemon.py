@@ -457,8 +457,8 @@ class DVBDaemonPlugin(totem.Plugin):
                 dialog = ScheduleDialog(group, sid, self.totem_object.get_main_window())
             else:
                 dialog = RunningNextDialog(group, self.totem_object.get_main_window())
-            dialog.run()
-            dialog.destroy()
+            dialog.connect("response", lambda d, resp: d.destroy())
+            dialog.show()
             
     def _on_action_whats_on_now(self, action):
         group, sid = self._get_selected_group_and_channel()
@@ -466,8 +466,8 @@ class DVBDaemonPlugin(totem.Plugin):
             group = self.single_group
         if group != None:
             dialog = RunningNextDialog(group, self.totem_object.get_main_window())
-            dialog.run()
-            dialog.destroy()
+            dialog.connect("response", lambda d, resp: d.destroy())
+            dialog.show()
     
     def _on_action_preferences(self, action):
         prefs = Preferences(self.manager, self.totem_object.get_main_window())
