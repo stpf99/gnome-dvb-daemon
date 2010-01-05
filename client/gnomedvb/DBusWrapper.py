@@ -389,12 +389,18 @@ class DVBRecorderClient(gobject.GObject):
         
     def get_start_time(self, tid, **kwargs):
         return self.recorder.GetStartTime(tid, **kwargs)
+
+    def set_start_time(self, tid, year, month, day, hour, minute, **kwargs):
+        return self.recorder.SetStartTime (tid, year, month, day, hour, minute)
         
     def get_end_time(self, tid, **kwargs):
         return self.recorder.GetEndTime(tid, **kwargs)
         
     def get_duration(self, tid, **kwargs):
         return self.recorder.GetDuration(tid, **kwargs)
+
+    def set_duration(self, tid, duration, **kwargs):
+        return self.recorder.SetDuration(tid, duration, **kwargs)
         
     def get_channel_name(self, tid, **kwargs):
         return self.recorder.GetChannelName(tid, **kwargs)
