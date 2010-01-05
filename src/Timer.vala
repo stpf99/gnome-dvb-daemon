@@ -42,8 +42,15 @@ namespace DVB {
            
             this.Duration = duration;
             
+            this.set_start_time (year, month, day, hour, minute);
+        }
+
+        public void set_start_time (int year, int month, int day, int hour,
+                int minute)
+        {
             this.starttime = Utils.create_time (year, month,
                 day, hour, minute);
+            this.update_epg_event ();
         }
         
         /**
@@ -211,14 +218,27 @@ namespace DVB {
             
             return (end_time < current_time);
         }
-        
+
         public string to_string () {
             uint[] start = this.get_start_time ();
             return "channel: %u, start: %04u-%02u-%02u %02u:%02u, duration: %u".printf (
                 this.Channel.Sid, start[0], start[1], start[2], start[3],
                 start[4], this.Duration);
         }
-        
+
+        /**
+         * Check if we can find an EPG event belonging to this recording
+         */
+        private void update_epg_event () {
+            Schedule schedule = this.Channel.Schedule;
+            Event? event = schedule.get_event_around (
+                this.get_start_time_time (), this.Duration);
+            if (event == null)
+                this.EventID = 0;
+            else
+                this.EventID = event.id;
+        }
+
         private time_t get_end_time_timestamp () {
             var t = Utils.create_time (this.starttime.year + 1900,
                 this.starttime.month + 1, this.starttime.day,
