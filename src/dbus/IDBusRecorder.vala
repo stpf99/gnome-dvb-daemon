@@ -96,6 +96,19 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool GetStartTime (uint32 timer_id, out uint32[] start_time) throws DBus.Error;
+
+        /**
+         * @timer_id: The new timer's id on success, or 0 if timer couldn't
+         * @start_year: The year when the recording should start
+         * @start_month: The month when recording should start
+         * @start_day: The day when recording should start
+         * @start_hour: The hour when recording should start
+         * @start_minute: The minute when recording should start
+         * @duration: How long the channel should be recorded (in minutes)
+         * @returns: TRUE on success
+         */
+        public abstract bool SetStartTime (uint32 timer_id, int start_year,
+            int start_month, int start_day, int start_hour, int start_minute) throws DBus.Error;
         
         /**
          * @timer_id: Timer's id
@@ -111,6 +124,13 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool GetDuration (uint32 timer_id, out uint duration) throws DBus.Error;
+
+        /**
+         * @timer_id: Timer's id
+         * @duration: Duration in minutes
+         * @returns: TRUE on success
+         */
+        public abstract bool SetDuration (uint32 timer_id, uint duration) throws DBus.Error;
         
         /**
          * @timer_id: Timer's id

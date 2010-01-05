@@ -284,6 +284,38 @@ namespace DVB {
             }
             return ret;
         }
+
+         /**
+          * @timer_id: The new timer's id on success, or 0 if timer couldn't
+          * @start_year: The year when the recording should start
+          * @start_month: The month when recording should start
+          * @start_day: The day when recording should start
+          * @start_hour: The hour when recording should start
+          * @start_minute: The minute when recording should start
+          * @duration: How long the channel should be recorded (in minutes)
+          * @returns: TRUE on success
+          */
+        public bool SetStartTime (uint32 timer_id, int start_year,
+                int start_month, int start_day, int start_hour,
+                int start_minute) throws DBus.Error
+        {
+            bool ret = false;
+            lock (this.timers) {
+                if (this.timers.contains (timer_id)) {
+                    if (this.IsTimerActive (timer_id)) {
+                        warning ("Cannot change start time of already active timer");
+                    } else {
+                        Timer timer = this.timers.get (timer_id);
+                        timer.set_start_time (start_year, start_month,
+                            start_day, start_hour, start_minute);
+
+                        ret = true;
+                    }
+                }
+            }
+
+            return ret;
+        }
         
         /**
          * @timer_id: Timer's id
@@ -324,7 +356,26 @@ namespace DVB {
             }
             return ret;
         }
-        
+
+        /**
+         * @timer_id: Timer's id
+         * @duration: Duration in minutes
+         * @returns: TRUE on success
+         */
+        public bool SetDuration (uint32 timer_id, uint duration)
+            throws DBus.Error
+        {
+            bool ret;
+            lock (this.timers) {
+                ret = this.timers.contains (timer_id);
+                if (ret) {
+                    Timer timer = this.timers.get (timer_id);
+                    timer.Duration = duration;
+                }
+            }
+            return ret;
+        }
+
         /**
          * @timer_id: Timer's id
          * @name: The name of the channel the timer belongs to or an
@@ -517,19 +568,12 @@ namespace DVB {
                     this.DeviceGroup.Id);
                 return null;
             }
-            Schedule schedule = channels.get_channel (channel).Schedule;
-
             uint32 timer_id = RecordingsStore.get_instance ().get_next_id ();
 
             var new_timer = new Timer (timer_id,
                this.DeviceGroup.Channels.get_channel (channel),
                start_year, start_month, start_day,
                start_hour, start_minute, duration);
-            // See if we can find an EPG event belonging to this recording
-            Event? event = schedule.get_event_around (
-                new_timer.get_start_time_time (), duration);
-            if (event != null)
-                new_timer.EventID = event.id;
 
             return new_timer;
         }
