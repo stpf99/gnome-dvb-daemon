@@ -184,6 +184,13 @@ class TestRecorder(DeviceGroupTestCase):
 
     DURATION = 2
 
+    def _get_time_now(self):
+        nowt = datetime.datetime.now()
+        # We don't want (micro)seconds
+        now = datetime.datetime(nowt.year, nowt.month,
+            nowt.day, nowt.hour, nowt.minute)
+        return now
+
     def setUp(self):
         DeviceGroupTestCase.setUp(self)
         self.recorder = []
@@ -193,18 +200,50 @@ class TestRecorder(DeviceGroupTestCase):
             self.channels.append(chanlist.get_tv_channels()[0])
             self.recorder.append(dg.get_recorder())
         self.assertTypeAll(self.recorder, gnomedvb.DVBRecorderClient)
-        
+
+    def _assert_time_equals(self, expected, actual):
+        self.assertTypeAll(actual, dbus.UInt32)
+        self.assertEqual(len(actual), 5)
+        self.assertEqual(expected.year, actual[0])
+        self.assertEqual(expected.month, actual[1])
+        self.assertEqual(expected.day, actual[2])
+        self.assertEqual(expected.hour, actual[3])
+        self.assertEqual(expected.minute, actual[4])
+ 
     def testAddTimer(self):
         for i, rec in enumerate(self.recorder):
-            nowt = datetime.datetime.now()
-            # We don't want (micro)seconds
-            now = datetime.datetime(nowt.year, nowt.month,
-                nowt.day, nowt.hour, nowt.minute)
+            now = self._get_time_now()
+            delay = datetime.timedelta(hours=2)
+            delayed = now + delay
             chan = self.channels[i]
-            data = rec.add_timer(chan, now.year, now.month,
-                now.day, now.hour, now.minute, self.DURATION)
+
+            data = rec.add_timer(chan, delayed.year, delayed.month,
+                delayed.day, delayed.hour, delayed.minute, self.DURATION * 2)
             self.assertSuccessAndType(data, dbus.UInt32)
             rec_id = data[0]
+
+            data = rec.get_start_time(rec_id)
+            self.assertSuccessAndType(data, dbus.Array)
+            start = data[0]
+            self._assert_time_equals(delayed, start)
+        
+            data = rec.get_duration(rec_id)
+            self.assertSuccessAndType(data, dbus.UInt32)
+            self.assertEqual(data[0], self.DURATION * 2)
+                
+            self.assertTrue(rec.set_start_time(rec_id, now.year, now.month,
+                now.day, now.hour, now.minute))
+            
+            data = rec.get_start_time(rec_id)
+            self.assertSuccessAndType(data, dbus.Array)
+            start = data[0]
+            self._assert_time_equals(now, start)
+
+            self.assertTrue(rec.set_duration(rec_id, self.DURATION))
+            
+            data = rec.get_duration(rec_id)
+            self.assertSuccessAndType(data, dbus.UInt32)
+            self.assertEqual(data[0], self.DURATION)
             
             time.sleep(10)
             
@@ -212,17 +251,6 @@ class TestRecorder(DeviceGroupTestCase):
             self.assertTrue(rec.is_timer_active(rec_id))
             self.assertTrue(rec.has_timer(now.year, now.month, now.day,
                 now.hour, now.minute, self.DURATION))
-            
-            data = rec.get_start_time(rec_id)
-            self.assertSuccessAndType(data, dbus.Array)
-            start = data[0]
-            self.assertTypeAll(start, dbus.UInt32)
-            self.assertEqual(len(start), 5)
-            self.assertEqual(now.year, start[0])
-            self.assertEqual(now.month, start[1])
-            self.assertEqual(now.day, start[2])
-            self.assertEqual(now.hour, start[3])
-            self.assertEqual(now.minute, start[4])
             
             data = rec.get_end_time(rec_id)
             self.assertSuccessAndType(data, dbus.Array)
@@ -232,10 +260,6 @@ class TestRecorder(DeviceGroupTestCase):
             endt = datetime.datetime(*end)
             self.assertEqual(endt - now,
                 datetime.timedelta(minutes=self.DURATION))
-            
-            data = rec.get_duration(rec_id)
-            self.assertSuccessAndType(data, dbus.UInt32)
-            self.assertEqual(data[0], self.DURATION)
             
             self.assertSuccessAndType(rec.get_channel_name(rec_id),
                 dbus.String)
@@ -249,6 +273,9 @@ class TestRecorder(DeviceGroupTestCase):
             self.assertTrue(active)
             self.assertType(channel, dbus.String)
             self.assertType(title, dbus.String)
+
+            self.assertFalse(rec.set_start_time(rec_id, delayed.year,
+                delayed.month, delayed.day, delayed.hour, delayed.minute))
             
             time.sleep(20)
             self.assertTrue(rec.delete_timer(rec_id))
@@ -266,6 +293,7 @@ class TestRecorder(DeviceGroupTestCase):
             self.assertFalse(rec.get_title(rec_id)[1])
             self.assertFalse(rec.is_timer_active(rec_id))
             self.assertFalse(rec.get_all_informations(rec_id)[1])
+            self.assertFalse(rec.set_start_time(rec_id, 2010, 1, 5, 15, 0))
 
     
 class TestSchedule(DeviceGroupTestCase):
