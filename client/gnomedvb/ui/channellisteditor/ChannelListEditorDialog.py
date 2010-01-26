@@ -38,7 +38,7 @@ class ChannelListEditorDialog(gtk.Dialog):
         self.devgroup = None
         self.channel_list = None
 
-        self.set_size_request(600, 500)
+        self.set_default_size(600, 500)
         self.set_has_separator(False)
         self.set_border_width(5)
         self.connect("destroy-event", gtk.main_quit)
