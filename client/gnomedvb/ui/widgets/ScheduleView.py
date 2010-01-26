@@ -21,6 +21,7 @@ import pango
 from gettext import gettext as _
 from gnomedvb import seconds_to_time_duration_string
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
+from gnomedvb.ui.widgets.CellRendererDatetime import CellRendererDatetime
 
 class ScheduleView(gtk.TreeView):
 
@@ -32,15 +33,19 @@ class ScheduleView(gtk.TreeView):
         
         self.prev_selection = None
         self.set_property("headers-visible", False)
-        
+
+        col_time = gtk.TreeViewColumn("Time")
+
         cell_rec = gtk.CellRendererPixbuf()
-        col_rec = gtk.TreeViewColumn("Recording", cell_rec)
-        col_rec.set_cell_data_func(cell_rec, self._get_rec_data)
-        self.append_column(col_rec)
-        
-        cell_time = gtk.CellRendererText()
-        col_time = gtk.TreeViewColumn("Time", cell_time)
+        col_time.pack_start(cell_rec, expand=False)
+        col_time.set_cell_data_func(cell_rec, self._get_rec_data)
+
+        cell_time = CellRendererDatetime()
+        col_time.pack_start(cell_time)
         col_time.set_cell_data_func(cell_time, self._get_time_data)
+        col_time.set_attributes(cell_time, datetime=ScheduleStore.COL_DATETIME,
+            format=ScheduleStore.COL_FORMAT)
+
         self.append_column(col_time)
         
         cell_description = gtk.CellRendererText()
@@ -54,7 +59,7 @@ class ScheduleView(gtk.TreeView):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
 
         if event_id == ScheduleStore.NEW_DAY:
-            date = model.get_datetime(aiter)
+            date = model[aiter][ScheduleStore.COL_DATETIME]
             description = "<big><b>%s</b></big>" % date.strftime("%A %x")
             cell.set_property("xalign", 0.5)
             cell.set_property ("cell-background-gdk", self.style.bg[gtk.STATE_NORMAL])
@@ -77,11 +82,8 @@ class ScheduleView(gtk.TreeView):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
         
         if event_id == ScheduleStore.NEW_DAY:
-            cell.set_property("text", "")
             cell.set_property ("cell-background-gdk", self.style.bg[gtk.STATE_NORMAL])
         else:
-            date = model.get_datetime(aiter)
-            cell.set_property("text", date.strftime("%X"))
             cell.set_property ("cell-background-gdk", self.style.base[gtk.STATE_NORMAL])
             
     def _get_rec_data(self, column, cell, model, aiter):

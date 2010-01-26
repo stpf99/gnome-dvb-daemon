@@ -24,17 +24,14 @@ from gnomedvb import global_error_handler
 
 class ScheduleStore(gtk.ListStore):
 
-    (COL_YEAR,
-     COL_MONTH,
-     COL_DAY,
-     COL_HOUR,
-     COL_MINUTE,
+    (COL_DATETIME,
+     COL_FORMAT,
      COL_DURATION,
      COL_TITLE,
      COL_SHORT_DESC,
      COL_EXTENDED_DESC,
      COL_RECORDED,
-     COL_EVENT_ID,) = range(11)
+     COL_EVENT_ID,) = range(8)
      
     NEW_DAY = -1
     
@@ -43,7 +40,7 @@ class ScheduleStore(gtk.ListStore):
     }
 
     def __init__(self, dev_group, sid):
-        gtk.ListStore.__init__(self, int, int, int, int, int, int, str, str, str, int, int)
+        gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT, str, int, str, str, str, int, int)
         self._client = dev_group.get_schedule(sid)
         self._recorder = dev_group.get_recorder()
         self._fill_all()
@@ -68,9 +65,9 @@ class ScheduleStore(gtk.ListStore):
                 # Insert bogus entry to mark that a new day starts
                 if prev_date < new_date:
                     date_iter = self.insert_before(new_iter, None)
-                    self.set(date_iter, self.COL_YEAR, new_date[0])
-                    self.set(date_iter, self.COL_MONTH, new_date[1])
-                    self.set(date_iter, self.COL_DAY, new_date[2])
+                    self.set(date_iter, self.COL_DATETIME, datetime.datetime(*new_date))
+                    # We don't want to display any datetime
+                    self.set(date_iter, self.COL_FORMAT, "")
                     self.set(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
                 prev_date = new_date
             self.emit("loading-finished")
@@ -78,17 +75,12 @@ class ScheduleStore(gtk.ListStore):
         self._client.get_all_event_infos(reply_handler=append_event, error_handler=global_error_handler)
         
     def get_date(self, aiter):
-        return (self[aiter][self.COL_YEAR],
-            self[aiter][self.COL_MONTH],
-            self[aiter][self.COL_DAY],)
+        dt = self[aiter][self.COL_DATETIME]
+        return (dt.year, dt.month, dt.day,)
             
     def get_time(self, aiter):
-        return (self[aiter][self.COL_HOUR], self[aiter][self.COL_MINUTE],)
-        
-    def get_datetime(self, aiter):
-        return datetime.datetime(self[aiter][self.COL_YEAR],
-            self[aiter][self.COL_MONTH], self[aiter][self.COL_DAY],
-            self[aiter][self.COL_HOUR], self[aiter][self.COL_MINUTE])
+        dt = self[aiter][self.COL_DATETIME]
+        return (dt.hour, dt.minute,)
         
     def _append_event(self, event):
         event_id, next, name, duration, short_desc = event
@@ -100,8 +92,8 @@ class ScheduleStore(gtk.ListStore):
         rec = self._recorder.has_timer_for_event(event_id,
             self._client.get_channel_sid())
         
-        return self.append([start_arr[0], start_arr[1], start_arr[2],
-            start_arr[3], start_arr[4],
+        # %X -> display locale's time representation
+        return self.append([datetime.datetime(*start_arr), "%X",
             duration, name, short_desc, None,
             rec, event_id])
             
