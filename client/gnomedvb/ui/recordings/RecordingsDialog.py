@@ -31,7 +31,7 @@ class RecordingsDialog(gtk.Dialog):
             parent=parent,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
             
-        self.set_size_request(600, 400)
+        self.set_default_size(600, 400)
         self.set_has_separator(False)
         self.set_border_width(5)
         
@@ -44,8 +44,8 @@ class RecordingsDialog(gtk.Dialog):
         self.vbox.pack_start(hbox_main)
             
         self._model = RecordingsStore()
-        self._model.set_sort_column_id(RecordingsStore.COL_START,
-            gtk.SORT_ASCENDING)
+        self._model.set_sort_func(RecordingsStore.COL_START,
+            self._datetime_sort_func)
         self._view = RecordingsView(self._model)
         self._view.connect("button-press-event", self._on_recording_selected)
         self._view.set_property("rules-hint", True)
@@ -116,4 +116,10 @@ class RecordingsDialog(gtk.Dialog):
     def _delete_callback(self, success):
         if not success:
             global_error_handler("Could not delete recording")
+
+    def _datetime_sort_func(treemodel, iter1, iter2):
+        d1 = treemodel[iter1][RecordingsStore.COL_START]
+        d2 = treemodel[iter2][RecordingsStore.COL_START]
+        return cmp(d1, d2)
+
         
