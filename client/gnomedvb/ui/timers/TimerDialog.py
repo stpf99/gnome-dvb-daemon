@@ -37,7 +37,7 @@ class TimerDialog(gtk.Dialog):
         gtk.Dialog.__init__(self, parent=parent,
                 flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
 
-        self.set_default_size(320, 200)
+        self.set_default_size(320, -1)
 
         self.device_group = device_group
         self.date_valid = False
