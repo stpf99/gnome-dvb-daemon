@@ -314,6 +314,9 @@ namespace DVB {
                 }
             }
 
+            if (ret)
+                this.changed (timer_id, ChangeType.UPDATED);
+
             return ret;
         }
         
@@ -373,6 +376,10 @@ namespace DVB {
                     timer.Duration = duration;
                 }
             }
+
+            if (ret)
+                this.changed (timer_id, ChangeType.UPDATED);
+
             return ret;
         }
 
