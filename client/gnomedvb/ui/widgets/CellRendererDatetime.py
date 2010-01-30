@@ -28,13 +28,13 @@ class CellRendererDatetime(gtk.CellRendererText):
         'format' : (gobject.TYPE_STRING,
             'Specifies in which format the datetime should be displayed.',
             'Accepts any strftime format string.',
-            "%x %X", gobject.PARAM_READWRITE),
+            "%c", gobject.PARAM_READWRITE),
     }
 
     def __init__(self):
         gtk.CellRendererText.__init__(self)
         self._datetime = None
-        self._format = "%x %X"
+        self._format = "%c"
         self.set_property("text", "")
         
     def do_get_property(self, property):

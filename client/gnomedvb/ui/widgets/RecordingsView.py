@@ -32,7 +32,6 @@ class RecordingsView(gtk.TreeView):
             gtk.TreeView.__init__(self)
         
         cell = CellRendererDatetime()
-        cell.set_property("format", "%c")
         col = gtk.TreeViewColumn(_("Start"), cell,
             datetime=RecordingsStore.COL_START)
         self.append_column(col)
