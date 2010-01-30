@@ -150,27 +150,54 @@ class CalendarPopup(gtk.Window):
         self.emit("changed", year, mon, day, hour, minute)
 
 
-class DateTimeBox(gtk.HBox):
+class DateTimeBox(gtk.Bin):
+
+    __gsignals__ = {
+        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, int, int, int]),
+    }
 
     def __init__(self, dt=datetime.datetime.now()):
-        gtk.HBox.__init__(self)
+        gtk.Bin.__init__(self)
+
+        self.hbox = gtk.HBox()
+
         self.entry = gtk.Entry()
         self.entry.set_editable(False)
+
         self.button = gtk.ToggleButton()
         self.button.connect("toggled", self._on_button_toggled)
+        arrow = gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE)
+        self.button.add(arrow)
+
         self.popup_win = CalendarPopup(dt)
         self.popup_win.connect("changed", self._on_datetime_changed)
         self.popup_win.connect("closed", lambda w: self.button.set_active(False))
         
-        arrow = gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE)
-        self.button.add(arrow)
+        self.hbox.pack_start(self.entry)
+        self.hbox.pack_start(self.button, False)
 
-        self.pack_start(self.entry)
-        self.pack_start(self.button, False)
+        self.add(self.hbox)
+        self.child.show_all()
 
-        arrow.show()
-        self.button.show()
-        self.entry.show()
+    def do_size_request(self, req):
+        w, h = self.child.size_request()
+        req.width = w
+        req.height = h
+
+    def do_size_allocate(self, alloc):
+        self.allocation = alloc
+        self.child.size_allocate(alloc)
+
+    def do_mnemonic_activate(self, group_cycling):
+        self.button.grab_focus()
+        return True
+
+    def mark_valid(self, val):
+        if val:
+            color = self.style.text[gtk.STATE_NORMAL]
+        else:
+            color = self.style.text[gtk.STATE_INSENSITIVE]
+        self.entry.modify_text(gtk.STATE_NORMAL, color)
 
     def get_date_and_time(self):
         return self.popup_win.get_date_and_time()
@@ -190,4 +217,6 @@ class DateTimeBox(gtk.HBox):
     def _on_datetime_changed(self, calwin, year, mon, day, hour, minute):
         dt = datetime.datetime(year, mon, day, hour, minute)
         self.entry.set_text(dt.strftime("%c"))
+        self.emit("changed", year, mon, day, hour, minute)
+
 
