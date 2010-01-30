@@ -415,7 +415,7 @@ namespace DVB {
             return device;
         }
         
-        protected DeviceGroup? get_device_group_if_exists (uint group_id) {
+        public DeviceGroup? get_device_group_if_exists (uint group_id) {
             DeviceGroup? result = null;
             lock (this.devices) {
                 if (this.devices.contains (group_id))
