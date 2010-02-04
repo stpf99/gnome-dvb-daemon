@@ -1,15 +1,20 @@
+AC_PREREQ(2.63.2)
 AC_INIT([gnome-dvb-daemon], [0.1.15],
-	[http://bugzilla.gnome.org/browse.cgi?product=dvb-daemon])
+       [https://bugs.launchpad.net/gnome-dvb-daemon],
+       [gnome-dvb-daemon],
+       [http://live.gnome.org/DVBDaemon])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([1.10 subdir-objects dist-bzip2])
 AM_MAINTAINER_MODE
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AC_PROG_CC
 AM_PROG_CC_C_O
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
+
+LT_PREREQ([2.2.6])
+LT_INIT([disable-static])
 
 AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
@@ -19,7 +24,7 @@ GETTEXT_PACKAGE=gnome-dvb-daemon
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT
-IT_PROG_INTLTOOL([0.35.0])
+IT_PROG_INTLTOOL([0.40.0])
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
