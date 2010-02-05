@@ -19,7 +19,8 @@ namespace cUtils {
         [CCode (cname = "SIGTERM")]
         public static const int SIGTERM;
         
-        public static delegate void SignalHandler (int signum);
+        [CCode (has_target = false)]
+        public delegate void SignalHandler (int signum);
         
         [CCode (cname="signal")]
         public static SignalHandler connect (int signum, SignalHandler handler);

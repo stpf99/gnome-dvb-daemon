@@ -22,7 +22,7 @@ using Gst;
 
 namespace DVB {
 
-    public static delegate void ForcedStopNotify (Channel channel);
+    public delegate void ForcedStopNotify (Channel channel);
 
     /**
      * This class handles watching channels one physical device.
