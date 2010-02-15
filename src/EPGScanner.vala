@@ -91,10 +91,13 @@ namespace DVB {
                 this.queue_source.destroy ();
                 this.queue_source = null;
             }
-            this.loop.quit ();
-            this.loop = null;
-            this.worker_thread.join ();
-            this.worker_thread = null;
+
+            if (this.loop != null) {
+                this.loop.quit ();
+                this.loop = null;
+                this.worker_thread.join ();
+                this.worker_thread = null;
+            }
         }
 
         /* Main Thread */
