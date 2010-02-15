@@ -181,6 +181,10 @@ namespace DVB {
          * Abort scanning and cleanup
          */
         public void Destroy () throws DBus.Error {
+            this.do_destroy ();
+        }
+
+        protected void do_destroy () {
             this.remove_check_for_lock_timeout ();
             this.remove_wait_for_tables_timeout ();
             this.clear_and_reset_all ();
@@ -692,7 +696,7 @@ namespace DVB {
                     string debug;
                     message.parse_error (out gerror, out debug);
                     critical ("%s %s", gerror.message, debug);
-                    this.Destroy ();
+                    this.do_destroy ();
                     return false;
                 }
             }
