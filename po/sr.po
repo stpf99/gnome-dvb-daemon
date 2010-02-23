@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-12-23 18:15+0100\n"
+"POT-Creation-Date: 2010-01-30 23:07+0100\n"
 "PO-Revision-Date: 2009-11-19 12:45+0000\n"
 "Last-Translator: Sebastian Pölsterl <Unknown>\n"
 "Language-Team: Serbian <sr@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2009-12-23 18:04+0000\n"
+"X-Launchpad-Export-Date: 2010-02-23 11:28+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -55,54 +55,54 @@ msgstr[2] "%d секунди"
 msgid "Edit Channel Lists"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:55
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:56
 msgid "Channel groups"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:96
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:97
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:54
 msgid "_Group:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:103
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:104
 msgid "Device groups"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:125
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:126
 msgid "All channels"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:139
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:67
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:140
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:72
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:36
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:32
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:33
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:84
 msgid "Channel"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:153
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:154
 msgid "Choose a channel group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:154
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:155
 msgid "Channels of group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:255
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
 msgid "An error occured while adding the group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:264
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
 #, python-format
 msgid "Are you sure you want to delete the group '%s'?"
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:267
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
 msgid "All assignments to this group will be lost."
 msgstr ""
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:282
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
 msgid "An error occured while removing the group"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgid "Display informations about the program"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:263
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:41
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
 msgid "Recording schedule"
 msgstr ""
 
@@ -274,7 +274,7 @@ msgid "Schedule recording for the selected event?"
 msgstr ""
 
 #. translators: These appear in the About dialog, usual format applies.
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:587
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:586
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
@@ -341,75 +341,75 @@ msgstr ""
 msgid "Edit group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:36
+#: ../client/gnomedvb/ui/preferences/Preferences.py:38
 #: ../client/totem-plugin/dvb-daemon.py:320
 msgid "Digital TV Preferences"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:73
+#: ../client/gnomedvb/ui/preferences/Preferences.py:88
 msgid "Edit selected group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:80
+#: ../client/gnomedvb/ui/preferences/Preferences.py:95
 msgid "Remove selected device"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:89
+#: ../client/gnomedvb/ui/preferences/Preferences.py:104
 msgid "Setup"
 msgstr "Подешавање"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:91
+#: ../client/gnomedvb/ui/preferences/Preferences.py:106
 msgid "Setup devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:98
+#: ../client/gnomedvb/ui/preferences/Preferences.py:113
 msgid "Create new group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:102
+#: ../client/gnomedvb/ui/preferences/Preferences.py:117
 msgid "Create new group for selected device"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:108
+#: ../client/gnomedvb/ui/preferences/Preferences.py:123
 msgid "Add to group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:112
+#: ../client/gnomedvb/ui/preferences/Preferences.py:127
 msgid "Add selected device to existing group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:128
+#: ../client/gnomedvb/ui/preferences/Preferences.py:143
 msgid "Configured devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:139
+#: ../client/gnomedvb/ui/preferences/Preferences.py:154
 msgid "Unconfigured devices"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:204
+#: ../client/gnomedvb/ui/preferences/Preferences.py:219
 msgid "Device could not be removed from group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:218
+#: ../client/gnomedvb/ui/preferences/Preferences.py:233
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:240
+#: ../client/gnomedvb/ui/preferences/Preferences.py:255
 msgid "Group could not be created"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:242
+#: ../client/gnomedvb/ui/preferences/Preferences.py:257
 msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:271
+#: ../client/gnomedvb/ui/preferences/Preferences.py:286
 msgid "Device could not be added to group"
 msgstr ""
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:273
+#: ../client/gnomedvb/ui/preferences/Preferences.py:288
 msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
@@ -423,68 +423,77 @@ msgstr ""
 msgid "Pick a date"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:78
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:37
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:83
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:39
 msgid "Title"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:86
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:91
 msgid "Start time"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:93
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:72
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:77
 msgid "Duration"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:154
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:165
 msgid "Timer could not be deleted"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:166
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:177
 msgid "Abort active recording?"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:168
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
 msgid "The timer you selected belongs to a currently active recording."
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:169
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:180
 msgid "Deleting this timer will abort the recording."
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:35
-msgid "Add Timer"
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:56
-msgid "_Channel:"
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:75
-msgid "_Start time:"
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:87
-msgid "Pick date"
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:110
-msgid "_Duration:"
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:124
-msgid "minutes"
-msgstr ""
-
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:182
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
 msgid "Timer could not be created"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:184
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
 msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
+msgid "Recording has been scheduled successfully"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:64
+msgid "Add Timer"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:67
+msgid "_Channel:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:84
+msgid "Edit Timer"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:87
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:60
+msgid "Channel:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:95
+msgid "_Start time:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:108
+msgid "_Duration:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:122
+msgid "minutes"
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:4
@@ -503,43 +512,43 @@ msgstr ""
 msgid "Channel group"
 msgstr ""
 
+#: ../client/gnomedvb/ui/widgets/DateTime.py:50
+msgid "_Time:"
+msgstr ""
+
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:28
 msgid "Details"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:51
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:56
 msgid "Title:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:55
-msgid "Channel:"
-msgstr ""
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:64
 msgid "Date:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:63
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:68
 msgid "Duration:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:67
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:72
 msgid "Description:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:34
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
 msgid "Start"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:39
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:41
 msgid "Length"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:40
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:41
 msgid "Now"
 msgstr ""
 
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:52
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:53
 msgid "Next"
 msgstr ""
 
@@ -828,7 +837,7 @@ msgstr ""
 msgid "Recording %d"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:630
+#: ../client/totem-plugin/dvb-daemon.py:632
 msgid "GNOME DVB Daemon is not installed"
 msgstr ""
 
