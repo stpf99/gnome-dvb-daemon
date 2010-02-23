@@ -1,4 +1,24 @@
 ==============
+Version 0.1.15
+==============
+
+This release adds the possibility to edit the start time
+and duration of scheduled recordings.
+
+- Added button to DetailsDialog to schedule a recording (fixes bug #486771)
+- Allow editing of timer's start time and duration
+- Lock access to new_channels ArrayList (fixes bug #511271)
+- Fixed compiler warnings and errors
+- Various UI improvements
+
+Updated Translations:
+---------------------
+- Arabic
+- French
+- German
+- Polish
+
+==============
 Version 0.1.14
 ==============
 
