@@ -37,8 +37,11 @@ class SummaryPage(BasePage):
     def get_page_type(self):
         return gtk.ASSISTANT_PAGE_SUMMARY
         
-    def set_device_name_and_details(self, name, details):
-        text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)
+    def set_device_name_and_details(self, name, details, success):
+        if success:
+            text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)
+        else:
+            text = "<span weight=\"bold\">%s</span>" % (_("Failed configuring device %s.") % name)
         text += "\n%s" % details
         
         self._label.set_markup(text)

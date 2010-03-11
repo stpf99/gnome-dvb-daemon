@@ -40,6 +40,7 @@ class SetupDevicePage(BasePage):
         self.__channels = None
         self._progressbar = None
         self._progressbar_timer = None
+        self.__success = False
             
     def get_page_title(self):
         return _("Configuring device")
@@ -57,7 +58,7 @@ class SetupDevicePage(BasePage):
         self.__channels = channels
    
     def get_summary(self):
-        return self.__summary
+        return self.__success, self.__summary
         
     def can_be_added_to_group(self, adapter_info):
         self.__adapter_info = adapter_info
@@ -70,6 +71,7 @@ class SetupDevicePage(BasePage):
         
         def reply_handler(success):
             self.destroy_progressbar()
+            self.__success = True
             self.emit("finished", True)
         
         existing_group = self.get_existing_group_of_same_type()
@@ -121,13 +123,18 @@ class SetupDevicePage(BasePage):
                                 reply_handler=reply_handler, error_handler=error_handler)
             else:
                 self.show_error()
+
+        if len(self.__channels) == 0:
+            self.__summary = _("No channels were found.") + " "
+            self.__summary += _("Make sure that the antenna is connected and you have selected the correct tuning data.")
+            self.emit("finished", True)
+        else:
+            self.__summary = ''
+            channels_file = os.path.join(gnomedvb.get_config_dir(),
+                "channels_%s.conf" % self.__adapter_info["type"])
             
-        self.__summary = ''
-        channels_file = os.path.join(gnomedvb.get_config_dir(),
-            "channels_%s.conf" % self.__adapter_info["type"])
-        
-        self.__scanner.write_channels_to_file(self.__channels, channels_file,
-            reply_handler=write_channels_handler, error_handler=error_handler)
+            self.__scanner.write_channels_to_file(self.__channels, channels_file,
+                reply_handler=write_channels_handler, error_handler=error_handler)
                         
     def add_to_group(self, group, reply_handler, error_handler):
         self.__summary = _('The device has been added to the group %s.') % group['name']
