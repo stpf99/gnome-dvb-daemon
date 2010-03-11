@@ -190,7 +190,6 @@ namespace DVB {
             this.clear_and_reset_all ();
             this.channels.clear ();
             this.channels = null;
-            this.destroyed ();
 
             if (this.loop != null) {
                 this.loop.quit ();
@@ -198,6 +197,7 @@ namespace DVB {
                 this.worker_thread.join ();
                 this.worker_thread = null;
             }
+            this.destroyed ();
         }
         
         /** 
