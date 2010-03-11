@@ -81,6 +81,9 @@ class SetupDevicePage(BasePage):
                 error_handler=gnomedvb.global_error_handler)
          
     def show_progressbar(self):
+        # From parent
+        self._label.hide()
+
         self._progressbar = gtk.ProgressBar()
         self._progressbar.set_text(_("Configuring device"))
         self._progressbar.set_fraction(0.1)
@@ -117,12 +120,7 @@ class SetupDevicePage(BasePage):
                                 recordings_dir, name,
                                 reply_handler=reply_handler, error_handler=error_handler)
             else:
-                dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
-                dialog.set_markup ("<big><span weight=\"bold\">%s</span></big>" % _("An error occured while trying to setup the device."))
-                dialog.run()
-                dialog.destroy()
+                self.show_error()
             
         self.__summary = ''
         channels_file = os.path.join(gnomedvb.get_config_dir(),
@@ -136,4 +134,13 @@ class SetupDevicePage(BasePage):
         group.add_device(self.__adapter_info['adapter'],
             self.__adapter_info['frontend'], reply_handler=reply_handler,
             error_handler=error_handler)
+
+    def show_error(self):
+        if self._progressbar != None:
+            self._progressbar.destroy()
+
+        text = "<big><span weight=\"bold\">%s</span></big>" % _("An error occured while trying to setup the device.")
+        self._label.set_selectable(True)
+        self._label.set_markup (text)
+        self._label.show()
 
