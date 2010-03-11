@@ -89,6 +89,7 @@ namespace DVB {
         }
         
         public bool close () throws Error {
+            if (this.stream == null) return true;
             return this.stream.close (null);
         } 
     
