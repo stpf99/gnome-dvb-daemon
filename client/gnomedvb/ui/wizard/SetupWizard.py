@@ -91,12 +91,15 @@ class SetupWizard(gtk.Assistant):
         self.set_page_type(page, page.get_page_type())
         
     def on_prepare(self, assistant, page):
-        if isinstance(page, InitialTuningDataPage):
-            page.set_adapter_info(self.__adapter_info)
+        if isinstance(page, IntroPage):
+            # Reset to None so we can automatically search for adapter again
+            self.__adapter_info = None
         elif isinstance(page, AdaptersPage):
             self.__expert_mode = self.intro_page.has_expert_mode()
             page.display_configured(self.__expert_mode)
             page.run()
+        elif isinstance(page, InitialTuningDataPage):
+            page.set_adapter_info(self.__adapter_info)
         elif isinstance(page, ChannelScanPage):
             self.__ask_on_exit = True
             if self.__adapter_info["name"] != None:
@@ -176,7 +179,7 @@ class SetupWizard(gtk.Assistant):
             gtk.main_quit()
             
     def on_next_page(self, adapters_page):
-        if not self.__expert_mode:
+        if not self.__expert_mode and self.__adapter_info == None:
             # There's only one device no need to select one
             self.__adapter_info = adapters_page.get_adapter_info()
             # Check if we can add it to an existing group
