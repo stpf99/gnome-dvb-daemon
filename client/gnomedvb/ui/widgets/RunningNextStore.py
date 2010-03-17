@@ -47,7 +47,7 @@ class RunningNextStore(gtk.ListStore):
         channellist = self._group.get_channel_list()
     
         def add_channels(channels):
-            for sid, name in channels:
+            for sid, name, is_radio in channels:
                 aiter = self.append()
                 self.set(aiter, self.COL_CHANNEL, name)
                 self.set(aiter, self.COL_SID, sid)

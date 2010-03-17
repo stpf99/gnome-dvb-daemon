@@ -49,7 +49,7 @@ class ChannelsStore(gtk.ListStore):
         channellist = device_group.get_channel_list()
         
         def append_channel(channels):
-            for channel_id, name in channels:
+            for channel_id, name, is_radio in channels:
                 self.append([name, channel_id])
             self.emit("loading-finished")
         
