@@ -132,9 +132,10 @@ class TestChannelList(DeviceGroupTestCase):
                     
     def testGetChannelInfos(self):
         for cl in self.chanlists:
-            for cid, name in cl.get_channel_infos():
+            for cid, name, is_radio in cl.get_channel_infos():
                 self.assertType(cid, dbus.UInt32)
                 self.assertType(name, dbus.String)
+                self.assertType(is_radio, dbus.Boolean)
             
     def testGetTVChannels(self):
         for cl in self.chanlists:
