@@ -21,6 +21,7 @@ import gobject
 import gnomedvb
 from gnomedvb import global_error_handler
 from gnomedvb.Callback import Callback
+from cgi import escape
 
 class ChannelsStore(gtk.ListStore):
 
@@ -77,6 +78,9 @@ class ChannelsTreeStore(gtk.TreeStore):
         self._manager.connect('group-added', self._on_manager_group_added)
         self._manager.connect('group-removed', self._on_manager_group_removed)
         self._add_channels()
+        
+        self._tv_group_iter = None
+        self._radio_group_iter = None
             
     def _add_channels(self):
         def append_groups(dev_groups):
@@ -99,24 +103,32 @@ class ChannelsTreeStore(gtk.TreeStore):
             self._manager.get_channel_groups(
                 reply_handler=lambda x: d.callback(x),
                 error_handler=global_error_handler)
-            # Put all available channels in virtual group
-            all_group_iter = self.append(group_iter,
-                [group_id, _("All Channels"), 0, dev_group])
+            # Put all available channels either in TV or radio group
+            self._tv_group_iter = self.append(group_iter,
+                [group_id, _("TV Channels"), 0, dev_group])
+            self._radio_group_iter = self.append(group_iter,
+                [group_id, _("Radio Channels"), 0, dev_group])
         else:
-            all_group_iter = group_iter
+            # Do not distinguish between radio and TV
+            self._tv_group_iter = group_iter
+            self._radio_group_iter = group_iter
 
         d_all = Callback()
-        d_all.add_callback(self._append_channels, group_id, all_group_iter,
+        d_all.add_callback(self._append_channels, group_id,
             dev_group)
         channellist.get_channel_infos(
             reply_handler=lambda x: d_all.callback(x),
             error_handler=global_error_handler)
      
-    def _append_channels(self, channels, group_id, group_iter, dev_group):
-        for channel_id, name in channels:
+    def _append_channels(self, channels, group_id, dev_group):
+        for channel_id, name, is_radio in channels:
+            if is_radio:
+                group_iter = self._radio_group_iter
+            else:
+                group_iter = self._tv_group_iter
             self.append(group_iter,
                 [group_id,
-                name,
+                escape(name),
                 channel_id,
                 dev_group])
         self.emit("loading-finished", group_id)
@@ -128,12 +140,13 @@ class ChannelsTreeStore(gtk.TreeStore):
                 if success:
                     self.append(chan_group_iter,
                         [group_id,
-                        name,
+                        escape(name),
                         channel_id,
                         dev_group])
         
         for chan_group_id, name in channel_groups:
-            chan_group_iter = self.append(group_iter, [group_id, name, 0, dev_group])
+            chan_group_iter = self.append(group_iter, [group_id, escape(name),
+                0, dev_group])
             d = Callback()
             d.add_callback(append_channel, chan_group_iter)
             channellist.get_channels_of_group(chan_group_id,
