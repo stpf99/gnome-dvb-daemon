@@ -248,10 +248,12 @@ namespace DVB {
             int i = 0;
             lock (this.channels) {
                 foreach (uint id in this.channels.keys) {
-                    ChannelInfo channel = ChannelInfo();
-                    channel.id = id;
-                    channel.name = this.channels.get (id).Name;
-                    channels[i] = channel;
+                    Channel channel = this.channels.get (id);
+                    ChannelInfo chan_info = ChannelInfo();
+                    chan_info.id = id;
+                    chan_info.name = channel.Name;
+                    chan_info.is_radio = channel.is_radio ();
+                    channels[i] = chan_info;
                     i++;
                 }
             }
