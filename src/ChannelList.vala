@@ -138,7 +138,7 @@ namespace DVB {
             lock (this.channels) {
                 foreach (uint id in this.channels.keys) {
                     Channel chan = this.channels.get (id);
-                    if (chan.VideoPID != 0)
+                    if (!chan.is_radio ())
                         video_channels.prepend (id);
                 }
             }
@@ -210,7 +210,7 @@ namespace DVB {
             bool ret = false;
             lock (this.channels) {
                 if (this.channels.contains (channel_id)) {
-                    val = (this.channels.get (channel_id).VideoPID == 0);   
+                    val = this.channels.get (channel_id).is_radio ();
                     ret = true;
                 }
             }

@@ -70,6 +70,10 @@ namespace DVB {
             return apids.str;
         }
         
+        public bool is_radio () {
+            return (this.VideoPID == 0);
+        }
+        
         public virtual bool is_valid () {
             return (this.Name != null && this.Frequency != 0&& this.Sid != 0
                 && (this.VideoPID != 0 || this.AudioPIDs.size != 0));

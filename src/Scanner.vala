@@ -732,7 +732,7 @@ namespace DVB {
                             // If this fails we may miss video or audio pid,
                             // because we didn't came across the sdt or pmt, yet   
                             if (channel.is_valid ()) {
-                                string type = (channel.VideoPID == 0) ? "Radio" : "TV";
+                                string type = (channel.is_radio ()) ? "Radio" : "TV";
                                 debug ("Channel added: %s", channel.to_string ());
                                 this.channel_added (channel.Frequency, sid,
                                     channel.Name, channel.Network, type,
