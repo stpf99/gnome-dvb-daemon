@@ -1,4 +1,26 @@
 ==============
+Version 0.1.16
+==============
+
+In this release a couple of bugs in the setup
+assistant where fixed. In addition, channels
+are divided into a TV and Radio group.
+
+- Fixed crash in Scanner.Destroy (fixes bug #528849)
+- Allow getting back to adapters page when not in expert mode (fixes bug #531237)
+- Fixed crash when trying to close stream that never was opened before (fixes bug #533533)
+- Show error message if no channels were found (fixes bug #533533)
+- Added is_radio field to ChannelInfo struct returned by ChannelList's get_channel_infos method.
+- When grouping channels add TV and Radio group by default. Escape names of groups and channels.
+
+Updated Translations:
+---------------------
+- Czech
+- Danish
+- English (United Kingdom)
+- Polish
+
+==============
 Version 0.1.15
 ==============
 
