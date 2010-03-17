@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-01-30 23:07+0100\n"
-"PO-Revision-Date: 2009-12-23 22:28+0000\n"
+"POT-Creation-Date: 2010-03-17 13:02+0100\n"
+"PO-Revision-Date: 2010-02-23 15:18+0000\n"
 "Last-Translator: Sebastian Pölsterl <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-02-23 11:28+0000\n"
+"X-Launchpad-Export-Date: 2010-03-17 20:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -724,22 +724,32 @@ msgstr ""
 msgid "Save channels"
 msgstr "Kanalları kaydet"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:45
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:85
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
 msgid "Configuring device"
 msgstr "Aygıt yapılandırılıyor"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:114
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:119
 msgid "TV"
 msgstr "TV"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:123
-msgid "An error occured while trying to setup the device."
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
+msgid "No channels were found."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:135
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:129
+msgid ""
+"Make sure that the antenna is connected and you have selected the correct "
+"tuning data."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
 #, python-format
 msgid "The device has been added to the group %s."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
+msgid "An error occured while trying to setup the device."
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:31
@@ -750,16 +760,21 @@ msgstr ""
 msgid "Configuration finished"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:41
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:42
 #, python-format
 msgid "The device %s has been configured sucessfully."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
+#, python-format
+msgid "Failed configuring device %s."
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:57
 msgid "Setup digital TV"
 msgstr "Dijital TV kurulumu"
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:116
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:119
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
@@ -767,7 +782,7 @@ msgstr ""
 "Oluşturulan kanal dosyasını yapılandırmak için kontrol merkezi içindeki "
 "cihazlar kullanılabilir."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:162
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:165
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."

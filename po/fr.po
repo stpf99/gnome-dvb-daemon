@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-01-30 23:07+0100\n"
-"PO-Revision-Date: 2010-02-11 21:58+0000\n"
-"Last-Translator: durden <Unknown>\n"
+"POT-Creation-Date: 2010-03-17 13:02+0100\n"
+"PO-Revision-Date: 2010-02-23 15:19+0000\n"
+"Last-Translator: Sebastian Pölsterl <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-02-23 11:28+0000\n"
+"X-Launchpad-Export-Date: 2010-03-17 20:44+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -279,6 +279,7 @@ msgstr ""
 "Launchpad Contributions:\n"
 "  Michel Boisset https://launchpad.net/~michel-boisset\n"
 "  Pierre Slamich https://launchpad.net/~pierre-slamich\n"
+"  Sebastian Pölsterl https://launchpad.net/~marduk-k-d-w\n"
 "  Simon Pireyn https://launchpad.net/~spireyn\n"
 "  Stéphane Loeuillet https://launchpad.net/~leroutier\n"
 "  durden https://launchpad.net/~david-lebouquin"
@@ -755,23 +756,33 @@ msgstr "Choisissez un endroit où sauvegarder la liste des chaînes."
 msgid "Save channels"
 msgstr "Sauvegarde des chaînes"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:45
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:85
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
 msgid "Configuring device"
 msgstr "Configuration du périphérique"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:114
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:119
 msgid "TV"
 msgstr "TV"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:123
-msgid "An error occured while trying to setup the device."
-msgstr "Une erreur est survenue en essayant de configurer le périphérique."
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
+msgid "No channels were found."
+msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:135
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:129
+msgid ""
+"Make sure that the antenna is connected and you have selected the correct "
+"tuning data."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
 #, python-format
 msgid "The device has been added to the group %s."
 msgstr "Le périphérique a été ajouté au groupe %s."
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
+msgid "An error occured while trying to setup the device."
+msgstr "Une erreur est survenue en essayant de configurer le périphérique."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:31
 msgid "Configure Another Device"
@@ -781,16 +792,21 @@ msgstr "Configurer un autre périphérique"
 msgid "Configuration finished"
 msgstr "Configuration terminé"
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:41
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:42
 #, python-format
 msgid "The device %s has been configured sucessfully."
 msgstr "Lé périphérique %s a été configuré avec succès."
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
+#, python-format
+msgid "Failed configuring device %s."
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:57
 msgid "Setup digital TV"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:116
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:119
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
@@ -798,7 +814,7 @@ msgstr ""
 "Le fichier des chaînes généré peut être utilisé pour configurer votre "
 "périphérique dans le centre de contrôle."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:162
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:165
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
