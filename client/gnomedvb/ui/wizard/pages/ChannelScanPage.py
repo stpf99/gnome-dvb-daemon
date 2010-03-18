@@ -119,10 +119,7 @@ class ChannelScanPage(BasePage):
         
     def get_page_title(self):
         return _("Scanning for channels")
-        
-    def get_page_type(self):
-        return gtk.ASSISTANT_PAGE_PROGRESS
-        
+   
     def get_selected_channel_sids(self):
         return [row[self.COL_SID] for row in self.tvchannels if row[self.COL_ACTIVE]]
         
