@@ -19,6 +19,7 @@
 import gnomedvb
 import gtk
 import gobject
+import glib
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb import global_error_handler
@@ -49,6 +50,7 @@ class ChannelScanPage(BasePage):
         self._max_freqs = 0
         self._scanned_freqs = 0
         self._last_qsize = 0
+        self._progressbar_timer = 0
         
         self.set_spacing(12)
         self._theme = gtk.icon_theme_get_default()
@@ -137,6 +139,8 @@ class ChannelScanPage(BasePage):
         self._scanner.connect ("channel-added", self.__on_channel_added)
         self._scanner.connect ("finished", self.__on_finished)
 
+        self.progressbar.set_pulse_step(0.1)
+        self._progressbar_timer = glib.timeout_add(100, self._progressbar_pulse)
         self.progressbar.show()
 
         if isinstance(tuning_data, str):
@@ -148,6 +152,10 @@ class ChannelScanPage(BasePage):
             self._scanner.run()
         else:
             self._scanner.destroy()
+            
+    def _progressbar_pulse(self):
+        self.progressbar.pulse()
+        return True
         
     def __on_channel_added(self, scanner, freq, sid, name, network, channeltype, scrambled):
         try:
@@ -181,6 +189,11 @@ class ChannelScanPage(BasePage):
             self._max_freqs += qsize - self._last_qsize + 1
         self._scanned_freqs += 1
         fraction = float(self._scanned_freqs) / self._max_freqs
+        # Stop progressbar from pulsing
+        if self._progressbar_timer > 0:
+            glib.source_remove(self._progressbar_timer)
+            self._progressbar_timer = 0
+
         self.progressbar.set_fraction(fraction)
         self._last_qsize = qsize
         
