@@ -17,17 +17,20 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+from gnomedvb.ui.widgets.Frame import AlignedLabel
 
 class BasePage(gtk.VBox):
 
     def __init__(self):
-        gtk.VBox.__init__(self, False, 5)
-        self.set_border_width(5)
-        
-        self._label = gtk.Label()
+        gtk.VBox.__init__(self, spacing=6)
+        self.set_border_width(24)
+
+        ali = AlignedLabel()
+        ali.show()
+        self.pack_start(ali, False, False)
+
+        self._label = ali.get_label()
         self._label.set_line_wrap(True)
-        self.pack_start(self._label, False, padding=3)
-        self._label.show()
         
     def get_page_title(self):
         raise NotImplementedError

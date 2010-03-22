@@ -22,6 +22,7 @@ import gobject
 import glib
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
+from gnomedvb.ui.widgets.Frame import TextFieldLabel
 from gnomedvb import global_error_handler
 
 class ChannelScanPage(BasePage):
@@ -75,6 +76,11 @@ class ChannelScanPage(BasePage):
 
         topbox = gtk.VBox(spacing=6)
         self.pack_start(topbox)
+
+        ali = TextFieldLabel()
+        label = ali.get_label()
+        label.set_markup_with_mnemonic(_("_Channels:"))
+        topbox.pack_start(ali, False)
         
         # Logo, Name, active, SID, scrambled
         self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, bool, int, bool)
@@ -82,6 +88,8 @@ class ChannelScanPage(BasePage):
         self.tvchannelsview.connect("button-press-event",
             self.__on_treeview_button_press_event)
         self.tvchannelsview.set_reorderable(True)
+        self.tvchannelsview.set_headers_visible(False)
+        label.set_mnemonic_widget(self.tvchannelsview)
         
         col_name = gtk.TreeViewColumn(_("Channel"))
         
@@ -106,7 +114,7 @@ class ChannelScanPage(BasePage):
         
         topbox.pack_start(scrolledtvview)
 
-        self.scrambledbutton = gtk.CheckButton(_("Select scrambled channels"))
+        self.scrambledbutton = gtk.CheckButton(_("Select _scrambled channels"))
         self.scrambledbutton.set_active(True)
         self.scrambledbutton.connect("toggled", self.__on_select_encrypted_toggled)
         topbox.pack_start(self.scrambledbutton, False)

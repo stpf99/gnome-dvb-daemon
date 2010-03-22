@@ -19,12 +19,18 @@
 import gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
+from gnomedvb.ui.widgets.Frame import AlignedLabel
 
 class SummaryPage(BasePage):
 
     def __init__(self):
         BasePage.__init__(self)
         
+        details_ali = AlignedLabel()
+        self.pack_start(details_ali)
+        self._details_label = details_ali.get_label()
+        self._details_label.set_line_wrap(True)
+
         button_alignment = gtk.Alignment(xalign=0.5)
         self.pack_start(button_alignment, False)
         
@@ -42,7 +48,7 @@ class SummaryPage(BasePage):
             text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)
         else:
             text = "<span weight=\"bold\">%s</span>" % (_("Failed configuring device %s.") % name)
-        text += "\n%s" % details
-        
         self._label.set_markup(text)
-    
+
+        self._details_label.set_markup(details)
+

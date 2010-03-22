@@ -19,22 +19,27 @@
 import gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
+from gnomedvb.ui.widgets.Frame import AlignedLabel
 
 class IntroPage(BasePage):
     
     def __init__(self):
         BasePage.__init__(self)
-        self.set_border_width(5)
         
-        text = _('Welcome to the digital television Assistant.')
-        text += "\n"
-        text += _('It will automatically configure your devices and search for channels, if necessary.')
-        text += "\n\n"
-        text += _("Click \"Forward\" to begin.")
-        self._label.set_text(text)
-        self.set_child_packing(self._label, True, True, 0, gtk.PACK_START)
+        text = "<b>%s</b>" % _('Welcome to the digital television Assistant.')
+        self._label.set_markup(text)
+        self._label.set_line_wrap(False)
+
+        text = _('It will automatically configure your devices and search for channels, if necessary.')
+        label2 = AlignedLabel(text)
+        label2.get_label().set_line_wrap(True)
+        self.pack_start(label2, False)
         
-        self.expert_mode = gtk.CheckButton(label=_('Expert mode'))
+        text = _("Click \"Forward\" to begin.")
+        label3 = AlignedLabel(text)
+        self.pack_start(label3)
+        
+        self.expert_mode = gtk.CheckButton(label=_('_Expert mode'))
         self.pack_start(self.expert_mode, False, False, 0)
         
     def get_page_title(self):

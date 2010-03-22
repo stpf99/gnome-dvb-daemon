@@ -23,6 +23,7 @@ import gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
+from gnomedvb.ui.widgets.Frame import BaseFrame
 
 class AdaptersPage(BasePage):
     
@@ -39,14 +40,14 @@ class AdaptersPage(BasePage):
         self.__model = model
         self._progressbar = None
         self.devicesview = None
-        self.scrolledview = None
+        self.frame = None
         
         # Name, Type Name, Type, adapter, frontend, registered
         self.deviceslist = gtk.ListStore(str, str, str, int, int, bool)
         
     def show_no_devices(self):
-        if self.scrolledview:
-            self.scrolledview.hide()
+        if self.frame:
+            self.frame.hide()
     
         text = "<big><span weight=\"bold\">%s</span></big>" % _('No devices have been found.')
         text += "\n\n"
@@ -55,10 +56,8 @@ class AdaptersPage(BasePage):
         self._label.show()
     
     def show_devices(self):
-        text = _("Select the device you want to configure.")
-        self._label.set_markup (text)
-        self._label.show()
-    
+        self._label.hide()
+
         if self.devicesview == None:
             self.devicesview = gtk.TreeView(self.deviceslist)
             self.devicesview.get_selection().connect("changed",
@@ -76,20 +75,25 @@ class AdaptersPage(BasePage):
             col_type.add_attribute(cell_type, "text", 1)
             self.devicesview.append_column(col_type)
         
-            self.scrolledview = gtk.ScrolledWindow()
-            self.scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-            self.scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            self.scrolledview.add(self.devicesview)
-            self.scrolledview.show_all()
+            scrolledview = gtk.ScrolledWindow()
+            scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+            scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            scrolledview.add(self.devicesview)
+            scrolledview.show_all()
         
-            self.pack_start(self.scrolledview)
+            text = "<b>%s</b>" % _("Select the device you want to configure.")
+            self.frame = BaseFrame(text, scrolledview)
+            self.frame.show()
+            self.pack_start(self.frame)
+
+        self.devicesview.grab_focus()
         
         if len(self.deviceslist) == 1:
             self.emit("next-page")
         
     def show_all_configured(self):
-        if self.scrolledview:
-            self.scrolledview.hide()
+        if self.frame:
+            self.frame.hide()
 
         text = "<big><span weight=\"bold\">%s</span></big>" % _('All devices are already configured.')
         text += "\n\n"
@@ -98,8 +102,8 @@ class AdaptersPage(BasePage):
         self._label.show()
         
     def show_error(self, error):
-        if self.scrolledview:
-            self.scrolledview.hide()
+        if self.frame:
+            self.frame.hide()
             
         text = "<big><span weight=\"bold\">%s</span></big>" % _('An error occured while retrieving devices.')
         text += "\n\n"

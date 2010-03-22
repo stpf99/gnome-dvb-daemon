@@ -53,7 +53,6 @@ class SetupWizard(gtk.Assistant):
         self.connect ('prepare', self.on_prepare)
         self.set_forward_page_func(self.page_func)
         self.set_default_size(500, 400)
-        self.set_border_width(4)
         self.set_title(_("Setup digital TV"))
         
         self.intro_page = IntroPage()
