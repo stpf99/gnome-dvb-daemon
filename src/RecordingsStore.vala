@@ -37,7 +37,7 @@ namespace DVB {
             this.last_id = 0;
         }
         
-        public static weak RecordingsStore get_instance () {
+        public static unowned RecordingsStore get_instance () {
             instance_mutex.lock ();
             if (instance == null) {
                 instance = new RecordingsStore ();

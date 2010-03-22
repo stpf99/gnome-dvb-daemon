@@ -33,7 +33,7 @@ namespace DVB {
         private static DVB.Settings settings;
         private static StaticRecMutex settings_mutex = StaticRecMutex ();
         
-        public static weak TimersStore get_timers_store () {
+        public static unowned TimersStore get_timers_store () {
         	store_mutex.lock ();
         	if (store == null) {
         		store = new SqliteConfigTimersStore ();
@@ -48,7 +48,7 @@ namespace DVB {
         	return store;
         }
         
-        public static weak ConfigStore get_config_store () {
+        public static unowned ConfigStore get_config_store () {
         	store_mutex.lock ();
         	if (store == null) {
         		store = new SqliteConfigTimersStore ();
@@ -63,7 +63,7 @@ namespace DVB {
         	return store;
         }
         
-        public static weak EPGStore get_epg_store () {
+        public static unowned EPGStore get_epg_store () {
         	epgstore_mutex.lock ();
         	if (epgstore == null) {
         		epgstore = new SqliteEPGStore ();
@@ -78,7 +78,7 @@ namespace DVB {
         	return epgstore;
         }
         
-        public static weak DVB.Settings get_settings () {
+        public static unowned DVB.Settings get_settings () {
             settings_mutex.lock ();
             if (settings == null) {
                 settings = new DVB.Settings ();

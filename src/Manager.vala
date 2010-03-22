@@ -49,7 +49,7 @@ namespace DVB {
             this.device_group_counter = 0;
         }
         
-        public static weak Manager get_instance () {
+        public static unowned Manager get_instance () {
             instance_mutex.lock ();
             if (instance == null) {
                 instance = new Manager ();
