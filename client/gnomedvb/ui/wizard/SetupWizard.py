@@ -117,6 +117,7 @@ class SetupWizard(gtk.Assistant):
             self.__ask_on_exit = False
             if self.__expert_mode:
                 summary = _('The generated channels file can be used to configure your devices in the control center.')
+                success = True
             else:
                 success, summary = self.setup_page.get_summary()
             page.set_device_name_and_details(self.__adapter_info["name"],
