@@ -612,7 +612,7 @@ namespace DVB {
                     Gst.State.PLAYING);
                 if (ret == Gst.StateChangeReturn.FAILURE) {
                     critical ("Failed setting pipeline to playing");
-                    this.stop_recording (timer);
+                    channel_factory.stop_channel (channel, filesink);
                     return;
                 }
                 player.eit_structure += this.on_eit_structure;
