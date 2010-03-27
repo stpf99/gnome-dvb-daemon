@@ -8,6 +8,18 @@ gnomedvb_PYTHON = \
     DVBModel.py \
     defs.py
 
+## dvbudev ##
+_dvbudevdir = $(pythondir)/gnomedvb/udev
+_dvbudev_LTLIBRARIES = _dvbudev.la
+_dvbudev_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_dvbudev
+_dvbudev_la_LIBADD = $(GUDEV_LIBS)
+_dvbudev_la_CPPFLAGS = $(PYTHON_INCLUDES) $(GUDEV_CFLAGS)
+_dvbudev_la_SOURCES = \
+	udev/_dvbudevmodule.c 
+
+_dvbudev_PYTHON = \
+	udev/__init__.py
+
 ## user dirs ##
 __userdirsdir = $(pythondir)/gnomedvb/userdirs
 __userdirs_LTLIBRARIES = __userdirs.la
