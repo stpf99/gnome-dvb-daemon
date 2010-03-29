@@ -20,6 +20,7 @@ import os
 import os.path
 import gtk
 import gobject
+import glib
 import gettext
 import locale
 from gettext import gettext as _
@@ -71,6 +72,7 @@ class InitialTuningDataPage(BasePage):
         self.__adapter_info = None
         self.__page_title = None
         self.__tuning_data = self.NOT_LISTED
+        self.__data_dir = None
         
     def get_page_title(self):
         return self.__page_title
@@ -162,7 +164,8 @@ class InitialTuningDataPage(BasePage):
             self.countries.append([name, code])
     
         self.country_combo = gtk.ComboBox(self.countries)
-        self.country_combo.connect('changed', self.on_country_changed, "dvb-t")
+        self.country_combo.connect('changed', self.on_country_changed)
+        self.__data_dir = "dvb-t"
         cell = gtk.CellRendererText()
         self.country_combo.pack_start(cell)
         self.country_combo.add_attribute(cell, "text", 0)
@@ -234,7 +237,8 @@ class InitialTuningDataPage(BasePage):
             self.countries.append([name, code])
     
         self.country_combo = gtk.ComboBox(self.countries)
-        self.country_combo.connect('changed', self.on_country_changed, "dvb-c")
+        self.country_combo.connect('changed', self.on_country_changed)
+        self.__data_dir = "dvb-c"
         cell = gtk.CellRendererText()
         self.country_combo.pack_start(cell)
         self.country_combo.add_attribute(cell, "text", 0)
@@ -278,7 +282,7 @@ class InitialTuningDataPage(BasePage):
         
         return providers_view, scrolledview
         
-    def on_country_changed(self, combo, directory):
+    def on_country_changed(self, combo):
         aiter = combo.get_active_iter()
         
         if aiter != None:
@@ -287,23 +291,39 @@ class InitialTuningDataPage(BasePage):
             if selected_country == self.NOT_LISTED:
                 if self.providers_view:
                     self.providers_view.set_sensitive(False)
+                self.emit("finished", True)
             else:
+                self.emit("finished", False)
                 self.providers.clear()
-                # Only DVB-T has bruteforce scan
-                if self.__adapter_info["type"] == "DVB-T":
-                    self.providers.append([_("Don't know"), self.NOT_LISTED])
-                for d in DVB_APPS_DIRS:
-                    if os.access(d, os.F_OK | os.R_OK):
-                        for f in os.listdir(os.path.join(d, directory)):
-                            country, city = f.split('-', 1)
-                        
-                            if country == selected_country:
-                                self.providers.append([city, os.path.join(d, directory, f)])
-            
-                self.providers_view.set_sensitive(True)
-                first_iter = self.providers.get_iter_first()
-                self.providers_view.get_selection().select_iter(first_iter)
-            self.emit("finished", True)
+
+                toplevel_window = self.get_toplevel().window
+                toplevel_window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+                
+                # Fill list async
+                glib.idle_add(self._fill_providers, selected_country)            
+
+    def _fill_providers(self, selected_country):
+        # Only DVB-T has bruteforce scan
+        if self.__adapter_info["type"] == "DVB-T":
+            self.providers.append([_("Don't know"), self.NOT_LISTED])
+
+        for d in DVB_APPS_DIRS:
+            if os.access(d, os.F_OK | os.R_OK):
+                for f in os.listdir(os.path.join(d, self.__data_dir)):
+                    country, city = f.split('-', 1)
+                
+                    if country == selected_country:
+                        self.providers.append([city,
+                            os.path.join(d, self.__data_dir, f)])
+    
+        self.providers_view.set_sensitive(True)
+        first_iter = self.providers.get_iter_first()
+        self.providers_view.get_selection().select_iter(first_iter)
+
+        self.get_toplevel().window.set_cursor(None)
+        self.emit("finished", True)
+
+        return False
         
     def on_providers_changed(self, selection):
         model, aiter = selection.get_selected()
