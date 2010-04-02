@@ -98,6 +98,7 @@ namespace DVB {
         private ArrayList<uint> new_channels;
         private Source check_for_lock_source;
         private Source wait_for_tables_source;
+        private Source start_scan_source;
         private bool nit_arrived;
         private bool sdt_arrived;
         private bool pat_arrived;
@@ -172,9 +173,7 @@ namespace DVB {
             
             this.pipeline.set_state(Gst.State.READY);
             
-            var source = new IdleSource ();
-            source.set_callback (this.start_scan);
-            source.attach (this.context);
+            this.queue_start_scan ();
         }
         
         /**
@@ -185,6 +184,7 @@ namespace DVB {
         }
 
         protected void do_destroy () {
+            this.destroy_start_scan_source ();
             this.remove_check_for_lock_timeout ();
             this.remove_wait_for_tables_timeout ();
             this.clear_and_reset_all ();
@@ -277,6 +277,7 @@ namespace DVB {
                     bus_watch_source.destroy ();
                     this.bus_watch_id = 0;
                 }
+                debug ("Disposing pipeline");
                 this.pipeline.set_state (Gst.State.NULL);
                 // Free pipeline
                 this.pipeline = null;
@@ -398,25 +399,40 @@ namespace DVB {
             }
             return false;
         }
+
+        protected void destroy_start_scan_source () {
+            if (this.start_scan_source != null &&
+                    !this.start_scan_source.is_destroyed ()) {
+                this.start_scan_source.destroy ();
+                this.start_scan_source = null;
+            }
+        }
         
         protected void remove_check_for_lock_timeout () {
-            if (this.check_for_lock_source != null) {
+            if (this.check_for_lock_source != null &&
+                    !this.check_for_lock_source.is_destroyed ()) {
                 this.check_for_lock_source.destroy ();
                 this.check_for_lock_source = null;
             }
         }
         
         protected void remove_wait_for_tables_timeout () {
-            if (this.wait_for_tables_source != null) {
+            if (this.wait_for_tables_source != null &&
+                    !this.wait_for_tables_source.is_destroyed ()) {
                 this.wait_for_tables_source.destroy ();
                 this.wait_for_tables_source = null;
             }
         }
 
         protected void queue_start_scan () {
-            var source = new IdleSource ();
-            source.set_callback (this.start_scan);
-            source.attach (this.context);
+            /* Avoid creating source multiple times */
+            if (this.start_scan_source == null ||
+                    this.start_scan_source.is_destroyed ()) {
+                debug ("Queueing start_scan");
+                this.start_scan_source = new IdleSource ();
+                this.start_scan_source.set_callback (this.start_scan);
+                this.start_scan_source.attach (this.context);
+            }
         }
         
         protected static void set_uint_property (Gst.Element src,
@@ -689,16 +705,19 @@ namespace DVB {
                         this.on_pat_structure (message.structure);
                     else if (message.structure.get_name() == "pmt")
                         this.on_pmt_structure (message.structure);
+                    else
+                        return true; /* We are not interested in the message */
                 break;
                 }            
                 case Gst.MessageType.ERROR: {
                     Error gerror;
                     string debug;
                     message.parse_error (out gerror, out debug);
-                    critical ("%s %s", gerror.message, debug);
-                    this.do_destroy ();
-                    return false;
+                    warning ("%s %s", gerror.message, debug);
+                    return true;
                 }
+                default:
+                    return true; /* We are not interested in the message */
             }
 
             // NIT gives us the transport stream, SDT links SID and TS ID 
