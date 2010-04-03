@@ -47,6 +47,8 @@ compile
 py-compile
 gnome-dvb-daemon
 data/*.service
+data/*.desktop
+data/*.desktop.in
 gnome-dvb-daemon-*.tar.*
 defs.py
 m4/intltool.m4

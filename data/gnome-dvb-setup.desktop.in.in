@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+_Name=Digital TV Setup
+_Comment=Setup digital TV
+Exec=gnome-dvb-setup
+Icon=gnome-dvb-setup
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;AudioVideo;TV;HardwareSettings;

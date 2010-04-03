@@ -29,3 +29,5 @@ client/gnomedvb/ui/wizard/pages/SummaryPage.py
 client/gnomedvb/ui/wizard/SetupWizard.py
 client/totem-plugin/dvb-daemon.py
 client/totem-plugin/dvb-daemon.totem-plugin.in
+data/gnome-dvb-control.desktop.in.in
+data/gnome-dvb-setup.desktop.in.in

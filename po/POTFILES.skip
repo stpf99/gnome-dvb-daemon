@@ -1,1 +1,3 @@
 src/Main.c
+data/gnome-dvb-control.desktop.in
+data/gnome-dvb-setup.desktop.in

@@ -161,6 +161,9 @@ AC_CONFIG_FILES([
 	client/gnomedvb/Makefile
 	client/totem-plugin/Makefile
 	data/Makefile
+	data/gnome-dvb-control.desktop.in
+	data/gnome-dvb-setup.desktop.in
+	data/icons/Makefile
 	po/Makefile.in])
 
 AC_OUTPUT
