@@ -148,6 +148,7 @@ AC_SUBST(PYTHONDIR)
 dnl ******************
 dnl * Python modules
 dnl *****************
+AM_CHECK_PYMOD(glib)
 AM_CHECK_PYMOD(gobject)
 AM_CHECK_PYMOD(gtk)
 AM_CHECK_PYMOD(dbus)
