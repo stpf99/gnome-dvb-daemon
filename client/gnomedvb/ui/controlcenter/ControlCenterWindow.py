@@ -114,6 +114,8 @@ class ControlCenterWindow(gtk.Window):
             self.help_eventbox.set_markup(self.create_group_text)
         else:
             self._select_first_group()
+
+        gtk.window_set_default_icon_name("gnome-dvb-daemon")
       
     def __create_menu(self):
         ui = '''
