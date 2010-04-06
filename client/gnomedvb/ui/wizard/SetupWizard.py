@@ -84,6 +84,15 @@ class SetupWizard(gtk.Assistant):
         self.summary_page.configure_button.connect("clicked",
             lambda button: self.set_current_page(self.INTRO_PAGE))
         self.append_page(self.summary_page)
+
+        icon_theme = gtk.icon_theme_get_default()
+        width, height = gtk.icon_size_lookup(gtk.ICON_SIZE_DIALOG)
+        pixbuf = icon_theme.load_icon("gnome-dvb-setup", height, 0)
+        for i in range(self.get_n_pages()):
+            page = self.get_nth_page(i)
+            self.set_page_header_image(page, pixbuf)
+
+        gtk.window_set_default_icon_name("gnome-dvb-setup")
         
     def append_page(self, page):
         gtk.Assistant.append_page(self, page)
