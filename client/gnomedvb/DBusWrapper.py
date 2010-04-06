@@ -23,6 +23,7 @@ import gobject
 import gst
 import re
 import sys
+import gnomedvb.udev
 
 __all__ = [
     "global_error_handler",
@@ -46,11 +47,6 @@ RECSTORE_PATH = "/org/gnome/DVB/RecordingsStore"
 RECORDER_IFACE = "org.gnome.DVB.Recorder"
 CHANNEL_LIST_IFACE = "org.gnome.DVB.ChannelList"
 SCHEDULE_IFACE = "org.gnome.DVB.Schedule"
-
-HAL_MANAGER_IFACE = "org.freedesktop.Hal.Manager"
-HAL_DEVICE_IFACE = "org.freedesktop.Hal.Device"
-HAL_MANAGER_PATH = "/org/freedesktop/Hal/Manager"
-HAL_SERVICE = "org.freedesktop.Hal"
 
 def _default_error_handler_func(e):
     print >> sys.stderr, "Error: "+str(e)
@@ -82,32 +78,21 @@ def get_adapter_info(adapter):
     pipeline.set_state(gst.STATE_NULL)
     return (success, info)
 
-def get_dvb_devices(reply_handler, error_handler):
-    def find_devices_handler(objects):
-        deviceslist = []
-        for o in objects:
-            proxy = bus.get_object(HAL_SERVICE, o)
-            dev = dbus.Interface(proxy, HAL_DEVICE_IFACE)
+def get_dvb_devices():
+    devices = gnomedvb.udev.get_dvb_devices()   
 
-            dev_file = dev.GetProperty("linux.device_file")
-        
-            match = re.search("adapter(\d+?)/frontend(\d+?)", dev_file)
-            if match != None:
-                adapter = int(match.group(1))
-                info = {}
-                info["adapter"] = adapter
-                info["frontend"] = int(match.group(2))
-                deviceslist.append(info)
-                
-        reply_handler(deviceslist)
+    deviceslist = []
+    for dev in devices:
+        match = re.search("adapter(\d+?)/frontend(\d+?)", dev["device_file"])
+        if match != None:
+            adapter = int(match.group(1))
+            info = {}
+            info["adapter"] = adapter
+            info["frontend"] = int(match.group(2))
+            deviceslist.append(info)
+            
+    return deviceslist
     
-    bus = dbus.SystemBus()
-    # Get proxy object
-    proxy = bus.get_object(HAL_SERVICE, HAL_MANAGER_PATH)
-    # Apply the correct interace to the proxy object
-    halmanager = dbus.Interface(proxy, HAL_MANAGER_IFACE)
-    objects = halmanager.FindDeviceByCapability("dvb", reply_handler=find_devices_handler, error_handler=error_handler)
-
 class DVBManagerClient(gobject.GObject):
     
     __gsignals__ = {

@@ -48,16 +48,12 @@ class DVBModel (gnomedvb.DVBManagerClient):
         """
         @returns: list of Device
         """
-        def devices_handler(devices):
-            devs = []
-            for info in devices:
-                dev = Device (0, "Unknown", info["adapter"], info["frontend"],
-                    "Unknown")
-                devs.append(dev)
-            reply_handler(devs)
-        
-        gnomedvb.get_dvb_devices(reply_handler=devices_handler,
-            error_handler=error_handler)
+        devs = []
+        for info in gnomedvb.get_dvb_devices():
+            dev = Device (0, "Unknown", info["adapter"], info["frontend"],
+                "Unknown")
+            devs.append(dev)
+        reply_handler(devs)
         
     def get_unregistered_devices(self, reply_handler,
             error_handler=gnomedvb.global_error_handler):
