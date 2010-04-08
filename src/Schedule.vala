@@ -111,8 +111,12 @@ namespace DVB {
                     
                     this.event_id_map.remove (element.id);
                     this.events.remove (iter);
-                    this.epgstore.remove_event (
-                        element.id, this.channel.Sid, this.channel.GroupId);
+                    try {
+                        this.epgstore.remove_event (element.id,
+                            this.channel.Sid, this.channel.GroupId);
+                    } catch (SqlError e) {
+                        critical ("%s", e.message);
+                    }
                 }
             }
         }
@@ -138,8 +142,12 @@ namespace DVB {
                     this.create_and_add_event_element (event);
                 }
                 
-                this.epgstore.add_or_update_event (event, this.channel.Sid,
-                    this.channel.GroupId);
+                try {
+                    this.epgstore.add_or_update_event (event, this.channel.Sid,
+                        this.channel.GroupId);
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                }
             }
         }
         

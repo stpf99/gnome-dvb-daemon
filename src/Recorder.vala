@@ -167,8 +167,12 @@ namespace DVB {
                 
                 if (!has_conflict) {
                     this.timers.set (new_timer.Id, new_timer);
-                    Factory.get_timers_store ().add_timer_to_device_group (new_timer,
-                        this.DeviceGroup);
+                    try {
+                        Factory.get_timers_store ().add_timer_to_device_group (new_timer,
+                            this.DeviceGroup);
+                    } catch (SqlError e) {
+                        critical ("%s", e.message);
+                    }
                     this.changed (new_timer.Id, ChangeType.ADDED);
                                    
                     if (this.timers.size == 1 && !this.have_check_timers_timeout) {
@@ -233,8 +237,12 @@ namespace DVB {
                         this.stop_recording (timer);
                     }
                     this.timers.remove (timer_id);
-                    Factory.get_timers_store ().remove_timer_from_device_group (
-                        timer_id, this.DeviceGroup);
+                    try {
+                        Factory.get_timers_store ().remove_timer_from_device_group (
+                            timer_id, this.DeviceGroup);
+                    } catch (SqlError e) {
+                        critical ("%s", e.message);
+                    }
                     this.changed (timer_id, ChangeType.DELETED);
                     val = true;
                 } else {
