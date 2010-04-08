@@ -201,24 +201,24 @@ namespace DVB {
                         create_channel = false;
                     }
                 }
-            }
             
-            if (create_channel) {
-                ChannelElements celems = new ChannelElements ();
-                celems.sid = channel_sid;
-                celems.sinks = new ArrayList<Gst.Element> ();
-                celems.sinks.add (bin);
-                celems.tee = tee;
-                celems.forced = forced;
-                celems.notify_func = notify_func;
+                if (create_channel) {
+                    ChannelElements celems = new ChannelElements ();
+                    celems.sid = channel_sid;
+                    celems.sinks = new ArrayList<Gst.Element> ();
+                    celems.sinks.add (bin);
+                    celems.tee = tee;
+                    celems.forced = forced;
+                    celems.notify_func = notify_func;
 
-                lock (this.elements_map) {
-                    this.elements_map.set (channel_sid, celems);
+                    lock (this.elements_map) {
+                        this.elements_map.set (channel_sid, celems);
+                    }
+                    this.active_channels.add (channel);
                 }
-                this.active_channels.add (channel);
+                
+                return bin;
             }
-            
-            return bin;
         }
         
         private Gst.Element add_sink_bin (Gst.Element sink_element) {
