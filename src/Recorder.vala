@@ -228,10 +228,14 @@ namespace DVB {
          * active timer recording is aborted.
          */
         public bool DeleteTimer (uint32 timer_id) throws DBus.Error {
+            return this.delete_timer (timer_id);
+        }
+
+        protected bool delete_timer (uint32 timer_id) {
             bool val;
             lock (this.timers) {
                 if (this.timers.contains (timer_id)) {
-                    if (this.IsTimerActive (timer_id)) {
+                    if (this.is_timer_active (timer_id)) {
                         // Abort recording
                         Timer timer = this.timers.get (timer_id);
                         this.stop_recording (timer);
@@ -492,6 +496,10 @@ namespace DVB {
          * @returns: TRUE if timer is currently active
          */
         public bool IsTimerActive (uint32 timer_id) throws DBus.Error {
+            return this.is_timer_active (timer_id);
+        }
+
+        protected bool is_timer_active (uint32 timer_id) {
             return this.active_timers.contains (timer_id);
         }
         
@@ -790,7 +798,7 @@ namespace DVB {
 
                 // Delete items from this.timers using this.DeleteTimer
                 for (int i=0; i<deleteable_items.length(); i++) {
-                    this.DeleteTimer (deleteable_items.nth_data (i));
+                    this.delete_timer (deleteable_items.nth_data (i));
                 }
 
                 if (this.timers.size == 0 && this.active_timers.size == 0) {

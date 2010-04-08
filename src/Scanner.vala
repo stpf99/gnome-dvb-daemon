@@ -183,7 +183,7 @@ namespace DVB {
             this.do_destroy ();
         }
 
-        protected void do_destroy () {
+        public void do_destroy () {
             this.destroy_start_scan_source ();
             this.remove_check_for_lock_timeout ();
             this.remove_wait_for_tables_timeout ();

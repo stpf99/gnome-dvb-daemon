@@ -66,7 +66,7 @@ namespace DVB {
                 lock (m.scanners) {
                     foreach (Scanner scanner in m.scanners.values) {
                         debug ("Stopping scanner");
-                        scanner.Destroy ();
+                        scanner.do_destroy ();
                     }
                     m.scanners.clear ();
                 }
