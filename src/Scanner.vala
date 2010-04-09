@@ -89,9 +89,7 @@ namespace DVB {
          */
         protected HashSet<ScannedItem> scanned_frequencies;
         
-        protected HashMap<uint, Gst.Structure> transport_streams;
-        
-        private static const string BASE_PIDS = "16:17:18";
+        private static const string BASE_PIDS = "16:17"; // NIT, SDT
         private static const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u pids=%s stats-reporting-interval=0 ! mpegtsparse ! fakesink silent=true";
         
         // Contains SIDs
@@ -115,7 +113,6 @@ namespace DVB {
                 new HashSet<ScannedItem> (ScannedItem.hash, ScannedItem.equal);
             this.new_channels = new ArrayList<uint> ();
             this.frequencies = new GLib.Queue<Gst.Structure> ();
-            this.transport_streams = new HashMap<uint, Gst.Structure> ();
             this.context = new MainContext ();
             this.running = false;
         }
@@ -241,7 +238,7 @@ namespace DVB {
             foreach (uint sid in channel_sids) {
                 DVB.Channel? c = this.channels.get_channel (sid);
                 if (c == null) {
-                    warning ("Channel with SID %u does not exist", sid);
+                    warning ("Channel with SID 0x%x does not exist", sid);
                     continue;
                 }
                 try {
@@ -282,8 +279,7 @@ namespace DVB {
                 // Free pipeline
                 this.pipeline = null;
             }
-            
-            this.transport_streams.clear ();
+
             this.scanned_frequencies.clear ();
             this.clear_frequencies ();
             this.current_tuning_params = null;
@@ -469,7 +465,6 @@ namespace DVB {
             // add BASE_PIDS
             pid_set.add (16);
             pid_set.add (17);
-            pid_set.add (18);
             
             Gst.Value programs = structure.get_value ("programs");
             uint size = programs.list_get_size ();
@@ -508,10 +503,10 @@ namespace DVB {
         }
         
         protected void on_sdt_structure (Gst.Structure structure) {
-            debug("Received SDT");
-            
             uint tsid;
             structure.get_uint ("transport-stream-id", out tsid);
+            
+            debug("Received SDT (0x%x)", tsid);
             
             Gst.Value services = structure.get_value ("services");
             uint size = services.list_get_size ();
@@ -556,12 +551,20 @@ namespace DVB {
                 } else {
                     channel.Network = "";
                 }
+
+                debug ("Found service 0x%x, %s, scrambled: %s", sid,
+                    channel.Name, channel.Scrambled.to_string ());
             }
         
             this.sdt_arrived = true;
         }
         
         protected void on_nit_structure (Gst.Structure structure) {
+            bool actual;
+            structure.get_boolean ("actual-network", out actual);
+            if (!actual)
+                return;
+
             debug("Received NIT");
             
             string name;
@@ -591,8 +594,7 @@ namespace DVB {
                     weak Gst.Structure delivery =
                         delivery_val.get_structure ();
                  
-                    debug ("Received TS %u", tsid);   
-                    this.transport_streams.set (tsid, delivery);
+                    debug ("Received TS 0x%x", tsid);
                     
                     uint freq;
                     delivery.get_uint ("frequency", out freq);
@@ -669,7 +671,7 @@ namespace DVB {
                     case 0x01:
                     case 0x02:
                     case 0x1b: /* H.264 video stream */
-                        debug ("Found video PID %u for channel %u",
+                        debug ("Found video PID 0x%x for channel 0x%x",
                             pid, program_number);
                         dvb_channel.VideoPID = pid;
                     break;
@@ -677,7 +679,7 @@ namespace DVB {
                     case 0x04:
                     case 0x0f:
                     case 0x11:
-                        debug ("Found audio PID %u for channel %u",
+                        debug ("Found audio PID 0x%x for channel 0x%x",
                             pid, program_number);
                         dvb_channel.AudioPIDs.add (pid);
                     break;
@@ -721,54 +723,33 @@ namespace DVB {
             }
 
             // NIT gives us the transport stream, SDT links SID and TS ID 
-            if (this.nit_arrived && this.sdt_arrived) {
+            if (this.nit_arrived && this.sdt_arrived && this.pat_arrived) {
+                // We received all tables at least once. Add valid channels.
                 lock (this.new_channels) {
+                    ArrayList<uint> del_channels = new ArrayList<uint> ();
                     foreach (uint sid in this.new_channels) {
                         DVB.Channel channel = this.channels.get_channel (sid);
-                        
-                        uint tsid = channel.TransportStreamId;
-                        // Check if already came across the transport stream
-                        if (this.transport_streams.contains (tsid)) {
-                            // add values from Gst.Structure to Channel
-                            this.add_values_from_structure_to_channel (
-                                this.transport_streams.get (tsid),
-                                channel);
+                             
+                        // If this fails we may miss video or audio pid,
+                        // because we didn't came across the sdt or pmt, yet   
+                        if (channel.is_valid ()) {
+                            string type = (channel.is_radio ()) ? "Radio" : "TV";
+                            debug ("Channel added: %s", channel.to_string ());
+                            this.channel_added (channel.Frequency, sid,
+                                channel.Name, channel.Network, type,
+                                channel.Scrambled);
+                            // Mark channel for deletion of this.new_channels
+                            del_channels.add (sid);
                         } else {
-                            debug ("TS %u for channel %u does not exist", tsid,
-                                sid);
-                            // We haven't seen the transport stream, yet
-                            // Maybe it comes with a later bus message
-                            this.nit_arrived = false;
+                            debug ("Channel 0x%x is not valid: %s", sid,
+                                channel.to_string ());
+                            this.pmt_arrived = false;
                         }
                     }
                     
-                    // We received all tables at least once. Add valid channels.
-                    if (this.pat_arrived) {
-                        ArrayList<uint> del_channels = new ArrayList<uint> ();
-                        foreach (uint sid in this.new_channels) {
-                            DVB.Channel channel = this.channels.get_channel (sid);
-                                 
-                            // If this fails we may miss video or audio pid,
-                            // because we didn't came across the sdt or pmt, yet   
-                            if (channel.is_valid ()) {
-                                string type = (channel.is_radio ()) ? "Radio" : "TV";
-                                debug ("Channel added: %s", channel.to_string ());
-                                this.channel_added (channel.Frequency, sid,
-                                    channel.Name, channel.Network, type,
-                                    channel.Scrambled);
-                                // Mark channel for deletion of this.new_channels
-                                del_channels.add (sid);
-                            } else {
-                                debug ("Channel %u is not valid: %s", sid,
-                                    channel.to_string ());
-                                this.pmt_arrived = false;
-                            }
-                        }
-                        
-                        // Only remove those channels we have all the information for
-                        foreach (uint sid in del_channels) {
-                            this.new_channels.remove (sid);
-                        }
+                    // Only remove those channels we have all the information for
+                    foreach (uint sid in del_channels) {
+                        this.new_channels.remove (sid);
                     }
                 }
             }
@@ -786,9 +767,13 @@ namespace DVB {
         }
         
         protected void add_new_channel (uint sid) {
-            debug ("Adding new channel with SID %u", sid);
+            debug ("Adding new channel with SID 0x%x", sid);
             Channel new_channel = this.get_new_channel ();
             new_channel.Sid = sid;
+            // add values from Gst.Structure to Channel
+            this.add_values_from_structure_to_channel (
+                this.current_tuning_params,
+                new_channel);
             this.channels.add (new_channel);
             lock (this.new_channels) {
                 this.new_channels.add (sid);
