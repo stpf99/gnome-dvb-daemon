@@ -17,6 +17,7 @@
  * along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "cstuff.h"
+#include <unistd.h>
 
 guint
 gst_bus_add_watch_context (GstBus * bus, GstBusFunc func,
@@ -33,4 +34,21 @@ gst_bus_add_watch_context (GstBus * bus, GstBusFunc func,
   g_source_unref (source);
 
   return id;
+}
+
+void
+program_log (const char *format, ...)
+{
+        va_list args;
+        char *formatted, *str;
+
+        va_start (args, format);
+        formatted = g_strdup_vprintf (format, args);
+        va_end (args);
+
+        str = g_strdup_printf ("MARK: %s: %s", g_get_prgname(), formatted);
+        g_free (formatted);
+
+        access (str, F_OK);
+        g_free (str);
 }

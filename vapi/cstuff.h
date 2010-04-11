@@ -27,4 +27,6 @@ gst_bus_add_watch_context   (GstBus * bus,
                              gpointer user_data,
                              GMainContext * context);
 
+void program_log (const char *format, ...);
+
 #endif /* __CSTUFF_H__ */

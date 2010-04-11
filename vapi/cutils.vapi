@@ -32,4 +32,7 @@ namespace cUtils {
     [CCode (cname = "gst_bus_add_watch_context", cheader_filename = "cstuff.h")]
     public static uint gst_bus_add_watch_context (Gst.Bus bus, Gst.BusFunc func, GLib.MainContext context);
 
+    [CCode (cname = "program_log"), PrintfFormat]
+    public static void log (...);
+
 }
