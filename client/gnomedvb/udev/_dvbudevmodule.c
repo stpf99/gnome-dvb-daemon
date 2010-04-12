@@ -35,7 +35,7 @@ dvbudev_get_dvb_devices (PyObject *self, PyObject *args)
   GList *devices, *l;
   GUdevDevice *dev, *parent;
   PyObject *devices_list, *device_infos, *obj;
-  const gchar *device_file;
+  const gchar *device_file, *attr;
 
   client = g_udev_client_new (subsystems);
 
@@ -48,7 +48,8 @@ dvbudev_get_dvb_devices (PyObject *self, PyObject *args)
 
     device_file = g_udev_device_get_device_file (dev);
 
-    if (g_strstr_len (device_file, -1, "frontend") != NULL)
+    if (device_file != NULL &&
+        g_strstr_len (device_file, -1, "frontend") != NULL)
     {
       device_infos = PyDict_New ();
 
@@ -57,21 +58,29 @@ dvbudev_get_dvb_devices (PyObject *self, PyObject *args)
       Py_DECREF (obj);
 
       parent = g_udev_device_get_parent (dev);
+      if (parent != NULL)
+      {
+        attr = g_udev_device_get_sysfs_attr (parent, "manufacturer");
+        if (attr != NULL)
+        {
+          obj = PyString_FromString (attr);
+          PyDict_SetItemString (device_infos, "manufacturer", obj);
+          Py_DECREF (obj);
+        }
 
-      obj = PyString_FromString (g_udev_device_get_sysfs_attr (parent,
-        "manufacturer"));
-      PyDict_SetItemString (device_infos, "manufacturer", obj);
-      Py_DECREF (obj);
-      
-      obj = PyString_FromString (g_udev_device_get_sysfs_attr (
-        parent, "product"));
-      PyDict_SetItemString (device_infos, "product", obj);
-      Py_DECREF (obj);
+        attr = g_udev_device_get_sysfs_attr (parent, "product");
+        if (attr != NULL)
+        {
+          obj = PyString_FromString (attr);
+          PyDict_SetItemString (device_infos, "product", obj);
+          Py_DECREF (obj);
+        }
 
-      PyList_Append (devices_list, device_infos);
-      Py_DECREF (device_infos);
-      
-      g_object_unref (G_OBJECT (parent));
+        PyList_Append (devices_list, device_infos);
+        Py_DECREF (device_infos);
+        
+        g_object_unref (G_OBJECT (parent));
+      }
     }
       
     g_object_unref (G_OBJECT (dev));
