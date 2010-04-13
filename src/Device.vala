@@ -49,7 +49,7 @@ namespace DVB {
         public Device (uint adapter, uint frontend, bool get_type_and_name=true) {
             base (Adapter: adapter, Frontend: frontend);
             
-            setAdapterTypeAndName(adapter, get_type_and_name);
+            setAdapterTypeAndName(adapter, frontend, get_type_and_name);
         }
 
         public static Device new_full (uint adapter, uint frontend,
@@ -113,7 +113,8 @@ namespace DVB {
             return busy_val;
         }
 
-        private bool setAdapterTypeAndName (uint adapter, bool get_type) {
+        private bool setAdapterTypeAndName (uint adapter, uint frontend,
+                bool get_type) {
             if (!get_type) return true;
         
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
@@ -122,6 +123,7 @@ namespace DVB {
                 return false;
             }
             dvbsrc.set ("adapter", adapter);
+            dvbsrc.set ("frontend", frontend);
             
             Element pipeline = new Pipeline ("type_name");
             ((Bin)pipeline).add (dvbsrc);

@@ -173,7 +173,8 @@ class AdaptersPage(BasePage):
             error = None
             for dev in devices:
                 if dev not in registered:
-                    success, info = gnomedvb.get_adapter_info(dev.adapter)
+                    success, info = gnomedvb.get_adapter_info(dev.adapter,
+                        dev.frontend)
                     if success:
                         dev.name = info["name"]
                         dev.type = info["type"]

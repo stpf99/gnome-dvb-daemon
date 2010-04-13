@@ -53,9 +53,10 @@ def _default_error_handler_func(e):
 
 global_error_handler = _default_error_handler_func
 
-def get_adapter_info(adapter):
+def get_adapter_info(adapter, frontend):
     dvbelement = gst.element_factory_make ("dvbsrc", "test_dvbsrc")
     dvbelement.set_property("adapter", int(adapter))
+    dvbelement.set_property("frontend", int(frontend))
     pipeline = gst.Pipeline("")
     pipeline.add(dvbelement)
     pipeline.set_state(gst.STATE_READY)
