@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
+import glib
 import gnomedvb
 import gtk
 from gettext import gettext as _
@@ -28,6 +29,31 @@ from gnomedvb.ui.wizard.pages.ChannelScanPage import ChannelScanPage
 from gnomedvb.ui.wizard.pages.SaveChannelListPage import SaveChannelListPage
 from gnomedvb.ui.wizard.pages.SummaryPage import SummaryPage
 from gnomedvb.ui.wizard.pages.SetupDevicePage import SetupDevicePage
+
+class CloseDialog(gtk.Dialog):
+
+    def __init__(self, parent=None):
+        gtk.Dialog.__init__(self, title="",
+            parent=parent,
+            flags=gtk.DIALOG_DESTROY_WITH_PARENT)
+
+        self.set_border_width(5)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(6)
+
+        label = gtk.Label(_("Cleaning up. This may take a while."))
+        label.show()
+        self.vbox.pack_start(label, False)
+
+        self.progressbar = gtk.ProgressBar()
+        self.progressbar.set_pulse_step(0.1)
+        self._progressbar_timer = glib.timeout_add(100, self._progressbar_pulse)
+        self.progressbar.show()
+        self.vbox.pack_start(self.progressbar, False)
+            
+    def _progressbar_pulse(self):
+        self.progressbar.pulse()
+        return True
 
 class SetupWizard(gtk.Assistant):
 
@@ -175,16 +201,22 @@ class SetupWizard(gtk.Assistant):
             
             response = dialog.run()
             if response == gtk.RESPONSE_YES:
-                if scanner != None:
-                    scanner.destroy()
-                gtk.main_quit()
-            elif response == gtk.RESPONSE_NO:
                 dialog.destroy()
-        
+                self.destroy_scanner(scanner)
+            else:
+                dialog.destroy()
+
             return True
         else:
-            if scanner != None:
-                scanner.destroy()
+            self.destroy_scanner(scanner)
+
+    def destroy_scanner(self, scanner):
+        if scanner != None:
+            scanner.destroy(reply_handler=gtk.main_quit,
+                error_handler=gnomedvb.global_error_handler)
+            close_dialog = CloseDialog(self)
+            close_dialog.show()
+        else:
             gtk.main_quit()
             
     def on_next_page(self, adapters_page):
