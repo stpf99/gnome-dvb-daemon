@@ -62,26 +62,51 @@ namespace DVB {
         private Sequence<EventElement> events;
         private Map<uint, weak SequenceIter<EventElement>> event_id_map;
         private weak EPGStore epgstore;
+        private int last_index = 0;
+        private Gee.List<Event> levents;
         
         construct {
             this.events = new Sequence<EventElement> (EventElement.destroy);
             this.event_id_map = new HashMap<uint, weak SequenceIter<EventElement>> ();
             this.epgstore = Factory.get_epg_store ();
-            
-            try {
-            	Gee.List<Event> events = this.epgstore.get_events (
-            	    this.channel.Sid, this.channel.GroupId);
-            	foreach (Event event in events) {
-            	    if (event.has_expired ()) {
-            	        this.epgstore.remove_event (event.id, this.channel.Sid,
-            	            this.channel.GroupId);
-            	    } else {
-            		    this.create_and_add_event_element (event);
-            		}
-            	}
-            } catch (SqlError e) {
-                critical ("%s", e.message);
+
+            Idle.add (this.restore);
+        }
+
+        private bool restore () {
+            if (this.last_index == 0) {
+                try {                        
+                    this.levents = this.epgstore.get_events (
+                        this.channel.Sid, this.channel.GroupId);
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                }
             }
+
+            int i = this.last_index;
+            for (; i<this.last_index+100 && i<this.levents.size; i++) {
+                Event event = this.levents.get (i);
+                if (event.has_expired ()) {
+                    try {
+                        this.epgstore.remove_event (event.id, this.channel.Sid,
+                            this.channel.GroupId);
+                    } catch (SqlError e) {
+                        critical ("%s", e.message);
+                    }
+                } else {
+                    this.create_and_add_event_element (event);
+                }
+            }
+            this.last_index = i;
+
+            if (this.last_index == this.levents.size) {
+                this.levents = null;
+                debug ("Finished restoring EPG events for channel %u",
+                    this.channel.Sid);
+                return false;
+            }
+
+            return true;
         }
         
         public Schedule (Channel channel) {
