@@ -310,7 +310,10 @@ class InitialTuningDataPage(BasePage):
         for d in DVB_APPS_DIRS:
             if os.access(d, os.F_OK | os.R_OK):
                 for f in os.listdir(os.path.join(d, self.__data_dir)):
-                    country, city = f.split('-', 1)
+                    values = f.split('-', 1)
+                    if len(values) != 2:
+                        continue
+                    country, city = values
                 
                     if country == selected_country:
                         self.providers.append([city,
