@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-03-17 13:02+0100\n"
-"PO-Revision-Date: 2010-03-04 21:18+0000\n"
+"POT-Creation-Date: 2010-04-03 20:05+0200\n"
+"PO-Revision-Date: 2010-04-11 16:02+0000\n"
 "Last-Translator: Bruce Cowan <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-03-17 20:44+0000\n"
+"X-Launchpad-Export-Date: 2010-04-13 20:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -73,7 +73,7 @@ msgstr "All channels"
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:33
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:84
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:94
 msgid "Channel"
 msgstr "Channel"
 
@@ -276,7 +276,9 @@ msgstr "Schedule recording for the selected event?"
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Bruce Cowan https://launchpad.net/~bruce89"
+"  Bruce Cowan https://launchpad.net/~bruce89\n"
+"  Jonathon Fernyhough https://launchpad.net/~jfernyhough\n"
+"  Sebastian Pölsterl https://launchpad.net/~marduk-k-d-w"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:57
 msgid "Devices"
@@ -555,11 +557,11 @@ msgstr "Now"
 msgid "Next"
 msgstr "Next"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:51
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
 msgstr "No devices have been found."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:53
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
 msgid ""
 "Either no DVB cards are installed or all cards are busy. In the latter case "
 "make sure you close all programs such as video players that access your DVB "
@@ -569,23 +571,23 @@ msgstr ""
 "make sure you close all programs such as video players that access your DVB "
 "card."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:58
-msgid "Select the device you want to configure."
-msgstr "Select the device you want to configure."
-
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:68
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
 msgid "Name"
 msgstr "Name"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:74
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
 msgid "Type"
 msgstr "Type"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:94
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
+msgid "Select the device you want to configure."
+msgstr "Select the device you want to configure."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:98
 msgid "All devices are already configured."
 msgstr "All devices are already configured."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:96
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
 msgid ""
 "Go to the control center if you want to alter the settings of already "
 "configured devices."
@@ -593,11 +595,11 @@ msgstr ""
 "Go to the control centre if you want to alter the settings of already "
 "configured devices."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:104
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
 msgid "An error occured while retrieving devices."
 msgstr "An error occurred while retrieving devices."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:106
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
 msgid ""
 "Make sure other applications don't access DVB devices and you have "
 "permissions to access them."
@@ -605,19 +607,19 @@ msgstr ""
 "Make sure other applications don't access DVB devices and you have "
 "permissions to access them."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
 msgid "The detailed error message is:"
 msgstr "The detailed error message is:"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:117
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
 msgid "Searching for devices"
 msgstr "Searching for devices"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:133
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
 msgstr "Device selection"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:57
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid ""
 "Choose the channels you want to have in your list of channels. You can "
 "reorder the channels, too."
@@ -625,60 +627,67 @@ msgstr ""
 "Choose the channels you want to have in your list of channels. You can "
 "reorder the channels, too."
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:62
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:65
 msgid "Select all"
 msgstr "Select all"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:64
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:67
 msgid "Deselect all"
 msgstr "Deselect all"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:107
-msgid "Select scrambled channels"
-msgstr "Select scrambled channels"
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:82
+msgid "_Channels:"
+msgstr "_Channels:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:119
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:117
+msgid "Select _scrambled channels"
+msgstr "Select _scrambled channels"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:129
 msgid "Scanning for channels"
 msgstr "Scanning for channels"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:84
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:87
 msgid "Missing requirements"
 msgstr "Missing requirements"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:90
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:93
 msgid "Country and antenna selection"
 msgstr "Country and antenna selection"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:96
+msgid "Satellite selection"
+msgstr "Satellite selection"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:99
 msgid "Country and provider selection"
 msgstr "Country and provider selection"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:98
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:101
 msgid "Unsupported adapter"
 msgstr "Unsupported adaptor"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:123
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Sorry, but '%s' cards aren't supported."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:127
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
 msgid "Could not find initial tuning data."
 msgstr "Could not find initial tuning data."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:128
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Please make sure that the dvb-apps package is installed."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:132
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr ""
 "Please choose a country and the antenna that is closest to your location."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:133
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
@@ -686,34 +695,46 @@ msgstr ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:134
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
 msgid ""
 "However, searching for channels will take considerably longer this way."
 msgstr ""
 "However, searching for channels will take considerably longer this way."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:139
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
 msgid "Not listed"
 msgstr "Not listed"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:150
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:222
-msgid "Country:"
-msgstr "Country:"
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:154
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:228
+msgid "_Country:"
+msgstr "_Country:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:172
-msgid "Antenna:"
-msgstr "Antenna:"
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:179
+msgid "_Antenna:"
+msgstr "_Antenna:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
-msgid "Satellite:"
-msgstr "Satellite:"
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:188
+msgid "Antenna"
+msgstr "Antenna"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:242
-msgid "Providers:"
-msgstr "Providers:"
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
+msgid "_Satellite:"
+msgstr "_Satellite:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:269
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:209
+msgid "Satellite"
+msgstr "Satellite"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:251
+msgid "_Providers:"
+msgstr "_Providers:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:259
+msgid "Provider"
+msgstr "Provider"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:308
 msgid "Don't know"
 msgstr "Don't know"
 
@@ -721,7 +742,7 @@ msgstr "Don't know"
 msgid "Welcome to the digital television Assistant."
 msgstr "Welcome to the digital television Assistant."
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:31
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
 msgid ""
 "It will automatically configure your devices and search for channels, if "
 "necessary."
@@ -729,15 +750,15 @@ msgstr ""
 "It will automatically configure your devices and search for channels, if "
 "necessary."
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:38
 msgid "Click \"Forward\" to begin."
 msgstr "Click \"Forward\" to begin."
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:37
-msgid "Expert mode"
-msgstr "Expert mode"
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:42
+msgid "_Expert mode"
+msgstr "_Expert mode"
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:41
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:46
 msgid "Digital TV configuration"
 msgstr "Digital TV configuration"
 
@@ -760,13 +781,15 @@ msgstr "TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
 msgid "No channels were found."
-msgstr ""
+msgstr "No channels were found."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:129
 msgid ""
 "Make sure that the antenna is connected and you have selected the correct "
 "tuning data."
 msgstr ""
+"Make sure that the antenna is connected and you have selected the correct "
+"tuning data."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
 #, python-format
@@ -777,29 +800,30 @@ msgstr "The device has been added to the group %s."
 msgid "An error occured while trying to setup the device."
 msgstr "An error occurred while trying to setup the device."
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:31
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
 msgid "Configure Another Device"
 msgstr "Configure Another Device"
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:35
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:41
 msgid "Configuration finished"
 msgstr "Configuration finished"
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:42
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:48
 #, python-format
 msgid "The device %s has been configured sucessfully."
 msgstr "The device %s has been configured sucessfully."
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:50
 #, python-format
 msgid "Failed configuring device %s."
-msgstr ""
+msgstr "Failed configuring device %s."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:57
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:56
+#: ../data/gnome-dvb-setup.desktop.in.in.h:2
 msgid "Setup digital TV"
 msgstr "Setup digital TV"
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:119
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:118
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
@@ -877,3 +901,34 @@ msgstr "Recording %d"
 #: ../client/totem-plugin/dvb-daemon.py:632
 msgid "GNOME DVB Daemon is not installed"
 msgstr "GNOME DVB Daemon is not installed"
+
+#. www.k-d-w.org/
+#: ../data/gnome-dvb-control.desktop.in.in.h:1
+msgid "Digital TV Control Center"
+msgstr "Digital TV Control Centre"
+
+#: ../data/gnome-dvb-control.desktop.in.in.h:2
+msgid "Schedule recordings and browse program guide"
+msgstr "Schedule recordings and browse programme guide"
+
+#: ../data/gnome-dvb-setup.desktop.in.in.h:1
+msgid "Digital TV Setup"
+msgstr "Digital TV Setup"
+
+#~ msgid "Select scrambled channels"
+#~ msgstr "Select scrambled channels"
+
+#~ msgid "Country:"
+#~ msgstr "Country:"
+
+#~ msgid "Antenna:"
+#~ msgstr "Antenna:"
+
+#~ msgid "Providers:"
+#~ msgstr "Providers:"
+
+#~ msgid "Expert mode"
+#~ msgstr "Expert mode"
+
+#~ msgid "Satellite:"
+#~ msgstr "Satellite:"
