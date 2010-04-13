@@ -145,6 +145,9 @@ namespace Main {
     }
     
     public static int main (string[] args) {
+        // set timezone to avoid that strftime stats /etc/localtime on every call
+        Environment.set_variable ("TZ", "/etc/localtime", false);
+
         cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
         cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
     
@@ -194,7 +197,6 @@ namespace Main {
         try {
             Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
             foreach (DVB.DeviceGroup device_group in device_groups) {
-                
                 if (manager.add_device_group (device_group)) {
                     DVB.Recorder rec = device_group.recorder;
                 
