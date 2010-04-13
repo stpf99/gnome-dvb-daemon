@@ -1,4 +1,36 @@
 ==============
+Version 0.1.17
+==============
+
+In this release udev is used to retrieve a list of connected
+devices instead of HAL and a lot of bugs have been fixed in
+the channel scanner.
+
+- Made progressbar pulsing when fraction is not known, yet; https://launchpad.net/bugs/540945 fixed
+- Change page type of ChannelScanPage to CONTENT marking the cancel button sensitive; https://launchpad.net/bugs/540945 fixed
+- Use TreeView to display satellites, antennas and cable providers. Added mnemonics; https://launchpad.net/bugs/540952 fixed
+- Fixed crash of assistant on last page if in expert mode
+- Set cursor to watch while reading list of antennas/providers;	https://launchpad.net/bugs/540948 fixed
+- Don't destroy scanner if error is posted on bus; https://launchpad.net/bugs/540937 fixed
+- Added icons for gnome-dvb-control and gnome-dvb-setup (many thanks to Klaus Staedler)
+- Use udev instead of HAL to retrieve devices
+- Fixed compiler errors with Vala 0.8.0
+- Convert XDG user dir path to utf8; https://launchpad.net/bugs/558583 fixed
+- Use tuning parameters from initial tuning data instead of NIT; https://launchpad.net/bugs/548738 fixed
+- Check if filename of initial tuning data is formated as we expect; https://launchpad.net/bugs/518327 fixed
+- Made the call to destroy the scanner async and show dialog with progressbar in the meantime; https://launchpad.net/bugs/519696 fixed
+- Don't restore EPG events in constructor of Schedule but delay the whole process
+- Use adapter and frontend to determine type of device instead of adapter only; https://launchpad.net/bugs/558806 fixed
+
+Updated Translations:
+---------------------
+- Czech
+- English (United Kingdom)
+- French
+- German
+- Spanish
+
+==============
 Version 0.1.16
 ==============
 
