@@ -1,5 +1,5 @@
 AC_PREREQ(2.63.2)
-AC_INIT([gnome-dvb-daemon], [0.1.17],
+AC_INIT([gnome-dvb-daemon], [0.1.18],
        [https://bugs.launchpad.net/gnome-dvb-daemon],
        [gnome-dvb-daemon],
        [http://live.gnome.org/DVBDaemon])
