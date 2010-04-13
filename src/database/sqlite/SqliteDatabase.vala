@@ -67,6 +67,7 @@ namespace DVB.database.sqlite {
                 this.upgrade (version, this.new_version);
             }
             this.set_version (this.new_version);
+            this.set_journal_mode ();
 
             this.on_open ();
         }
@@ -77,6 +78,14 @@ namespace DVB.database.sqlite {
         public void set_version (int version) {
             try {
                 this.exec_sql ("PRAGMA user_version = %d".printf (version));
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+            }
+        }
+
+        public void set_journal_mode () {
+            try {
+                this.exec_sql ("PRAGMA journal_mode = TRUNCATE");
             } catch (SqlError e) {
                 critical ("%s", e.message);
             }

@@ -51,9 +51,13 @@ namespace DVB.database.sqlite {
             duration, running_status, free_ca_mode, name,
             description, extended_description
             FROM events WHERE group_id='%u' AND sid='%u'""";
+
+        private static const string SELECT_MINIMAL_EVENTS_STATEMENT =
+            """SELECT event_id, datetime(starttime),
+            duration FROM events WHERE group_id='%u' AND sid='%u'""";
             
         private static const string HAS_EVENT_STATEMENT =
-            "SELECT COUNT(*) FROM events WHERE group_id=? AND sid=? AND event_id=?";
+            "SELECT 1 FROM events WHERE group_id=? AND sid=? AND event_id=? LIMIT 1";
             
         private static const string UPDATE_EVENT_SQL =
             """UPDATE events SET starttime=?, duration=?, running_status=?,
@@ -246,7 +250,7 @@ namespace DVB.database.sqlite {
             
             if (this.db == null) return events;
             
-            string statement_str = SELECT_ALL_EVENTS_STATEMENT.printf (
+            string statement_str = SELECT_MINIMAL_EVENTS_STATEMENT.printf (
                 group_id, channel_sid);
             
             Statement statement;
@@ -256,7 +260,7 @@ namespace DVB.database.sqlite {
             }
             
             while (statement.step () == Sqlite.ROW) {
-                Event event = this.create_event_from_statement (statement);
+                Event event = this.create_minimal_event (statement);
                 events.add (event);
             }
             
@@ -277,6 +281,24 @@ namespace DVB.database.sqlite {
             }
             
             return true;
+        }
+
+        private Event create_minimal_event (Statement statement) {
+            var event = new Event ();
+            event.id = (uint)statement.column_int (0);
+            
+            weak string starttime = statement.column_text (1);
+            starttime.scanf ("%04u-%02u-%02u %02u:%02u:%02u",
+                &event.year,
+                &event.month,
+                &event.day,
+                &event.hour,
+                &event.minute,
+                &event.second);
+            
+            event.duration = (uint)statement.column_int (2);
+
+            return event;
         }
         
         private Event create_event_from_statement (Statement statement) {

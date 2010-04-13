@@ -82,7 +82,7 @@ namespace DVB.database.sqlite {
         "INSERT INTO device_groups VALUES (?, ?, ?, ?, ?)";
         
         private static const string CONTAINS_GROUP =
-        "SELECT COUNT(*) FROM device_groups WHERE group_id=?";
+        "SELECT 1 FROM device_groups WHERE group_id=?";
         
         private static const string UPDATE_GROUP =
         "UPDATE device_groups SET adapter_type=?, channels_file=?, recordings_dir=?, name=? WHERE group_id=?";
@@ -109,7 +109,7 @@ namespace DVB.database.sqlite {
         "INSERT INTO timers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         private static const string CONTAINS_TIMER =
-        "SELECT COUNT(*) FROM timers WHERE timer_id=?";
+        "SELECT 1 FROM timers WHERE timer_id=?";
 
         private static const string INSERT_CHANNEL_GROUP =
         "INSERT INTO channel_groups (name) VALUES (?)";
