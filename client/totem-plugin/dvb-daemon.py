@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2008,2009 Sebastian Pölsterl
+# Copyright (C) 2008-2010 Sebastian Pölsterl
 #
 # This file is part of GNOME DVB Daemon.
 #
@@ -31,6 +31,9 @@ import totem
 import gnomedvb
 import sys
 from cgi import escape
+import gettext
+from gettext import gettext as _
+import locale
 
 from gnomedvb import global_error_handler
 from gnomedvb.DVBModel import DVBModel
@@ -251,6 +254,10 @@ class DVBDaemonPlugin(totem.Plugin):
 
     def activate (self, totem_object):
         self.totem_object = totem_object
+
+        gettext.textdomain('gnome-dvb-daemon')
+        locale.textdomain('gnome-dvb-daemon')
+        
         self.setup = DvbSetup()
         
         self.manager = DVBModel()
