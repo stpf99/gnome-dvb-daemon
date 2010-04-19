@@ -197,9 +197,16 @@ namespace Main {
         try {
             Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
             foreach (DVB.DeviceGroup device_group in device_groups) {
+                
+                try {    
+                    device_group.Channels.load (device_group.Type);
+                } catch (Error e) {
+                	critical ("Error reading channels from file: %s", e.message);
+                	continue;
+                }
+                
                 if (manager.add_device_group (device_group)) {
                     DVB.Recorder rec = device_group.recorder;
-                
                     // Restore timers
                     message ("Restoring timers of device group %u", device_group.Id);
                     Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
