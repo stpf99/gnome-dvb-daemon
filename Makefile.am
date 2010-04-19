@@ -33,13 +33,13 @@ gnome_dvb_daemon_VALASOURCES = \
 	src/dbus/IDBusRecorder.vala \
 	src/dbus/IDBusRecordingsStore.vala \
 	src/dbus/IDBusSchedule.vala \
+	src/io/ChannelListReader.vala \
+	src/io/ChannelListWriter.vala \
 	src/ChangeType.vala \
 	src/Channel.vala \
 	src/ChannelFactory.vala \
 	src/ChannelGroup.vala \
 	src/ChannelList.vala \
-	src/ChannelListReader.vala \
-	src/ChannelListWriter.vala \
 	src/Constants.vala \
 	src/Device.vala \
 	src/DeviceGroup.vala \
