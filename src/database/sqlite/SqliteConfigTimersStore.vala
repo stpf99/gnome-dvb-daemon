@@ -230,70 +230,52 @@ namespace DVB.database.sqlite {
             
             while (statement.step () == Sqlite.ROW) {
                 int group_id = statement.column_int (0);
-                
+
                 this.select_devices_statement.reset ();
                 if (this.select_devices_statement.bind_int (1, group_id) != Sqlite.OK) {
                     this.throw_last_error ();
                     continue;
                 }
-                
+
+                File channels_file = File.new_for_path (
+                    statement.column_text (2));
+
+                File rec_dir = File.new_for_path (
+                    statement.column_text (3));
+
                 // Get devices of group
                 Gee.List<Device> devs = new ArrayList<Device> ();
+                Device ref_dev = null;
                 while (this.select_devices_statement.step () == Sqlite.ROW) {
                     uint adapter =
                         (uint)this.select_devices_statement.column_int (1);
                     uint frontend =
                         (uint)this.select_devices_statement.column_int (2);
-                        
-                    // Create new device
-                    devs.add (new Device (adapter, frontend));
+
+                    if (ref_dev == null) {
+                        try {
+                            ref_dev = Device.new_full (adapter, frontend,
+                                channels_file, rec_dir, group_id);
+                        } catch (DeviceError e) {
+                        	critical ("Could not create device: %s", e.message);
+                        }
+                    } else {
+                        devs.add (Device.new_with_type (adapter, frontend));
+                    }
                 }
-                
+
                 // No devices for this group
-                if (devs.size == 0) {
+                if (ref_dev == null) {
                     debug ("Group %d has no devices", group_id);
                     continue;
                 }
-                
-                // Get adapter type
-                int group_type = statement.column_int (1);
-                AdapterType type;
-                switch (group_type) {
-                    case 1: type = AdapterType.DVB_T; break;
-                    case 2: type = AdapterType.DVB_S; break;
-                    case 3: type = AdapterType.DVB_C; break;
-                    default:
-                    debug ("Group %d has unknown type %d",
-                        group_id, group_type);
-                    continue;
-                }
-                
-                // Get channel list
-                File channels_file = File.new_for_path (
-                    statement.column_text (2));
-                ChannelList channels; 
-                try {
-                    channels = ChannelList.restore_from_file (
-                        channels_file, type, group_id);
-                } catch (Error e) {
-                    warning ("Could not read channels: %s", e.message);
-                    continue;
-                }
-                    
-                File rec_dir = File.new_for_path (
-                    statement.column_text (3));
-                    
-                // Set reference device
-                Device ref_dev = devs.get (0);
-                ref_dev.Channels = channels;
-                ref_dev.RecordingsDirectory = rec_dir;
-                
+
                 // Create device group
                 DeviceGroup group = new DeviceGroup ((uint)group_id, ref_dev,
                     !Main.get_disable_epg_scanner());
                 group.Name = statement.column_text (4);
                 
-                for (int i=1; i<devs.size; i++)
+                for (int i=0; i<devs.size; i++)
                     group.add (devs.get (i));
                 
                 groups.add (group);

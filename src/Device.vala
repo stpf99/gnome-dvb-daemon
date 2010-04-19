@@ -21,6 +21,10 @@ using GLib;
 using Gst;
 namespace DVB {
 
+    errordomain DeviceError {
+    	UNKNOWN_TYPE
+    }
+
     public enum AdapterType {
         UNKNOWN,
         DVB_T,
@@ -46,18 +50,37 @@ namespace DVB {
         private string adapter_name;
         private AdapterType adapter_type;
 
-        public Device (uint adapter, uint frontend, bool get_type_and_name=true) {
+        public Device (uint adapter, uint frontend) {
             base (Adapter: adapter, Frontend: frontend);
+        }
+        
+        public static Device new_with_type (uint adapter, uint frontend) {
+        	var device = new Device (adapter, frontend);
             
-            setAdapterTypeAndName(adapter, frontend, get_type_and_name);
+            device.setAdapterTypeAndName(adapter, frontend);
+            
+            return device;
         }
 
-        public static Device new_full (uint adapter, uint frontend,
-            ChannelList channels, File recordings_dir) {
-            var dev = new Device (adapter, frontend);            
-            dev.Channels = channels;
-            dev.RecordingsDirectory = recordings_dir;
-            return dev;
+        public static Device? new_full (uint adapter, uint frontend,
+                File channels_conf, File recordings_dir, uint group_id)
+                throws DeviceError
+        {
+            Device device = Device.new_with_type (adapter, frontend);
+
+            /* The type of the device is checked in creation of
+             * Device class. If the device does not exist the type
+             * will be AdapterType.UNKNOWN
+             */
+            if (device.Type == AdapterType.UNKNOWN)
+                throw new DeviceError.UNKNOWN_TYPE (
+                    "device %u,%u has unknown type", adapter, frontend);
+
+            device.RecordingsDirectory = recordings_dir;
+
+            device.Channels = new ChannelList (channels_conf);
+
+            return device;
         }
         
         public static bool equal (Device* dev1, Device* dev2) {
@@ -113,10 +136,7 @@ namespace DVB {
             return busy_val;
         }
 
-        private bool setAdapterTypeAndName (uint adapter, uint frontend,
-                bool get_type) {
-            if (!get_type) return true;
-        
+        private bool setAdapterTypeAndName (uint adapter, uint frontend) {
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
             if (dvbsrc == null) {
                 critical ("Could not create dvbsrc element");

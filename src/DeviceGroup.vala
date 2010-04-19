@@ -118,7 +118,7 @@ namespace DVB {
          * device.
          */
         public void create_and_add_device (uint adapter, uint frontend) {
-            Device new_dev = new Device (adapter, frontend);
+            Device new_dev = Device.new_with_type (adapter, frontend);
             this.add (new_dev);
         }
         
@@ -201,11 +201,11 @@ namespace DVB {
          * The new device will inherit all settings from the group's
          * reference device.
          */
-        public bool AddDevice (uint adapter, uint frontend)throws DBus.Error {
+        public bool AddDevice (uint adapter, uint frontend) throws DBus.Error {
             // When the device is already registered we
             // might see some errors if the device is
             // currently in use
-            Device device = new Device (adapter, frontend);
+            Device device = Device.new_with_type (adapter, frontend);
                 
             if (device == null) return false;
             
@@ -273,7 +273,7 @@ namespace DVB {
          * no devices after the removal it's removed as well.
          */
         public bool RemoveDevice (uint adapter, uint frontend) throws DBus.Error {
-            Device dev = new Device (adapter, frontend, false);
+            Device dev = new Device (adapter, frontend);
             
             if (this.contains (dev)) {
                 if (this.remove (dev)) {

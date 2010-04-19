@@ -102,7 +102,7 @@ namespace DVB {
             
             if (reg_dev == null) {
                 // Create new device
-                device = new Device (adapter, frontend);
+                device = Device.new_with_type (adapter, frontend);
             } else {
                 // Stop epgscanner for device if there's any
                 EPGScanner? epgscanner =
@@ -233,10 +233,17 @@ namespace DVB {
                 string channels_conf, string recordings_dir, string name)
                 throws DBus.Error
         {   
-            Device device = this.create_device (adapter, frontend, channels_conf,
-                recordings_dir, device_group_counter + 1);
+            File chan_file = File.new_for_path (channels_conf);
+            File rec_dir = File.new_for_path (recordings_dir);
             
-            if (device == null) return false;
+            Device device;
+            try {
+                device = Device.new_full (adapter, frontend, chan_file,
+                    rec_dir, device_group_counter + 1);
+            } catch (DeviceError e) {
+            	critical ("Could not create device: %s", e.message);
+            	return false;
+            }
             
             // Check if device is already assigned to other group
             if (this.device_is_in_any_group (device)) return false;
@@ -383,38 +390,6 @@ namespace DVB {
             return true;
         }
         
-        private static Device? create_device (uint adapter, uint frontend,
-                string channels_conf, string recordings_dir, uint group_id) {
-
-            File channelsfile = File.new_for_path (channels_conf);
-            File recdir = File.new_for_path (recordings_dir);
-            
-            Device device = new Device (adapter, frontend);
-            
-            /* The type of the device is checked in creation of
-             * Device class. If the device does not exist the type
-             * will be AdapterType.UNKNOWN
-             */
-            if (device.Type == AdapterType.UNKNOWN)
-                return null;
-            
-            device.RecordingsDirectory = recdir;
-            
-            ChannelList channels;
-            try {
-                channels = DVB.ChannelList.restore_from_file (channelsfile,
-                    device.Type, group_id);
-            } catch (Error e) {
-                critical ("Could not create channels list from %s: %s",
-                    channels_conf, e.message);
-                return null;
-            }
-            
-            device.Channels = channels;
-            
-            return device;
-        }
-        
         public DeviceGroup? get_device_group_if_exists (uint group_id) {
             DeviceGroup? result = null;
             lock (this.devices) {
@@ -460,7 +435,7 @@ namespace DVB {
         
         private Device? get_registered_device (uint adapter, uint frontend) {
             Device? result = null;
-            Device fake_device = new Device (adapter, frontend, false);
+            Device fake_device = new Device (adapter, frontend);
             lock (this.devices) {
                 foreach (uint group_id in this.devices.keys) {
                     DeviceGroup devgroup = this.devices.get (group_id);
