@@ -22,34 +22,32 @@ using GLib;
 namespace DVB.io {
 
     public class ChannelListReader : GLib.Object {
-    
-        public File ChannelFile {get; construct;}
+
+        public ChannelList channels {get; construct;}
         public AdapterType Type {get; construct;}
-        public uint GroupId {get; construct;}
         
-        public ChannelListReader (File file, AdapterType type, uint group_id) {
-            base (ChannelFile: file, Type: type, GroupId: group_id);
+        public ChannelListReader (ChannelList channels, AdapterType type) {
+            base (channels: channels, Type: type);
         }
 
-        public ChannelList? read () throws Error {
-        	var reader = new DataInputStream (this.ChannelFile.read (null));
-        	
-        	ChannelList channels = new ChannelList (this.ChannelFile);
+        public void read_into () throws Error {
+            return_if_fail (this.channels.channels_file != null);
+        
+            var reader = new DataInputStream (
+                this.channels.channels_file.read (null));
         	
         	string line = null;
         	size_t len;
         	while ((line = reader.read_line (out len, null)) != null) {
-        		if (len > 0) {
-                    Channel c = this.parse_line (line);
-                    if (c != null)
-                        channels.add (c);
-                    else
-                        warning ("Could not parse channel");
+            if (len > 0) {
+                Channel c = this.parse_line (line);
+                if (c != null) {
+                    channels.add (c);
+                } else
+                    warning ("Could not parse channel");
                 }
         	}
         	reader.close (null);
-        	
-        	return channels;
         }
 
         private Channel? parse_line (string line) {
@@ -73,6 +71,7 @@ namespace DVB.io {
             }
             
             if (c != null && c.is_valid ()) {
+                c.GroupId = this.channels.GroupId;
                 return c;
             } else {
                 string val = (c == null) ? "(null)" : c.to_string ();
@@ -90,7 +89,6 @@ namespace DVB.io {
          */
         private TerrestrialChannel? parse_terrestrial_channel (string line) {
             var channel = new TerrestrialChannel ();
-            channel.GroupId = this.GroupId;
             
             string[] fields = line.split(":");
             
@@ -201,7 +199,6 @@ namespace DVB.io {
          */
         private SatelliteChannel? parse_satellite_channel (string line) {
             var channel = new SatelliteChannel ();
-            channel.GroupId = this.GroupId;
             
             string[] fields = line.split(":");
             
@@ -247,7 +244,6 @@ namespace DVB.io {
          */
         private CableChannel? parse_cable_channel (string line) {
             var channel = new CableChannel ();
-            channel.GroupId = this.GroupId;
             
             string[] fields = line.split(":");
             

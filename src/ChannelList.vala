@@ -86,10 +86,9 @@ namespace DVB {
             return this.channels.values.iterator();
         }
         
-        public static ChannelList restore_from_file (File channelsfile,
-                AdapterType type, uint group_id) throws Error {
-            var reader = new DVB.io.ChannelListReader (channelsfile, type, group_id);
-            return reader.read ();
+        public void load (AdapterType type) throws Error {
+        	var reader = new DVB.io.ChannelListReader (this, type);
+        	reader.read_into ();
         }
         
         /**
