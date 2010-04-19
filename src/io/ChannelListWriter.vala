@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -19,7 +19,7 @@
 
 using GLib;
 
-namespace DVB {
+namespace DVB.io {
     
     /**
      * Example:

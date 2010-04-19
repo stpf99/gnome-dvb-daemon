@@ -88,7 +88,7 @@ namespace DVB {
         
         public static ChannelList restore_from_file (File channelsfile,
                 AdapterType type, uint group_id) throws Error {
-            var reader = new DVB.ChannelListReader (channelsfile, type, group_id);
+            var reader = new DVB.io.ChannelListReader (channelsfile, type, group_id);
             return reader.read ();
         }
         

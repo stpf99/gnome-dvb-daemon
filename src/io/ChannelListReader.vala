@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -19,7 +19,7 @@
 
 using GLib;
 
-namespace DVB {
+namespace DVB.io {
 
     public class ChannelListReader : GLib.Object {
     
@@ -30,26 +30,28 @@ namespace DVB {
         public ChannelListReader (File file, AdapterType type, uint group_id) {
             base (ChannelFile: file, Type: type, GroupId: group_id);
         }
-        
+
         public ChannelList? read () throws Error {
-            string contents = Utils.read_file_contents (this.ChannelFile);
-            if (contents == null) return null;
-            
-            ChannelList channels = new ChannelList (this.ChannelFile);
-        
-            foreach (string line in contents.split("\n")) {
-                if (line.size () > 0) {
+        	var reader = new DataInputStream (this.ChannelFile.read (null));
+        	
+        	ChannelList channels = new ChannelList (this.ChannelFile);
+        	
+        	string line = null;
+        	size_t len;
+        	while ((line = reader.read_line (out len, null)) != null) {
+        		if (len > 0) {
                     Channel c = this.parse_line (line);
                     if (c != null)
                         channels.add (c);
                     else
                         warning ("Could not parse channel");
                 }
-            }
-            
-            return channels;
+        	}
+        	reader.close (null);
+        	
+        	return channels;
         }
-        
+
         private Channel? parse_line (string line) {
             Channel? c = null;
             switch (this.Type) {

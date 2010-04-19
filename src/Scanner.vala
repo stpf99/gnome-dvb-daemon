@@ -204,7 +204,7 @@ namespace DVB {
          */
         public bool WriteAllChannelsToFile (string path) throws DBus.Error {
             bool success = true;
-            var writer = new ChannelListWriter (File.new_for_path (path));
+            var writer = new io.ChannelListWriter (File.new_for_path (path));
             foreach (DVB.Channel c in this.channels) {
                 try {
                     writer.write (c);
@@ -234,7 +234,7 @@ namespace DVB {
                 throws DBus.Error
         {
             bool success = true;
-            var writer = new ChannelListWriter (File.new_for_path (path));
+            var writer = new io.ChannelListWriter (File.new_for_path (path));
             foreach (uint sid in channel_sids) {
                 DVB.Channel? c = this.channels.get_channel (sid);
                 if (c == null) {
