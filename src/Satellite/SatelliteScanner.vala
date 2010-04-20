@@ -68,53 +68,33 @@ namespace DVB {
             base.add_structure_to_scan (tuning_params);
         }
         
-        public bool AddScanningDataFromFile (string path) throws DBus.Error {
-            File datafile = File.new_for_path(path);
-            
-            debug ("Reading scanning data from %s", path);
-            
-            string? contents = null;
-            try {
-                contents = Utils.read_file_contents (datafile);
-            } catch (Error e) {
-                critical ("Could not read %s: %s", e.message, path);
-            }
-            
-            if (contents == null) return false;
-            
+        protected override void add_scanning_data_from_string (string line) {
             // line looks like:
             // S freq pol sr fec
-            foreach (string line in contents.split("\n")) {
-                line = line.chug ();
-                if (line.has_prefix ("#")) continue;
-                
-                string[] cols = Regex.split_simple ("\\s+", line);
-                
-                int cols_length = 0;
-                while (cols[cols_length] != null)
-                    cols_length++;
-                cols_length++;
-                
-                if (cols_length < 5) continue;
-                
-                uint freq = (uint)cols[1].to_int ();
-                uint symbol_rate = (uint)cols[3].to_int () / 1000;
-                
-                string pol;
-                string lower_pol = cols[2].down ();
-                if (lower_pol == "h")
-                    pol = "horizontal";
-                else if (lower_pol == "v")
-                    pol = "vertical";
-                else
-                    continue;
-                
-                // TODO what about fec?
-                
-                this.add_scanning_data (freq, pol, symbol_rate);
-            }
+            string[] cols = Regex.split_simple ("\\s+", line);
             
-            return true;
+            int cols_length = 0;
+            while (cols[cols_length] != null)
+                cols_length++;
+            cols_length++;
+            
+            if (cols_length < 5) return;
+            
+            uint freq = (uint)cols[1].to_int ();
+            uint symbol_rate = (uint)cols[3].to_int () / 1000;
+            
+            string pol;
+            string lower_pol = cols[2].down ();
+            if (lower_pol == "h")
+                pol = "horizontal";
+            else if (lower_pol == "v")
+                pol = "vertical";
+            else
+                return;
+            
+            // TODO what about fec?
+            
+            this.add_scanning_data (freq, pol, symbol_rate);
         }
         
         protected override void prepare () {

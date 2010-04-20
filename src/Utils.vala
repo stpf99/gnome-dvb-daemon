@@ -21,8 +21,6 @@ using GLib;
 
 namespace DVB.Utils {
 
-    private const int BUFFER_SIZE = 4096;
-
     private const string NAME_ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_STANDARD_NAME;
     private const string READ_ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_ACCESS_CAN_READ;
         
@@ -155,49 +153,29 @@ namespace DVB.Utils {
         
         return t;
     }
-    
-    // TODO throw error
-    public static string? read_file_contents (File file) throws Error {
+
+    public static bool is_readable_file (File file) {
         FileInfo info;
         try {
             info = file.query_info (READ_ATTRS, 0, null);
         } catch (Error e) {
             critical ("Could not retrieve attributes: %s", e.message);
-            return null;
+            return false;
         }
         
         if (info.get_file_type () != FileType.REGULAR) {
             critical ("%s is not a regular file", file.get_path ());
-            return null;
+            return false;
         }
         
         if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
             critical ("Cannot read %s", file.get_path ());
-            return null;
+            return false;
         }
-        
-        FileInputStream stream;
-        try {
-            stream = file.read (null);
-        } catch (Error e) {
-            critical ("Could not read file: %s", e.message);
-            return null;
-        }
-    
-        StringBuilder sb = new StringBuilder ();               
-        char[] buffer = new char[BUFFER_SIZE];
-        
-        long bytes_read;
-        while ((bytes_read = stream.read (buffer, BUFFER_SIZE, null)) > 0) {
-            for (int i=0; i<bytes_read; i++) {
-                sb.append_c (buffer[i]);
-            }
-        }
-        stream.close (null);
-        
-        return sb.str;
+
+        return true;
     }
-    
+
     public static void delete_dir_recursively (File dir) throws Error {
         FileEnumerator files;
         files = dir.enumerate_children (NAME_ATTRS, 0, null);

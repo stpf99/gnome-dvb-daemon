@@ -137,6 +137,11 @@ namespace DVB {
          * Retrieve the data from structure and add it to the Channel
          */
         protected abstract void add_values_from_structure_to_channel (Gst.Structure delivery, Channel channel);
+
+        /**
+         * Called to parse a line from the initial tuning data
+         */
+        protected abstract void add_scanning_data_from_string (string line);
         
         /**
          * Start the scanner
@@ -257,6 +262,47 @@ namespace DVB {
             }
             
             return success;
+        }
+
+        public bool AddScanningDataFromFile (string path) throws DBus.Error {
+            File datafile = File.new_for_path(path);
+            
+            debug ("Reading scanning data from %s", path);
+
+            if (!Utils.is_readable_file (datafile)) return false;
+            
+            DataInputStream reader;
+            try {
+                reader = new DataInputStream (datafile.read (null));
+            } catch (Error e) {
+                critical ("Could not open %s: %s", path, e.message);
+                return false;
+            }
+
+            string line = null;
+        	size_t len;
+            try {
+                while ((line = reader.read_line (out len, null)) != null) {
+                    if (len == 0) continue;
+
+                    line = line.chug ();
+                    if (line.has_prefix ("#")) continue;
+                    
+                    this.add_scanning_data_from_string (line);
+                }
+            } catch (Error e) {
+                critical ("Could not read %s: %s", path, e.message);
+                return false;
+            }
+
+            try {
+                reader.close (null);
+            } catch (Error e) {
+                critical ("Could not close file handle: %s", e.message);
+                return false;
+            }
+
+            return true;
         }
 
         /* Main Thread */

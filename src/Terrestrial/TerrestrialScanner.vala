@@ -89,64 +89,45 @@ namespace DVB {
             base.add_structure_to_scan (tuning_params);
         }
         
-        public bool AddScanningDataFromFile (string path) throws DBus.Error {
-            File datafile = File.new_for_path(path);
-            
-            debug ("Reading scanning data from %s", path);
-            
-            string? contents = null;
-            try {
-                contents = Utils.read_file_contents (datafile);
-            } catch (Error e) {
-                critical ("Could not read %s: %s", e.message, path);
-            }
-            
-            if (contents == null) return false;
-            
-            // line looks like:
+        protected override void add_scanning_data_from_string (string line) {
+        	// line looks like:
             // T freq bw fec_hi fec_lo mod transmission-mode guard-interval hierarchy
-            foreach (string line in contents.split("\n")) {
-                line = line.chug ();
-                if (line.has_prefix ("#")) continue;
-                
-                string[] cols = Regex.split_simple ("\\s+", line);
-                
-                int cols_length = 0;
-                while (cols[cols_length] != null)
-                    cols_length++;
+
+            string[] cols = Regex.split_simple ("\\s+", line);
+            
+            int cols_length = 0;
+            while (cols[cols_length] != null)
                 cols_length++;
-                
-                if (cols_length < 9) {
-                    continue;
-                }
-                
-                uint freq = (uint)cols[1].to_int ();
-                
-                uint hierarchy = 0;
-                if (cols[8] == "1") {
-                    hierarchy = 1;
-                } else if (cols[8] == "2") {
-                    hierarchy = 2;
-                } else if (cols[8] == "4") {
-                    hierarchy = 3;
-                }
-                
-                string bandwidth_str = cols[2].split("MHz")[0];
-                uint bandwidth = (uint)bandwidth_str.to_int ();
-                string transmode = cols[6];
-                string code_rate_hp = cols[3];
-                string code_rate_lp = cols[4];
-                string constellation = cols[5];
-                
-                string guard_str = cols[7].split("/")[1];
-                uint guard = (uint)guard_str.to_int ();
-                
-                this.add_scanning_data (freq, hierarchy,
-                    bandwidth, transmode, code_rate_hp,
-                    code_rate_lp, constellation, guard);
+            cols_length++;
+            
+            if (cols_length < 9) {
+                return;
             }
             
-            return true;
+            uint freq = (uint)cols[1].to_int ();
+            
+            uint hierarchy = 0;
+            if (cols[8] == "1") {
+                hierarchy = 1;
+            } else if (cols[8] == "2") {
+                hierarchy = 2;
+            } else if (cols[8] == "4") {
+                hierarchy = 3;
+            }
+            
+            string bandwidth_str = cols[2].split("MHz")[0];
+            uint bandwidth = (uint)bandwidth_str.to_int ();
+            string transmode = cols[6];
+            string code_rate_hp = cols[3];
+            string code_rate_lp = cols[4];
+            string constellation = cols[5];
+            
+            string guard_str = cols[7].split("/")[1];
+            uint guard = (uint)guard_str.to_int ();
+            
+            this.add_scanning_data (freq, hierarchy,
+                bandwidth, transmode, code_rate_hp,
+                code_rate_lp, constellation, guard);
         }
         
         protected override void prepare () {
