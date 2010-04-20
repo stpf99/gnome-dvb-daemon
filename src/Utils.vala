@@ -23,6 +23,9 @@ namespace DVB.Utils {
 
     private const int BUFFER_SIZE = 4096;
 
+    private const string NAME_ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_STANDARD_NAME;
+    private const string READ_ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_ACCESS_CAN_READ;
+        
     public static inline unowned string? get_nick_from_enum (GLib.Type enumtype, int val) {
         EnumClass eclass = (EnumClass)enumtype.class_ref ();
         unowned EnumValue eval = eclass.get_value (val);
@@ -155,13 +158,9 @@ namespace DVB.Utils {
     
     // TODO throw error
     public static string? read_file_contents (File file) throws Error {
-        string attrs = "%s,%s".printf (
-            FILE_ATTRIBUTE_STANDARD_TYPE,
-            FILE_ATTRIBUTE_ACCESS_CAN_READ);
-        
         FileInfo info;
         try {
-            info = file.query_info (attrs, 0, null);
+            info = file.query_info (READ_ATTRS, 0, null);
         } catch (Error e) {
             critical ("Could not retrieve attributes: %s", e.message);
             return null;
@@ -200,11 +199,8 @@ namespace DVB.Utils {
     }
     
     public static void delete_dir_recursively (File dir) throws Error {
-        string attrs = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
-                                       FILE_ATTRIBUTE_STANDARD_NAME);
-    
         FileEnumerator files;
-        files = dir.enumerate_children (attrs, 0, null);
+        files = dir.enumerate_children (NAME_ATTRS, 0, null);
         if (files == null) return;
         
         FileInfo childinfo;

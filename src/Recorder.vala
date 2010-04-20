@@ -45,7 +45,8 @@ namespace DVB {
         // Maps timer id to Recording
         private Map<uint, Recording> recordings;
         
-        private static const int CHECK_TIMERS_INTERVAL = 5;
+        private const int CHECK_TIMERS_INTERVAL = 5;
+        private const string ATTRIBUTES = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_ACCESS_CAN_WRITE;
         
         construct {
             this.active_timers = new HashSet<uint32> ();
@@ -723,12 +724,10 @@ namespace DVB {
                     return null;
                 }
             }
-            
-            string attributes = "%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
-                                                FILE_ATTRIBUTE_ACCESS_CAN_WRITE);
+
             FileInfo info;
             try {
-                info = dir.query_info (attributes, 0, null);
+                info = dir.query_info (ATTRIBUTES, 0, null);
             } catch (Error e) {
                 critical ("Could not retrieve attributes: %s", e.message);
                 return null;
