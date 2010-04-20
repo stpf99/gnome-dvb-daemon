@@ -55,15 +55,15 @@ namespace DVB {
             }
             instance_mutex.unlock ();
         }
-        
+
         public void update_last_id (uint32 new_last_id) {
-            lock (this.last_id) {
+            lock (this.recordings) {
                 if (new_last_id > this.last_id)
                     this.last_id = new_last_id;
             }
         }
-        
-        public bool add (Recording rec, bool monitor) {
+
+        public bool add (Recording rec) {
             uint32 id = rec.Id;
             lock (this.recordings) {
                 if (this.recordings.contains (id)) {
@@ -71,30 +71,33 @@ namespace DVB {
                     return false;
                 }
 
-                if (monitor) {
-                    this.monitor_recording (rec);
+                if (rec.Id > this.last_id) {
+                    this.last_id = rec.Id;
                 }
-                
+
                 this.recordings.set (id, rec);
                 this.changed (id, ChangeType.ADDED);
             }
             return true;
         }
         
-        public void monitor_recording (Recording rec) {
-            // Monitor the recording
-            try {
-                FileMonitor monitor = rec.Location.monitor_file (0, null);
-                monitor.changed += this.on_recording_file_changed;
-                rec.file_monitor = monitor;
-            } catch (Error e) {
-                warning ("Could not create FileMonitor: %s", e.message);
+        public bool add_and_monitor (Recording rec) {
+            if (this.add (rec)) {
+                rec.monitor_recording ();
+                return true;
             }
+            return false;
         }
-    
+
+        public void remove (Recording rec) {
+            uint32 rec_id = rec.Id;
+            this.recordings.remove (rec_id);
+            this.changed (rec_id, ChangeType.DELETED);
+        }
+
         public uint32 get_next_id () {
             uint32 val;
-            lock (this.last_id) {
+            lock (this.recordings) {
                 val = (++this.last_id);
             }
             return val;
@@ -243,13 +246,12 @@ namespace DVB {
                     var rec = this.recordings.get (rec_id);
                     try {
                         Utils.delete_dir_recursively (rec.Location.get_parent ());
-                        this.recordings.remove (rec_id);
                         val = true;
                     } catch (Error e) {
                         critical ("Could not delete recording: %s", e.message);
                         val = false;
                     }
-                    this.changed (rec_id, ChangeType.DELETED);
+                    this.remove (rec);
                 }
             }
             
@@ -303,141 +305,12 @@ namespace DVB {
             }
             return ret;
         }
-        
-        /**
-         * @recordingsbasedir: The directory to search
-         *
-         * Searches recursively in the given directory
-         * for "info.rec" files, restores a new Recording
-         * from that file and adds it to itsself.
-         */
+
         public void restore_from_dir (File recordingsbasedir) {
-            if (!recordingsbasedir.query_exists (null)) {
-                debug ("Directory %s does not exist", recordingsbasedir.get_path ());
-                return;
-            }
-            
-            string attrs = "%s,%s,%s".printf (FILE_ATTRIBUTE_STANDARD_TYPE,
-                FILE_ATTRIBUTE_ACCESS_CAN_READ, FILE_ATTRIBUTE_STANDARD_NAME);
-            FileInfo info;
-            try {
-                info = recordingsbasedir.query_info (attrs, 0, null);
-            } catch (Error e) {
-                critical ("Could not retrieve attributes: %s", e.message);
-                return;
-            }
-           
-            if (info.get_file_type () != FileType.DIRECTORY) {
-                critical ("%s is not a directory", recordingsbasedir.get_path ());
-                return;
-            }
-            
-            if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
-                critical ("Cannot read %s", recordingsbasedir.get_path ());
-                return;
-            }
-        
-            FileEnumerator files;
-            try {
-                files = recordingsbasedir.enumerate_children (
-                    attrs, 0, null);
-            } catch (Error e) {
-                critical ("Could not read directory: %s", e.message);
-                return;
-            }
-            
-            try {
-                FileInfo childinfo;
-                while ((childinfo = files.next_file (null)) != null) {
-                    uint32 type = childinfo.get_attribute_uint32 (
-                        FILE_ATTRIBUTE_STANDARD_TYPE);
-                    
-                    File child = recordingsbasedir.get_child (
-                        childinfo.get_name ());
-                    
-                    switch (type) {
-                        case FileType.DIRECTORY:
-                            this.restore_from_dir (child);
-                        break;
-                        
-                        case FileType.REGULAR:
-                            if (childinfo.get_name () == "info.rec") {
-                                Recording rec = null;
-                                try {
-                                    rec = Recording.deserialize (child);
-                                } catch (Error e) {
-                                    critical (
-                                        "Could not deserialize recording: %s",
-                                        e.message);
-                                }
-                                if (rec != null) {
-                                    debug ("Restored recording from %s",
-                                        child.get_path ());
-                                    lock (this.recordings) {
-                                        this.add (rec, true);
-                                    }
-                                    
-                                    lock (this.last_id) {
-                                        if (rec.Id > this.last_id) {
-                                            this.last_id = rec.Id;
-                                        }
-                                    }
-                                }
-                            }
-                        break;
-                    }
-                }
-            } catch (Error e) {
-                critical ("%s", e.message);
-            } finally {
-                try {
-                    files.close (null);
-                } catch (Error e) {
-                    critical ("Could not close file: %s", e.message);
-                }
-            }
+            var reader = new io.RecordingReader (recordingsbasedir, this);
+            reader.load_into ();
         }
-        
-        /**
-         * @location: Path to the .ts file of the recording
-         * @returns: TRUE on success
-         *
-         * Delete a recording by the path of the recording
-         */
-        private bool delete_recording_by_location (string location) {
-            bool result = false;
-            uint32 rec_id = 0;
-            lock (this.recordings) {
-                foreach (uint32 id  in this.recordings.keys) {
-                    Recording rec = this.recordings.get (id);
-                    if (rec.Location.get_path () == location) {
-                        rec_id = id;
-                        break;
-                    }
-                }
-                
-                if (rec_id != 0) {
-                    debug ("Deleting recording %u", rec_id);
-                    this.recordings.remove (rec_id);
-                    this.changed (rec_id, ChangeType.DELETED);
-                    result = true;
-                }
-            }
-            
-            return result;
-        }
-        
-        private void on_recording_file_changed (FileMonitor monitor,
-                File file, File? other_file, FileMonitorEvent event) {
-            if (event == FileMonitorEvent.DELETED) {
-                string location = file.get_path ();
-                debug ("%s has been deleted", location);
-                this.delete_recording_by_location (location);
-                
-                monitor.cancel ();
-            }
-        }
-    
+
     }
     
 }

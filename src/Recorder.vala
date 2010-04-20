@@ -660,7 +660,7 @@ namespace DVB {
                     this.recordings.set (recording.Id, recording);
                 }
                 
-                RecordingsStore.get_instance().add (recording, false);
+                RecordingsStore.get_instance().add (recording);
             }
             
             this.active_timers.add (timer.Id);
@@ -681,12 +681,9 @@ namespace DVB {
                 debug ("Recording of channel %s stopped after %"
                     + int64.FORMAT +" seconds",
                     rec.ChannelName, rec.Length);
-                    
-                try {
-                    rec.save_to_disk ();
-                } catch (Error e) {
-                    critical ("Could not save recording: %s", e.message);
-                }
+                
+                rec.save_to_disk ();
+
                 ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
                 channel_factory.stop_channel (timer.Channel, timer.sink);
                 
@@ -697,7 +694,7 @@ namespace DVB {
                 this.active_timers.remove (timer_id);
                 this.timers.remove (timer_id);
             }
-            RecordingsStore.get_instance().monitor_recording (rec);
+            rec.monitor_recording ();
             
             this.changed (timer_id, ChangeType.DELETED);
             
