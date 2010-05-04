@@ -55,10 +55,12 @@ class ChannelScanPage(BasePage):
         
         self.set_spacing(12)
         self._theme = gtk.icon_theme_get_default()
-        
-        self._label.set_markup (
-            _("Choose the channels you want to have in your list of channels. You can reorder the channels, too.")
+
+        text = "%s\n%s" % (
+            _("This process can take some time."),
+            _("You can select the channels you want to have in your list of channels.")
         )
+        self._label.set_markup (text)
         
         actiongroup = gtk.ActionGroup('channels')
         actiongroup.add_actions([
