@@ -201,7 +201,7 @@ namespace DVB {
          */
         public bool AddTimerForEPGEvent (uint event_id, uint channel_sid,
                 out uint32 timer_id) throws DBus.Error {
-            weak EPGStore epgstore = Factory.get_epg_store ();
+            EPGStore epgstore = Factory.get_epg_store ();
             Event? event = null;
             try {
                 event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
@@ -533,7 +533,7 @@ namespace DVB {
         public OverlapType HasTimerForEvent (uint event_id, uint channel_sid)
                 throws DBus.Error
         {
-            weak EPGStore epgstore = Factory.get_epg_store ();
+            EPGStore epgstore = Factory.get_epg_store ();
             Event? event = null;
             try {
                 event = epgstore.get_event (event_id, channel_sid,

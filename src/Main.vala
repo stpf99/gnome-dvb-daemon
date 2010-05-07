@@ -190,8 +190,8 @@ namespace Main {
         
         uint32 max_id = 0;
         
-        weak DVB.database.TimersStore timers_store = DVB.Factory.get_timers_store ();
-        weak DVB.database.ConfigStore config_store = DVB.Factory.get_config_store ();
+        DVB.database.TimersStore timers_store = DVB.Factory.get_timers_store ();
+        DVB.database.ConfigStore config_store = DVB.Factory.get_config_store ();
         
         message ("Restoring device groups");
         try {

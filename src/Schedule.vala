@@ -61,7 +61,7 @@ namespace DVB {
     
         private Sequence<EventElement> events;
         private Map<uint, weak SequenceIter<EventElement>> event_id_map;
-        private weak EPGStore epgstore;
+        private EPGStore epgstore;
         private int last_index = 0;
         private Gee.List<Event> levents;
         
