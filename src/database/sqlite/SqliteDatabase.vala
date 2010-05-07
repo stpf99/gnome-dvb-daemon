@@ -122,6 +122,14 @@ namespace DVB.database.sqlite {
             if (val != Sqlite.OK) this.throw_last_error ();
         }
 
+        public void begin_transaction () throws SqlError {
+            this.exec_sql ("BEGIN;");
+        }
+
+        public void end_transaction () throws SqlError {
+            this.exec_sql ("END;");
+        }
+
         protected void throw_last_error (string? errmsg=null) throws SqlError {
             int code = this.db.errcode ();
             string msg;
