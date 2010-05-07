@@ -163,16 +163,39 @@ namespace DVB {
             if (event.has_expired ()) return;
             
             lock (this.events) {
-                if (!this.event_id_map.contains (event.id)) {
-                    this.create_and_add_event_element (event);
-                }
-                
+                this.store_event (event);
+            }
+        }
+
+        public void add_all (Gee.List<Event> new_events) {
+            lock (this.events) {
                 try {
-                    this.epgstore.add_or_update_event (event, this.channel.Sid,
-                        this.channel.GroupId);
+                    ((database.sqlite.SqliteDatabase)this.epgstore).begin_transaction ();
                 } catch (SqlError e) {
                     critical ("%s", e.message);
                 }
+                foreach (Event event in new_events) {
+                    if (!event.has_expired ())
+                        this.store_event (event);
+                }
+                try {
+                    ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                }
+            }
+        }
+
+        private void store_event (Event event) {
+            if (!this.event_id_map.contains (event.id)) {
+                this.create_and_add_event_element (event);
+            }
+            
+            try {
+                this.epgstore.add_or_update_event (event, this.channel.Sid,
+                    this.channel.GroupId);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
             }
         }
         
