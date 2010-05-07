@@ -25,7 +25,7 @@ namespace DVB.database.sqlite {
 
     public class SqliteEPGStore : SqliteDatabase, EPGStore {
 
-        private static const int VERSION = 1;
+        private static const int VERSION = 2;
 
         private static const string CREATE_EVENTS_TABLE_STATEMENT = 
             """CREATE TABLE events (group_id INTEGER,
@@ -112,12 +112,15 @@ namespace DVB.database.sqlite {
 
         public override void create () throws SqlError {
             this.exec_sql (CREATE_EVENTS_TABLE_STATEMENT);
+            this.exec_sql ("PRAGMA synchronous=OFF");
         }
 
         public override void upgrade (int old_version, int new_version)
                 throws SqlError
         {
-            
+            if (old_version == 1) {
+                this.exec_sql ("PRAGMA synchronous=OFF");
+            }
         }
 
         public bool add_or_update_event (Event event, uint channel_sid,
