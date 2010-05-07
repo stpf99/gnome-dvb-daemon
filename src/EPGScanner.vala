@@ -44,6 +44,7 @@ namespace DVB {
         private MainLoop loop;
         private unowned Thread worker_thread;
         private uint bus_watch_id;
+        private HashMap<uint, Gee.List<Event>> channel_events;
         
         construct {
             this.channels = new GLib.Queue<Channel> ();
@@ -180,6 +181,24 @@ namespace DVB {
          * Scan the next frequency for EPG data
          */
         private bool scan_new_frequency () {
+            lock (this.channel_events) {
+                if (this.channel_events != null) {
+                    foreach (uint sid in this.channel_events.keys) {
+                        Channel channel = this.DeviceGroup.Channels.get_channel (sid);
+                        if (channel == null) {
+                            warning ("Could not find channel %u for this device", sid);
+                            continue;
+                        }
+                        Gee.List<Event> list = this.channel_events.get (sid);
+
+                        debug ("Adding %d events of channel %s (%u)",
+                            list.size, channel.Name, sid);
+                        channel.Schedule.add_all (list);
+                    }
+                }
+                this.channel_events = new HashMap<uint, Gee.List<Event>> ();
+            }
+
             if (this.channels.is_empty ()) {
                 debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
 
@@ -193,9 +212,10 @@ namespace DVB {
             
             Channel channel = this.channels.pop_head ();
             channel.Schedule.remove_expired_events ();
-            
-            //debug ("Scanning channel %s", channel.to_string ());
-            
+/*            
+            debug ("Scanning channel %s (%u left)",
+                channel.Name, this.channels.get_length ());
+*/          
             lock (this.pipeline) {
                 this.pipeline.set_state (Gst.State.READY);
                 Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
@@ -242,83 +262,92 @@ namespace DVB {
             Gst.Value val;
             weak Gst.Structure event;
             // Iterate over events
-            for (uint i=0; i<size; i++) {
-                val = events.list_get_value (i);
-                event = val.get_structure ();
-                
-                uint sid = get_uint_val (structure, "service-id");
-                Channel channel = this.DeviceGroup.Channels.get_channel (sid);
-                if (channel == null) {
-                    warning ("Could not find channel %u for this device", sid);
-                    return;
-                }
-                
-                uint event_id = get_uint_val (event, "event-id");
-                
-                var event_class = new Event ();
-                event_class.id = event_id;
-                event_class.year = get_uint_val (event, "year");
-                event_class.month = get_uint_val (event, "month");
-                event_class.day = get_uint_val (event, "day");
-                event_class.hour = get_uint_val (event, "hour");
-                event_class.minute = get_uint_val (event, "minute");
-                event_class.second = get_uint_val (event, "second");
-                event_class.duration = get_uint_val (event, "duration");
-                event_class.running_status = get_uint_val (event, "running-status");
-                string name = event.get_string ("name");
-                if (name != null && name.validate ())
-                    event_class.name = name;
-                string desc = event.get_string ("description");
-                if (desc != null && desc.validate ())
-                    event_class.description = desc;
-                string ext_desc = event.get_string ("extended-text");
-                if (ext_desc != null && ext_desc.validate ())
-                    event_class.extended_description = ext_desc;
-                bool free_ca;
-                event.get_boolean ("free-ca-mode", out free_ca);
-                event_class.free_ca_mode = free_ca;
-                
-                Gst.Value components = event.get_value ("components");
-                uint components_len = components.list_get_size ();
-                
-                Gst.Value comp_val;
-                weak Gst.Structure component;
-                for (uint j=0; j<components_len; j++) {
-                    comp_val = components.list_get_value (j);
-                    component = comp_val.get_structure ();
-                    
-                    if (component.get_name () == "audio") {
-                        var audio = new Event.AudioComponent ();
-                        audio.type = component.get_string ("type");
-                        
-                        event_class.audio_components.append (audio);
-                    } else if (component.get_name () == "video") {
-                        var video = new Event.VideoComponent ();
-                        
-                        bool highdef;
-                        component.get_boolean ("high-definition", out highdef);
-                        video.high_definition = highdef;
-                        
-                        video.aspect_ratio = component.get_string ("high-definition");
-                        
-                        int freq;
-                        component.get_int ("frequency", out freq);
-                        video.frequency = freq;
-                        
-                        event_class.video_components.append (video);
-                    } else if (component.get_name () == "teletext") {
-                        var teletext = new Event.TeletextComponent ();
-                        teletext.type = component.get_string ("type");
-                        
-                        event_class.teletext_components.append (teletext);
+            lock (this.channel_events) {
+                for (uint i=0; i<size; i++) {
+                    val = events.list_get_value (i);
+                    event = val.get_structure ();
+
+                    var event_class = new Event ();
+                    event_class.id = get_uint_val (event, "event-id");
+                    event_class.year = get_uint_val (event, "year");
+                    event_class.month = get_uint_val (event, "month");
+                    event_class.day = get_uint_val (event, "day");
+                    event_class.hour = get_uint_val (event, "hour");
+                    event_class.minute = get_uint_val (event, "minute");
+                    event_class.second = get_uint_val (event, "second");
+                    event_class.duration = get_uint_val (event, "duration");
+
+                    if (event_class.has_expired ())
+                        continue;
+
+                    event_class.running_status = get_uint_val (event, "running-status");
+                    string name = event.get_string ("name");
+                    if (name != null && name.validate ())
+                        event_class.name = name;
+                    string desc = event.get_string ("description");
+                    if (desc != null && desc.validate ())
+                        event_class.description = desc;
+                    string ext_desc = event.get_string ("extended-text");
+                    if (ext_desc != null && ext_desc.validate ())
+                        event_class.extended_description = ext_desc;
+                    bool free_ca;
+                    event.get_boolean ("free-ca-mode", out free_ca);
+                    event_class.free_ca_mode = free_ca;
+/*
+                    Gst.Value components = event.get_value ("components");
+                    add_components (components, event_class);
+*/  
+                    //debug ("Adding new event: %s", event_class.to_string ());
+
+                    uint sid = get_uint_val (structure, "service-id");
+                    if (!this.channel_events.contains (sid)) {
+                        this.channel_events.set (sid, new ArrayList<Event> ());
                     }
-                }
+                    Gee.List<Event> list = this.channel_events.get (sid);
                     
-                //debug ("Adding new event: %s", event_class.to_string ());
-                channel.Schedule.add (event_class);
+                    list.add (event_class);
+                }
             }
         }
-        
+/*
+        private static void add_components (Gst.Value components, Event event_class) {
+            uint components_len = components.list_get_size ();
+                
+            Gst.Value comp_val;
+            weak Gst.Structure component;
+            for (uint j=0; j<components_len; j++) {
+                comp_val = components.list_get_value (j);
+                component = comp_val.get_structure ();
+                
+                string comp_name = component.get_name ();
+                if (comp_name == "audio") {
+                    var audio = new Event.AudioComponent ();
+                    audio.type = component.get_string ("type");
+                    
+                    event_class.audio_components.append (audio);
+                } else if (comp_name == "video") {
+                    var video = new Event.VideoComponent ();
+                    
+                    bool highdef;
+                    component.get_boolean ("high-definition", out highdef);
+                    video.high_definition = highdef;
+                    
+                    video.aspect_ratio = component.get_string ("aspect-ratio");
+                    
+                    int freq;
+                    component.get_int ("frequency", out freq);
+                    video.frequency = freq;
+                    
+                    event_class.video_components.append (video);
+                } else if (comp_name == "teletext") {
+                    var teletext = new Event.TeletextComponent ();
+                    teletext.type = component.get_string ("type");
+                    
+                    event_class.teletext_components.append (teletext);
+                }
+            }            
+        }
+*/
         private static uint get_uint_val (Gst.Structure structure, string name) {
             uint val;
             structure.get_uint (name, out val);
