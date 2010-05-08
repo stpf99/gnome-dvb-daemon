@@ -32,7 +32,7 @@ namespace DVB {
         public static const uint RUNNING_STATUS_STARTS_SOON = 2;
         public static const uint RUNNING_STATUS_PAUSING = 3;
         public static const uint RUNNING_STATUS_RUNNING = 4;
-    
+
         public uint id;
         /* Time is stored in UTC */
         public uint year;
@@ -178,6 +178,10 @@ namespace DVB {
             if (event1 == null || event2 == null) return false;
             
             return (event1->id == event2->id);
+        }
+
+        public static uint hash (Event* event) {
+            return event->id;
         }
         
         public class AudioComponent {

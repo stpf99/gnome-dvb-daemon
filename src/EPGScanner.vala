@@ -44,7 +44,7 @@ namespace DVB {
         private MainLoop loop;
         private unowned Thread worker_thread;
         private uint bus_watch_id;
-        private HashMap<uint, Gee.List<Event>> channel_events;
+        private HashMap<uint, HashSet<Event>> channel_events;
         
         construct {
             this.channels = new GLib.Queue<Channel> ();
@@ -189,14 +189,14 @@ namespace DVB {
                             warning ("Could not find channel %u for this device", sid);
                             continue;
                         }
-                        Gee.List<Event> list = this.channel_events.get (sid);
+                        HashSet<Event> list = this.channel_events.get (sid);
 
                         debug ("Adding %d events of channel %s (%u)",
                             list.size, channel.Name, sid);
                         channel.Schedule.add_all (list);
                     }
                 }
-                this.channel_events = new HashMap<uint, Gee.List<Event>> ();
+                this.channel_events = new HashMap<uint, HashSet<Event>> ();
             }
 
             if (this.channels.is_empty ()) {
@@ -301,9 +301,10 @@ namespace DVB {
 
                     uint sid = get_uint_val (structure, "service-id");
                     if (!this.channel_events.contains (sid)) {
-                        this.channel_events.set (sid, new ArrayList<Event> ());
+                        this.channel_events.set (sid,
+                            new HashSet<Event> (Event.hash, Event.equal));
                     }
-                    Gee.List<Event> list = this.channel_events.get (sid);
+                    HashSet<Event> list = this.channel_events.get (sid);
                     
                     list.add (event_class);
                 }

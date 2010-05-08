@@ -167,7 +167,7 @@ namespace DVB {
             }
         }
 
-        public void add_all (Gee.List<Event> new_events) {
+        public void add_all (Collection<Event> new_events) {
             lock (this.events) {
                 try {
                     ((database.sqlite.SqliteDatabase)this.epgstore).begin_transaction ();
