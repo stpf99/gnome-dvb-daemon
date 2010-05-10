@@ -58,7 +58,10 @@ namespace DVB {
         public string Name {get; set;}
                 
         // All settings are copied from this one
-        public Device reference_device {get; construct;}
+        public Device reference_device {
+            get;
+            construct set;
+        }
         
         private Set<Device> devices;
         private Recorder _recorder;
@@ -85,8 +88,9 @@ namespace DVB {
          */
         public DeviceGroup (uint id, Device reference_device,
                 bool with_epg_scanner=true) {
-            base (Id: id, reference_device: reference_device);
+            Object (Id: id, reference_device: reference_device);
             this.reference_device.Channels.GroupId = id;
+
             if (with_epg_scanner) {
                 this._epgscanner = new EPGScanner (this);
             } else {
@@ -142,6 +146,14 @@ namespace DVB {
             }
             return result;
         }
+
+        public bool add_and_emit (Device device) {
+            if (this.add (device)) {
+                this.device_added (device.Adapter, device.Frontend);
+                return true;
+            }
+            return false;
+        }
         
         public bool contains (Device device) {
             bool result;
@@ -155,8 +167,23 @@ namespace DVB {
             bool result;
             lock (this.devices) {
                 result = this.devices.remove (device);
+                if (Device.equal (device, this.reference_device)) {
+                    foreach (Device dev in this.devices) {
+                        debug ("Assigning new reference device");
+                        this.reference_device = dev;
+                        break;
+                    }
+                }
             }
             return result;
+        }
+
+        public bool remove_and_emit (Device device) {
+            if (this.remove (device)) {
+                this.device_removed (device.Adapter, device.Frontend);
+                return true;
+            }
+            return false;
         }
         
         /**
