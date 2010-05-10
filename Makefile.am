@@ -69,12 +69,14 @@ gnome_dvb_daemon_VALASOURCES = \
 	$(NULL)
 
 vala_pkgs = \
-    --pkg gio-2.0 \
-    --pkg dbus-glib-1 \
-    --pkg gstreamer-0.10 \
-    --pkg gee-1.0 \
-    --pkg sqlite3 \
-    --pkg gst-rtsp-server-0.10
+	--pkg gio-2.0 \
+	--pkg dbus-glib-1 \
+	--pkg gstreamer-0.10 \
+	--pkg gee-1.0 \
+	--pkg sqlite3 \
+	--pkg gst-rtsp-server-0.10 \
+	--pkg gudev-1.0 \
+	$(NULL)
     
 own_pkgs = \
 	--pkg config \
@@ -90,6 +92,7 @@ gnome_dvb_daemon_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	$(GNOME_DVB_DAEMON_CFLAGS) \
 	$(GST_CFLAGS) \
+	$(GUDEV_CFLAGS) \
 	-I$(top_srcdir)/vapi \
 	-include $(CONFIG_HEADER) \
 	$(NULL)
@@ -104,6 +107,7 @@ gnome_dvb_daemon_LDFLAGS = \
 gnome_dvb_daemon_LDADD = \
 	$(GNOME_DVB_DAEMON_LIBS) \
 	$(GST_LIBS) \
+	$(GUDEV_LIBS) \
 	libdvbdaemon-utils.a \
 	$(NULL)
 
