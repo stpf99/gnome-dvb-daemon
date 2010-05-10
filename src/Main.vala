@@ -72,14 +72,13 @@ namespace Main {
         return true;
     }
     
-    private static bool start_recordings_store (uint32 minimum_id) {
+    private static bool start_recordings_store () {
        message ("Creating new RecordingsStore D-Bus service");
        
        try {
             var conn = DBus.Bus.get (DBus.BusType.SESSION);
         
             recstore = DVB.RecordingsStore.get_instance ();
-            recstore.update_last_id (minimum_id);
                             
             conn.register_object (
                 DVB.Constants.DBUS_RECORDINGS_STORE_PATH,
@@ -143,6 +142,23 @@ namespace Main {
         val = check_feature_version ("rtpmp2tpay", 0, 10, 14);
         return val;
     }
+
+    private static void restore_device_groups () {
+        DVB.database.ConfigStore config_store = DVB.Factory.get_config_store ();
+        
+        Gee.List<DVB.DeviceGroup> device_groups;
+        try {
+            device_groups = config_store.get_all_device_groups ();
+        } catch (DVB.database.SqlError e) {
+            critical ("%s", e.message);
+            return;
+        }
+
+        message ("Restoring %d device groups", device_groups.size);
+        foreach (DVB.DeviceGroup device_group in device_groups) {
+            manager.restore_device_group_and_timers (device_group);
+        }
+    }
     
     public static int main (string[] args) {
         // set timezone to avoid that strftime stats /etc/localtime on every call
@@ -187,45 +203,10 @@ namespace Main {
         }
         
         if (!start_manager ()) return -1;
-        
-        uint32 max_id = 0;
-        
-        DVB.database.TimersStore timers_store = DVB.Factory.get_timers_store ();
-        DVB.database.ConfigStore config_store = DVB.Factory.get_config_store ();
-        
-        message ("Restoring device groups");
-        try {
-            Gee.List<DVB.DeviceGroup> device_groups = config_store.get_all_device_groups ();
-            foreach (DVB.DeviceGroup device_group in device_groups) {
-                
-                try {    
-                    device_group.Channels.load (device_group.Type);
-                } catch (Error e) {
-                	critical ("Error reading channels from file: %s", e.message);
-                	continue;
-                }
-                
-                if (manager.add_device_group (device_group)) {
-                    DVB.Recorder rec = device_group.recorder;
-                    // Restore timers
-                    message ("Restoring timers of device group %u", device_group.Id);
-                    Gee.List<DVB.Timer> timers = timers_store.get_all_timers_of_device_group (device_group);
-                    foreach (DVB.Timer t in timers) {
-                        if (t.Id > max_id) max_id = t.Id;
-                        uint32 rec_id;
-                        if (!rec.add_timer (t, out rec_id))
-                            timers_store.remove_timer_from_device_group (t.Id, device_group);
-                    }
-                }
-                
-            }
-        } catch (DVB.database.SqlError e) {
-            critical ("%s", e.message);
-        }
-        timers_store = null;
-        config_store = null;
 
-        if (!start_recordings_store (max_id)) return -1;
+        if (!start_recordings_store ()) return -1;
+        
+        restore_device_groups ();
 
         Idle.add (DVB.RTSPServer.start);
 
