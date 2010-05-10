@@ -110,10 +110,7 @@ namespace DVB {
                 device = Device.new_with_type (adapter, frontend);
             } else {
                 // Stop epgscanner for device if there's any
-                EPGScanner? epgscanner =
-                    this.get_device_group_of_device (
-                        reg_dev).epgscanner;
-                if (epgscanner != null) epgscanner.stop ();
+                this.get_device_group_of_device (reg_dev).stop_epg_scanner ();
                 
                 // Assign existing device
                 device = reg_dev;
@@ -387,10 +384,8 @@ namespace DVB {
             
             if (group_id > device_group_counter)
                 device_group_counter = group_id;
-            
-            if (!Main.get_disable_epg_scanner ()) {
-                devgroup.epgscanner.start ();
-            }
+
+            devgroup.start_epg_scanner ();
             
             return true;
         }
@@ -485,8 +480,7 @@ namespace DVB {
             // Start epgscanner for device again if there was one
             DeviceGroup? devgroup = this.get_device_group_of_device (scanner.Device);
             if (devgroup != null) {
-                EPGScanner? epgscanner = devgroup.epgscanner;
-                if (epgscanner != null) epgscanner.start ();
+                devgroup.start_epg_scanner ();
             }
         }
         
@@ -601,8 +595,8 @@ namespace DVB {
                     group_id);
 
                 DeviceGroup? group = this.get_device_group_if_exists (group_id);
-                if (group != null && group.epgscanner != null)
-                    group.epgscanner.stop ();
+                if (group != null)
+                    group.stop_epg_scanner ();
 
                 if (action == "add") {
                     if (group == null) {
@@ -625,8 +619,8 @@ namespace DVB {
                     group.remove (dvb_device);
                 }
 
-                if (group != null && group.epgscanner != null)
-                    group.epgscanner.start ();
+                if (group != null)
+                    group.start_epg_scanner ();
             }
         }
         

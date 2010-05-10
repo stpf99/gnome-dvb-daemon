@@ -102,15 +102,23 @@ namespace DVB {
 
         public void destroy () {
             debug ("Destroying group %u", this.Id);
-            if (this._epgscanner != null) {
-                this._epgscanner.stop ();
-            }
+            this.stop_epg_scanner ();
             this._recorder.stop ();
             this._channelfactory.destroy ();
             this.schedules.clear ();
             lock (this.devices) {
                 this.devices.clear ();
             }
+        }
+
+        public void start_epg_scanner () {
+            if (this._epgscanner != null)
+                this._epgscanner.start ();
+        }
+
+        public void stop_epg_scanner () {
+            if (this._epgscanner != null)
+                this._epgscanner.stop ();
         }
         
         /**
@@ -306,7 +314,7 @@ namespace DVB {
                 if (this.remove (dev)) {
                     // Stop epgscanner, because it might use the
                     // device we want to unregister
-                    if (this.epgscanner != null) this.epgscanner.stop ();
+                    this.stop_epg_scanner ();
 
                     try {
                         Factory.get_config_store ().remove_device_from_group (
@@ -316,9 +324,9 @@ namespace DVB {
                         return false;
                     }
                     // Group has no devices anymore, delete it
-                    if (this.size > 0 && this.epgscanner != null) {
+                    if (this.size > 0) {
                         // We still have a device, start EPG scanner again
-                        this.epgscanner.start ();
+                        this.start_epg_scanner ();
                     }
 
                     this.device_removed (adapter, frontend);

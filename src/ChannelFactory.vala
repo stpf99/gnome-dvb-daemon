@@ -568,8 +568,7 @@ namespace DVB {
             debug ("Creating new PlayerThread: %s", create_new.to_string ());
             if (create_new) {
                 // Stop epgscanner before starting recording
-                EPGScanner? epgscanner = this.device_group.epgscanner;
-                if (epgscanner != null) epgscanner.stop ();
+                this.device_group.stop_epg_scanner ();
 
                 free_device = this.device_group.get_next_free_device ();
                 if (free_device == null && force) {
@@ -626,8 +625,7 @@ namespace DVB {
                 
                 if (this.active_players.size == 0) {
                     // Start EPG scanner again
-                    EPGScanner? epgscanner = this.device_group.epgscanner;
-                    if (epgscanner != null) epgscanner.start ();
+                    this.device_group.start_epg_scanner ();
                 }
             }
 
