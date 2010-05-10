@@ -95,6 +95,9 @@ namespace DVB.database.sqlite {
         
         private static const string INSERT_DEVICE =
         "INSERT INTO devices VALUES (?, ?, ?)";
+
+        private static const string SELECT_GROUP_OF_DEVICE =
+        "SELECT group_id FROM devices WHERE adapter=? AND frontend=?";
         
         private static const string SELECT_TIMERS =
         "SELECT * FROM timers WHERE group_id=?";
@@ -139,6 +142,7 @@ namespace DVB.database.sqlite {
         private Statement delete_device_statement;
         private Statement delete_group_devices_statement;
         private Statement insert_device_statement;
+        private Statement select_group_of_device_statement;
         private Statement select_timers_statement;
         private Statement delete_timer_statement;
         private Statement delete_group_timers_statement;
@@ -191,6 +195,8 @@ namespace DVB.database.sqlite {
                 out this.delete_group_devices_statement);
             this.db.prepare (INSERT_DEVICE, -1,
                 out this.insert_device_statement);
+            this.db.prepare (SELECT_GROUP_OF_DEVICE, -1,
+                out this.select_group_of_device_statement);
             this.db.prepare (SELECT_TIMERS, -1,
                 out this.select_timers_statement);
             this.db.prepare (DELETE_TIMER, -1,
@@ -335,6 +341,25 @@ namespace DVB.database.sqlite {
             }
             
             return true;
+        }
+
+        public bool get_parent_group (uint adapter, uint frontend, out uint group_id) throws SqlError {
+            this.select_group_of_device_statement.reset ();
+
+            if (this.select_group_of_device_statement.bind_int (1, (int)adapter) != Sqlite.OK
+                || this.select_group_of_device_statement.bind_int (2, (int)frontend) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+
+            bool ret = false;
+            while (this.select_group_of_device_statement.step () == Sqlite.ROW) {
+                group_id = this.select_group_of_device_statement.column_int (0);
+                ret = true;
+            }
+
+            return ret;
         }
         
         public bool contains_group (uint group_id) throws SqlError {
