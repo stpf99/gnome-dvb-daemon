@@ -107,6 +107,12 @@ namespace DVB {
          */
         public abstract bool RemoveChannelGroup (int channel_group_id) throws DBus.Error;
 
+        /**
+         * @returns: informations about all connected
+         * devices retrieved via udev
+         */
+		public abstract GLib.HashTable<string, string>[] GetDevices () throws DBus.Error;
+
     }
 
 }

@@ -347,6 +347,47 @@ namespace DVB {
         }
 
         /**
+         * @returns: informations about all connected
+         * devices retrieved via udev
+         */
+        public GLib.HashTable<string, string>[] GetDevices () throws DBus.Error {
+            GLib.List<GUdev.Device> devices = 
+                this.udev_client.query_by_subsystem ("dvb");
+            var devices_list = new GLib.List<HashTable<string, string>> ();
+
+            for (int i=0; i<devices.length (); i++) {
+                GUdev.Device dev = devices.nth_data (i);
+                string? device_file = dev.get_device_file ();
+
+                if (device_file == null || !device_file.contains ("frontend"))
+                    continue;
+
+                var map = new HashTable<string, string>.full (GLib.str_hash,
+                    GLib.str_equal, GLib.g_free, GLib.g_free);
+                devices_list.prepend (map);
+
+                map.insert ("device_file", device_file);
+
+                GUdev.Device? parent = dev.get_parent ();
+                if (parent != null) {
+                    string attr;
+                    attr = parent.get_sysfs_attr ("manufacturer");
+                    if (attr != null) map.insert ("manufacturer", attr);
+
+                    attr = parent.get_sysfs_attr ("product");
+                    if (attr != null) map.insert ("product", attr);
+                }
+            }
+
+            var arr = new GLib.HashTable<string, string>[devices_list.length ()];
+            for (int i=0; i<devices_list.length (); i++) {
+                arr[i] = devices_list.nth_data (i);
+            }
+
+            return arr;
+        }
+
+        /**
          * @returns: Whether the device has been added successfully
          *
          * Register device, create Recorder and ChannelList D-Bus service
