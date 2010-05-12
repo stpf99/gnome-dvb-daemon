@@ -23,7 +23,6 @@ import gobject
 import gst
 import re
 import sys
-import gnomedvb.udev
 
 __all__ = [
     "global_error_handler",
@@ -80,7 +79,8 @@ def get_adapter_info(adapter, frontend):
     return (success, info)
 
 def get_dvb_devices():
-    devices = gnomedvb.udev.get_dvb_devices()   
+    manager = DVBManagerClient()
+    devices = manager.get_devices()   
 
     deviceslist = []
     for dev in devices:
@@ -158,6 +158,9 @@ class DVBManagerClient(gobject.GObject):
         
     def remove_channel_group(self, group_id, **kwargs):
         return self.manager.RemoveChannelGroup(group_id, **kwargs)
+
+    def get_devices(self, **kwargs):
+        return self.manager.GetDevices()
     
     def on_group_added(self, group_id):
         self.emit("group-added", group_id)
