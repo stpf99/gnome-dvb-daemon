@@ -306,6 +306,7 @@ namespace DVB.database.sqlite {
                 return false;
             }
             
+            this.begin_transaction ();
             if (this.insert_group_statement.step () != Sqlite.DONE) {
                 this.throw_last_error ();
                 return false;
@@ -313,6 +314,8 @@ namespace DVB.database.sqlite {
             
             foreach (Device dev in dev_group)
                 this.add_device_to_group (dev, dev_group);
+            
+            this.end_transaction ();
                 
             return true;
         }
@@ -324,21 +327,23 @@ namespace DVB.database.sqlite {
                 return false;
             }
             
-            if (this.delete_group_statement.step () != Sqlite.DONE) {
-                this.throw_last_error ();
-                return false;
-            }
-            
             this.delete_group_devices_statement.reset ();
             if (this.delete_group_devices_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK) {
                 this.throw_last_error ();
                 return false;
             }
             
+            this.begin_transaction ();
+            if (this.delete_group_statement.step () != Sqlite.DONE) {
+                this.throw_last_error ();
+                return false;
+            }
+
             if (this.delete_group_devices_statement.step () != Sqlite.DONE) {
                 this.throw_last_error ();
                 return false;
             }
+            this.end_transaction ();
             
             return true;
         }
@@ -578,6 +583,8 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
+
+            this.begin_transaction ();
             if (this.delete_channel_group_statement.step () != Sqlite.DONE)
             {
                 this.throw_last_error ();
@@ -588,6 +595,8 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
+            this.end_transaction ();
+
             return true;
         }
         
