@@ -50,6 +50,7 @@ namespace DVB {
             this.channels = new GLib.Queue<Channel> ();
             this.stop_counter = 0;
             this.context = new MainContext ();
+            this.channel_events = new HashMap<uint, HashSet<Event>> ();
         }
         
         /**
@@ -129,6 +130,7 @@ namespace DVB {
                 // Vala unref's Channel instances for us
             }
             this.channels.clear ();
+            this.channel_events.clear ();
         }
         
         /**
@@ -182,21 +184,19 @@ namespace DVB {
          */
         private bool scan_new_frequency () {
             lock (this.channel_events) {
-                if (this.channel_events != null) {
-                    foreach (uint sid in this.channel_events.keys) {
-                        Channel channel = this.DeviceGroup.Channels.get_channel (sid);
-                        if (channel == null) {
-                            warning ("Could not find channel %u for this device", sid);
-                            continue;
-                        }
-                        HashSet<Event> list = this.channel_events.get (sid);
-
-                        debug ("Adding %d events of channel %s (%u)",
-                            list.size, channel.Name, sid);
-                        channel.Schedule.add_all (list);
+                foreach (uint sid in this.channel_events.keys) {
+                    Channel channel = this.DeviceGroup.Channels.get_channel (sid);
+                    if (channel == null) {
+                        warning ("Could not find channel %u for this device", sid);
+                        continue;
                     }
+                    HashSet<Event> list = this.channel_events.get (sid);
+
+                    debug ("Adding %d events of channel %s (%u)",
+                        list.size, channel.Name, sid);
+                    channel.Schedule.add_all (list);
                 }
-                this.channel_events = new HashMap<uint, HashSet<Event>> ();
+                this.channel_events.clear ();
             }
 
             if (this.channels.is_empty ()) {
