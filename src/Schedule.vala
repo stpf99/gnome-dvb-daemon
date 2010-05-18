@@ -62,8 +62,6 @@ namespace DVB {
         private Sequence<EventElement> events;
         private Map<uint, weak SequenceIter<EventElement>> event_id_map;
         private EPGStore epgstore;
-        private int last_index = 0;
-        private Gee.List<Event> levents;
         
         construct {
             this.events = new Sequence<EventElement> (EventElement.destroy);
@@ -74,39 +72,35 @@ namespace DVB {
         }
 
         private bool restore () {
-            if (this.last_index == 0) {
-                try {                        
-                    this.levents = this.epgstore.get_events (
-                        this.channel.Sid, this.channel.GroupId);
-                } catch (SqlError e) {
-                    critical ("%s", e.message);
-                }
+            Gee.List<Event> levents;
+            try {                        
+                levents = this.epgstore.get_events (
+                    this.channel.Sid, this.channel.GroupId);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
+                return false;
             }
 
-            int i = this.last_index;
-            for (; i<this.last_index+100 && i<this.levents.size; i++) {
-                Event event = this.levents.get (i);
+            Gee.List<uint> expired_events = new ArrayList<uint> ();
+            for (int i=0; i<levents.size; i++) {
+                Event event = levents.get (i);
                 if (event.has_expired ()) {
-                    try {
-                        this.epgstore.remove_event (event.id, this.channel.Sid,
-                            this.channel.GroupId);
-                    } catch (SqlError e) {
-                        critical ("%s", e.message);
-                    }
+                    expired_events.add (event.id);
                 } else {
                     this.create_and_add_event_element (event);
                 }
             }
-            this.last_index = i;
 
-            if (this.last_index == this.levents.size) {
-                this.levents = null;
-                debug ("Finished restoring EPG events for channel %u",
-                    this.channel.Sid);
-                return false;
+            try {
+                this.epgstore.remove_all_events (expired_events, this.channel.Sid,
+                    this.channel.GroupId);
+            } catch (SqlError e) {
+                critical ("%s", e.message);
             }
 
-            return true;
+            debug ("Finished restoring EPG events for channel %u",
+                this.channel.Sid);
+            return false;
         }
         
         public Schedule (Channel channel) {
@@ -129,19 +123,23 @@ namespace DVB {
                         break;
                     }
                 }
-                
-                foreach (weak SequenceIter<EventElement> iter in expired_events) {
-                    debug ("Removing expired event");
-                    EventElement element = this.events.get (iter);
-                    
-                    this.event_id_map.remove (element.id);
-                    this.events.remove (iter);
-                    try {
+
+                debug ("Removing expired events of channel %s (%u)",
+                    channel.Name, channel.Sid);
+                try {
+                    ((database.sqlite.SqliteDatabase)this.epgstore).begin_transaction ();
+                    foreach (weak SequenceIter<EventElement> iter in expired_events) {
+                        EventElement element = this.events.get (iter);
+                        
+                        this.event_id_map.remove (element.id);
+                        this.events.remove (iter);
+
                         this.epgstore.remove_event (element.id,
                             this.channel.Sid, this.channel.GroupId);
-                    } catch (SqlError e) {
-                        critical ("%s", e.message);
                     }
+                    ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
                 }
             }
         }
