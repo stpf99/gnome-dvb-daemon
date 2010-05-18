@@ -226,6 +226,17 @@ namespace DVB.database.sqlite {
             
             return true;
         }
+
+        public bool remove_all_events (Gee.List<uint> event_ids,
+                uint channel_sid, uint group_id) throws SqlError
+        {
+            this.begin_transaction ();
+            foreach (uint id in event_ids) {
+                this.remove_event (id, channel_sid, group_id);
+            }
+            this.end_transaction ();
+            return true;
+        }
         
         public bool contains_event (Event event, uint channel_sid, uint group_id) throws SqlError
         {

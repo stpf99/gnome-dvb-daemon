@@ -26,6 +26,7 @@ namespace DVB.database {
         public abstract bool add_or_update_event (Event event, uint channel_sid, uint group_id) throws SqlError;
         public abstract Event? get_event (uint event_id, uint channel_sid, uint group_id) throws SqlError;
         public abstract bool remove_event (uint event_id, uint channel_sid, uint group_id) throws SqlError;
+        public abstract bool remove_all_events (Gee.List<uint> event_ids, uint channel_sid, uint group_id) throws SqlError;
         public abstract bool contains_event (Event event, uint channel_sid, uint group_id) throws SqlError;
         public abstract Gee.List<Event> get_events (uint channel_sid, uint group_id) throws SqlError;
         public abstract bool remove_events_of_group (uint group_id) throws SqlError;
