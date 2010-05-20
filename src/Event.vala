@@ -133,7 +133,7 @@ namespace DVB {
         /**
          * @returns: UNIX time stamp
          */
-        private time_t get_end_timestamp () {
+        public time_t get_end_timestamp () {
             Time end_time = Utils.create_utc_time ((int)this.year, (int)this.month,
                 (int)this.day, (int)this.hour, (int)this.minute,
                 (int)this.second);
