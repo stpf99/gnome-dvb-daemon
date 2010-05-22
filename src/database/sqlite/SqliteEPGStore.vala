@@ -54,7 +54,8 @@ namespace DVB.database.sqlite {
 
         private static const string SELECT_MINIMAL_EVENTS_STATEMENT =
             """SELECT event_id, datetime(starttime),
-            duration FROM events WHERE group_id='%u' AND sid='%u'""";
+            duration FROM events WHERE group_id='%u' AND sid='%u'
+            ORDER BY starttime ASC""";
             
         private static const string HAS_EVENT_STATEMENT =
             "SELECT 1 FROM events WHERE group_id=? AND sid=? AND event_id=? LIMIT 1";
@@ -75,6 +76,10 @@ namespace DVB.database.sqlite {
             
         private static const string DELETE_EVENTS_GROUP =
         "DELETE FROM events WHERE group_id=?";
+
+        private static const string DELETE_EXPIRED_EVENTS =
+        """DELETE FROM events WHERE starttime <= julianday(?, 'unixepoch')
+        AND sid=? AND group_id=?""";
             
         private Statement to_julian_statement;
         private Statement insert_event_statement;
@@ -83,6 +88,7 @@ namespace DVB.database.sqlite {
         private Statement has_event_statement;
         private Statement select_event_statement;
         private Statement delete_events_group;
+        private Statement delete_expired_events;
 
         public SqliteEPGStore () {
             File cache_dir = File.new_for_path (
@@ -108,6 +114,8 @@ namespace DVB.database.sqlite {
                 out this.select_event_statement);
             this.db.prepare (DELETE_EVENTS_GROUP, -1,
                 out this.delete_events_group);
+            this.db.prepare (DELETE_EXPIRED_EVENTS, -1,
+                out this.delete_expired_events);
         }
 
         public override void create () throws SqlError {
@@ -227,14 +235,25 @@ namespace DVB.database.sqlite {
             return true;
         }
 
-        public bool remove_all_events (Gee.List<uint> event_ids,
-                uint channel_sid, uint group_id) throws SqlError
+        public bool remove_events_older_than (Event event, uint channel_sid,
+                uint group_id) throws SqlError
         {
-            this.begin_transaction ();
-            foreach (uint id in event_ids) {
-                this.remove_event (id, channel_sid, group_id);
+            this.delete_expired_events.reset ();
+            time_t timestamp = event.get_end_timestamp ();
+
+            if (this.delete_expired_events.bind_int64 (1, timestamp) != Sqlite.OK
+                    || this.delete_expired_events.bind_int (2, (int)channel_sid) != Sqlite.OK
+                    || this.delete_expired_events.bind_int (3, (int)group_id) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
             }
-            this.end_transaction ();
+
+            if (this.delete_expired_events.step () != Sqlite.DONE) {
+                this.throw_last_error ();
+                return false;
+            }
+
             return true;
         }
         
