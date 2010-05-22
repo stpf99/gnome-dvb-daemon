@@ -81,21 +81,26 @@ namespace DVB {
                 return false;
             }
 
-            Gee.List<uint> expired_events = new ArrayList<uint> ();
+            int newest_expired = -1;
             for (int i=0; i<levents.size; i++) {
                 Event event = levents.get (i);
                 if (event.has_expired ()) {
-                    expired_events.add (event.id);
+                    /* events are sorted by starttime */
+                    newest_expired = i;
                 } else {
                     this.create_and_add_event_element (event);
                 }
             }
 
-            try {
-                this.epgstore.remove_all_events (expired_events, this.channel.Sid,
-                    this.channel.GroupId);
-            } catch (SqlError e) {
-                critical ("%s", e.message);
+            if (newest_expired != -1) {
+                Event event = levents.get (newest_expired);
+                try {
+                    this.epgstore.remove_events_older_than (event,
+                        this.channel.Sid, this.channel.GroupId);
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                    return false;
+                }
             }
 
             debug ("Finished restoring EPG events for channel %u",
@@ -108,7 +113,8 @@ namespace DVB {
         }
         
         public void remove_expired_events () {
-            SList<weak SequenceIter<EventElement>> expired_events = new SList <weak SequenceIter<EventElement>> ();
+            SList<weak SequenceIter<EventElement>> expired_events =
+                new SList <weak SequenceIter<EventElement>> ();
             
             lock (this.events) {
                 for (int i=0; i<this.events.get_length (); i++) {
@@ -126,20 +132,25 @@ namespace DVB {
 
                 debug ("Removing expired events of channel %s (%u)",
                     channel.Name, channel.Sid);
-                try {
-                    ((database.sqlite.SqliteDatabase)this.epgstore).begin_transaction ();
-                    foreach (weak SequenceIter<EventElement> iter in expired_events) {
-                        EventElement element = this.events.get (iter);
-                        
-                        this.event_id_map.remove (element.id);
-                        this.events.remove (iter);
 
-                        this.epgstore.remove_event (element.id,
+                weak SList<weak SequenceIter<EventElement>> last_iter =
+                    expired_events.last ();
+                if (last_iter != null) {
+                    EventElement element = this.events.get (last_iter.data);
+                    Event? event = this.get_event (element.id);
+                    try {
+                        this.epgstore.remove_events_older_than (event,
                             this.channel.Sid, this.channel.GroupId);
+                    } catch (SqlError e) {
+                        critical ("%s", e.message);
                     }
-                    ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();
-                } catch (SqlError e) {
-                    critical ("%s", e.message);
+                }
+
+                foreach (weak SequenceIter<EventElement> iter in expired_events) {
+                    EventElement element = this.events.get (iter);
+                    
+                    this.event_id_map.remove (element.id);
+                    this.events.remove (iter);
                 }
             }
         }
@@ -287,7 +298,7 @@ namespace DVB {
                     SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    if (event.has_expired ()) continue;
+                    if (event == null || event.has_expired ()) continue;
                     events.add (element.id);
                  }
             }
@@ -308,7 +319,7 @@ namespace DVB {
 
                     while (!iter.is_end ()) {
                         Event? event = this.get_event (element.id);
-                        if (!event.has_expired ())
+                        if (event != null && !event.has_expired ())
                             events.add (event);
 
                         iter = iter.next ();
@@ -406,7 +417,7 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    if (event.name != null) {
+                    if (event != null && event.name != null) {
                         name = event.name;
                         ret = true;
                     }
@@ -428,7 +439,7 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    if (event.description != null) {
+                    if (event != null && event.description != null) {
                         description = event.description;
                         ret = true;
                     }
@@ -450,7 +461,7 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    if (event.extended_description != null) {
+                    if (event != null && event.extended_description != null) {
                         description = event.extended_description;
                         ret = true;
                     }
@@ -472,8 +483,10 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    duration = event.duration;
-                    ret = true;
+                    if (event != null) {
+                        duration = event.duration;
+                        ret = true;
+                    }
                 } else {
                     debug ("No event with id %u", event_id);
                 }
@@ -492,14 +505,18 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    Time local_time = event.get_local_start_time ();
-                    start_time = to_time_array (local_time);
-                    ret = true;
+                    if (event != null) {
+                        Time local_time = event.get_local_start_time ();
+                        start_time = to_time_array (local_time);
+                        ret = true;
+                    }
                 } else {
                     debug ("No event with id %u", event_id);
                     start_time = new uint[] {};
                 }
             }
+
+            if (!ret) start_time = new uint[0];
             
             return ret;
         }
@@ -513,9 +530,11 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    Time local_time = event.get_local_start_time ();
-                    timestamp = (int64)local_time.mktime ();
-                    ret = true;
+                    if (event != null) {
+                        Time local_time = event.get_local_start_time ();
+                        timestamp = (int64)local_time.mktime ();
+                        ret = true;
+                    }
                 }
             }
             return ret;
@@ -531,8 +550,10 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    running = (event.is_running ());
-                    ret = true;
+                    if (event != null) {
+                        running = (event.is_running ());
+                        ret = true;
+                    }
                 } else {
                     debug ("No event with id %u", event_id);
                 }
@@ -551,8 +572,10 @@ namespace DVB {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
-                    scrambled = (!event.free_ca_mode);
-                    ret = true;
+                    if (event != null) {
+                        scrambled = (!event.free_ca_mode);
+                        ret = true;
+                    }
                 } else {
                     debug ("No event with id %u", event_id);
                 }
