@@ -100,7 +100,7 @@ class ScheduleStore(gtk.ListStore):
     def get_extended_description(self, aiter):
         if aiter != None:
             event_id = self[aiter][self.COL_EVENT_ID] 
-            ext_desc = escape(self._client.get_extended_description(event_id)[0])
+            ext_desc = self._client.get_extended_description(event_id)[0]
             self[aiter][self.COL_EXTENDED_DESC] = ext_desc
         return ext_desc
         
