@@ -66,14 +66,14 @@ class SchedulePaned (gtk.VPaned):
             if event_id != ScheduleStore.NEW_DAY:
                 description = model[aiter][ScheduleStore.COL_SHORT_DESC]
                 if description != None and len(description) > 0:
-                    description += "\n"
+                    description += "\n\n"
                 
                 # Check if row is the selected row
                 ext_desc = model[aiter][ScheduleStore.COL_EXTENDED_DESC]
                 if ext_desc == None:
                     ext_desc = model.get_extended_description(aiter)
                     model[aiter][ScheduleStore.COL_EXTENDED_DESC] = ext_desc
-                description += "\n%s" % ext_desc
+                description += ext_desc
                 
                 textbuffer = self.textview.get_buffer()
                 textbuffer.set_text(description)
