@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dvb-daemon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-03 20:05+0200\n"
+"POT-Creation-Date: 2010-05-04 23:08+0200\n"
 "PO-Revision-Date: 2009-11-19 12:53+0000\n"
 "Last-Translator: faultygearbox <faultygearbox@gmail.com>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-04-13 20:05+0000\n"
+"X-Launchpad-Export-Date: 2010-05-23 13:08+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -73,7 +73,7 @@ msgstr "Alla kanaler"
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:33
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:94
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:96
 msgid "Channel"
 msgstr "Kanal"
 
@@ -121,157 +121,157 @@ msgstr ""
 msgid "There is currently no schedule available for this channel"
 msgstr "Det finns inget schema tillgängligt för denna kanal"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:155
-#: ../client/totem-plugin/dvb-daemon.py:317
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:157
+#: ../client/totem-plugin/dvb-daemon.py:324
 msgid "_Recording schedule"
 msgstr "_Inspelningsschema"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:156
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
 msgid "_Edit"
 msgstr "_Redigera"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:157
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
 msgid "_View"
 msgstr "_Visa"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
 msgid "Help"
 msgstr "Hjälp"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:165
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:167
 msgid "_Manage"
 msgstr "_Hantera"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:166
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:267
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:269
 msgid "Manage recording schedule"
 msgstr "Hantera inspelningsschemat"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:167
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
 msgid "_Recordings"
 msgstr "_Inspelningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
 msgid "Manage recordings"
 msgstr "Hantera inspelningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
 msgid "_Quit"
 msgstr "A_vsluta"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
 msgid "Quit the Program"
 msgstr "Avsluta programmet"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:175
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:177
 msgid "_Channel Lists"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:176
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
 msgid "Edit channel lists"
 msgstr "Redigera kanallistor"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:177
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
 msgid "_Preferences"
 msgstr "_Inställningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
 msgid "Display preferences"
 msgstr "Visningsinställningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:184
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:186
 msgid "_What's on now"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:185
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
 msgid "See what's currently on and is coming next"
 msgstr "Se vad som visas nu och vad som kommer senare"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:186
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
 msgid "_Refresh"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:295
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:297
 msgid "Refresh program guide"
 msgstr "Uppdatera programguide"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
 msgid "_Previous Day"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:303
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:305
 msgid "Go to previous day"
 msgstr "Gå till föregående dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
 msgid "_Next Day"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:312
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:314
 msgid "Go to next day"
 msgstr "Gå till nästa dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:196
 msgid "_Channels"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:195
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
 msgid "View/Hide channels"
 msgstr "Visa/Dölj kanaler"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:196
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
 msgid "_Toolbar"
 msgstr ""
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
 msgid "View/Hide toolbar"
 msgstr "Visa/Göm verktygsfält"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:207
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:209
 msgid "_About"
 msgstr "_Om"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:208
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
 msgid "Display informations about the program"
 msgstr "Visa information om programmet"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:263
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:265
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
 msgid "Recording schedule"
 msgstr "Inspelningsschema"
 
 #. Add recordings
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:274
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:276
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:153
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:30
-#: ../client/totem-plugin/dvb-daemon.py:269
+#: ../client/totem-plugin/dvb-daemon.py:276
 msgid "Recordings"
 msgstr "Inspelningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:283
-#: ../client/totem-plugin/dvb-daemon.py:298
-#: ../client/totem-plugin/dvb-daemon.py:319
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:285
+#: ../client/totem-plugin/dvb-daemon.py:305
+#: ../client/totem-plugin/dvb-daemon.py:326
 msgid "What's on now"
 msgstr "Vad visas nu"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:301
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:303
 msgid "Previous Day"
 msgstr "Föregående dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:310
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:312
 msgid "Next Day"
 msgstr "Nästa dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:498
-#: ../client/totem-plugin/dvb-daemon.py:175
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
+#: ../client/totem-plugin/dvb-daemon.py:178
 msgid "Schedule recording for the selected event?"
 msgstr "Schemalägg inspelning för den markerade händelsen?"
 
 #. translators: These appear in the About dialog, usual format applies.
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:586
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:588
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
@@ -340,7 +340,7 @@ msgid "Edit group"
 msgstr "Redigera grupp"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:38
-#: ../client/totem-plugin/dvb-daemon.py:320
+#: ../client/totem-plugin/dvb-daemon.py:327
 msgid "Digital TV Preferences"
 msgstr "Inställningar för digital-tv"
 
@@ -619,30 +619,31 @@ msgid "Device selection"
 msgstr "Enhetsval"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
-msgid ""
-"Choose the channels you want to have in your list of channels. You can "
-"reorder the channels, too."
+msgid "This process can take some time."
 msgstr ""
-"Markera de kanaler som du vill ha i din kanallista. Du kan även sortera "
-"kanalerna som du önskar."
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:65
-msgid "Select all"
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:61
+msgid ""
+"You can select the channels you want to have in your list of channels."
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:67
+msgid "Select all"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:69
 msgid "Deselect all"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:82
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:84
 msgid "_Channels:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:117
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:119
 msgid "Select _scrambled channels"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:129
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:131
 msgid "Scanning for channels"
 msgstr "Söker efter kanaler"
 
@@ -814,12 +815,16 @@ msgstr "Enheten %s har nu konfigurerats."
 msgid "Failed configuring device %s."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:56
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:44
+msgid "Cleaning up. This may take a while."
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:82
 #: ../data/gnome-dvb-setup.desktop.in.in.h:2
 msgid "Setup digital TV"
 msgstr "Konfigurera digital-tv"
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:118
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:153
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
@@ -827,7 +832,7 @@ msgstr ""
 "Den genererade kanalfilen kan användas för att konfigurera dina enheter i "
 "kontrollpanelen."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:165
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:200
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
@@ -835,66 +840,66 @@ msgstr ""
 "Är du säker på att du vill avbryta?\n"
 "Alla ändringar kommer att gå förlorade."
 
-#: ../client/totem-plugin/dvb-daemon.py:147
-#: ../client/totem-plugin/dvb-daemon.py:191
-#: ../client/totem-plugin/dvb-daemon.py:304
+#: ../client/totem-plugin/dvb-daemon.py:150
+#: ../client/totem-plugin/dvb-daemon.py:194
+#: ../client/totem-plugin/dvb-daemon.py:311
 msgid "Program Guide"
 msgstr "Programguide"
 
-#: ../client/totem-plugin/dvb-daemon.py:275
+#: ../client/totem-plugin/dvb-daemon.py:282
 msgid "Digital TV"
 msgstr "Digital-tv"
 
-#: ../client/totem-plugin/dvb-daemon.py:315
+#: ../client/totem-plugin/dvb-daemon.py:322
 msgid "Watch TV"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:316
+#: ../client/totem-plugin/dvb-daemon.py:323
 msgid "Digital _TV"
 msgstr "Digital-_tv"
 
-#: ../client/totem-plugin/dvb-daemon.py:318
+#: ../client/totem-plugin/dvb-daemon.py:325
 msgid "_Program Guide"
 msgstr "_Programguide"
 
-#: ../client/totem-plugin/dvb-daemon.py:321
+#: ../client/totem-plugin/dvb-daemon.py:328
 msgid "_Delete"
 msgstr "_Ta bort"
 
-#: ../client/totem-plugin/dvb-daemon.py:322
+#: ../client/totem-plugin/dvb-daemon.py:329
 msgid "D_etails"
 msgstr "D_etaljer"
 
-#: ../client/totem-plugin/dvb-daemon.py:323
+#: ../client/totem-plugin/dvb-daemon.py:330
 msgid "_Order channels"
 msgstr "_Ordna kanaler"
 
-#: ../client/totem-plugin/dvb-daemon.py:326
+#: ../client/totem-plugin/dvb-daemon.py:333
 msgid "By _name"
 msgstr "Efter _namn"
 
-#: ../client/totem-plugin/dvb-daemon.py:327
+#: ../client/totem-plugin/dvb-daemon.py:334
 msgid "By _group"
 msgstr "Efter _grupp"
 
-#: ../client/totem-plugin/dvb-daemon.py:330
+#: ../client/totem-plugin/dvb-daemon.py:337
 msgid "_Reverse order"
 msgstr "_Baklänges"
 
-#: ../client/totem-plugin/dvb-daemon.py:483
+#: ../client/totem-plugin/dvb-daemon.py:490
 msgid "Delete selected recording?"
 msgstr "Ta bort markerad inspelning?"
 
-#: ../client/totem-plugin/dvb-daemon.py:526
+#: ../client/totem-plugin/dvb-daemon.py:533
 msgid "Totem Movie Player"
 msgstr "Filmspelaren Totem"
 
-#: ../client/totem-plugin/dvb-daemon.py:572
+#: ../client/totem-plugin/dvb-daemon.py:579
 #, python-format
 msgid "Recording %d"
 msgstr "Inspelning %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:632
+#: ../client/totem-plugin/dvb-daemon.py:639
 msgid "GNOME DVB Daemon is not installed"
 msgstr ""
 
@@ -1153,6 +1158,13 @@ msgstr ""
 
 #~ msgid "Do you want to search for channels now?"
 #~ msgstr "Vill du söka efter kanaler nu?"
+
+#~ msgid ""
+#~ "Choose the channels you want to have in your list of channels. You can "
+#~ "reorder the channels, too."
+#~ msgstr ""
+#~ "Markera de kanaler som du vill ha i din kanallista. Du kan även sortera "
+#~ "kanalerna som du önskar."
 
 #~ msgid "Select a group:"
 #~ msgstr "Välj en grupp:"
