@@ -1,4 +1,28 @@
 ==============
+Version 0.1.18
+==============
+
+This release adds hot-plugging support for devices and
+includes various performance improvements regarding accessing
+the SQLite database.
+
+- totem-plugin: Use gnome-dvb-daemon domain for gettext and locale
+- SqliteEPGStore: Set synchronous pragma to OFF for speed reasons
+- Added support for hot-plugging devices
+- Added GetDevices method to manager DBus interface to retrieve informations about devices via udev
+- Removed python udev module and use new DBus method instead
+- Group sql statements into one transaction where possible
+- Schedule: Remove all expired events of a channel with a single query
+
+Updated Translations:
+---------------------
+- Brazilian Portuguese
+- Czech
+- Danish
+- French
+- Polish
+
+==============
 Version 0.1.17
 ==============
 
