@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -129,7 +129,7 @@ namespace DVB {
         }
         
         protected override Channel get_new_channel () {
-            return new SatelliteChannel ();
+            return new SatelliteChannel.without_schedule ();
         }
         
         protected override void add_values_from_structure_to_channel (
