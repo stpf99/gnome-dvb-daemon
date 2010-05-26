@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -27,7 +27,8 @@ namespace DVB {
             get { return this.sid; }
             set {
                 this.sid = value;
-                this.schedule = new DVB.Schedule (this);
+                if (this.has_schedule)
+                    this.schedule = new DVB.Schedule (this);
             }
         }
         public uint GroupId {get; set;}
@@ -51,9 +52,18 @@ namespace DVB {
         
         private DVB.Schedule schedule;
         private uint sid;
+        private bool has_schedule;
         
         construct {
             this.AudioPIDs = new Gee.ArrayList<uint> ();
+        }
+
+        public Channel () {
+            this.has_schedule = true;
+        }
+
+        public Channel.without_schedule () {
+            this.has_schedule = false;
         }
         
         public string get_audio_pids_string () {

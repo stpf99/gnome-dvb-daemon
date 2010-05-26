@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -31,6 +31,10 @@ namespace DVB {
         public DvbSrcTransmissionMode TransmissionMode {get; set;}
         public DvbSrcGuard GuardInterval {get; set;}
         public DvbSrcHierarchy Hierarchy {get; set;}
+
+        public TerrestrialChannel.without_schedule () {
+            Channel.without_schedule ();
+        }
         
         public override void setup_dvb_source (Gst.Element source) {
             source.set ("modulation", this.Constellation);

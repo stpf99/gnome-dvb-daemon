@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -26,6 +26,10 @@ namespace DVB {
         public uint SymbolRate {get; set;}
         public DvbSrcCodeRate CodeRate {get; set;}
         public DvbSrcModulation Modulation {get; set;}
+
+        public CableChannel.without_schedule () {
+            Channel.without_schedule ();
+        }
         
         public override void setup_dvb_source (Gst.Element source) {
             source.set ("frequency", this.Frequency);

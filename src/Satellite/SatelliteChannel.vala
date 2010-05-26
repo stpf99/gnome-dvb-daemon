@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -25,6 +25,10 @@ namespace DVB {
         public string Polarization {get; set;}
         public uint SymbolRate {get; set;}
         public int DiseqcSource {get; set;}
+
+        public SatelliteChannel.without_schedule () {
+            Channel.without_schedule ();
+        }
         
         public override bool is_valid () {
             return (base.is_valid () && this.SymbolRate != 0
