@@ -478,8 +478,7 @@ class DVBDaemonPlugin(totem.Plugin):
     
     def _on_action_preferences(self, action):
         prefs = Preferences(self.manager, self.totem_object.get_main_window())
-        prefs.run()
-        prefs.destroy()
+        prefs.show()
         
     def _on_action_delete(self, action):
         model, aiter = self.channels_view.get_selection().get_selected()
