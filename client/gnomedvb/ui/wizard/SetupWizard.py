@@ -113,10 +113,13 @@ class SetupWizard(gtk.Assistant):
 
         icon_theme = gtk.icon_theme_get_default()
         width, height = gtk.icon_size_lookup(gtk.ICON_SIZE_DIALOG)
-        pixbuf = icon_theme.load_icon("gnome-dvb-setup", height, 0)
-        for i in range(self.get_n_pages()):
-            page = self.get_nth_page(i)
-            self.set_page_header_image(page, pixbuf)
+        try:
+            pixbuf = icon_theme.load_icon("gnome-dvb-setup", height, 0)
+            for i in range(self.get_n_pages()):
+                page = self.get_nth_page(i)
+                self.set_page_header_image(page, pixbuf)
+        except glib.GError:
+            pass
 
         gtk.window_set_default_icon_name("gnome-dvb-setup")
         

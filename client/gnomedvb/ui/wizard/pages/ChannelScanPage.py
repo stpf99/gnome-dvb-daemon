@@ -176,7 +176,7 @@ class ChannelScanPage(BasePage):
                 elif channeltype == "Radio":
                     icon = self._theme.load_icon("audio-x-generic", 16,
                         gtk.ICON_LOOKUP_USE_BUILTIN)
-        except gobject.GError:
+        except glib.GError:
             icon = None
         
         name = name.replace("&", "&amp;")
