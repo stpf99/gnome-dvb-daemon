@@ -1,4 +1,14 @@
 ==============
+Version 0.1.19
+==============
+
+This release contains minor bug fixes.
+
+- Scanner: Create channels with Channel.without_schedule
+- gnomedvb: Catch error when retrieving icon from icon theme
+- totem-plugin: Fixed opening of DVB preferences window
+
+==============
 Version 0.1.18
 ==============
 
