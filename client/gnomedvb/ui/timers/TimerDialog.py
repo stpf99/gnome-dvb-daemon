@@ -28,7 +28,7 @@ from gnomedvb.ui.widgets.DateTime import DateTimeBox
 class TimerDialog(gtk.Dialog):
 
     def __init__(self, parent, device_group, channel=None,
-            starttime=datetime.datetime.now(), duration=60):
+            starttime=None, duration=60):
         """
         @param parent: Parent window
         @type parent: gtk.Window
@@ -97,6 +97,9 @@ class TimerDialog(gtk.Dialog):
         
         hbox = gtk.HBox(spacing=6)
         table.attach(hbox, 1, 2, 2, 3, yoptions=0)
+
+        if starttime == None:
+            starttime = datetime.datetime.now()
         
         self.datetime_box = DateTimeBox(starttime)
         self.datetime_box.connect("changed", self._on_datetime_changed)

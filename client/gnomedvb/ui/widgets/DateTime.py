@@ -29,7 +29,7 @@ class CalendarPopup(gtk.Window):
         "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, int, int, int]),
     }
 
-    def __init__(self, dt=datetime.datetime.now()):
+    def __init__(self, dt=None):
         gtk.Window.__init__(self, type=gtk.WINDOW_POPUP)
         self.set_border_width(5)
         self.vbox = gtk.VBox(spacing=12)
@@ -73,6 +73,8 @@ class CalendarPopup(gtk.Window):
         self.minute.set_width_chars(2)
         spinners_box.pack_start(self.minute)
 
+        if dt == None:
+            dt = datetime.datetime.now()
         self.set_date_and_time(dt.year, dt.month, dt.day,
             dt.hour, dt.minute)
 
@@ -156,7 +158,7 @@ class DateTimeBox(gtk.Bin):
         "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, int, int, int]),
     }
 
-    def __init__(self, dt=datetime.datetime.now()):
+    def __init__(self, dt=None):
         gtk.Bin.__init__(self)
 
         self.hbox = gtk.HBox()
@@ -168,6 +170,9 @@ class DateTimeBox(gtk.Bin):
         self.button.connect("toggled", self._on_button_toggled)
         arrow = gtk.Arrow(gtk.ARROW_DOWN, gtk.SHADOW_NONE)
         self.button.add(arrow)
+
+        if dt == None:
+            dt = datetime.datetime.now()
 
         self.popup_win = CalendarPopup(dt)
         self.popup_win.connect("changed", self._on_datetime_changed)
