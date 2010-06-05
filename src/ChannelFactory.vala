@@ -274,7 +274,10 @@ namespace DVB {
                     warning ("Could not find any sinks of channel %u", sid);
                 }
             }
-            
+            if (result == null)
+                debug ("Found NO sink");
+            else
+                debug ("Found sink");
             return result;
         }
         
@@ -330,13 +333,8 @@ namespace DVB {
 
                         dvbbasebin.set ("program-numbers", new_programs.str);
 
-                        Gst.StateChangeReturn ret =
-                            this.pipeline.set_state (State.PLAYING);
-                        if (ret == Gst.StateChangeReturn.FAILURE) {
-                            critical ("Failed setting pipeline to playing");
-                            this.destroy ();
+                        if (!this.set_playing_or_destroy ())
                             return false;
-                        }
                         this.active_channels.remove (channel);
                     }
 
@@ -362,10 +360,23 @@ namespace DVB {
                         // we still have sinks left
                         // (others are still watching this channel)
                         this.remove_sink_bin (channel_sid, sink);
+
+                        if (!this.set_playing_or_destroy ())
+                            return false;
                     }
                 }
             }
 
+            return true;
+        }
+
+        private bool set_playing_or_destroy () {
+            Gst.StateChangeReturn ret = this.pipeline.set_state (State.PLAYING);
+            if (ret == Gst.StateChangeReturn.FAILURE) {
+                critical ("Failed setting pipeline to playing");
+                this.destroy ();
+                return false;
+            }
             return true;
         }
         
