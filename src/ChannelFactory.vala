@@ -119,14 +119,14 @@ namespace DVB {
                 
                     Gst.Bus bus = this.pipeline.get_bus();
                     bus.add_signal_watch();
-                    bus.message += this.bus_watch_func;
+                    bus.message.connect (this.bus_watch_func);
                     
                     this.dvbbasebin = ElementFactory.make ("dvbbasebin", null);
                     if (this.dvbbasebin == null) {
                         critical ("Could not create dvbbasebin element");
                         return null;
                     }
-                    this.dvbbasebin.pad_added += this.on_dvbbasebin_pad_added;
+                    this.dvbbasebin.pad_added.connect (this.on_dvbbasebin_pad_added);
                     
                     channel.setup_dvb_source (this.dvbbasebin);
                     

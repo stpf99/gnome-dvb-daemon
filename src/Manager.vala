@@ -50,7 +50,7 @@ namespace DVB {
             this.devices = new HashMap<uint, DeviceGroup> ();
             this.device_group_counter = 0;
             this.udev_client = new GUdev.Client (UDEV_SUBSYSTEMS);
-            this.udev_client.uevent += this.on_udev_event;
+            this.udev_client.uevent.connect (this.on_udev_event);
         }
         
         public static unowned Manager get_instance () {
@@ -162,7 +162,7 @@ namespace DVB {
                         return false;
                     }
                     
-                    scanner.destroyed += this.on_scanner_destroyed;
+                    scanner.destroyed.connect (this.on_scanner_destroyed);
                     
                     this.scanners.set (path, scanner);
                     
@@ -412,7 +412,7 @@ namespace DVB {
                 critical ("%s", e.message);
                 return false;
             }
-            devgroup.device_removed += this.on_device_removed_from_group;
+            devgroup.device_removed.connect (this.on_device_removed_from_group);
             
             // Register D-Bus object
             var conn = Utils.get_dbus_connection ();
@@ -564,8 +564,9 @@ namespace DVB {
             return result;
         }
         
-        private void on_device_removed_from_group (DeviceGroup devgroup,
+        private void on_device_removed_from_group (IDBusDeviceGroup idevgroup,
                 uint adapter, uint frontend) {
+            DeviceGroup devgroup = (DeviceGroup)idevgroup;
             uint group_id = devgroup.Id;
             if (devgroup.size == 0) {
                 bool success;

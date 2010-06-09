@@ -49,7 +49,7 @@ namespace DVB {
         public void monitor_recording () {
             try {
                 this.file_monitor = this.Location.monitor_file (0, null);
-                this.file_monitor.changed += this.on_recording_file_changed;
+                this.file_monitor.changed.connect (this.on_recording_file_changed);
             } catch (Error e) {
                 warning ("Could not create FileMonitor: %s", e.message);
             }

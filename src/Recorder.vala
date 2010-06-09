@@ -632,7 +632,7 @@ namespace DVB {
                     channel_factory.stop_channel (channel, filesink);
                     return;
                 }
-                player.eit_structure += this.on_eit_structure;
+                player.eit_structure.connect (this.on_eit_structure);
                 
                 Recording recording = new Recording ();
                 recording.Id = timer.Id;
