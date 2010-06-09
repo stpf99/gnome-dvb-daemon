@@ -263,8 +263,8 @@ namespace DVB {
                 ChannelElements? celems = this.elements_map.get (sid);
                 if (celems != null) {
                     foreach (Gst.Element sink_bin in celems.sinks) {
-                        Gst.Iterator it = ((Gst.Bin)sink_bin).iterate_elements ();
-                        Gst.Element element = (Gst.Element) it.find_custom (find_element, sink);
+                        Gst.Iterator<Gst.Element> it = ((Gst.Bin)sink_bin).iterate_elements ();
+                        Gst.Element element = it.find_custom (find_element, sink);
                         if (element != null) {
                             result = sink_bin;
                             break;
@@ -497,20 +497,21 @@ namespace DVB {
          * Forward EIT structure
          */
         private void bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            switch (message.type) {
+            Gst.Structure structure = message.get_structure ();
+            switch (message.type()) {
                 case Gst.MessageType.ELEMENT:
-                    string structure_name = message.structure.get_name();
+                    string structure_name = structure.get_name ();
                     if (structure_name == "eit") {
                         if (this.epgscanner != null)
-                            this.epgscanner.on_eit_structure (message.structure);
-                        this.eit_structure (message.structure);
+                            this.epgscanner.on_eit_structure (structure);
+                        this.eit_structure (structure);
                     }
                     break;
                 case Gst.MessageType.WARNING:
-                    warning ("%s", message.structure.to_string ());
+                    warning ("%s", structure.to_string ());
                     break;
                 case Gst.MessageType.ERROR:
-                    critical ("%s", message.structure.to_string ());
+                    critical ("%s", structure.to_string ());
                     break;
                 default:
                 break;

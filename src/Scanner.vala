@@ -739,20 +739,22 @@ namespace DVB {
         }
         
         protected bool bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            switch (message.type) {
+            switch (message.type()) {
                 case Gst.MessageType.ELEMENT: {
-                    if (message.structure.get_name() == "dvb-frontend-stats")
-                        this.on_dvb_frontend_stats_structure (message.structure);
-                    else if (message.structure.get_name() == "dvb-read-failure")
+                    Gst.Structure structure = message.get_structure ();
+                    string structure_name = structure.get_name();
+                    if (structure_name == "dvb-frontend-stats")
+                        this.on_dvb_frontend_stats_structure (structure);
+                    else if (structure_name == "dvb-read-failure")
                         this.on_dvb_read_failure_structure ();
-                    else if (message.structure.get_name() == "sdt")
-                        this.on_sdt_structure (message.structure);
-                    else if (message.structure.get_name() == "nit")
-                        this.on_nit_structure (message.structure);
-                    else if (message.structure.get_name() == "pat")
-                        this.on_pat_structure (message.structure);
-                    else if (message.structure.get_name() == "pmt")
-                        this.on_pmt_structure (message.structure);
+                    else if (structure_name == "sdt")
+                        this.on_sdt_structure (structure);
+                    else if (structure_name == "nit")
+                        this.on_nit_structure (structure);
+                    else if (structure_name == "pat")
+                        this.on_pat_structure (structure);
+                    else if (structure_name == "pmt")
+                        this.on_pmt_structure (structure);
                     else
                         return true; /* We are not interested in the message */
                 break;

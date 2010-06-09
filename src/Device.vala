@@ -120,7 +120,7 @@ namespace DVB {
             while (bus.have_pending()) {
                 Message msg = bus.pop();
 
-                if (msg.type == MessageType.ERROR && msg.src == dvbsrc) {
+                if (msg.type() == MessageType.ERROR && msg.src() == dvbsrc) {
                     Error gerror;
                     string debug_text;
                     msg.parse_error (out gerror, out debug_text);
@@ -157,8 +157,8 @@ namespace DVB {
             while (bus.have_pending()) {
                 Message msg = bus.pop();
 
-                if (msg.type == MessageType.ELEMENT && msg.src == dvbsrc) {
-                    weak Structure structure = msg.structure;
+                if (msg.type() == MessageType.ELEMENT && msg.src() == dvbsrc) {
+                    weak Structure structure = msg.get_structure ();
 
                     if (structure.get_name() == "dvb-adapter") {
                         adapter_type = "%s".printf (structure.get_string("type"));
@@ -166,7 +166,7 @@ namespace DVB {
                         success = true;
                         break;
                     }
-                } else if (msg.type == MessageType.ERROR) {
+                } else if (msg.type() == MessageType.ERROR) {
                     Error gerror;
                     string debug;
                     msg.parse_error (out gerror, out debug);

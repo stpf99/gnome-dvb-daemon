@@ -228,13 +228,14 @@ namespace DVB {
         }
         
         private bool bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            switch (message.type) {
+            switch (message.type()) {
                 case Gst.MessageType.ELEMENT:
-                    if (message.structure.get_name() == "dvb-read-failure") {
+                    Gst.Structure structure = message.get_structure ();
+                    if (structure.get_name() == "dvb-read-failure") {
                         critical ("Could not read from DVB device");
                         this.stop ();
-                    } else if (message.structure.get_name() == "eit") {
-                        this.on_eit_structure (message.structure);
+                    } else if (structure.get_name() == "eit") {
+                        this.on_eit_structure (structure);
                     }
                 break;
                 
