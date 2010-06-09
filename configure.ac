@@ -6,7 +6,7 @@ AC_INIT([gnome-dvb-daemon], [0.1.20],
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([1.10 subdir-objects dist-bzip2])
+AM_INIT_AUTOMAKE([1.11 subdir-objects dist-bzip2])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
@@ -16,8 +16,7 @@ AM_PROG_CC_C_O
 LT_PREREQ([2.2.6])
 LT_INIT([disable-static])
 
-AC_PATH_PROG(VALAC, valac, valac)
-AC_SUBST(VALAC)
+AM_PROG_VALAC([0.9.1])
 
 AH_TEMPLATE([GETTEXT_PACKAGE], [gnome-dvb-daemon])
 GETTEXT_PACKAGE=gnome-dvb-daemon

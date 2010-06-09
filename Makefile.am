@@ -6,13 +6,9 @@ SUBDIRS = \
 	po \
 	$(NULL)
 
-BUILT_SOURCES = \
-	src/gnome-dvb-daemon.vala.stamp
-	$(NULL)
-
 bin_PROGRAMS = gnome-dvb-daemon
 
-gnome_dvb_daemon_VALASOURCES = \
+gnome_dvb_daemon_SOURCES = \
 	src/Cable/CableChannel.vala \
 	src/Cable/CableScanner.vala \
 	src/Satellite/SatelliteChannel.vala \
@@ -81,10 +77,6 @@ vala_pkgs = \
 own_pkgs = \
 	--pkg config \
 	--pkg cutils
-
-gnome_dvb_daemon_SOURCES = \
-	$(gnome_dvb_daemon_VALASOURCES:.vala=.c) \
-	$(NULL)
 	
 gnome_dvb_daemon_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
@@ -97,9 +89,7 @@ gnome_dvb_daemon_CPPFLAGS = \
 	-include $(CONFIG_HEADER) \
 	$(NULL)
 
-src/gnome-dvb-daemon.vala.stamp: $(gnome_dvb_daemon_VALASOURCES)
-	$(VALAC) -C --thread --vapidir=$(top_srcdir)/vapi $(own_pkgs) $(vala_pkgs) --basedir $(top_srcdir) $^
-	touch $@
+VALAFLAGS = --vapidir=$(top_srcdir)/vapi $(own_pkgs) $(vala_pkgs) --basedir $(top_srcdir)
 
 gnome_dvb_daemon_LDFLAGS = \
 	-Wl,--export-dynamic
@@ -124,8 +114,7 @@ EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-update.in \
 	intltool-merge.in \
-	$(gnome_dvb_daemon_VALASOURCES) \
-	src/gnome-dvb-daemon.vala.stamp \
+	$(gnome_dvb_daemon_SOURCES) \
 	vapi/config.vapi \
 	vapi/cutils.vapi \
 	vapi/cstuff.h \
