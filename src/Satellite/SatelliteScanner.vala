@@ -28,6 +28,8 @@ namespace DVB {
         public abstract signal void finished ();
         public abstract signal void channel_added (uint frequency, uint sid,
             string name, string network, string type, bool scrambled);
+        public abstract signal void frontend_stats (double signal_strength,
+            double signal_noise_ratio);
         
         public abstract void Run () throws DBus.Error;
         public abstract void Destroy () throws DBus.Error;

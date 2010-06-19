@@ -50,6 +50,9 @@ namespace DVB {
          */
         public signal void channel_added (uint frequency, uint sid,
             string name, string network, string type, bool scrambled);
+
+        public signal void frontend_stats (double signal_strength,
+            double signal_noise_ratio);
         
         /**
          * Emitted when all frequencies have been scanned
@@ -90,7 +93,7 @@ namespace DVB {
         protected HashSet<ScannedItem> scanned_frequencies;
         
         private static const string BASE_PIDS = "16:17"; // NIT, SDT
-        private static const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u pids=%s stats-reporting-interval=0 ! mpegtsparse ! fakesink silent=true";
+        private static const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u pids=%s stats-reporting-interval=100 ! mpegtsparse ! fakesink silent=true";
         
         // Contains SIDs
         private ArrayList<uint> new_channels;
@@ -495,6 +498,12 @@ namespace DVB {
                 this.wait_for_tables_source.set_callback (this.wait_for_tables);
                 this.wait_for_tables_source.attach (this.context);
             }
+            int _signal;
+            structure.get_int ("signal", out _signal);
+            int _snr;
+            structure.get_int ("snr", out _snr);
+            this.frontend_stats ((_signal / (double)0xffff),
+                (_snr / (double)0xffff));
         }
         
         protected void on_dvb_read_failure_structure () {
