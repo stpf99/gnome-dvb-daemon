@@ -121,8 +121,38 @@ class ChannelScanPage(BasePage):
         self.scrambledbutton.connect("toggled", self.__on_select_encrypted_toggled)
         topbox.pack_start(self.scrambledbutton, False)
         
+        self.create_signal_box()
+
         self.progressbar = gtk.ProgressBar()
         self.pack_start(self.progressbar, False)
+
+    def create_signal_box(self):
+        self.progress_table = gtk.Table(rows=3, columns=2)
+        self.progress_table.set_row_spacings(6)
+        self.progress_table.set_col_spacings(12)
+        self.pack_start(self.progress_table, False)
+
+        label = TextFieldLabel(_("Signal quality:"))
+        self.progress_table.attach(label, 0, 1, 0, 1, xoptions=gtk.FILL)
+
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        self.progress_table.attach(frame, 1, 2, 0, 1)
+
+        self.signal_quality_bar = gtk.ProgressBar()
+        self.signal_quality_bar.set_size_request(-1, 10)
+        frame.add(self.signal_quality_bar)
+
+        label = TextFieldLabel(_("Signal strength:"))
+        self.progress_table.attach(label, 0, 1, 1, 2, xoptions=gtk.FILL)
+
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_NONE)
+        self.progress_table.attach(frame, 1, 2, 1, 2)
+
+        self.signal_strength_bar = gtk.ProgressBar()
+        self.signal_strength_bar.set_size_request(-1, 10)
+        frame.add(self.signal_strength_bar)
         
     def get_scanner(self):
         return self._scanner
@@ -145,6 +175,7 @@ class ChannelScanPage(BasePage):
         self._scanner.connect ("frequency-scanned", self.__on_freq_scanned)
         self._scanner.connect ("channel-added", self.__on_channel_added)
         self._scanner.connect ("finished", self.__on_finished)
+        self._scanner.connect ("frontend-stats", self.__on_frontend_stats)
 
         self.progressbar.set_pulse_step(0.1)
         self._progressbar_timer = glib.timeout_add(100, self._progressbar_pulse)
@@ -188,6 +219,7 @@ class ChannelScanPage(BasePage):
         
     def __on_finished(self, scanner):
         self.progressbar.hide()
+        self.progress_table.hide()
         
         self.emit("finished", True)
         
@@ -203,6 +235,8 @@ class ChannelScanPage(BasePage):
 
         self.progressbar.set_fraction(fraction)
         self._last_qsize = qsize
+        self.signal_strength_bar.set_fraction(0.0)
+        self.signal_quality_bar.set_fraction(0.0)
         
     def __on_active_toggled(self, renderer, path):
         aiter = self.tvchannels.get_iter(path)
@@ -231,4 +265,8 @@ class ChannelScanPage(BasePage):
     def __set_all_checked(self, val):
         for row in self.tvchannels:
             row[self.COL_ACTIVE] = val
+
+    def __on_frontend_stats(self, scanner, signal, snr):
+        self.signal_quality_bar.set_fraction(snr)
+        self.signal_strength_bar.set_fraction(signal)
 
