@@ -245,6 +245,7 @@ class DVBScannerClient(gobject.GObject):
         "frequency-scanned": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
         "channel-added":     (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, str, str, str, bool]),
         "destroyed":         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        "frontend-stats":    (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [float, float]),
     }
 
     def __init__(self, objpath, scanner_iface):
@@ -257,6 +258,7 @@ class DVBScannerClient(gobject.GObject):
         self.scanner.connect_to_signal ("FrequencyScanned", self.on_frequency_scanned)
         self.scanner.connect_to_signal ("ChannelAdded", self.on_channel_added)
         self.scanner.connect_to_signal ("Destroyed", self.on_destroyed)
+        self.scanner.connect_to_signal ("FrontendStats", self.on_frontend_stats)
         
     def add_scanning_data(self, data, **kwargs):
         self.scanner.AddScanningData (*data, **kwargs)
@@ -287,6 +289,9 @@ class DVBScannerClient(gobject.GObject):
         
     def on_destroyed(self):
         self.emit("destroyed")
+
+    def on_frontend_stats(self, signal, snr):
+        self.emit("frontend-stats", signal, snr)
         
 class DVBRecordingsStoreClient(gobject.GObject):
 
