@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-04 23:08+0200\n"
+"POT-Creation-Date: 2010-06-19 19:16+0200\n"
 "PO-Revision-Date: 2009-12-23 22:27+0000\n"
 "Last-Translator: Jussi Aalto <jta_l10n@dnainternet.net>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-05-23 13:08+0000\n"
+"X-Launchpad-Export-Date: 2010-06-21 19:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -484,11 +484,11 @@ msgstr ""
 msgid "_Start time:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:108
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:111
 msgid "_Duration:"
 msgstr ""
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:122
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:125
 msgid "minutes"
 msgstr ""
 
@@ -628,7 +628,15 @@ msgstr ""
 msgid "Select _scrambled channels"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:131
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:135
+msgid "Signal quality:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:146
+msgid "Signal strength:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:161
 msgid "Scanning for channels"
 msgstr ""
 
@@ -804,13 +812,13 @@ msgstr ""
 msgid "Setup digital TV"
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:153
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:156
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:200
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:203
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
@@ -862,20 +870,20 @@ msgstr ""
 msgid "_Reverse order"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:490
+#: ../client/totem-plugin/dvb-daemon.py:489
 msgid "Delete selected recording?"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:533
+#: ../client/totem-plugin/dvb-daemon.py:532
 msgid "Totem Movie Player"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:579
+#: ../client/totem-plugin/dvb-daemon.py:578
 #, python-format
 msgid "Recording %d"
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:639
+#: ../client/totem-plugin/dvb-daemon.py:638
 msgid "GNOME DVB Daemon is not installed"
 msgstr ""
 

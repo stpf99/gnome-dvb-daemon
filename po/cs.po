@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-04 23:08+0200\n"
-"PO-Revision-Date: 2010-05-22 20:54+0000\n"
-"Last-Translator: Ondra 'Kepi' Kudlík <Unknown>\n"
+"POT-Creation-Date: 2010-06-19 19:16+0200\n"
+"PO-Revision-Date: 2010-06-17 07:58+0000\n"
+"Last-Translator: David Štancl <Unknown>\n"
 "Language-Team: cs <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-05-23 13:08+0000\n"
+"X-Launchpad-Export-Date: 2010-06-21 19:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -125,7 +125,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
 msgid "There is currently no schedule available for this channel"
-msgstr "Pro tento kanál není nic naplánováno"
+msgstr "Pro tento kanál program není k dispozici"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:157
 #: ../client/totem-plugin/dvb-daemon.py:324
@@ -285,7 +285,7 @@ msgstr ""
 "  Jiří Jindra https://launchpad.net/~j-jindr\n"
 "  Konki https://launchpad.net/~pavel-konkol\n"
 "  Ondra 'Kepi' Kudlík https://launchpad.net/~kepi-orthank\n"
-"  Sebastian Pölsterl https://launchpad.net/~marduk-k-d-w"
+"  Sebastian Pölsterl https://launchpad.net/~sebp"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:57
 msgid "Devices"
@@ -499,11 +499,11 @@ msgstr "Kanál"
 msgid "_Start time:"
 msgstr "_Čas začátku"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:108
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:111
 msgid "_Duration:"
 msgstr "_Délka:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:122
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:125
 msgid "minutes"
 msgstr "minut"
 
@@ -650,7 +650,15 @@ msgstr "_Kanály:"
 msgid "Select _scrambled channels"
 msgstr "Vybrat i _zakódované kanály"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:131
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:135
+msgid "Signal quality:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:146
+msgid "Signal strength:"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:161
 msgid "Scanning for channels"
 msgstr "Hledání kanálů"
 
@@ -717,11 +725,11 @@ msgstr "_Země:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:179
 msgid "_Antenna:"
-msgstr "_Anténa"
+msgstr "Vysíl_ač"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:188
 msgid "Antenna"
-msgstr "Anténa"
+msgstr "Vysílač"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "_Satellite:"
@@ -792,8 +800,8 @@ msgid ""
 "Make sure that the antenna is connected and you have selected the correct "
 "tuning data."
 msgstr ""
-"Ujistěte se, že je připojena anténa a že jsou vybrány správné údaje pro "
-"lazení."
+"Ujistěte se, že je anténa připojena a že jsou vybrány správné údaje pro "
+"ladění."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
 #, python-format
@@ -831,7 +839,7 @@ msgstr "Probíhá úklid. Může to chvíli trvat."
 msgid "Setup digital TV"
 msgstr "Nastavit digitální TV"
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:153
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:156
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
@@ -839,7 +847,7 @@ msgstr ""
 "Vytvořený soubor s kanály může být použit pro nastavení zařízení v ovládacím "
 "centru."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:200
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:203
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
@@ -893,20 +901,20 @@ msgstr "Podle _skupiny"
 msgid "_Reverse order"
 msgstr "_Obrácené pořadí"
 
-#: ../client/totem-plugin/dvb-daemon.py:490
+#: ../client/totem-plugin/dvb-daemon.py:489
 msgid "Delete selected recording?"
 msgstr "Odstranit vybrané nahrávání?"
 
-#: ../client/totem-plugin/dvb-daemon.py:533
+#: ../client/totem-plugin/dvb-daemon.py:532
 msgid "Totem Movie Player"
 msgstr "Přehrávač filmů Totem"
 
-#: ../client/totem-plugin/dvb-daemon.py:579
+#: ../client/totem-plugin/dvb-daemon.py:578
 #, python-format
 msgid "Recording %d"
 msgstr "Nahrávání %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:639
+#: ../client/totem-plugin/dvb-daemon.py:638
 msgid "GNOME DVB Daemon is not installed"
 msgstr "GNOME DVB Daemon není nainstalován"
 
