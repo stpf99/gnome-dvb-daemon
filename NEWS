@@ -1,4 +1,20 @@
 ==============
+Version 0.1.20
+==============
+
+This release adds a signal strength and signal quality
+indicator to the channels scanner dialog.
+
+- Display signal strength and signal-to-noise ratio when scanning
+- Adjust to changes in Vala 0.9.1 (requires automake 1.11)
+- ChannelFactory: set pipeline back to playing in remove_channel if others are still watching it
+- Fixed bug where current time wasn't displayed in timer dialog
+
+Updated Translations:
+---------------------
+Spanish
+
+==============
 Version 0.1.19
 ==============
 
