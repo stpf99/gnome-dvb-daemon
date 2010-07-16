@@ -228,7 +228,7 @@ namespace DVB {
         }
         
         private bool bus_watch_func (Gst.Bus bus, Gst.Message message) {
-            switch (message.type()) {
+            switch (message.type) {
                 case Gst.MessageType.ELEMENT:
                     Gst.Structure structure = message.get_structure ();
                     if (structure.get_name() == "dvb-read-failure") {

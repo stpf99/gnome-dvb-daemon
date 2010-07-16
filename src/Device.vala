@@ -113,14 +113,14 @@ namespace DVB {
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
             
-            Bus bus = pipeline.get_bus();
+            Gst.Bus bus = pipeline.get_bus();
             
             bool busy_val = false;
             
             while (bus.have_pending()) {
                 Message msg = bus.pop();
 
-                if (msg.type() == MessageType.ERROR && msg.src() == dvbsrc) {
+                if (msg.type == MessageType.ERROR && msg.src == dvbsrc) {
                     Error gerror;
                     string debug_text;
                     msg.parse_error (out gerror, out debug_text);
@@ -149,7 +149,7 @@ namespace DVB {
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
             
-            Bus bus = pipeline.get_bus();
+            Gst.Bus bus = pipeline.get_bus();
             
             bool success = false;
             string adapter_type = null;
@@ -157,7 +157,7 @@ namespace DVB {
             while (bus.have_pending()) {
                 Message msg = bus.pop();
 
-                if (msg.type() == MessageType.ELEMENT && msg.src() == dvbsrc) {
+                if (msg.type == MessageType.ELEMENT && msg.src == dvbsrc) {
                     weak Structure structure = msg.get_structure ();
 
                     if (structure.get_name() == "dvb-adapter") {
@@ -166,7 +166,7 @@ namespace DVB {
                         success = true;
                         break;
                     }
-                } else if (msg.type() == MessageType.ERROR) {
+                } else if (msg.type == MessageType.ERROR) {
                     Error gerror;
                     string debug;
                     msg.parse_error (out gerror, out debug);
