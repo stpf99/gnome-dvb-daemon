@@ -235,13 +235,13 @@ namespace DVB {
         protected bool delete_timer (uint32 timer_id) {
             bool val;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     if (this.is_timer_active (timer_id)) {
                         // Abort recording
                         Timer timer = this.timers.get (timer_id);
                         this.stop_recording (timer);
                     }
-                    this.timers.remove (timer_id);
+                    this.timers.unset (timer_id);
                     try {
                         Factory.get_timers_store ().remove_timer_from_device_group (
                             timer_id, this.DeviceGroup);
@@ -287,7 +287,7 @@ namespace DVB {
         {
             bool ret;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     start_time = this.timers.get(timer_id).get_start_time ();
                     ret = true;
                 } else {
@@ -314,7 +314,7 @@ namespace DVB {
         {
             bool ret = false;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     if (this.IsTimerActive (timer_id)) {
                         warning ("Cannot change start time of already active timer");
                     } else {
@@ -343,7 +343,7 @@ namespace DVB {
         {
             bool ret;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     end_time = this.timers.get(timer_id).get_end_time ();
                     ret = true;
                 } else {
@@ -365,7 +365,7 @@ namespace DVB {
         {
             bool ret = false;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     duration = this.timers.get(timer_id).Duration;
                     ret = true;
                 }
@@ -383,7 +383,7 @@ namespace DVB {
         {
             bool ret;
             lock (this.timers) {
-                ret = this.timers.contains (timer_id);
+                ret = this.timers.has_key (timer_id);
                 if (ret) {
                     Timer timer = this.timers.get (timer_id);
                     timer.Duration = duration;
@@ -407,7 +407,7 @@ namespace DVB {
         {
             bool ret;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     Timer t = this.timers.get (timer_id);
                     name = t.Channel.Name;
                     ret = true;
@@ -431,7 +431,7 @@ namespace DVB {
         {
             bool ret = false;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     Timer t = this.timers.get (timer_id);
                     Event? event = t.Channel.Schedule.get_event (t.EventID);
                     title = (event == null) ? "" : event.name;
@@ -448,7 +448,7 @@ namespace DVB {
             info = TimerInfo ();
             bool ret;
             lock (this.timers) {
-                if (this.timers.contains (timer_id)) {
+                if (this.timers.has_key (timer_id)) {
                     Timer t = this.timers.get (timer_id);
 
                     info.id = timer_id;
@@ -688,12 +688,12 @@ namespace DVB {
                 ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
                 channel_factory.stop_channel (timer.Channel, timer.sink);
                 
-                this.recordings.remove (timer.Id);
+                this.recordings.unset (timer.Id);
             } 
             uint32 timer_id = timer.Id;
             lock (this.timers) {
                 this.active_timers.remove (timer_id);
-                this.timers.remove (timer_id);
+                this.timers.unset (timer_id);
             }
             rec.monitor_recording ();
             
