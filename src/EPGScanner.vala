@@ -163,7 +163,7 @@ namespace DVB {
                     this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
                         device.Adapter, device.Frontend));
                 } catch (Error e) {
-                    error ("Could not create pipeline: %s", e.message);
+                    critical ("Could not create pipeline: %s", e.message);
                     return false;
                 }
                 
@@ -301,7 +301,7 @@ namespace DVB {
                     //debug ("Adding new event: %s", event_class.to_string ());
 
                     uint sid = get_uint_val (structure, "service-id");
-                    if (!this.channel_events.contains (sid)) {
+                    if (!this.channel_events.has_key (sid)) {
                         this.channel_events.set (sid,
                             new HashSet<Event> (Event.hash, Event.equal));
                     }

@@ -347,7 +347,7 @@ namespace DVB {
                         celements.tee.set_state (State.NULL);
                         ((Bin)this.pipeline).remove (celements.tee);
                         lock (this.elements_map) {
-                            this.elements_map.remove (channel_sid);
+                            this.elements_map.unset (channel_sid);
                         }
                     }
 
@@ -471,7 +471,7 @@ namespace DVB {
             debug ("SID is '%u'", sid);
             // Check if we're interested in the pad
             lock (this.elements_map) {
-                if (this.elements_map.contains (sid)) {
+                if (this.elements_map.has_key (sid)) {
                     Element? sink = this.elements_map.get (sid).tee;
                     if (sink == null) {
                         critical ("Could not find sink for SID %u", sid);
