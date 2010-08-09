@@ -149,7 +149,7 @@ namespace DVB {
                 foreach (weak SequenceIter<EventElement> iter in expired_events) {
                     EventElement element = this.events.get (iter);
                     
-                    this.event_id_map.remove (element.id);
+                    this.event_id_map.unset (element.id);
                     this.events.remove (iter);
                 }
             }
@@ -196,7 +196,7 @@ namespace DVB {
         }
 
         private void store_event (Event event) {
-            if (!this.event_id_map.contains (event.id)) {
+            if (!this.event_id_map.has_key (event.id)) {
                 this.create_and_add_event_element (event);
             }
             
@@ -226,7 +226,7 @@ namespace DVB {
         public bool contains (uint event_id) {
             bool val;
             lock (this.events) {
-                val = this.event_id_map.contains (event_id);
+                val = this.event_id_map.has_key (event_id);
             }
             return val;
         }
@@ -357,7 +357,7 @@ namespace DVB {
             bool ret;
             
             lock (this.events) {        
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -393,7 +393,7 @@ namespace DVB {
         public uint32 Next (uint32 event_id) throws DBus.Error {
             uint32 next_event = 0;
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     SequenceIter<EventElement> next_iter = iter.next ();
                     // Check if a new event follows
@@ -413,7 +413,7 @@ namespace DVB {
             bool ret = false;
 
             lock (this.events) {        
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -435,7 +435,7 @@ namespace DVB {
             bool ret = false;
             
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -457,7 +457,7 @@ namespace DVB {
             bool ret = false;
             
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -479,7 +479,7 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -501,7 +501,7 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -526,7 +526,7 @@ namespace DVB {
         {
             bool ret = false;
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -546,7 +546,7 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
@@ -568,7 +568,7 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.contains (event_id)) {
+                if (this.event_id_map.has_key (event_id)) {
                     weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
                     EventElement element = this.events.get (iter);
                     Event? event = this.get_event (element.id);
