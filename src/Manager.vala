@@ -141,7 +141,7 @@ namespace DVB {
             }
             
             lock (this.scanners) {
-                if (!this.scanners.contains (path)) {
+                if (!this.scanners.has_key (path)) {
                     Scanner scanner = null;
                     switch (device.Type) {
                         case AdapterType.DVB_T:
@@ -191,7 +191,7 @@ namespace DVB {
         {
             bool ret;
             lock (this.devices) {
-                if (this.devices.contains (group_id)) {
+                if (this.devices.has_key (group_id)) {
                     opath = new DBus.ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
                     ret = true;
                 } else {
@@ -486,7 +486,7 @@ namespace DVB {
         public DeviceGroup? get_device_group_if_exists (uint group_id) {
             DeviceGroup? result = null;
             lock (this.devices) {
-                if (this.devices.contains (group_id))
+                if (this.devices.has_key (group_id))
                     result = this.devices.get (group_id);
             }
             return result;
@@ -512,7 +512,7 @@ namespace DVB {
             
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             lock (this.scanners) {
-                this.scanners.remove (path);
+                this.scanners.unset (path);
             }
             
             debug ("Destroying scanner for adapter %u, frontend %u (%s)", adapter,
@@ -571,7 +571,7 @@ namespace DVB {
             if (devgroup.size == 0) {
                 bool success;
                 lock (this.devices) {
-                    success = this.devices.remove (group_id);
+                    success = this.devices.unset (group_id);
                 }
                 if (success) {
                     devgroup.destroy ();
