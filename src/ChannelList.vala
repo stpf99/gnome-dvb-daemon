@@ -48,7 +48,7 @@ namespace DVB {
         public Channel? get_channel (uint sid) {
             Channel? val = null;
             lock (this.channels) {
-                if (this.channels.contains (sid))
+                if (this.channels.has_key (sid))
                     val = this.channels.get (sid);
             }
             return val;
@@ -62,14 +62,14 @@ namespace DVB {
         
         public void remove (uint sid) {
             lock (this.channels) {
-                this.channels.remove (sid);
+                this.channels.unset (sid);
             }
         }
         
         public bool contains (uint sid) {
             bool val;
             lock (this.channels) {
-                val = this.channels.contains (sid);
+                val = this.channels.has_key (sid);
             }
             return val;
         }
@@ -164,7 +164,7 @@ namespace DVB {
             string val = "";
             
             lock (this.channels) {
-                if (this.channels.contains (channel_id)) {
+                if (this.channels.has_key (channel_id)) {
                     string name = this.channels.get (channel_id).Name;
                     val = (name == null) ? "" : name;
                     ret = true;
@@ -187,7 +187,7 @@ namespace DVB {
             string val = "";
             bool ret = false;
             lock (this.channels) {
-                if (this.channels.contains (channel_id)) {
+                if (this.channels.has_key (channel_id)) {
                     string tmp = this.channels.get (channel_id).Network;
                     val = (tmp == null) ? "" : tmp;
                     ret = true;
@@ -208,7 +208,7 @@ namespace DVB {
             bool val = false;
             bool ret = false;
             lock (this.channels) {
-                if (this.channels.contains (channel_id)) {
+                if (this.channels.has_key (channel_id)) {
                     val = this.channels.get (channel_id).is_radio ();
                     ret = true;
                 }
@@ -228,7 +228,7 @@ namespace DVB {
             Channel channel = null;
 
             lock (this.channels) {
-                if (this.channels.contains (channel_id)) {
+                if (this.channels.has_key (channel_id)) {
                     channel = this.channels.get (channel_id);
                 }
             }
