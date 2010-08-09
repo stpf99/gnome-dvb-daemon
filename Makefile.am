@@ -62,6 +62,8 @@ gnome_dvb_daemon_SOURCES = \
 	src/rtsp/Server.vala \
 	src/rygel/Interfaces.vala \
 	src/rygel/Services.vala \
+	src/rygel/Interfaces2.vala \
+	src/rygel/Services2.vala \
 	$(NULL)
 
 vala_pkgs = \

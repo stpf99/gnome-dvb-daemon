@@ -211,7 +211,7 @@ namespace Main {
         Idle.add (DVB.RTSPServer.start);
 
         if (!disable_rygel)
-            Idle.add (DVB.RygelService.start_rygel_services);
+            Idle.add (DVB.MediaServer2.start_rygel_services);
 
         // Start GLib mainloop
         mainloop.run ();
