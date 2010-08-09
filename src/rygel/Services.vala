@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Sebastian Pölsterl
+ * Copyright (C) 2009-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -19,7 +19,7 @@
 using GLib;
 using Gee;
 
-namespace DVB {
+namespace DVB.MediaServer {
     
     private static const string SERVICE_NAME = "org.gnome.UPnP.MediaServer1.DVBDaemon";
     private static const string ROOT_PATH = "/org/gnome/UPnP/MediaServer1/DVBDaemon";
@@ -124,7 +124,7 @@ namespace DVB {
         }
         
         private void on_device_removed (uint group_id) {
-            this.containers.remove (group_id);
+            this.containers.unset (group_id);
             this.Updated ();
         }
     }
@@ -275,40 +275,37 @@ namespace DVB {
         }
     }
 
-    namespace RygelService {
-        
-        private static DeviceGroupsMediaContainer root_container;
-        
-        public static bool start_rygel_services () {
-            try {
-                var conn = DBus.Bus.get (DBus.BusType.SESSION);
-                
-                dynamic DBus.Object bus = conn.get_object (
-                        "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
-                
-                // try to register service in session bus
-                uint request_name_result = bus.RequestName (SERVICE_NAME, (uint) 0);
+    private static DeviceGroupsMediaContainer root_container;
 
-                if (request_name_result == DBus.RequestNameReply.PRIMARY_OWNER) {
-                    message ("Creating new Rygel MediaServer D-Bus service");
-                
-                    root_container = new DeviceGroupsMediaContainer ();
-                    root_container.create_container_services ();
-                                    
-                    conn.register_object (
-                        root_container.Parent,
-                        root_container);
-                } else {
-                    warning ("Rygel MediaServer D-Bus service is already running");
-                    return false;
-                }
+    public static bool start_rygel_services () {
+        try {
+            var conn = DBus.Bus.get (DBus.BusType.SESSION);
 
-            } catch (Error e) {
-                error ("Oops %s", e.message);
+            dynamic DBus.Object bus = conn.get_object (
+                    "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
+
+            // try to register service in session bus
+            uint request_name_result = bus.RequestName (SERVICE_NAME, (uint) 0);
+
+            if (request_name_result == DBus.RequestNameReply.PRIMARY_OWNER) {
+                message ("Creating new Rygel MediaServer D-Bus service");
+
+                root_container = new DeviceGroupsMediaContainer ();
+                root_container.create_container_services ();
+                                
+                conn.register_object (
+                    root_container.Parent,
+                    root_container);
+            } else {
+                warning ("Rygel MediaServer D-Bus service is already running");
                 return false;
             }
+
+        } catch (Error e) {
+            critical ("Oops %s", e.message);
             return false;
         }
+        return false;
     }
-    
+
 }
