@@ -719,7 +719,7 @@ namespace DVB {
                 try {
                     Utils.mkdirs (dir);
                 } catch (Error e) {
-                    error ("Could not create directory %s: %s",
+                    critical ("Could not create directory %s: %s",
                         dir.get_path (), e.message);
                     return null;
                 }

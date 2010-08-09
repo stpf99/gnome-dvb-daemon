@@ -82,7 +82,7 @@ namespace DVB.Utils {
         try {
             regex = new Regex ("\\W", 0, 0);
         } catch (RegexError e) {
-            error ("RegexError: %s", e.message);
+            critical ("RegexError: %s", e.message);
             return text;
         }
         
@@ -90,7 +90,7 @@ namespace DVB.Utils {
         try {
             new_text = regex.replace_literal (text, -1, 0, "_", 0);
         } catch (RegexError e) {
-            error ("RegexError: %s", e.message);
+            critical ("RegexError: %s", e.message);
             return text;
         }
         
@@ -209,7 +209,7 @@ namespace DVB.Utils {
         try {
             conn = DBus.Bus.get (DBus.BusType.SESSION);
         } catch (Error e) {
-            error("Could not get D-Bus session bus: %s", e.message);
+            critical ("Could not get D-Bus session bus: %s", e.message);
             return null;
         }
         return conn;

@@ -168,7 +168,7 @@ namespace DVB {
                     PIPELINE_TEMPLATE.printf (this.Device.Adapter,
                         this.Device.Frontend, BASE_PIDS));
             } catch (Error e) {
-                error ("Could not create pipeline: %s", e.message);
+                critical ("Could not create pipeline: %s", e.message);
                 return;
             }
             

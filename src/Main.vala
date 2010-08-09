@@ -65,7 +65,7 @@ namespace Main {
             }
 
         } catch (Error e) {
-            error ("Oops %s", e.message);
+            critical ("Oops %s", e.message);
             return false;
         }
         
@@ -84,7 +84,7 @@ namespace Main {
                 DVB.Constants.DBUS_RECORDINGS_STORE_PATH,
                 recstore);
         } catch (Error e) {
-            error ("Oops %s", e.message);
+            critical ("Oops %s", e.message);
             return false;
         }
         
