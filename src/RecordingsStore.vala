@@ -66,7 +66,7 @@ namespace DVB {
         public bool add (Recording rec) {
             uint32 id = rec.Id;
             lock (this.recordings) {
-                if (this.recordings.contains (id)) {
+                if (this.recordings.has_key (id)) {
                     critical ("Recording with id %u already available", id);
                     return false;
                 }
@@ -91,7 +91,7 @@ namespace DVB {
 
         public void remove (Recording rec) {
             uint32 rec_id = rec.Id;
-            this.recordings.remove (rec_id);
+            this.recordings.unset (rec_id);
             this.changed (rec_id, ChangeType.DELETED);
         }
 
@@ -129,7 +129,7 @@ namespace DVB {
         public bool GetLocation (uint32 rec_id, out string location) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     location = this.recordings.get(rec_id).Location.get_uri ();
                     ret = true;
                 }
@@ -147,7 +147,7 @@ namespace DVB {
         public bool GetName (uint32 rec_id, out string name) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     string val = this.recordings.get(rec_id).Name;
                     name = (val == null) ? "" : val;
                     ret = true;
@@ -166,7 +166,7 @@ namespace DVB {
         public bool GetDescription (uint32 rec_id, out string description) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     string val = this.recordings.get(rec_id).Description;
                     description = (val == null) ? "" : val;
                     ret = true;
@@ -184,7 +184,7 @@ namespace DVB {
         public bool GetStartTime (uint32 rec_id, out uint[] start_time) throws DBus.Error {
             bool ret;
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     start_time = this.recordings.get(rec_id).get_start ();
                     ret = true;
                 } else {
@@ -204,7 +204,7 @@ namespace DVB {
         public bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     timestamp = (int64)this.recordings.get(rec_id).StartTime.mktime ();
                     ret = true;
                 }
@@ -221,7 +221,7 @@ namespace DVB {
         public bool GetLength (uint32 rec_id, out int64 length) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     length = this.recordings.get(rec_id).Length;
                     ret = true;
                 }
@@ -240,7 +240,7 @@ namespace DVB {
         public bool Delete (uint32 rec_id) throws DBus.Error {
             bool val = false;
             lock (this.recordings) {
-                if (!this.recordings.contains (rec_id)) val = false;
+                if (!this.recordings.has_key (rec_id)) val = false;
                 else {
                     debug ("Deleting recording %u", rec_id);
                     var rec = this.recordings.get (rec_id);
@@ -267,7 +267,7 @@ namespace DVB {
         public bool GetChannelName (uint32 rec_id, out string name) throws DBus.Error {
             bool ret = false;
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     Recording rec = this.recordings.get (rec_id);
                     name = rec.ChannelName;
                     ret = true;
@@ -281,7 +281,7 @@ namespace DVB {
             bool ret;
             info = RecordingInfo ();
             lock (this.recordings) {
-                if (this.recordings.contains (rec_id)) {
+                if (this.recordings.has_key (rec_id)) {
                     Recording rec = this.recordings.get (rec_id);
                     string name = rec.Name;
                     info.name = (name == null) ? "" : name;
