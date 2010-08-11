@@ -26,7 +26,7 @@ namespace Main {
     private static bool has_debug;
     private static bool has_version;
     private static bool disable_epg_scanner;
-    private static bool disable_rygel;
+    private static bool disable_mediaserver;
     private static bool enable_mediaserver2;
     private static MainLoop mainloop;
 
@@ -37,8 +37,8 @@ namespace Main {
         "Display version number", null},
         { "disable-epg-scanner", 0, 0, OptionArg.NONE,
         out disable_epg_scanner, "Disable scanning for EPG data", null},
-        { "disable-rygel", 0, 0, OptionArg.NONE,
-        out disable_rygel, "Disable exporting devices and channels for Rygel", null},
+        { "disable-mediaserver", 0, 0, OptionArg.NONE,
+        out disable_mediaserver, "Disable exporting devices and channels for Rygel", null},
         { "enable-mediaserver2", 0 ,0, OptionArg.NONE, out enable_mediaserver2,
         "Export devices and channels according to Rygel's MediaServer2 specification",
         null},
@@ -214,7 +214,7 @@ namespace Main {
 
         Idle.add (DVB.RTSPServer.start);
 
-        if (!disable_rygel) {
+        if (!disable_mediaserver) {
             if (enable_mediaserver2)
                 Idle.add (DVB.MediaServer2.start_rygel_services);
             else
