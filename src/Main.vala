@@ -27,6 +27,7 @@ namespace Main {
     private static bool has_version;
     private static bool disable_epg_scanner;
     private static bool disable_rygel;
+    private static bool enable_mediaserver2;
     private static MainLoop mainloop;
 
     const OptionEntry[] options =  {
@@ -38,6 +39,9 @@ namespace Main {
         out disable_epg_scanner, "Disable scanning for EPG data", null},
         { "disable-rygel", 0, 0, OptionArg.NONE,
         out disable_rygel, "Disable exporting devices and channels for Rygel", null},
+        { "enable-mediaserver2", 0 ,0, OptionArg.NONE, out enable_mediaserver2,
+        "Export devices and channels according to Rygel's MediaServer2 specification",
+        null},
         { null }
     };
     
@@ -210,8 +214,12 @@ namespace Main {
 
         Idle.add (DVB.RTSPServer.start);
 
-        if (!disable_rygel)
-            Idle.add (DVB.MediaServer2.start_rygel_services);
+        if (!disable_rygel) {
+            if (enable_mediaserver2)
+                Idle.add (DVB.MediaServer2.start_rygel_services);
+            else
+                Idle.add (DVB.MediaServer.start_rygel_services);
+        }
 
         // Start GLib mainloop
         mainloop.run ();
