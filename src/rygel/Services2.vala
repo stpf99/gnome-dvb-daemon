@@ -132,16 +132,17 @@ namespace DVB.MediaServer2 {
             int i = 0;
             foreach (ChannelsMediaContainer2 container in this.containers.values) {
                 if (i >= offset) {
-                    hash[i] = new GLib.HashTable<string, Value?> (GLib.str_hash, GLib.str_equal);
-                    hash[i].insert("Path", container.Path);
-                    hash[i].insert("DisplayName", container.DisplayName);
-                    hash[i].insert("ChildCount", container.ChildCount);
-                    hash[i].insert("Searchable", container.Searchable);
-                    hash[i].insert("Type", container.Type);
-                    hash[i].insert("Parent", this.Path);
+                    uint index = i - offset;
+                    hash[index] = new GLib.HashTable<string, Value?> (GLib.str_hash, GLib.str_equal);
+                    hash[index].insert("Path", container.Path);
+                    hash[index].insert("DisplayName", container.DisplayName);
+                    hash[index].insert("ChildCount", container.ChildCount);
+                    hash[index].insert("Searchable", container.Searchable);
+                    hash[index].insert("Type", container.Type);
+                    hash[index].insert("Parent", this.Path);
                 }
                 i++;
-                if (i >= num_elements)
+                if (i >= offset + num_elements)
                     break;
             }
 
@@ -275,16 +276,17 @@ namespace DVB.MediaServer2 {
             uint i = 0;
             foreach (ChannelMediaItem2 item in this.items.values) {
                 if (i >= offset) {
-                    hash[i] = new  GLib.HashTable<string, Value?> (GLib.str_hash, GLib.str_equal);
-                    hash[i].insert("Path", item.Path);
-                    hash[i].insert("DisplayName", item.DisplayName);
-                    hash[i].insert("Type", item.Type);
-                    hash[i].insert("MIMEType", item.MIMEType);
-                    hash[i].insert("URLs", item.URLs);
-                    hash[i].insert("Parent", this.Path);
+                    uint index = i - offset;
+                    hash[index] = new  GLib.HashTable<string, Value?> (GLib.str_hash, GLib.str_equal);
+                    hash[index].insert("Path", item.Path);
+                    hash[index].insert("DisplayName", item.DisplayName);
+                    hash[index].insert("Type", item.Type);
+                    hash[index].insert("MIMEType", item.MIMEType);
+                    hash[index].insert("URLs", item.URLs);
+                    hash[index].insert("Parent", this.Path);
                 }
                 i++;
-                if (i >= num_elements)
+                if (i >= offset + num_elements)
                     break;
             }
 
