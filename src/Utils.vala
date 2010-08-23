@@ -80,7 +80,7 @@ namespace DVB.Utils {
     public static string remove_nonalphanums (string text) {
         Regex regex;
         try {
-            regex = new Regex ("\\W", 0, 0);
+            regex = new Regex ("[^-_\\.a-zA-Z0-9]", 0, 0);
         } catch (RegexError e) {
             critical ("RegexError: %s", e.message);
             return text;
