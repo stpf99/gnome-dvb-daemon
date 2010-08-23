@@ -170,7 +170,7 @@ namespace DVB {
                     Error gerror;
                     string debug;
                     msg.parse_error (out gerror, out debug);
-                    critical ("%s %s", gerror.message, debug);
+                    warning ("%s %s", gerror.message, debug);
                 }
             }
                
