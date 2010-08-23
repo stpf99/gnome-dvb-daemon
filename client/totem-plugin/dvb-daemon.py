@@ -257,12 +257,38 @@ class DVBDaemonPlugin(totem.Plugin):
 
         gettext.textdomain('gnome-dvb-daemon')
         locale.textdomain('gnome-dvb-daemon')
-        
-        self.setup = DvbSetup()
-        
+
+        self.monitor_bus()
+
+        try:
+            self.construct()
+        except dbus.DBusException:
+            print >> sys.stderr, "Failed activating DVB DBus service"
+            return
+
+    def monitor_bus(self):
+        bus = dbus.SessionBus()
+        # Get proxy object
+        proxy = bus.get_object("org.freedesktop.DBus",
+            "/org/freedesktop/DBus")
+        # Apply the correct interace to the proxy object
+        dbusobj = dbus.Interface(proxy, "org.freedesktop.DBus")
+
+        dbusobj.connect_to_signal("NameOwnerChanged", self.on_dbus_owner_changed)
+
+    def on_dbus_owner_changed(self, name, old_owner, new_owner):
+        if name == DBUS_DVB_SERVICE:
+            if old_owner == "":
+                self.construct()
+            elif new_owner == "":
+                self.deactivate(self.totem_object)
+
+    def construct(self):
         self.manager = DVBModel()
         self.recentmanager = gtk.recent_manager_get_default()
 
+        self.setup = DvbSetup()
+        
         self.manager.get_all_devices(lambda devs: self.enable_dvb_support(len(devs) > 0))
 
     def enable_dvb_support(self, val):
