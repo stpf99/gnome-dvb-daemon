@@ -1,4 +1,29 @@
 ==============
+Version 0.1.21
+==============
+
+This release implements Rygel's MediaServerSpec2.
+By default version 1 is used, use --enable-mediaserver2
+to switch to the newer version.
+
+- Build fixes for latest Vala and libgee
+- Added implementation of Rygel's MediaServerSpec2
+- Renamed option disable-rygel to disable-mediaserver
+- Added enable-mediaserver2 option to command line interface
+- Append channel name to rtsp URL
+- totem: Monitor DBus for changing owner of org.gnome.DVB
+
+Updated Translations:
+---------------------
+- Brazilian Portuguese
+- English (United Kingdom)
+- Czech
+- Finnish
+- French
+- Italian
+- Swedish
+
+==============
 Version 0.1.20
 ==============
 
