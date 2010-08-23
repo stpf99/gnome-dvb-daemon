@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-06-19 19:16+0200\n"
-"PO-Revision-Date: 2010-05-23 14:47+0000\n"
+"POT-Creation-Date: 2010-08-23 13:55+0200\n"
+"PO-Revision-Date: 2010-06-21 22:07+0000\n"
 "Last-Translator: Guillaume Mazoyer <respawneral@gmail.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-06-21 19:20+0000\n"
+"X-Launchpad-Export-Date: 2010-08-23 12:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../client/gnomedvb/__init__.py:34
@@ -124,7 +124,7 @@ msgstr ""
 "Il n'y a actuellement aucune programmation disponible pour cette chaîne"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:157
-#: ../client/totem-plugin/dvb-daemon.py:324
+#: ../client/totem-plugin/dvb-daemon.py:349
 msgid "_Recording schedule"
 msgstr "_Planning d'enregistrements"
 
@@ -249,13 +249,13 @@ msgstr "Planning d'enregistrement"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:276
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:153
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:30
-#: ../client/totem-plugin/dvb-daemon.py:276
+#: ../client/totem-plugin/dvb-daemon.py:301
 msgid "Recordings"
 msgstr "Enregistrements"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:285
-#: ../client/totem-plugin/dvb-daemon.py:305
-#: ../client/totem-plugin/dvb-daemon.py:326
+#: ../client/totem-plugin/dvb-daemon.py:330
+#: ../client/totem-plugin/dvb-daemon.py:351
 msgid "What's on now"
 msgstr "En ce moment"
 
@@ -347,7 +347,7 @@ msgid "Edit group"
 msgstr "Modifier le groupe"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:38
-#: ../client/totem-plugin/dvb-daemon.py:327
+#: ../client/totem-plugin/dvb-daemon.py:352
 msgid "Digital TV Preferences"
 msgstr "Préférences de la Télévision Numérique"
 
@@ -657,11 +657,11 @@ msgstr "_Sélectionner les chaînes cryptées"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:135
 msgid "Signal quality:"
-msgstr ""
+msgstr "Qualité du signal :"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:146
 msgid "Signal strength:"
-msgstr ""
+msgstr "Intensité du signal :"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:161
 msgid "Scanning for channels"
@@ -864,64 +864,60 @@ msgstr ""
 
 #: ../client/totem-plugin/dvb-daemon.py:150
 #: ../client/totem-plugin/dvb-daemon.py:194
-#: ../client/totem-plugin/dvb-daemon.py:311
+#: ../client/totem-plugin/dvb-daemon.py:336
 msgid "Program Guide"
 msgstr "Guide des programmes"
 
-#: ../client/totem-plugin/dvb-daemon.py:282
+#: ../client/totem-plugin/dvb-daemon.py:307
 msgid "Digital TV"
 msgstr "Télévision numérique"
 
-#: ../client/totem-plugin/dvb-daemon.py:322
+#: ../client/totem-plugin/dvb-daemon.py:347
 msgid "Watch TV"
 msgstr "Regarder la télévision"
 
-#: ../client/totem-plugin/dvb-daemon.py:323
+#: ../client/totem-plugin/dvb-daemon.py:348
 msgid "Digital _TV"
 msgstr "_Télévision numérique"
 
-#: ../client/totem-plugin/dvb-daemon.py:325
+#: ../client/totem-plugin/dvb-daemon.py:350
 msgid "_Program Guide"
 msgstr "_Guide des programmes"
 
-#: ../client/totem-plugin/dvb-daemon.py:328
+#: ../client/totem-plugin/dvb-daemon.py:353
 msgid "_Delete"
 msgstr "_Supprimer"
 
-#: ../client/totem-plugin/dvb-daemon.py:329
+#: ../client/totem-plugin/dvb-daemon.py:354
 msgid "D_etails"
 msgstr "_Détails"
 
-#: ../client/totem-plugin/dvb-daemon.py:330
+#: ../client/totem-plugin/dvb-daemon.py:355
 msgid "_Order channels"
 msgstr "_Ordre des chaînes"
 
-#: ../client/totem-plugin/dvb-daemon.py:333
+#: ../client/totem-plugin/dvb-daemon.py:358
 msgid "By _name"
 msgstr "Par _nom"
 
-#: ../client/totem-plugin/dvb-daemon.py:334
+#: ../client/totem-plugin/dvb-daemon.py:359
 msgid "By _group"
 msgstr "Par _groupe"
 
-#: ../client/totem-plugin/dvb-daemon.py:337
+#: ../client/totem-plugin/dvb-daemon.py:362
 msgid "_Reverse order"
 msgstr "_Inverser l'ordre"
 
-#: ../client/totem-plugin/dvb-daemon.py:489
+#: ../client/totem-plugin/dvb-daemon.py:514
 msgid "Delete selected recording?"
 msgstr "Supprimer l'enregistrement sélectionné ?"
 
-#: ../client/totem-plugin/dvb-daemon.py:532
-msgid "Totem Movie Player"
-msgstr "Lecteur vidéo Totem"
-
-#: ../client/totem-plugin/dvb-daemon.py:578
+#: ../client/totem-plugin/dvb-daemon.py:588
 #, python-format
 msgid "Recording %d"
 msgstr "Enregistrement %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:638
+#: ../client/totem-plugin/dvb-daemon.py:648
 msgid "GNOME DVB Daemon is not installed"
 msgstr "Le service GNOME DVB n'est pas installé"
 
@@ -946,6 +942,9 @@ msgstr "Réglage DVB"
 
 #~ msgid "Add To Group"
 #~ msgstr "Ajouter au Groupe"
+
+#~ msgid "Totem Movie Player"
+#~ msgstr "Lecteur vidéo Totem"
 
 #~ msgid "Channel List Editor"
 #~ msgstr "Editeur de liste de canaux"
