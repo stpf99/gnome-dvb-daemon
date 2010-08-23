@@ -45,8 +45,9 @@ namespace DVB {
         }
         public string URL {
             owned get {
-                return "rtsp://%s:8554/%u/%u".printf (
-                        Environment.get_host_name(), this.GroupId, this.Sid);
+                return "rtsp://%s:8554/%u/%u/%s".printf (
+                        Environment.get_host_name(), this.GroupId, this.Sid,
+                        Utils.remove_nonalphanums (this.Name));
             }
         }
         
