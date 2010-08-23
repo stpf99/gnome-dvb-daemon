@@ -285,7 +285,6 @@ class DVBDaemonPlugin(totem.Plugin):
 
     def construct(self):
         self.manager = DVBModel()
-        self.recentmanager = gtk.recent_manager_get_default()
 
         self.setup = DvbSetup()
         
@@ -547,21 +546,6 @@ class DVBDaemonPlugin(totem.Plugin):
                     url, success = channellist.get_channel_url(sid)
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_REPLACE, url)
                 self.totem_object.action_remote(totem.REMOTE_COMMAND_PLAY, url)
-                # Totem adds the URL to recent manager, remove it again
-                try:
-                    self.recentmanager.remove_item (url)
-                except GError, e:
-                    print >> sys.stderr, \
-                        "Error removing recently used item: %s" % str(e)
-                success = self.recentmanager.add_full (url,
-                    {"display_name": model[aiter][model.COL_NAME],
-                     "app_name": _("Totem Movie Player"),
-                     "app_exec": "totem %u",
-                     "mime_type": "video",
-                     "groups": ("Totem", "gnome-dvb-daemon",)})
-                if not success:
-                    print >> sys.stderr, \
-                        "Error adding recently used item"
         elif event.button == 3:
             # right click button
             x = int(event.x)
