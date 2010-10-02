@@ -58,7 +58,9 @@ namespace DVB {
     
         // Use weak to avoid ref cycle
         public weak Channel channel {get; construct;}
-    
+
+        private static StaticRecMutex mutex = StaticRecMutex ();
+
         private Sequence<EventElement> events;
         private Map<uint, weak SequenceIter<EventElement>> event_id_map;
         private EPGStore epgstore;
@@ -172,39 +174,40 @@ namespace DVB {
             if (event.has_expired ()) return;
             
             lock (this.events) {
-                this.store_event (event);
+                try {
+                    this.store_event (event);
+                } catch (SqlError e) {
+                    critical ("%s", e.message);
+                }
             }
         }
 
         public void add_all (Collection<Event> new_events) {
             lock (this.events) {
                 try {
+                    mutex.lock ();
                     ((database.sqlite.SqliteDatabase)this.epgstore).begin_transaction ();
+
+                    foreach (Event event in new_events) {
+                        if (!event.has_expired ())
+                            this.store_event (event);
+                    }
+
+                    ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();                    
                 } catch (SqlError e) {
                     critical ("%s", e.message);
-                }
-                foreach (Event event in new_events) {
-                    if (!event.has_expired ())
-                        this.store_event (event);
-                }
-                try {
-                    ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();
-                } catch (SqlError e) {
-                    critical ("%s", e.message);
+                } finally {
+                    mutex.unlock ();
                 }
             }
         }
 
-        private void store_event (Event event) {
+        private void store_event (Event event) throws SqlError {
+            this.epgstore.add_or_update_event (event, this.channel.Sid,
+                this.channel.GroupId);
+
             if (!this.event_id_map.has_key (event.id)) {
                 this.create_and_add_event_element (event);
-            }
-            
-            try {
-                this.epgstore.add_or_update_event (event, this.channel.Sid,
-                    this.channel.GroupId);
-            } catch (SqlError e) {
-                critical ("%s", e.message);
             }
         }
         
