@@ -146,8 +146,6 @@ namespace DVB.database.sqlite {
             if (julian_start <= 0) return false;
             
             if (this.contains_event (event, channel_sid, group_id)) {
-                this.update_event_statement.reset ();
-                
                 if (this.update_event_statement.bind_double (1, julian_start) != Sqlite.OK
                         || this.update_event_statement.bind_int (2, (int)event.duration) != Sqlite.OK
                         || this.update_event_statement.bind_int (3, (int)event.running_status) != Sqlite.OK
@@ -163,12 +161,12 @@ namespace DVB.database.sqlite {
                 }
                 
                 if (this.update_event_statement.step () != Sqlite.DONE) {
-                    this.throw_last_error ();
+                    this.throw_last_error_reset (this.update_event_statement);
                     return false;
                 }
+
+                this.update_event_statement.reset ();
             } else {
-                this.insert_event_statement.reset ();
-                
                 if (this.insert_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
                         || this.insert_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
                         || this.insert_event_statement.bind_int (3, (int)event.id) != Sqlite.OK
@@ -184,9 +182,11 @@ namespace DVB.database.sqlite {
                 }
                 
                 if (this.insert_event_statement.step () != Sqlite.DONE) {
-                    this.throw_last_error ();
+                    this.throw_last_error_reset (this.insert_event_statement);
                     return false;
                 }
+
+                this.insert_event_statement.reset ();
             }
             return true;
         }
@@ -194,8 +194,6 @@ namespace DVB.database.sqlite {
         public Event? get_event (uint event_id, uint channel_sid,
                 uint group_id) throws SqlError
         {
-            this.select_event_statement.reset ();
-            
             if (this.select_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
                     || this.select_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
                     || this.select_event_statement.bind_int (3, (int)event_id) != Sqlite.OK) {
@@ -206,20 +204,23 @@ namespace DVB.database.sqlite {
             int rc = this.select_event_statement.step ();
             
             if (rc != Sqlite.ROW && rc != Sqlite.DONE) {
-                this.throw_last_error ();
+                this.throw_last_error_reset (this.select_event_statement);
                 return null;
             }
             
             // ROW means there's data, DONE means there's none
-            if (rc == Sqlite.DONE) return null;
-            else return this.create_event_from_statement (this.select_event_statement);
+            Event? event = null;
+            if (rc != Sqlite.DONE) {
+                event = this.create_event_from_statement (this.select_event_statement);
+            }                
+            this.select_event_statement.reset ();
+
+            return event;
         }
         
         public bool remove_event (uint event_id, uint channel_sid,
                 uint group_id) throws SqlError
         {
-            this.delete_event_statement.reset ();
-            
             if (this.delete_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
                     || this.delete_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
                     || this.delete_event_statement.bind_int (3, (int)event_id) != Sqlite.OK) {
@@ -228,17 +229,18 @@ namespace DVB.database.sqlite {
             }
             
             if (this.delete_event_statement.step () != Sqlite.DONE) {
-                this.throw_last_error ();
+                this.throw_last_error_reset (this.delete_event_statement);
                 return false;
             }
-            
+  
+            this.delete_event_statement.reset ();
+                      
             return true;
         }
 
         public bool remove_events_older_than (Event event, uint channel_sid,
                 uint group_id) throws SqlError
         {
-            this.delete_expired_events.reset ();
             time_t timestamp = event.get_end_timestamp ();
 
             if (this.delete_expired_events.bind_int64 (1, timestamp) != Sqlite.OK
@@ -250,17 +252,17 @@ namespace DVB.database.sqlite {
             }
 
             if (this.delete_expired_events.step () != Sqlite.DONE) {
-                this.throw_last_error ();
+                this.throw_last_error_reset (this.delete_expired_events);
                 return false;
             }
+
+            this.delete_expired_events.reset ();
 
             return true;
         }
         
         public bool contains_event (Event event, uint channel_sid, uint group_id) throws SqlError
         {
-            this.has_event_statement.reset ();
-            
             if (this.has_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
                     || this.has_event_statement.bind_int (2, (int)channel_sid) != Sqlite.OK
                     || this.has_event_statement.bind_int (3, (int)event.id) != Sqlite.OK) {
@@ -272,7 +274,9 @@ namespace DVB.database.sqlite {
             while (this.has_event_statement.step () == Sqlite.ROW) {
                 c = this.has_event_statement.column_int (0);
             }
-            
+     
+            this.has_event_statement.reset ();
+                   
             return (c > 0);
         }
         
@@ -301,17 +305,17 @@ namespace DVB.database.sqlite {
         }
         
         public bool remove_events_of_group (uint group_id) throws SqlError {
-            this.delete_events_group.reset ();
-            
             if (this.delete_events_group.bind_int (1, (int)group_id) != Sqlite.OK) {
                 this.throw_last_error ();
                 return false;
             }
             
             if (this.delete_events_group.step () != Sqlite.DONE) {
-                this.throw_last_error ();
+                this.throw_last_error_reset (this.delete_events_group);
                 return false;
             }
+            
+            this.delete_events_group.reset ();
             
             return true;
         }
@@ -366,8 +370,7 @@ namespace DVB.database.sqlite {
 
         private double to_julian (uint year, uint month, uint day,
                 uint hour, uint minute, uint second) throws SqlError {
-            
-            this.to_julian_statement.reset ();
+
             string datetime_str = "%04u-%02u-%02u %02u:%02u:%02u".printf (
                 year, month, day, hour, minute, second);
             
@@ -382,7 +385,11 @@ namespace DVB.database.sqlite {
                 return 0;
             }
             
-            return this.to_julian_statement.column_double (0);
+            double val = this.to_julian_statement.column_double (0);
+            
+            this.to_julian_statement.reset ();
+
+            return val;
         }
 
     }

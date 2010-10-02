@@ -130,6 +130,11 @@ namespace DVB.database.sqlite {
             this.exec_sql ("END;");
         }
 
+        protected void throw_last_error_reset (Statement stmnt) throws SqlError {
+            stmnt.reset ();
+            this.throw_last_error ();
+        }
+
         protected void throw_last_error (string? errmsg=null) throws SqlError {
             int code = this.db.errcode ();
             string msg;
@@ -138,7 +143,7 @@ namespace DVB.database.sqlite {
             } else {
                 msg = errmsg;
             }
-            
+
             switch (code) {
                 case 1: throw new SqlError.ERROR (msg);
                 case 2: throw new SqlError.INTERNAL (msg);
