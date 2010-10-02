@@ -78,9 +78,6 @@ class ChannelsTreeStore(gtk.TreeStore):
         self._manager.connect('group-added', self._on_manager_group_added)
         self._manager.connect('group-removed', self._on_manager_group_removed)
         self._add_channels()
-        
-        self._tv_group_iter = None
-        self._radio_group_iter = None
             
     def _add_channels(self):
         def append_groups(dev_groups):
@@ -104,28 +101,28 @@ class ChannelsTreeStore(gtk.TreeStore):
                 reply_handler=lambda x: d.callback(x),
                 error_handler=global_error_handler)
             # Put all available channels either in TV or radio group
-            self._tv_group_iter = self.append(group_iter,
+            tv_group_iter = self.append(group_iter,
                 [group_id, _("TV Channels"), 0, dev_group])
-            self._radio_group_iter = self.append(group_iter,
+            radio_group_iter = self.append(group_iter,
                 [group_id, _("Radio Channels"), 0, dev_group])
         else:
             # Do not distinguish between radio and TV
-            self._tv_group_iter = group_iter
-            self._radio_group_iter = group_iter
+            tv_group_iter = group_iter
+            radio_group_iter = group_iter
 
         d_all = Callback()
         d_all.add_callback(self._append_channels, group_id,
-            dev_group)
+            dev_group, tv_group_iter, radio_group_iter)
         channellist.get_channel_infos(
             reply_handler=lambda x: d_all.callback(x),
             error_handler=global_error_handler)
      
-    def _append_channels(self, channels, group_id, dev_group):
+    def _append_channels(self, channels, group_id, dev_group, tv_group_iter, radio_group_iter):
         for channel_id, name, is_radio in channels:
             if is_radio:
-                group_iter = self._radio_group_iter
+                group_iter = radio_group_iter
             else:
-                group_iter = self._tv_group_iter
+                group_iter = tv_group_iter
             self.append(group_iter,
                 [group_id,
                 escape(name),
