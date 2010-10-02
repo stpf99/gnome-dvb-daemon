@@ -170,8 +170,8 @@ namespace DVB.io {
             string? name = Utils.get_name_by_value_from_enum (enumtype,
                                                              val);
             if (name == null) return null;
-            else return name.substring (prefix.len (),
-                name.len () - prefix.len ());
+            else return name.substring (prefix.length,
+                name.length - prefix.length);
         }
         
     }

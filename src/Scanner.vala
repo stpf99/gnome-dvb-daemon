@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -576,7 +576,7 @@ namespace DVB {
                 // Returns "service-%d"
                 string name = service.get_name ();
                 // Get the number at the end
-                int sid = name.substring (8, name.len() - 8).to_int ();
+                int sid = name.substring (8, name.length - 8).to_int ();
                 
                 if (service.has_field ("name"))
                     name = service.get_string ("name");
