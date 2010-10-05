@@ -20,7 +20,7 @@
 namespace DVB.database {
 
     /* from http://sqlite.org/c3ref/c_abort.html */
-    errordomain SqlError {
+    public errordomain SqlError {
         ERROR,
         INTERNAL,
         PERM,

@@ -21,7 +21,7 @@ using GLib;
 using Gst;
 namespace DVB {
 
-    errordomain DeviceError {
+    public errordomain DeviceError {
     	UNKNOWN_TYPE
     }
 
