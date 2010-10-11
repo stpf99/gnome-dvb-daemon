@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2010 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -26,6 +26,7 @@ namespace DVB.RTSPServer {
         message ("Starting RTSP server");
         server = new Gst.RTSPServer ();
         server.set_media_mapping (new MediaMapping ());
+        server.set_address (Environment.get_host_name());
         server.attach (null);
         timeout_id = GLib.Timeout.add_seconds (2, (GLib.SourceFunc)timeout);
         return false;
