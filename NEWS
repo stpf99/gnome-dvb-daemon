@@ -1,4 +1,23 @@
 ==============
+Version 0.1.22
+==============
+
+This release fixes an issue where Totem was unable to
+connect to the daemon and a crasher when more than one
+device group was used.
+gst-rtsp-server 0.10.7 is required.
+
+- Schedule: Lock access when adding epg	events to database; https://launchpad.net/bugs/642388 fixed
+- gnomedvb: Insert channels into correct group when using more than one device group
+- Fixed compiler warnings
+- rtsp: set address of RTSPServer
+- Updated minimum version of vala to 0.10.0, gstreamer to 0.10.29 and gst-rtsp to 0.10.7
+
+Updated Translations:
+---------------------
+- Lithuanian  
+
+==============
 Version 0.1.21
 ==============
 
