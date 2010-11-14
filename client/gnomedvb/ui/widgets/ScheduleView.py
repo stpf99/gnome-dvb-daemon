@@ -54,6 +54,20 @@ class ScheduleView(gtk.TreeView):
         col = gtk.TreeViewColumn("Description", cell_description)
         col.set_cell_data_func(cell_description, self._get_description_data)
         self.append_column(col)
+
+    def set_model(self, model):
+        gtk.TreeView.set_model(self, model)
+
+        if model:
+            self.set_enable_search(True)
+            self.set_search_column(ScheduleStore.COL_TITLE)
+            self.set_search_equal_func(self._search_func)
+
+    def _search_func(self, model, col, key, aiter):
+        data = model.get_value(aiter, col)
+        if data and data.startswith(key):
+            return False
+        return True
     
     def _get_description_data(self, column, cell, model, aiter):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
