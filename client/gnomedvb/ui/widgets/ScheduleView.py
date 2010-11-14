@@ -65,7 +65,7 @@ class ScheduleView(gtk.TreeView):
 
     def _search_func(self, model, col, key, aiter):
         data = model.get_value(aiter, col)
-        if data and data.startswith(key):
+        if data and data.lower().startswith(key.lower()):
             return False
         return True
     
