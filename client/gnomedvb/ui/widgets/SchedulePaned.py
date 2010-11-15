@@ -40,6 +40,7 @@ class SchedulePaned (gtk.VPaned):
         
         self.textview = gtk.TextView()
         self.textview.set_wrap_mode(gtk.WRAP_WORD)
+        self.textview.set_editable(False)
         self.textview.show()
         
         self.scrolledtextview = gtk.ScrolledWindow()
