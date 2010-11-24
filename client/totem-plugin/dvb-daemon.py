@@ -32,8 +32,6 @@ import gnomedvb
 import sys
 from cgi import escape
 import gettext
-from gettext import gettext as _
-import locale
 
 from gnomedvb import global_error_handler
 from gnomedvb.DVBModel import DVBModel
@@ -49,6 +47,9 @@ from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog
 from gnomedvb.ui.recordings.DetailsDialog import DetailsDialog
 
 DBUS_DVB_SERVICE = "org.gnome.DVB"
+
+def _(message):
+    return gettext.dgettext('gnome-dvb-daemon', message)
 
 def spawn_on_screen(argv, screen, flags=0):
 
@@ -255,8 +256,7 @@ class DVBDaemonPlugin(totem.Plugin):
     def activate (self, totem_object):
         self.totem_object = totem_object
 
-        gettext.textdomain('gnome-dvb-daemon')
-        locale.textdomain('gnome-dvb-daemon')
+        gettext.bindtextdomain('gnome-dvb-daemon')
 
         self.monitor_bus()
 
