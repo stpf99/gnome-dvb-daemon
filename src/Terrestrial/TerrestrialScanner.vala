@@ -97,12 +97,7 @@ namespace DVB {
 
             string[] cols = Regex.split_simple ("\\s+", line);
             
-            int cols_length = 0;
-            while (cols[cols_length] != null)
-                cols_length++;
-            cols_length++;
-            
-            if (cols_length < 9) {
+            if (cols.length < 9) {
                 return;
             }
             
@@ -123,10 +118,15 @@ namespace DVB {
             string code_rate_hp = cols[3];
             string code_rate_lp = cols[4];
             string constellation = cols[5];
-            
-            string guard_str = cols[7].split("/")[1];
-            uint guard = (uint)guard_str.to_int ();
-            
+
+            uint guard;
+            if (cols[7].str ("/") == null) {
+                guard = 0;
+            } else {
+                string guard_str = cols[7].split("/")[1];
+                guard = (uint)guard_str.to_int ();
+            }
+
             this.add_scanning_data (freq, hierarchy,
                 bandwidth, transmode, code_rate_hp,
                 code_rate_lp, constellation, guard);
