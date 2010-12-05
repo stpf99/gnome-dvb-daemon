@@ -34,13 +34,13 @@ namespace DVB {
         /* Time is stored in UTC */
         public time_t starttime;
     
-        public static int compare (EventElement* event1, EventElement* event2) {
+        public static int compare (EventElement event1, EventElement event2) {
             if (event1 == null && event2 == null) return 0;
             else if (event1 == null && event2 != null) return +1;
             else if (event1 != null && event2 == null) return -1;
         
-            if (event1->starttime < event2->starttime) return -1;
-            else if (event1->starttime > event2->starttime) return +1;
+            if (event1.starttime < event2.starttime) return -1;
+            else if (event1.starttime > event2.starttime) return +1;
             else return 0;
         }
         

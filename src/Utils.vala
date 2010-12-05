@@ -26,7 +26,7 @@ namespace DVB.Utils {
         
     public static inline unowned string? get_nick_from_enum (GLib.Type enumtype, int val) {
         EnumClass eclass = (EnumClass)enumtype.class_ref ();
-        unowned EnumValue eval = eclass.get_value (val);
+        unowned EnumValue? eval = eclass.get_value (val);
         
         if (eval == null) {
             critical ("Enum has no value %d", val);
@@ -38,7 +38,7 @@ namespace DVB.Utils {
     
     public static inline bool get_value_by_name_from_enum (GLib.Type enumtype, string name, out int evalue) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
-        unowned EnumValue eval = enumclass.get_value_by_name (name);
+        unowned EnumValue? eval = enumclass.get_value_by_name (name);
         
         if (eval == null) {
             critical ("Enum has no member named %s", name);
@@ -51,7 +51,7 @@ namespace DVB.Utils {
     
     public static inline unowned string? get_name_by_value_from_enum (GLib.Type enumtype, int val) {
         EnumClass enumclass = (EnumClass)enumtype.class_ref ();
-        unowned EnumValue eval = enumclass.get_value (val);
+        unowned EnumValue? eval = enumclass.get_value (val);
         
         if (eval == null) {
             critical ("Enum has no value %d", val);

@@ -63,7 +63,7 @@ namespace DVB.io {
         
             // Write channel name
             buffer = "%s:".printf (channel.Name);
-            this.stream.write_all (buffer, buffer.size(), null, null);
+            this.stream.write_all (buffer.data, null, null);
             
             // Write special data
             if (channel is TerrestrialChannel) {
@@ -85,7 +85,7 @@ namespace DVB.io {
             // Write common data
             buffer = ":%u:%u:%u\n".printf (channel.VideoPID,
                 apid, channel.Sid);
-            this.stream.write_all (buffer, buffer.size(), null, null);
+            this.stream.write_all (buffer.data, null);
         }
         
         public bool close () throws Error {
@@ -131,7 +131,7 @@ namespace DVB.io {
                                                       "DVB_DVB_SRC_HIERARCHY_");
                                                       
             string buffer = string.joinv (":", elements);
-            this.stream.write_all (buffer, buffer.size(), null, null);
+            this.stream.write_all (buffer.data, null);
         }
         
         private void write_satellite_channel (SatelliteChannel channel) throws Error {
@@ -139,7 +139,7 @@ namespace DVB.io {
                                                   channel.Polarization,
                                                   channel.DiseqcSource,
                                                   channel.SymbolRate);
-            this.stream.write_all (buffer, buffer.size(), null, null);
+            this.stream.write_all (buffer.data, null);
         }
         
         private void write_cable_channel (CableChannel channel) throws Error {
@@ -162,7 +162,7 @@ namespace DVB.io {
                                                       "DVB_DVB_SRC_MODULATION_");
                                                       
             string buffer = string.joinv (":", elements);
-            this.stream.write_all (buffer, buffer.size(), null, null);
+            this.stream.write_all (buffer.data, null);
         }
         
         private static string? get_name_without_prefix (GLib.Type enumtype,

@@ -66,7 +66,7 @@ namespace DVB {
                 }
                 
                 try {
-                    stream.write (DEFAULT_SETTINGS, DEFAULT_SETTINGS.size(), null);
+                    stream.write (DEFAULT_SETTINGS.data);
                 } catch (Error e) {
                     critical ("Could not write to file %s: %s",
                         settings_file.get_path (), e.message);
@@ -113,7 +113,7 @@ namespace DVB {
             data = this.keyfile.to_data (out data_len);
                 
             try {
-                stream.write_all (data, data_len, null, null);
+                stream.write_all (data.data, null);
             } catch (Error e) {
                 critical ("Could not write to file %s: %s",
                     settings_file.get_path (), e.message);

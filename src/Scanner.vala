@@ -107,7 +107,7 @@ namespace DVB {
         private bool locked;
         private MainContext context;
         private MainLoop loop;
-        private unowned Thread worker_thread;
+        private unowned Thread<bool> worker_thread;
         private bool running;
         private uint bus_watch_id;
         
@@ -155,8 +155,8 @@ namespace DVB {
         
             this.loop = new MainLoop (this.context, false);
             try {
-                this.worker_thread = Thread.create (this.worker, true);
-            } catch (Error e) {
+                this.worker_thread = Thread.create<bool> (this.worker, true);
+            } catch (ThreadError e) {
                 critical ("Could not create thread: %s", e.message);
                 return;
             }
@@ -309,10 +309,10 @@ namespace DVB {
         }
 
         /* Main Thread */
-        private void* worker () {
+        private bool worker () {
             this.loop.run ();
 
-            return null;
+            return true;
         }
 
         protected void clear_and_reset_all () {

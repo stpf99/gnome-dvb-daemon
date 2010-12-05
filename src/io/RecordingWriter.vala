@@ -48,7 +48,7 @@ namespace DVB.io {
             FileOutputStream stream = recfile.create (0, null);
             
             string text = this.serialize (this.rec);
-            stream.write (text, text.size (), null);
+            stream.write (text.data);
             
             stream.close (null);
         }

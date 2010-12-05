@@ -16,7 +16,7 @@ AM_PROG_CC_C_O
 LT_PREREQ([2.2.6])
 LT_INIT([disable-static])
 
-AM_PROG_VALAC([0.10.0])
+AM_PROG_VALAC([0.11.2])
 
 AH_TEMPLATE([GETTEXT_PACKAGE], [gnome-dvb-daemon])
 GETTEXT_PACKAGE=gnome-dvb-daemon
