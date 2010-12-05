@@ -66,7 +66,7 @@ class AdaptersPage(BasePage):
             cell_name = gtk.CellRendererText()
             col_name = gtk.TreeViewColumn(_("Name"))
             col_name.pack_start(cell_name)
-            col_name.add_attribute(cell_name, "text", 0)
+            col_name.set_cell_data_func(cell_name, self.name_data_func)
             self.devicesview.append_column(col_name)
         
             cell_type = gtk.CellRendererText()
@@ -229,4 +229,14 @@ class AdaptersPage(BasePage):
             self.emit("finished", True)
         else:
             self.emit("finished", False)
+
+    def name_data_func(self, column, cell, model, aiter):
+        name = model[aiter][0]
+        adapter = model[aiter][3]
+        frontend = model[aiter][4]
+
+        text = _("<b>%s</b>\n") % name
+        text += "<small>%s</small>" % (_("Adapter: %d, Frontend: %d") % (adapter, frontend))
+
+        cell.set_property("markup", text)
         
