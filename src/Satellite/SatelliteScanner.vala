@@ -74,13 +74,8 @@ namespace DVB {
             // line looks like:
             // S freq pol sr fec
             string[] cols = Regex.split_simple ("\\s+", line);
-            
-            int cols_length = 0;
-            while (cols[cols_length] != null)
-                cols_length++;
-            cols_length++;
-            
-            if (cols_length < 5) return;
+
+            if (cols.length < 5) return;
             
             uint freq = (uint)cols[1].to_int ();
             uint symbol_rate = (uint)cols[3].to_int () / 1000;

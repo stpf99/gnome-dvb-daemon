@@ -75,13 +75,8 @@ namespace DVB {
             // line looks like:
             // C freq sr fec mod
             string[] cols = Regex.split_simple ("\\s+", line);
-            
-            int cols_length = 0;
-            while (cols[cols_length] != null)
-                cols_length++;
-            cols_length++;
-            
-            if (cols_length < 5) return;
+   
+            if (cols.length < 5) return;
             
             uint freq = (uint)cols[1].to_int ();
             string modulation = cols[4];
