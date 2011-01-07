@@ -121,15 +121,19 @@ namespace DVB {
             
             return local_time;
         }
-        
+
         public Time get_utc_start_time () {
             Time utc_time = Utils.create_utc_time ((int)this.year, (int)this.month,
                 (int)this.day, (int)this.hour, (int)this.minute,
                 (int)this.second);
-                
             return utc_time;
         }
-        
+
+        public time_t get_start_timestamp () {
+            Time utc_time = this.get_utc_start_time ();
+            return utc_time.mktime ();
+        }
+
         /**
          * @returns: UNIX time stamp
          */
@@ -148,7 +152,23 @@ namespace DVB {
             
             return after;
         }
-        
+
+        public double get_overlap_percentage (Event other) {
+            time_t this_start = this.get_start_timestamp ();
+            time_t this_end = this.get_end_timestamp ();
+
+            time_t other_start = other.get_start_timestamp ();
+            time_t other_end = other.get_end_timestamp ();
+
+            if (this_start <= other_end && this_end >= other_start) {
+                time_t start = Utils.t_max (this_start, other_start);
+                time_t end = Utils.t_min (this_end, other_end);
+                return Math.fabs (start - end) / (this_end - this_start);
+            }
+
+            return 0;
+        }
+
         /**
          * @returns: negative value if event1 starts before event2,
          * positive value if event1 starts after event2 and zero else
