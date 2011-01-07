@@ -43,6 +43,7 @@ gnome_dvb_daemon_SOURCES = \
 	src/DeviceGroup.vala \
 	src/EPGScanner.vala \
 	src/Event.vala \
+	src/EventStorage.vala \
 	src/Factory.vala \
 	src/Main.vala \
 	src/Manager.vala \

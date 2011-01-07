@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2011 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -24,50 +24,23 @@ using DVB.database;
 namespace DVB {
 
     /**
-     * We don't want to hold the complete information about
-     * every event in memory. Just remember id and starttime
-     * so we can have a sorted list.
-     */
-    class EventElement : GLib.Object {
-    
-        public uint id;
-        /* Time is stored in UTC */
-        public time_t starttime;
-    
-        public static int compare (EventElement event1, EventElement event2) {
-            if (event1 == null && event2 == null) return 0;
-            else if (event1 == null && event2 != null) return +1;
-            else if (event1 != null && event2 == null) return -1;
-        
-            if (event1.starttime < event2.starttime) return -1;
-            else if (event1.starttime > event2.starttime) return +1;
-            else return 0;
-        }
-        
-        public static void destroy (void* data) {
-            EventElement e = (EventElement) data;
-            g_object_unref (e);
-        }
-        
-    }
-
-    /**
      * Represents a series of events of a channel
      */
     public class Schedule : GLib.Object, IDBusSchedule {
-    
+
+        private static const int MATCH_THRESHOLD = 100;
+        private static const double MIN_EVENT_OVERLAP = 0.5;
+
         // Use weak to avoid ref cycle
         public weak Channel channel {get; construct;}
 
         private static StaticRecMutex mutex = StaticRecMutex ();
 
-        private Sequence<EventElement> events;
-        private Map<uint, weak SequenceIter<EventElement>> event_id_map;
         private EPGStore epgstore;
+        private EventStorage events;
         
         construct {
-            this.events = new Sequence<EventElement> (EventElement.destroy);
-            this.event_id_map = new HashMap<uint, weak SequenceIter<EventElement>> ();
+            this.events = new EventStorage ();
             this.epgstore = Factory.get_epg_store ();
 
             Idle.add (this.restore);
@@ -90,7 +63,7 @@ namespace DVB {
                     /* events are sorted by starttime */
                     newest_expired = i;
                 } else {
-                    this.create_and_add_event_element (event);
+                    this.events.insert (event);
                 }
             }
 
@@ -115,17 +88,14 @@ namespace DVB {
         }
         
         public void remove_expired_events () {
-            SList<weak SequenceIter<EventElement>> expired_events =
-                new SList <weak SequenceIter<EventElement>> ();
-            
+            int last_expired = -1;
+
             lock (this.events) {
-                for (int i=0; i<this.events.get_length (); i++) {
-                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
-                    
-                    EventElement element = this.events.get (iter);
+                for (int i=0; i<this.events.size; i++) {
+                    EventElement element = this.events.get (i);
                     Event? e = this.get_event (element.id);
                     if (e != null && e.has_expired ()) {
-                        expired_events.prepend (iter);
+                        last_expired = i;
                     } else {
                         // events are sorted, all other events didn't expire, too
                         break;
@@ -135,10 +105,8 @@ namespace DVB {
                 debug ("Removing expired events of channel %s (%u)",
                     channel.Name, channel.Sid);
 
-                weak SList<weak SequenceIter<EventElement>> last_iter =
-                    expired_events.last ();
-                if (last_iter != null) {
-                    EventElement element = this.events.get (last_iter.data);
+                for (int i=0; i<=last_expired; i++) {
+                    EventElement element = this.events.get (i);
                     Event? event = this.get_event (element.id);
                     try {
                         this.epgstore.remove_events_older_than (event,
@@ -148,15 +116,12 @@ namespace DVB {
                     }
                 }
 
-                foreach (weak SequenceIter<EventElement> iter in expired_events) {
-                    EventElement element = this.events.get (iter);
-                    
-                    this.event_id_map.unset (element.id);
-                    this.events.remove (iter);
+                if (last_expired > -1) {
+                    this.events.remove_range (0, last_expired);
                 }
             }
         }
-        
+
         public Event? get_event (uint event_id) {
             try {
                 return this.epgstore.get_event (event_id,
@@ -166,7 +131,7 @@ namespace DVB {
                 return null;
             }
         }
-        
+
         /**
          * When an event with the same id already exists, it's replaced
          */
@@ -203,44 +168,74 @@ namespace DVB {
         }
 
         private void store_event (Event event) throws SqlError {
+            Gee.List<Event> overlap = this.get_overlapping_events (event);
+            int s = match_events (overlap, event);
+            if (s > MATCH_THRESHOLD) {
+                this.events.remove_all (overlap);
+            }
+
             this.epgstore.add_or_update_event (event, this.channel.Sid,
                 this.channel.GroupId);
 
-            if (!this.event_id_map.has_key (event.id)) {
-                this.create_and_add_event_element (event);
+            if (!this.events.contains_event_with_id (event.id)) {
+                this.events.insert (event);
             }
         }
-        
-        /**
-         * Create event element from @event and add it to list of events
-         */
-        private void create_and_add_event_element (Event event) {
-            EventElement element = new EventElement ();
-            element.id = event.id;
-            Time utc_starttime = event.get_utc_start_time ();
-            element.starttime = utc_starttime.mktime ();
-            
-            SequenceIter<EventElement> iter = this.events.insert_sorted (element, EventElement.compare);
-            this.event_id_map.set (event.id, iter);
-            
-            assert (this.events.get_length () == this.event_id_map.size);
+
+        private Gee.List<Event> get_overlapping_events (Event event) {
+            Gee.List<EventElement> elements = this.events.get_overlapping_events (event);
+
+            Gee.List<Event> overlap = new ArrayList<Event> ();
+            foreach (EventElement data in elements) {
+                Event? e = this.get_event (data.id);
+                if (e != null && e.get_overlap_percentage (event) >= MIN_EVENT_OVERLAP)
+                    overlap.add (e);
+            }
+
+            return overlap;
         }
-        
+
+        private int match_events (Gee.List<Event> events, Event ref_event) {
+            time_t ref_start = ref_event.get_start_timestamp ();
+            time_t ref_end = ref_event.get_end_timestamp ();
+
+            double max_score = 0;            
+            foreach (Event event in events) {
+                double score = 0;
+                time_t e_start = event.get_start_timestamp ();
+                time_t e_end = event.get_end_timestamp ();
+
+                score += Math.fabs (ref_start - e_start);
+                score += Math.fabs (ref_end - e_end);
+
+                score += Math.fabs (ref_event.duration - event.duration) / 60.0;
+
+                if (ref_event.name != null && event.name != null) {
+                    long unmatched;
+                    long diff = Utils.strdiff (ref_event.name, event.name, out unmatched);
+                    score += 10 * (diff + 5 * unmatched);
+                }
+
+                if (score > max_score) {
+                    max_score = score;
+                }
+            }
+
+            return (int)max_score;
+        }
+
         public bool contains (uint event_id) {
             bool val;
             lock (this.events) {
-                val = this.event_id_map.has_key (event_id);
+                val = this.events.contains_event_with_id (event_id);
             }
             return val;
         }
-        
+
         public Event? get_running_event () {
              Event? running_event = null;
              lock (this.events) {
-                 for (int i=0; i<this.events.get_length (); i++) {
-                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
-                    
-                    EventElement element = this.events.get (iter);
+                 foreach (EventElement element in this.events) {;
                     Event? event = this.get_event (element.id);
                     if (event != null && event.is_running ()) {
                         running_event = event;
@@ -265,9 +260,7 @@ namespace DVB {
             lock (this.events) {
                 // Difference between end of timer and end of event
                 time_t last_diff = 0;
-                for (int i=0; i<this.events.get_length (); i++) {
-                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
-                    EventElement element = this.events.get (iter);
+                foreach (EventElement element in this.events) {
                     // convert UTC to local time
                     time_t event_start = cUtils.timegm (Time.local (element.starttime));
                     Event? event = this.get_event (element.id);
@@ -297,9 +290,7 @@ namespace DVB {
         public uint32[] GetAllEvents () throws DBus.Error {
             ArrayList<uint32> events = new ArrayList<uint32> ();
             lock (this.events) {
-                 for (int i=0; i<this.events.get_length (); i++) {
-                    SequenceIter<EventElement> iter = this.events.get_iter_at_pos (i);
-                    EventElement element = this.events.get (iter);
+                 foreach (EventElement element in this.events) {
                     Event? event = this.get_event (element.id);
                     if (event == null || event.has_expired ()) continue;
                     events.add (element.id);
@@ -314,30 +305,21 @@ namespace DVB {
         }
 
         public EventInfo[] GetAllEventInfos () throws DBus.Error {
-            ArrayList<Event> events = new ArrayList<Event> ();
+            ArrayList<Event> all_events = new ArrayList<Event> ();
             lock (this.events) {
-                SequenceIter<EventElement> iter = this.events.get_begin_iter ();
-                if (!iter.is_end ()) {
-                    EventElement element = this.events.get (iter);
-
-                    while (!iter.is_end ()) {
-                        Event? event = this.get_event (element.id);
-                        if (event != null && !event.has_expired ())
-                            events.add (event);
-
-                        iter = iter.next ();
-                        if (!iter.is_end ())
-                            element = this.events.get (iter);
-                     }
+                foreach (EventElement element in this.events) {
+                    Event? event = this.get_event (element.id);
+                    if (event != null && !event.has_expired ())
+                        all_events.add (event);
                 }
             }
 
-            int n_events = events.size;
+            int n_events = all_events.size;
             EventInfo[] event_infos = new EventInfo[n_events];
             int i = 0;
             Event event = null;
             if (n_events > i)
-                event = events.get (i);
+                event = all_events.get (i);
             while (event != null) {
                 event_infos[i] = event_to_event_info (event);
 
@@ -345,7 +327,7 @@ namespace DVB {
                     event_infos[i].next = 0;
                     event = null;
                 } else {
-                    event = events.get (i+1);
+                    event = all_events.get (i+1);
                     event_infos[i].next = event.id;
                 }
                 i++;
@@ -360,17 +342,16 @@ namespace DVB {
             bool ret;
             
             lock (this.events) {        
-                if (this.event_id_map.has_key (event_id)) {
-                    SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
+                if (this.events.contains_event_with_id (event_id)) {
+                    EventElement element = this.events.get_by_id (event_id);
                     Event? event = this.get_event (element.id);
                     
                     event_info = event_to_event_info (event);
-                    iter = iter.next ();
-                    if (iter.is_end ()) {
+                    EventElement? next_element = this.events.next (element);
+                    if (next_element == null) {
                         event_info.next = 0;
                     } else {
-                        element = this.events.get (iter);
+                        element = next_element;
                         event_info.next = element.id;
                     }
                     ret = true;
@@ -396,13 +377,13 @@ namespace DVB {
         public uint32 Next (uint32 event_id) throws DBus.Error {
             uint32 next_event = 0;
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    SequenceIter<EventElement> next_iter = iter.next ();
+                if (this.events.contains_event_with_id (event_id)) {
+                    EventElement element = this.events.get_by_id (event_id);
+                    EventElement? next = this.events.next (element);
+
                     // Check if a new event follows
-                    if (!next_iter.is_end ()) {
-                        EventElement element = this.events.get (next_iter);
-                        next_event = element.id;
+                    if (next != null) {
+                        next_event = next.id;
                     }
                 } else {
                     debug ("No event with id %u", event_id);
@@ -416,10 +397,8 @@ namespace DVB {
             bool ret = false;
 
             lock (this.events) {        
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null && event.name != null) {
                         name = event.name;
                         ret = true;
@@ -438,10 +417,8 @@ namespace DVB {
             bool ret = false;
             
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null && event.description != null) {
                         description = event.description;
                         ret = true;
@@ -460,10 +437,8 @@ namespace DVB {
             bool ret = false;
             
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null && event.extended_description != null) {
                         description = event.extended_description;
                         ret = true;
@@ -482,10 +457,8 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null) {
                         duration = event.duration;
                         ret = true;
@@ -504,10 +477,8 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null) {
                         Time local_time = event.get_local_start_time ();
                         start_time = to_time_array (local_time);
@@ -529,10 +500,8 @@ namespace DVB {
         {
             bool ret = false;
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null) {
                         Time local_time = event.get_local_start_time ();
                         timestamp = (int64)local_time.mktime ();
@@ -549,10 +518,8 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null) {
                         running = (event.is_running ());
                         ret = true;
@@ -571,10 +538,8 @@ namespace DVB {
             bool ret = false;
         
             lock (this.events) {
-                if (this.event_id_map.has_key (event_id)) {
-                    weak SequenceIter<EventElement> iter = this.event_id_map.get (event_id);
-                    EventElement element = this.events.get (iter);
-                    Event? event = this.get_event (element.id);
+                if (this.events.contains_event_with_id (event_id)) {
+                    Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null) {
                         scrambled = (!event.free_ca_mode);
                         ret = true;
@@ -586,7 +551,12 @@ namespace DVB {
             
             return ret;
         }
-        
+
+        private Event? get_extended_event_by_id (uint event_id) {
+            EventElement element = this.events.get_by_id (event_id);
+            return this.get_event (element.id);
+        }
+
         private static uint[] to_time_array (Time local_time) {
             uint[] start = new uint[6];
             start[0] = local_time.year + 1900;
