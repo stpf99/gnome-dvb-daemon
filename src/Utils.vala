@@ -214,5 +214,36 @@ namespace DVB.Utils {
         }
         return conn;
     }
-        
+
+    public static time_t t_max (time_t a, time_t b) {
+        return (a < b) ? b : a;
+    }
+
+    public static time_t t_min (time_t a, time_t b) {
+        return (a < b) ? a : b;
+    }
+
+    public static long strdiff (string a, string b, out long unmatched) {
+        long len_a = a.length;
+        long len_b = b.length;
+
+        long max;
+        if (len_a < len_b) {
+            max = len_b;
+            unmatched = len_b - len_a;
+        } else {
+            max = len_a;
+            unmatched = len_a - len_b;
+        }
+
+        long diff = 0;
+        for (int i=0; i<max; i++) {
+            if (a.get (i) != b.get (i)) {
+                diff++;
+            }
+        }
+
+        return diff;
+    }
+
 }
