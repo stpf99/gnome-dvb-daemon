@@ -23,26 +23,80 @@ namespace DVB {
     
     public class Settings : GLib.Object {
     
-        public static const string TIMERS_SECTION = "timers";
-        public static const string MARGIN_START = "margin_start";
-        public static const string MARGIN_END = "margin_end";
+        private static const string TIMERS_SECTION = "timers";
+        private static const string MARGIN_START = "margin_start";
+        private static const string MARGIN_END = "margin_end";
         
-        public static const string EPG_SECTION = "epg";
-        public static const string SCAN_INTERVAL = "scan_interval";
+        private static const string EPG_SECTION = "epg";
+        private static const string SCAN_INTERVAL = "scan_interval";
+
+        private static const string STREAMING_SECTION = "streaming";
+        private static const string INTERFACE = "interface";
+
+        private static const int DEFAULT_MARGIN_START = 5;
+        private static const int DEFAULT_MARGIN_END = 5;
+        private static const int DEFAULT_SCAN_INTERVAL = 30;
+        private static const string DEFAULT_INTERFACE = "lo";
 
         private static const string DEFAULT_SETTINGS =
         """[timers]
         margin_start=5
         margin_end=5
         [epg]
-        scan_interval=30""";
+        scan_interval=30
+        [streaming]
+        interface=lo""";
         
         private KeyFile keyfile;
 
         construct {
             keyfile = new KeyFile ();
         }
-        
+
+        public int get_epg_scan_interval () {
+            int val;
+            try {
+                val = this.get_integer (EPG_SECTION, SCAN_INTERVAL);
+            } catch (KeyFileError e) {
+                warning ("%s", e.message);
+                val = DEFAULT_SCAN_INTERVAL;
+            }
+            return val * 60;
+        }
+
+        public int get_timers_margin_start () {
+            int start_margin;
+            try {
+                start_margin = this.get_integer (TIMERS_SECTION, MARGIN_START);
+            } catch (KeyFileError e) {
+                warning ("%s", e.message);
+                start_margin = DEFAULT_MARGIN_START;
+            }
+            return start_margin;
+        }
+
+        public int get_timers_margin_end () {
+            int end_margin;
+            try {
+                end_margin = this.get_integer (TIMERS_SECTION, MARGIN_END);
+            } catch (KeyFileError e) {
+                warning ("%s", e.message);
+                end_margin = DEFAULT_MARGIN_END;
+            }
+            return end_margin;
+        }
+
+        public string get_streaming_interface () {
+            string val;
+            try {
+                val = this.get_string (STREAMING_SECTION, INTERFACE);
+            } catch (KeyFileError e) {
+                warning ("%s", e.message);
+                val = DEFAULT_INTERFACE;
+            }
+            return val;
+        }
+
         public File get_settings_file () {
             File config_dir = File.new_for_path (
                 Environment.get_user_config_dir ());

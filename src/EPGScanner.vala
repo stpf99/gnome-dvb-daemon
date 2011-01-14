@@ -61,13 +61,7 @@ namespace DVB {
             // check if interval is unset
             if (CHECK_EIT_INTERVAL == -1) {
                 Settings settings = Factory.get_settings ();
-                try {
-                    CHECK_EIT_INTERVAL = settings.get_integer (
-                        Settings.EPG_SECTION, Settings.SCAN_INTERVAL) * 60;
-                } catch (KeyFileError e) {
-                    critical ("%s", e.message);
-                    CHECK_EIT_INTERVAL = 15*60;
-                }
+                CHECK_EIT_INTERVAL = settings.get_epg_scan_interval ();
             }
         }
         

@@ -120,19 +120,11 @@ namespace DVB {
             }
 
             Settings settings = Factory.get_settings ();
-            int start_margin = 0;
-            uint end_margin = 0;
-            try {
-                start_margin = -1 * settings.get_integer (
-                    Settings.TIMERS_SECTION, Settings.MARGIN_START);
-                end_margin = 2 * (uint)settings.get_integer (
-                    Settings.TIMERS_SECTION, Settings.MARGIN_END);
-                new_timer.Duration += end_margin;
-                new_timer.add_to_start_time (start_margin);
-            } catch (KeyFileError e) {
-                critical ("Could not retrieve start/end margins: %s",
-                    e.message);
-            }
+            int start_margin = -1 * settings.get_timers_margin_start ();
+            uint end_margin = (uint)(2 * settings.get_timers_margin_end ());
+    
+            new_timer.Duration += end_margin;
+            new_timer.add_to_start_time (start_margin);
 
             bool ret = true;
             if (!this.add_timer (new_timer, out timer_id)) {
