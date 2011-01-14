@@ -18,16 +18,22 @@ LT_INIT([disable-static])
 
 AM_PROG_VALAC([0.11.2])
 
-AH_TEMPLATE([GETTEXT_PACKAGE], [gnome-dvb-daemon])
-GETTEXT_PACKAGE=gnome-dvb-daemon
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
-AC_SUBST(GETTEXT_PACKAGE)
-AM_GLIB_GNU_GETTEXT
-IT_PROG_INTLTOOL([0.40.0])
-
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
+
+dnl *********************
+dnl * i18n
+dnl *********************
+IT_PROG_INTLTOOL([0.40.0])
+
+AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT([external])
+
+AC_SUBST([GETTEXT_PACKAGE], [gnome-dvb-daemon])
+AC_DEFINE([GETTEXT_PACKAGE], [PACKAGE_TARNAME], [Define to the gettext package name])
+
+AC_SUBST([CONFIG_STATUS_DEPENDENCIES], ['$(top_srcdir)/po/LINGUAS'])
 
 dnl *********************
 dnl * time.h and timegm
