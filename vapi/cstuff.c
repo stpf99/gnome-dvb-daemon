@@ -76,9 +76,7 @@ get_adapters ()
     for (iter = ifap; iter; iter = iter->ifa_next) {
         family = iter->ifa_addr->sa_family;
         if (family == AF_INET) { /* IPv4 only */
-            errnum = getnameinfo (iter->ifa_addr,
-                (family == AF_INET) ? sizeof(struct sockaddr_in) :
-                                      sizeof(struct sockaddr_in6),
+            errnum = getnameinfo (iter->ifa_addr, sizeof(struct sockaddr_in),
                 host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
             if (errnum != 0) {
                 g_critical ("getnameinfo() failed for %s: %s", iter->ifa_name,
