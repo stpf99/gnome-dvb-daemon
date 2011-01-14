@@ -18,6 +18,11 @@
  */
 #include "cstuff.h"
 #include <unistd.h>
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <string.h>
 
 guint
 gst_bus_add_watch_context (GstBus * bus, GstBusFunc func,
@@ -51,4 +56,52 @@ program_log (const char *format, ...)
 
         access (str, F_OK);
         g_free (str);
+}
+
+GList*
+get_adapters ()
+{
+    struct ifaddrs *ifap, *iter;
+    GList *list = NULL;
+    struct net_adapter *na;
+    int family, errnum;
+    char host[NI_MAXHOST];
+
+    errnum = getifaddrs (&ifap);
+    if (errnum == -1) {
+        g_critical ("getifaddrs() failed: %s", strerror (errnum));
+        return NULL;
+    }
+
+    for (iter = ifap; iter; iter = iter->ifa_next) {
+        family = iter->ifa_addr->sa_family;
+        if (family == AF_INET) { /* IPv4 only */
+            errnum = getnameinfo (iter->ifa_addr,
+                (family == AF_INET) ? sizeof(struct sockaddr_in) :
+                                      sizeof(struct sockaddr_in6),
+                host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+            if (errnum != 0) {
+                g_critical ("getnameinfo() failed for %s: %s", iter->ifa_name,
+                    gai_strerror (errnum));
+            } else {
+                na = g_new (struct net_adapter, 1);
+                na->name = g_strdup (iter->ifa_name);
+                na->address = g_strdup (host);
+
+                list = g_list_prepend (list, na);
+            }
+        }
+    }
+
+    freeifaddrs (ifap);
+
+    return list;
+}
+
+void
+net_adapter_free (struct net_adapter *na)
+{
+    g_free (na->name);
+    g_free (na->address);
+    g_free (na);
 }

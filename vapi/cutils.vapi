@@ -35,4 +35,14 @@ namespace cUtils {
     [CCode (cname = "program_log"), PrintfFormat]
     public static void log (...);
 
+    [Compact]
+    [CCode (cname = "struct net_adapter", cheader_filename = "cstuff.h", free_function = "net_adapter_free")]
+    public class NetAdapter {
+        public unowned string name;
+        public unowned string address;
+    }
+
+    [CCode (cname = "get_adapters", cheader_filename = "cstuff.h")]
+    public GLib.List<NetAdapter?> get_adapters ();
+
 }

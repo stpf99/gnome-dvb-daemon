@@ -21,12 +21,24 @@
 
 #include <gst/gst.h>
 
+struct net_adapter {
+    gchar *name;
+    gchar *address;
+};
+
+G_GNUC_INTERNAL GList*
+get_adapters ();
+
+G_GNUC_INTERNAL void
+net_adapter_free (struct net_adapter *na);
+
 G_GNUC_INTERNAL guint
 gst_bus_add_watch_context   (GstBus * bus,
                              GstBusFunc func,
                              gpointer user_data,
                              GMainContext * context);
 
-void program_log (const char *format, ...);
+G_GNUC_INTERNAL void
+program_log (const char *format, ...);
 
 #endif /* __CSTUFF_H__ */
