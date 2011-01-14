@@ -26,5 +26,4 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	$(dbusservice_in_files) \
-	$(desktop_in_files) \
-	$(desktop_DATA)	
+	$(desktop_in_files)
