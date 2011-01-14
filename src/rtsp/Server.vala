@@ -22,11 +22,32 @@ namespace DVB.RTSPServer {
     private static Gst.RTSPServer server;
     private static uint timeout_id;
 
+    public static string get_address () {
+        DVB.Settings settings = DVB.Factory.get_settings ();
+        string iface = settings.get_streaming_interface ();
+
+        string? address = null;
+        GLib.List<unowned cUtils.NetAdapter?> adapters = cUtils.get_adapters ();
+        foreach (unowned cUtils.NetAdapter? na in adapters) {
+            if (na.name == iface) {
+                address = na.address;
+                break;
+            }
+        }
+
+        if (address == null) {
+            warning ("Could not find network interface '%s'", iface);
+            address = "127.0.0.1";
+        }
+
+        return address;
+    }
+
     public static bool start () {
         message ("Starting RTSP server");
         server = new Gst.RTSPServer ();
         server.set_media_mapping (new MediaMapping ());
-        server.set_address (Environment.get_host_name());
+        server.set_address (get_address ());
         server.attach (null);
         timeout_id = GLib.Timeout.add_seconds (2, (GLib.SourceFunc)timeout);
         return false;
