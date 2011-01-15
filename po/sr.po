@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-10-02 16:18+0000\n"
+"POT-Creation-Date: 2010-12-05 14:08+0000\n"
 "PO-Revision-Date: 2010-06-21 20:33+0000\n"
 "Last-Translator: Sebastian Pölsterl <Unknown>\n"
 "Language-Team: Serbian <sr@li.org>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-10-11 11:12+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-15 16:56+0000\n"
+"X-Generator: Launchpad (build 12200)\n"
 
 #: ../client/gnomedvb/__init__.py:34
 msgid "GNOME DVB Daemon"
@@ -269,7 +269,7 @@ msgid "Next Day"
 msgstr "Следећи дан"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
-#: ../client/totem-plugin/dvb-daemon.py:178
+#: ../client/totem-plugin/dvb-daemon.py:179
 msgid "Schedule recording for the selected event?"
 msgstr ""
 
@@ -292,6 +292,7 @@ msgid "<b>%s (%s)</b>\n"
 msgstr "<b>%s (%s)</b>\n"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr ""
@@ -433,7 +434,7 @@ msgid "Start time"
 msgstr ""
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:77
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
 msgstr ""
 
@@ -605,6 +606,11 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
@@ -828,8 +834,8 @@ msgid ""
 "All process will be lost."
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:150
-#: ../client/totem-plugin/dvb-daemon.py:194
+#: ../client/totem-plugin/dvb-daemon.py:151
+#: ../client/totem-plugin/dvb-daemon.py:195
 #: ../client/totem-plugin/dvb-daemon.py:336
 msgid "Program Guide"
 msgstr ""
@@ -908,3 +914,6 @@ msgstr ""
 
 #~ msgid "Toolbar"
 #~ msgstr "Трака алатки"
+
+#~ msgid "<b>Name</b>"
+#~ msgstr "<b>Име</b>"

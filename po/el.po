@@ -1,16 +1,16 @@
-# Telugu translation for gnome-dvb-daemon
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Greek translation for gnome-dvb-daemon
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-dvb-daemon package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-12-05 14:08+0000\n"
-"PO-Revision-Date: 2010-06-21 20:29+0000\n"
-"Last-Translator: Sebastian Pölsterl <Unknown>\n"
-"Language-Team: Telugu <te@li.org>\n"
+"PO-Revision-Date: 2010-12-14 23:23+0000\n"
+"Last-Translator: dpdt1 <Unknown>\n"
+"Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,26 +30,26 @@ msgstr ""
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] "%d గంట"
-msgstr[1] "%d గంటలు"
+msgstr[0] "%d ώρα"
+msgstr[1] "%d ώρες"
 
 #: ../client/gnomedvb/__init__.py:88
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d నిమిషం"
-msgstr[1] "%d నిమిషాలు"
+msgstr[0] "%d λεπτό"
+msgstr[1] "%d λεπτά"
 
 #: ../client/gnomedvb/__init__.py:90
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] "%d క్షణం"
-msgstr[1] "%d క్షణాలు"
+msgstr[0] "%d δευτερόλεπτο"
+msgstr[1] "%d δευτερόλεπτα"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:33
 msgid "Edit Channel Lists"
-msgstr ""
+msgstr "Επεξεργασία Λίστας Καναλιών"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:56
 msgid "Channel groups"
@@ -58,7 +58,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:97
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:54
 msgid "_Group:"
-msgstr ""
+msgstr "_Ομάδα:"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:104
 msgid "Device groups"
@@ -66,7 +66,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:126
 msgid "All channels"
-msgstr ""
+msgstr "Όλα τα κανάλια"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:140
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:72
@@ -75,7 +75,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:33
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:96
 msgid "Channel"
-msgstr "ఛానెల్"
+msgstr "Κανάλι"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:154
 msgid "Choose a channel group"
@@ -104,7 +104,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:53
 msgid "DVB Control Center"
-msgstr "DVB నియంత్రణా కేంద్రం"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:102
 msgid ""
@@ -127,19 +127,19 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
 msgid "_Edit"
-msgstr ""
+msgstr "_Επεξεργασία"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
 msgid "_View"
-msgstr ""
+msgstr "_Προβολή"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
 msgid "Help"
-msgstr "సహాయం"
+msgstr "Βοήθεια"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:167
 msgid "_Manage"
-msgstr ""
+msgstr "_Διαχείριση"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:269
@@ -156,7 +156,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
 msgid "_Quit"
-msgstr ""
+msgstr "_Έξοδος"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
 msgid "Quit the Program"
@@ -172,11 +172,11 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
 msgid "_Preferences"
-msgstr "_అభిరుచులు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
 msgid "Display preferences"
-msgstr "ప్రదర్శనా అభిరుచులు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:186
 msgid "_What's on now"
@@ -202,7 +202,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:305
 msgid "Go to previous day"
-msgstr "ముందు రోజుకి వెళ్ళు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
 msgid "_Next Day"
@@ -211,7 +211,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:314
 msgid "Go to next day"
-msgstr "తర్వాతి రోజుకి వెళ్ళు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:196
 msgid "_Channels"
@@ -231,11 +231,11 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:209
 msgid "_About"
-msgstr "_గురించి"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
 msgid "Display informations about the program"
-msgstr "ఈ ఉపకరణం గురించిన సమాచారాన్ని చూపించు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:265
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
@@ -258,11 +258,11 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:303
 msgid "Previous Day"
-msgstr "ముందు రోజు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:312
 msgid "Next Day"
-msgstr "తర్వాతి రోజు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
 #: ../client/totem-plugin/dvb-daemon.py:179
@@ -274,18 +274,17 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Sebastian Pölsterl https://launchpad.net/~sebp\n"
-"  వీవెన్ (Veeven) https://launchpad.net/~veeven"
+"  dpdt1 https://launchpad.net/~dpdt1"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:57
 msgid "Devices"
-msgstr "పరికరాలు"
+msgstr ""
 
 #. translators: first is device's name, second its type
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:66
 #, python-format
 msgid "<b>%s (%s)</b>\n"
-msgstr "<b>%s (%s)</b>\n"
+msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
@@ -296,7 +295,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:72
 #, python-format
 msgid "Group %d"
-msgstr "%d సమూహం"
+msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:29
 msgid "Add to Group"
@@ -328,11 +327,11 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:187
 msgid "Select File"
-msgstr "ఫైలుని ఎంచుకోండి"
+msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:196
 msgid "Select Directory"
-msgstr "సంచయాన్ని ఎంచుకోండి"
+msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:209
 msgid "Edit group"
@@ -341,7 +340,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/preferences/Preferences.py:38
 #: ../client/totem-plugin/dvb-daemon.py:352
 msgid "Digital TV Preferences"
-msgstr "డిజిటల్ టీవీ అభిరుచులు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:88
 msgid "Edit selected group"
@@ -418,12 +417,12 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
 msgid "Pick a date"
-msgstr "తేజీని ఎంచుకోండి"
+msgstr ""
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:83
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:39
 msgid "Title"
-msgstr "శీర్షిక"
+msgstr ""
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:91
 msgid "Start time"
@@ -432,7 +431,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
 #: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
-msgstr "నిడివి"
+msgstr ""
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:165
 msgid "Timer could not be deleted"
@@ -491,7 +490,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:125
 msgid "minutes"
-msgstr "నిమిషాలు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:4
 msgid "digital cable"
@@ -515,7 +514,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:28
 msgid "Details"
-msgstr "వివరాలు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:56
 msgid "Title:"
@@ -539,15 +538,15 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:41
 msgid "Length"
-msgstr "నిడివి"
+msgstr ""
 
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:41
 msgid "Now"
-msgstr "ఇప్పుడు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:53
 msgid "Next"
-msgstr "తరువాత"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
@@ -562,11 +561,11 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
 msgid "Name"
-msgstr "పేరు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
 msgid "Type"
-msgstr "రకం"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
 msgid "Select the device you want to configure."
@@ -731,7 +730,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:308
 msgid "Don't know"
-msgstr "తెలియదు"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:29
 msgid "Welcome to the digital television Assistant."
@@ -770,7 +769,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:119
 msgid "TV"
-msgstr "టీవీ"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
 msgid "No channels were found."
@@ -854,11 +853,11 @@ msgstr ""
 
 #: ../client/totem-plugin/dvb-daemon.py:353
 msgid "_Delete"
-msgstr "_తొలగించు"
+msgstr ""
 
 #: ../client/totem-plugin/dvb-daemon.py:354
 msgid "D_etails"
-msgstr "_వివరాలు"
+msgstr ""
 
 #: ../client/totem-plugin/dvb-daemon.py:355
 msgid "_Order channels"
@@ -901,123 +900,3 @@ msgstr ""
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
 msgstr ""
-
-#~ msgid "Device groups:"
-#~ msgstr "పరికర సమూహాలు:"
-
-#~ msgid "Toolbar"
-#~ msgstr "పనిముట్ల పట్టీ"
-
-#~ msgid "Create Group"
-#~ msgstr "సమూహాన్ని సృష్టించు"
-
-#~ msgid "<b>Name</b>"
-#~ msgstr "<b>పేరు</b>"
-
-#~ msgid "<b>Select a group:</b>"
-#~ msgstr "<b>ఒక సమూహాన్ని ఎంచుకోండి:</b>"
-
-#~ msgid "<b>Configured devices</b>"
-#~ msgstr "<b>స్వరూపిత పరికరాలు</b>"
-
-#~ msgid "<b>Unconfigured devices</b>"
-#~ msgstr "<b>స్వరూపించని పరికరాలు</b>"
-
-#~ msgid "<b>Title:</b>"
-#~ msgstr "<b>శీర్షిక:</b>"
-
-#~ msgid "<b>Date:</b>"
-#~ msgstr "<b>తేదీ:</b>"
-
-#~ msgid "<b>Duration:</b>"
-#~ msgstr "<b>నిడివి:</b>"
-
-#~ msgid "<b>Description:</b>"
-#~ msgstr "<b>వివరణ:</b>"
-
-#~ msgid "Australia"
-#~ msgstr "ఆష్ట్రేలియా"
-
-#~ msgid "Austria"
-#~ msgstr "ఆస్ట్రియా"
-
-#~ msgid "Germany"
-#~ msgstr "జర్మనీ"
-
-#~ msgid "Czech Republic"
-#~ msgstr "చెక్ గణతంత్రము"
-
-#~ msgid "Switzerland"
-#~ msgstr "స్విట్జర్‌లాండ్"
-
-#~ msgid "Belgium"
-#~ msgstr "బెల్జియం"
-
-#~ msgid "Spain"
-#~ msgstr "స్పెయిన్"
-
-#~ msgid "Denmark"
-#~ msgstr "డెన్మార్క్"
-
-#~ msgid "Netherlands"
-#~ msgstr "నెదర్లాండ్స్"
-
-#~ msgid "New Zealand"
-#~ msgstr "న్యూజీలాండ్"
-
-#~ msgid "Poland"
-#~ msgstr "పోలండ్"
-
-#~ msgid "Hungary"
-#~ msgstr "హంగేరీ"
-
-#~ msgid "Finland"
-#~ msgstr "ఫిన్లాండ్"
-
-#~ msgid "France"
-#~ msgstr "ఫ్రాన్స్"
-
-#~ msgid "Iceland"
-#~ msgstr "ఐస్‌లాండ్"
-
-#~ msgid "Italy"
-#~ msgstr "ఇటలీ"
-
-#~ msgid "Greece"
-#~ msgstr "గ్రీస్"
-
-#~ msgid "Norway"
-#~ msgstr "నార్వే"
-
-#~ msgid "Sweden"
-#~ msgstr "స్వీడన్"
-
-#~ msgid "United Kingdom"
-#~ msgstr "యునైటెడ్ కింగ్‌డమ్"
-
-#~ msgid "Taiwan"
-#~ msgstr "తైవాన్"
-
-#~ msgid "<b>Country:</b>"
-#~ msgstr "<b>దేశం:</b>"
-
-#~ msgid "Hong Kong"
-#~ msgstr "హాంకాంగ్"
-
-#~ msgid "<b>Satellite:</b>"
-#~ msgstr "<b>ఉపగ్రహం:</b>"
-
-#~ msgid "Slovakia"
-#~ msgstr "స్లొవేకియా"
-
-#~ msgid "Channels"
-#~ msgstr "ఛానెళ్ళు"
-
-#~ msgid "<b>Channels File</b>"
-#~ msgstr "<b>ఛానెళ్ళ ఫైలు</b>"
-
-#~ msgid "Add To Group"
-#~ msgstr "సమూహానికి చేర్చు"
-
-#~ msgid "<b>Channel:</b>"
-#~ msgstr "<b>ఛానెల్:</b>"

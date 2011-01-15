@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-10-02 16:18+0000\n"
-"PO-Revision-Date: 2010-08-23 16:09+0000\n"
-"Last-Translator: Guillaume Mazoyer <respawneral@gmail.com>\n"
+"POT-Creation-Date: 2010-12-05 14:08+0000\n"
+"PO-Revision-Date: 2011-01-02 03:04+0000\n"
+"Last-Translator: Thibault Févry <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-10-11 11:12+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-15 16:56+0000\n"
+"X-Generator: Launchpad (build 12200)\n"
 
 #: ../client/gnomedvb/__init__.py:34
 msgid "GNOME DVB Daemon"
@@ -268,7 +268,7 @@ msgid "Next Day"
 msgstr "Jour Suivant"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
-#: ../client/totem-plugin/dvb-daemon.py:178
+#: ../client/totem-plugin/dvb-daemon.py:179
 msgid "Schedule recording for the selected event?"
 msgstr "Programmer un enregistrement pour l'évènement sélectionné?"
 
@@ -283,6 +283,7 @@ msgstr ""
 "  Sebastian Pölsterl https://launchpad.net/~sebp\n"
 "  Simon Pireyn https://launchpad.net/~spireyn\n"
 "  Stéphane Loeuillet https://launchpad.net/~leroutier\n"
+"  Thibault Févry https://launchpad.net/~thibaultfevry\n"
 "  durden https://launchpad.net/~david-lebouquin\n"
 "  rudy1210 https://launchpad.net/~rudy1210"
 
@@ -297,6 +298,7 @@ msgid "<b>%s (%s)</b>\n"
 msgstr "<b>%s (%s)</b>\n"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr "Adaptateur : %d, Vue : %d"
@@ -443,7 +445,7 @@ msgid "Start time"
 msgstr "Heure de début"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:77
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
 msgstr "Durée"
 
@@ -627,6 +629,11 @@ msgstr "Recherche du matériel"
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
 msgstr "Sélection du matériel"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
+msgstr "<b>%s</b>\n"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "This process can take some time."
@@ -862,8 +869,8 @@ msgstr ""
 "Êtes-vous sûr de vouloir annuler ?\n"
 "Tous les processus seront perdus."
 
-#: ../client/totem-plugin/dvb-daemon.py:150
-#: ../client/totem-plugin/dvb-daemon.py:194
+#: ../client/totem-plugin/dvb-daemon.py:151
+#: ../client/totem-plugin/dvb-daemon.py:195
 #: ../client/totem-plugin/dvb-daemon.py:336
 msgid "Program Guide"
 msgstr "Guide des programmes"
@@ -940,8 +947,23 @@ msgstr "Réglage DVB"
 #~ msgid "Create Group"
 #~ msgstr "Créer le Groupe"
 
+#~ msgid "<b>Name</b>"
+#~ msgstr "<b>Nom</b>"
+
 #~ msgid "Add To Group"
 #~ msgstr "Ajouter au Groupe"
+
+#~ msgid "<b>Title:</b>"
+#~ msgstr "<b>Titre :</b>"
+
+#~ msgid "<b>Date:</b>"
+#~ msgstr "<b>Date :</b>"
+
+#~ msgid "<b>Duration:</b>"
+#~ msgstr "<b>Durée :</b>"
+
+#~ msgid "<b>Description:</b>"
+#~ msgstr "<b>Description :</b>"
 
 #~ msgid "Totem Movie Player"
 #~ msgstr "Lecteur vidéo Totem"
@@ -960,6 +982,12 @@ msgstr "Réglage DVB"
 
 #~ msgid "Device groups:"
 #~ msgstr "Groupes de périphériques:"
+
+#~ msgid "Do you want to search for channels now?"
+#~ msgstr "Voulez-vous rechercher les chaînes maintenant ?"
+
+#~ msgid "DVB card is not configured"
+#~ msgstr "La carte DVB n'est pas configurée"
 
 #~ msgid "Country:"
 #~ msgstr "Pays :"

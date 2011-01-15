@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-10-02 16:18+0000\n"
-"PO-Revision-Date: 2010-08-23 16:04+0000\n"
-"Last-Translator: Sebastian Pölsterl <Unknown>\n"
+"POT-Creation-Date: 2010-12-05 14:08+0000\n"
+"PO-Revision-Date: 2010-12-09 09:47+0000\n"
+"Last-Translator: David Štancl <Unknown>\n"
 "Language-Team: cs <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-10-11 11:12+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-15 16:56+0000\n"
+"X-Generator: Launchpad (build 12200)\n"
 
 #: ../client/gnomedvb/__init__.py:34
 msgid "GNOME DVB Daemon"
@@ -272,7 +272,7 @@ msgid "Next Day"
 msgstr "Následující den"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
-#: ../client/totem-plugin/dvb-daemon.py:178
+#: ../client/totem-plugin/dvb-daemon.py:179
 msgid "Schedule recording for the selected event?"
 msgstr "Nastavit nahrávání vybraného pořadu do rozvrhu?"
 
@@ -282,6 +282,7 @@ msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  David Štancl https://launchpad.net/~david-stancl\n"
+"  David Štancl https://launchpad.net/~dstancl-dstancl\n"
 "  Jiří Jindra https://launchpad.net/~j-jindr\n"
 "  Konki https://launchpad.net/~pavel-konkol\n"
 "  Ondra 'Kepi' Kudlík https://launchpad.net/~kepi-orthank\n"
@@ -298,6 +299,7 @@ msgid "<b>%s (%s)</b>\n"
 msgstr "<b>%s (%s)</b>\n"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr "Adaptér: %d, Frontend: %d"
@@ -443,7 +445,7 @@ msgid "Start time"
 msgstr "Čas začátku"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:77
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
 msgstr "Délka"
 
@@ -624,6 +626,11 @@ msgstr "Hledání zařízení"
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
 msgstr "Výběr zařízení"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
+msgstr "<b>%s</b>\n"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "This process can take some time."
@@ -855,8 +862,8 @@ msgstr ""
 "Jste si jisti, že chcete operaci zrušit?\n"
 "Celý dosavadní průběh bude ztracen."
 
-#: ../client/totem-plugin/dvb-daemon.py:150
-#: ../client/totem-plugin/dvb-daemon.py:194
+#: ../client/totem-plugin/dvb-daemon.py:151
+#: ../client/totem-plugin/dvb-daemon.py:195
 #: ../client/totem-plugin/dvb-daemon.py:336
 msgid "Program Guide"
 msgstr "Programový průvodce"
@@ -947,3 +954,10 @@ msgstr "Nastavení digitální TV"
 
 #~ msgid "Select scrambled channels"
 #~ msgstr "Vyberte smíchané kanály"
+
+#~ msgid ""
+#~ "Choose the channels you want to have in your list of channels. You can "
+#~ "reorder the channels, too."
+#~ msgstr ""
+#~ "Vyberte kanály, které chcete mít ve svém seznamu kanálů. Také můžete měnit "
+#~ "jejich pořadí."

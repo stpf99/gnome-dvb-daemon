@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-10-02 16:18+0000\n"
+"POT-Creation-Date: 2010-12-05 14:08+0000\n"
 "PO-Revision-Date: 2010-06-21 20:26+0000\n"
 "Last-Translator: Sebastian Pölsterl <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-10-11 11:12+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-15 16:56+0000\n"
+"X-Generator: Launchpad (build 12200)\n"
 
 #: ../client/gnomedvb/__init__.py:34
 msgid "GNOME DVB Daemon"
@@ -262,7 +262,7 @@ msgid "Next Day"
 msgstr "Sonraki Gün"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
-#: ../client/totem-plugin/dvb-daemon.py:178
+#: ../client/totem-plugin/dvb-daemon.py:179
 msgid "Schedule recording for the selected event?"
 msgstr ""
 
@@ -285,6 +285,7 @@ msgid "<b>%s (%s)</b>\n"
 msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr ""
@@ -426,7 +427,7 @@ msgid "Start time"
 msgstr "Başlama zamanı"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:77
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
 msgstr "Süre"
 
@@ -599,6 +600,11 @@ msgstr ""
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
 msgstr "Cihaz seçimi"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "This process can take some time."
@@ -823,8 +829,8 @@ msgid ""
 "All process will be lost."
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:150
-#: ../client/totem-plugin/dvb-daemon.py:194
+#: ../client/totem-plugin/dvb-daemon.py:151
+#: ../client/totem-plugin/dvb-daemon.py:195
 #: ../client/totem-plugin/dvb-daemon.py:336
 msgid "Program Guide"
 msgstr "Program Rehberi"
@@ -895,6 +901,33 @@ msgstr ""
 msgid "Digital TV Setup"
 msgstr ""
 
+#~ msgid "Channel List Editor"
+#~ msgstr "Kanal Listesi Düzenleyici"
+
+#~ msgid "Device groups:"
+#~ msgstr "Cihaz grupları:"
+
+#~ msgid "Channel lists"
+#~ msgstr "Kanal listeleri"
+
+#~ msgid "Refresh"
+#~ msgstr "Yenile"
+
+#~ msgid "Channels"
+#~ msgstr "Kanallar"
+
+#~ msgid "Toolbar"
+#~ msgstr "Araç Çubuğu"
+
+#~ msgid "Create Group"
+#~ msgstr "Grup Oluştur"
+
+#~ msgid "Timer"
+#~ msgstr "Zamanlayıcı"
+
+#~ msgid "Start time:"
+#~ msgstr "Başlangıç zamanı:"
+
 #~ msgid "Country:"
 #~ msgstr "Ülke:"
 
@@ -909,3 +942,9 @@ msgstr ""
 
 #~ msgid "Antenna:"
 #~ msgstr "Anten:"
+
+#~ msgid "DVB card is not configured"
+#~ msgstr "DVB kartı yapılandırılmamış"
+
+#~ msgid "Do you want to search for channels now?"
+#~ msgstr "Şimdi kanal  arama yapmak istiyor musunuz?"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dvb-daemon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-02 16:18+0000\n"
+"POT-Creation-Date: 2010-12-05 14:08+0000\n"
 "PO-Revision-Date: 2010-08-23 16:13+0000\n"
 "Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-10-11 11:12+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-15 16:56+0000\n"
+"X-Generator: Launchpad (build 12200)\n"
 
 #: ../client/gnomedvb/__init__.py:34
 msgid "GNOME DVB Daemon"
@@ -266,7 +266,7 @@ msgid "Next Day"
 msgstr "Nästa dag"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
-#: ../client/totem-plugin/dvb-daemon.py:178
+#: ../client/totem-plugin/dvb-daemon.py:179
 msgid "Schedule recording for the selected event?"
 msgstr "Schemalägg inspelning för den markerade händelsen?"
 
@@ -290,6 +290,7 @@ msgid "<b>%s (%s)</b>\n"
 msgstr "<b>%s (%s)</b>\n"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr "Adapter: %d, Framände: %d"
@@ -435,7 +436,7 @@ msgid "Start time"
 msgstr "Starttid"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:77
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
 msgstr "Speltid"
 
@@ -617,6 +618,11 @@ msgstr "Söker efter enheter"
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
 msgstr "Enhetsval"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "This process can take some time."
@@ -850,8 +856,8 @@ msgstr ""
 "Är du säker på att du vill avbryta?\n"
 "Alla ändringar kommer att gå förlorade."
 
-#: ../client/totem-plugin/dvb-daemon.py:150
-#: ../client/totem-plugin/dvb-daemon.py:194
+#: ../client/totem-plugin/dvb-daemon.py:151
+#: ../client/totem-plugin/dvb-daemon.py:195
 #: ../client/totem-plugin/dvb-daemon.py:336
 msgid "Program Guide"
 msgstr "Programguide"
@@ -1134,12 +1140,44 @@ msgstr "Konfigurera digital-tv"
 #~ msgid "Channels"
 #~ msgstr "Kanaler"
 
+#~ msgid "<b>Name</b>"
+#~ msgstr "<b>Namn</b>"
+
+#~ msgid "<b>Configured devices</b>"
+#~ msgstr "<b>Konfigurerade enheter</b>"
+
+#~ msgid "<b>Unconfigured devices</b>"
+#~ msgstr "<b>Okonfigurerade enheter</b>"
+
+#~ msgid "<b>Title:</b>"
+#~ msgstr "<b>Titel:</b>"
+
+#~ msgid "<b>Date:</b>"
+#~ msgstr "<b>Datum:</b>"
+
+#~ msgid "<b>Description:</b>"
+#~ msgstr "<b>Beskrivning:</b>"
+
+#~ msgid "Select device you want to configure."
+#~ msgstr "Välj enhet du vill konfigurera."
+
 #, python-format
 #~ msgid "Scanning for channels on device %s"
 #~ msgstr "Söker efter kanaler på enhet %s"
 
+#~ msgid "New Zealand"
+#~ msgstr "Nya Zeeland"
+
+#~ msgid "Hong Kong"
+#~ msgstr "Hong Kong"
+
 #~ msgid "Expert mode"
 #~ msgstr "Expertläge"
+
+#~ msgid ""
+#~ "No devices are configured. Please go to preferences and to configure them."
+#~ msgstr ""
+#~ "Inga enheter konfigurerade.Gå till inställningarna och konfigurera dem."
 
 #~ msgid "Toolbar"
 #~ msgstr "Verktygsrad"
@@ -1167,6 +1205,17 @@ msgstr "Konfigurera digital-tv"
 
 #~ msgid "Totem Movie Player"
 #~ msgstr "Filmspelaren Totem"
+
+#~ msgid "<big><span weight=\"bold\">Timer could not be deleted</big></span>"
+#~ msgstr ""
+#~ "<big><span weight=\"bold\">Tidsinspelningen kunde inte tas bort</big></span>"
+
+#~ msgid ""
+#~ "<big><span weight=\"bold\">Schedule recording for the selected "
+#~ "event?</span></big>"
+#~ msgstr ""
+#~ "<big><span weight=\"bold\">Schemalägg inspelning för den markerade "
+#~ "händelsen?</span></big>"
 
 #~ msgid ""
 #~ "Choose the channels you want to have in your list of channels. You can "
