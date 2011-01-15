@@ -1,4 +1,35 @@
 ==============
+Version 0.1.23
+==============
+
+Heuristics were added to detect outdated and obsolete EPG events.
+In addition, it is possible so specify the network interface the
+streaming server is listening on in the settings file, by default
+it is set to the loopback interface.
+This release requires Vala >= 0.11.2.
+
+- Make ScheduleView searchable by using the title
+- SchedulePaned: Don't allow to edit TextView
+- Totem: use dgettext to avoid overriding Totem's translations;	https://launchpad.net/bugs/680519 fixed
+- Fixed compiler errors. Requires Vala >= 0.11.2; https://launchpad.net/bugs/676263 fixed
+- gnomedvb: Display adapter and frontend for each device in the setup assistant; https://launchpad.net/bugs/683950 fixed
+- Detect overlapping EPG events and remove outdated events.
+- Moved handling of GSequence to new class EventStorage.
+- Removed desktop_DATA from EXTRA_DIST
+- Use upstream gettext instead of glib one
+- Do not use hostname in rtsp streaming	URL but use the IPv4 address of the interface specified in the settings file.
+
+Updated Translations:
+---------------------
+- Arabic
+- Czech
+- Danish
+- French
+- Greek
+- Hungarian
+- Polish
+
+==============
 Version 0.1.22
 ==============
 
