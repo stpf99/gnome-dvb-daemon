@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-11 14:33+0200\n"
+"POT-Creation-Date: 2011-01-15 17:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -263,7 +263,7 @@ msgid "Next Day"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
-#: ../client/totem-plugin/dvb-daemon.py:178
+#: ../client/totem-plugin/dvb-daemon.py:179
 msgid "Schedule recording for the selected event?"
 msgstr ""
 
@@ -283,6 +283,7 @@ msgid "<b>%s (%s)</b>\n"
 msgstr ""
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr ""
@@ -424,7 +425,7 @@ msgid "Start time"
 msgstr ""
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:77
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
 msgstr ""
 
@@ -596,6 +597,11 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
+msgstr ""
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
@@ -817,8 +823,8 @@ msgid ""
 "All process will be lost."
 msgstr ""
 
-#: ../client/totem-plugin/dvb-daemon.py:150
-#: ../client/totem-plugin/dvb-daemon.py:194
+#: ../client/totem-plugin/dvb-daemon.py:151
+#: ../client/totem-plugin/dvb-daemon.py:195
 #: ../client/totem-plugin/dvb-daemon.py:336
 msgid "Program Guide"
 msgstr ""
