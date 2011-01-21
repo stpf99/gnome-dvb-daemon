@@ -16,18 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gnomedvb.ui.widgets.Frame import AlignedLabel
 
-class BasePage(gtk.VBox):
+class BasePage(Gtk.VBox):
 
     def __init__(self):
-        gtk.VBox.__init__(self, spacing=6)
+        gobject.GObject.__init__(self, spacing=6)
         self.set_border_width(24)
 
         ali = AlignedLabel()
         ali.show()
-        self.pack_start(ali, False, False)
+        self.pack_start(ali, False, False, 0)
 
         self._label = ali.get_label()
         self._label.set_line_wrap(True)
@@ -36,5 +37,5 @@ class BasePage(gtk.VBox):
         raise NotImplementedError
         
     def get_page_type(self):
-        return gtk.ASSISTANT_PAGE_CONTENT
+        return Gtk.AssistantPageType.CONTENT
 

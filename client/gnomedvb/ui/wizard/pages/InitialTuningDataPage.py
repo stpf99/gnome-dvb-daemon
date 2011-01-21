@@ -18,9 +18,10 @@
 
 import os
 import os.path
-import gtk
+from gi.repository import Gdk
+from gi.repository import Gtk
 import gobject
-import glib
+from gi.repository import GLib
 import gettext
 import locale
 from gettext import gettext as _
@@ -107,11 +108,11 @@ class InitialTuningDataPage(BasePage):
         return self.__tuning_data
         
     def _create_table(self):
-        self.table = gtk.Table(rows=4, columns=2)
+        self.table = Gtk.Table(rows=4, columns=2)
         self.table.set_row_spacings(6)
         self.table.set_col_spacings(18)
         self.table.show()
-        self.pack_start(self.table)
+        self.pack_start(self.table, True, True, 0)
 
     def is_dvb_apps_installed(self):
         val = False
@@ -153,22 +154,22 @@ class InitialTuningDataPage(BasePage):
         label = country.get_label()
         label.set_markup_with_mnemonic(_("_Country:"))
         country.show()
-        self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=gtk.FILL)
+        self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
 
         # name, code    
-        self.countries = gtk.ListStore(str, str)
-        self.countries.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.countries = Gtk.ListStore(str, str)
+        self.countries.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.countries.set_sort_func(0, self.combobox_sort_func)
         
         for code, name in countries.items():
             self.countries.append([name, code])
     
-        self.country_combo = gtk.ComboBox(self.countries)
+        self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
         self.country_combo.connect('changed', self.on_country_changed)
         self.__data_dir = "dvb-t"
-        cell = gtk.CellRendererText()
-        self.country_combo.pack_start(cell)
-        self.country_combo.add_attribute(cell, "text", 0)
+        cell = Gtk.CellRendererText()
+        self.country_combo.pack_start(cell, True)
+        self.country_combo.set_entry_text_column(0)
         self.country_combo.show()
         self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
         self.country_combo.set_active(0)
@@ -178,11 +179,11 @@ class InitialTuningDataPage(BasePage):
         label = providers.get_label()
         label.set_markup_with_mnemonic(_("_Antenna:"))
         providers.show()
-        self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=gtk.FILL)
+        self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
         
-        self.providers = gtk.ListStore(str, str)
-        self.providers.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        self.providers.set_sort_func(0, self.combobox_sort_func)
+        self.providers = Gtk.ListStore(str, str)
+        self.providers.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.providers.set_sort_func(0, self.combobox_sort_func, None)
         
         self.providers_view, scrolledview = self._create_providers_treeview(
             self.providers, _("Antenna"))
@@ -202,15 +203,15 @@ class InitialTuningDataPage(BasePage):
         satellite.show()
         self.pack_start(satellite, False, False, 0)
         
-        self.satellites = gtk.ListStore(str, str)
-        self.satellites.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.satellites = Gtk.ListStore(str, str)
+        self.satellites.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         
         self.satellite_view, scrolledview = self._create_providers_treeview(
             self.satellites, _("Satellite"))
         self.satellite_view.get_selection().connect("changed",
             self.on_satellite_changed)
         label.set_mnemonic_widget(self.satellite_view)
-        self.pack_start(scrolledview)
+        self.pack_start(scrolledview, True, True, 0)
         
         self.read_satellites()
         
@@ -227,21 +228,21 @@ class InitialTuningDataPage(BasePage):
         label = country.get_label()
         label.set_markup_with_mnemonic(_("_Country:"))
         country.show()
-        self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=gtk.FILL)
+        self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
     
-        self.countries = gtk.ListStore(str, str)
-        self.countries.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        self.countries.set_sort_func(0, self.combobox_sort_func)
+        self.countries = Gtk.ListStore(str, str)
+        self.countries.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.countries.set_sort_func(0, self.combobox_sort_func, None)
         
         for code, name in countries.items():
             self.countries.append([name, code])
     
-        self.country_combo = gtk.ComboBox(self.countries)
+        self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
         self.country_combo.connect('changed', self.on_country_changed)
         self.__data_dir = "dvb-c"
-        cell = gtk.CellRendererText()
-        self.country_combo.pack_start(cell)
-        self.country_combo.add_attribute(cell, "text", 0)
+        cell = Gtk.CellRendererText()
+        self.country_combo.pack_start(cell, True)
+        self.country_combo.set_entry_text_column(0)
         self.country_combo.show()
         self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
         label.set_mnemonic_widget(self.country_combo)
@@ -250,10 +251,10 @@ class InitialTuningDataPage(BasePage):
         label = providers.get_label()
         label.set_markup_with_mnemonic(_("_Providers:"))
         providers.show()
-        self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=gtk.FILL)
+        self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
         
-        self.providers = gtk.ListStore(str, str)
-        self.providers.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.providers = Gtk.ListStore(str, str)
+        self.providers.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         
         self.providers_view, scrolledview = self._create_providers_treeview(
             self.providers, _("Provider"))
@@ -265,19 +266,19 @@ class InitialTuningDataPage(BasePage):
         self.providers_view.set_sensitive(False)
          
     def _create_providers_treeview(self, providers, col_name):
-        providers_view = gtk.TreeView(providers)
+        providers_view = Gtk.TreeView.new_with_model(providers)
         providers_view.set_headers_visible(False)
-        col = gtk.TreeViewColumn(col_name)
-        cell = gtk.CellRendererText()
-        col.pack_start(cell)
+        col = Gtk.TreeViewColumn(col_name)
+        cell = Gtk.CellRendererText()
+        col.pack_start(cell, True)
         col.add_attribute(cell, "markup", 0)
         providers_view.append_column(col)
         providers_view.show()
         
-        scrolledview= gtk.ScrolledWindow()
+        scrolledview= Gtk.ScrolledWindow()
         scrolledview.add(providers_view)
-        scrolledview.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        scrolledview.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scrolledview.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         scrolledview.show()
         
         return providers_view, scrolledview
@@ -296,11 +297,11 @@ class InitialTuningDataPage(BasePage):
                 self.emit("finished", False)
                 self.providers.clear()
 
-                toplevel_window = self.get_toplevel().window
-                toplevel_window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+                toplevel_window = self.get_toplevel().get_window()
+                toplevel_window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
                 
                 # Fill list async
-                glib.idle_add(self._fill_providers, selected_country)            
+                GLib.idle_add(0, self._fill_providers, selected_country)            
 
     def _fill_providers(self, selected_country):
         # Only DVB-T has bruteforce scan
@@ -323,7 +324,7 @@ class InitialTuningDataPage(BasePage):
         first_iter = self.providers.get_iter_first()
         self.providers_view.get_selection().select_iter(first_iter)
 
-        self.get_toplevel().window.set_cursor(None)
+        self.get_toplevel().get_window().set_cursor(None)
         self.emit("finished", True)
 
         return False
@@ -387,7 +388,7 @@ class InitialTuningDataPage(BasePage):
                          guard, # guard interval
                         ])
 
-    def combobox_sort_func(self, model, iter1, iter2):
+    def combobox_sort_func(self, model, iter1, iter2, user_data):
         name1, code1 = model[iter1]
         name2, code2 = model[iter2]
 

@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 import gobject
 import datetime
 from cgi import escape
 from gnomedvb import global_error_handler
 
-class ScheduleStore(gtk.ListStore):
+class ScheduleStore(Gtk.ListStore):
 
     (COL_DATETIME,
      COL_FORMAT,
@@ -33,14 +33,14 @@ class ScheduleStore(gtk.ListStore):
      COL_RECORDED,
      COL_EVENT_ID,) = range(8)
      
-    NEW_DAY = -1
+    NEW_DAY = -1L
     
     __gsignals__ = {
         "loading-finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
     }
 
     def __init__(self, dev_group, sid):
-        gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT, str, int, str, str, str, int, int)
+        Gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT, str, long, str, str, str, int, long)
         self._client = dev_group.get_schedule(sid)
         self._recorder = dev_group.get_recorder()
         self._fill_all()
@@ -65,10 +65,10 @@ class ScheduleStore(gtk.ListStore):
                 # Insert bogus entry to mark that a new day starts
                 if prev_date < new_date:
                     date_iter = self.insert_before(new_iter, None)
-                    self.set(date_iter, self.COL_DATETIME, datetime.datetime(*new_date))
+                    self.set_value(date_iter, self.COL_DATETIME, datetime.datetime(*new_date))
                     # We don't want to display any datetime
-                    self.set(date_iter, self.COL_FORMAT, "")
-                    self.set(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
+                    self.set_value(date_iter, self.COL_FORMAT, "")
+                    self.set_value(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
                 prev_date = new_date
             self.emit("loading-finished")
         
@@ -94,7 +94,8 @@ class ScheduleStore(gtk.ListStore):
         
         # %X -> display locale's time representation
         return self.append([datetime.datetime(*start_arr), "%X",
-            duration, name, short_desc, None,
+            #None, None, None, None, None, None])            
+            duration, name, short_desc, "",
             rec, event_id])
             
     def get_extended_description(self, aiter):
@@ -137,24 +138,23 @@ class ScheduleStore(gtk.ListStore):
         if aiter == None:
             return None
         
-        path0 = self.get_path(aiter)[0]
-        
-        if path0 == 0:
-            return None
-        
+        path0 = self.get_path(aiter)
+
         # If the selected row marks a new day
         # we still want the previous day
         # therefore we have to come across 2 new days
         day_seen = 0
         
-        while path0 >= 0:
-            aiter = self.get_iter((path0,))
+        root = Gtk.TreePath("0")
+        
+        while path0 != root:
+            aiter = self.get_iter(path0)
             row = self[aiter]
             if row[self.COL_EVENT_ID] == self.NEW_DAY:
                 day_seen += 1
                 if day_seen == 2:
                     return row.iter
-            path0 -= 1
+            path0 = path0.prev()
         
         return None
 

@@ -18,7 +18,7 @@
 
 import gnomedvb
 import gobject
-import gtk
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
@@ -27,35 +27,33 @@ from gnomedvb.ui.widgets.ChannelGroupsView import ChannelGroupsView
 from gnomedvb.ui.widgets.Frame import Frame, BaseFrame
 from gnomedvb.ui.widgets.HelpBox import HelpBox
 
-class ChannelListEditorDialog(gtk.Dialog):
+class ChannelListEditorDialog(Gtk.Dialog):
 
     def __init__(self, model, parent=None):
-        gtk.Dialog.__init__(self, title=_("Edit Channel Lists"),
-            parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
+        Gtk.Dialog.__init__(self, title=_("Edit Channel Lists"),
+            parent=parent)
 
+        self.set_modal(True)
+        self.set_destroy_with_parent(True)
         self.model = model
         self.devgroup = None
         self.channel_list = None
 
         self.set_default_size(600, 500)
-        self.set_has_separator(False)
         self.set_border_width(5)
-        self.connect("destroy-event", gtk.main_quit)
-        self.connect("delete-event", gtk.main_quit)
         
-        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button = self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         close_button.grab_default()
 
-        self.vbox_main = gtk.VBox(spacing=12)
+        self.vbox_main = Gtk.VBox(spacing=12)
         self.vbox_main.set_border_width(5)
-        self.vbox.pack_start(self.vbox_main)
+        self.get_content_area().pack_start(self.vbox_main, True, True, 0)
 
         # channel groups
-        groups_box = gtk.HBox(spacing=6)
+        groups_box = Gtk.HBox(spacing=6)
         groups_frame = BaseFrame("<b>%s</b>" % _("Channel groups"),
             groups_box)
-        self.vbox_main.pack_start(groups_frame, False)
+        self.vbox_main.pack_start(groups_frame, False, True, 0)
 
         self.channel_groups = ChannelGroupsStore()
         self.channel_groups_view = ChannelGroupsView(self.channel_groups)
@@ -65,52 +63,52 @@ class ChannelListEditorDialog(gtk.Dialog):
         self.channel_groups_view.get_renderer().connect("edited",
             self.on_channel_group_edited)
         
-        scrolledgroups = gtk.ScrolledWindow()
+        scrolledgroups = Gtk.ScrolledWindow()
         scrolledgroups.add(self.channel_groups_view)
-        scrolledgroups.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        scrolledgroups.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        groups_box.pack_start(scrolledgroups)
+        scrolledgroups.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scrolledgroups.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        groups_box.pack_start(scrolledgroups, True, True, 0)
         
-        groups_buttonbox = gtk.VButtonBox()
+        groups_buttonbox = Gtk.VButtonBox()
         groups_buttonbox.set_spacing(6)
-        groups_buttonbox.set_layout(gtk.BUTTONBOX_START)
+        groups_buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
         groups_box.pack_end(groups_buttonbox, False, False, 0)
         
-        new_group_button = gtk.Button(stock=gtk.STOCK_ADD)
+        new_group_button = Gtk.Button(stock=Gtk.STOCK_ADD)
         new_group_button.connect("clicked", self.on_new_group_clicked)
-        groups_buttonbox.pack_start(new_group_button)
+        groups_buttonbox.pack_start(new_group_button, True, True, 0)
         
-        self.del_group_button = gtk.Button(stock=gtk.STOCK_REMOVE)
+        self.del_group_button = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         self.del_group_button.connect("clicked", self.on_delete_group_clicked)
-        groups_buttonbox.pack_start(self.del_group_button)
+        groups_buttonbox.pack_start(self.del_group_button, True, True, 0)
    
         # device groups
-        self.devgroupslist = gtk.ListStore(str, int, gobject.TYPE_PYOBJECT)
+        self.devgroupslist = Gtk.ListStore(str, int, gobject.GObject)
         
-        self.devgroupscombo = gtk.ComboBox(self.devgroupslist)
+        self.devgroupscombo = Gtk.ComboBox.new_with_model_and_entry(self.devgroupslist)
         self.devgroupscombo.connect("changed", self.on_devgroupscombo_changed)
-        cell_adapter = gtk.CellRendererText()
-        self.devgroupscombo.pack_start(cell_adapter)
-        self.devgroupscombo.add_attribute(cell_adapter, "markup", 0)
+        cell_adapter = Gtk.CellRendererText()
+        self.devgroupscombo.pack_start(cell_adapter, True)
+        self.devgroupscombo.set_entry_text_column(0)
         
-        groups_label = gtk.Label()
+        groups_label = Gtk.Label()
         groups_label.set_markup_with_mnemonic(_("_Group:"))
         groups_label.set_mnemonic_widget(self.devgroupscombo)
         
-        groups_box = gtk.HBox(spacing=6)
-        groups_box.pack_start(groups_label, False)
-        groups_box.pack_start(self.devgroupscombo)
+        groups_box = Gtk.HBox(spacing=6)
+        groups_box.pack_start(groups_label, False, True, 0)
+        groups_box.pack_start(self.devgroupscombo, True, True, 0)
         
         self.devgroups_frame = BaseFrame("<b>%s</b>" % _("Device groups"),
             groups_box, False, False)
-        self.vbox_main.pack_start(self.devgroups_frame, False)
+        self.vbox_main.pack_start(self.devgroups_frame, False, True, 0)
      
         # channels
-        channels_box = gtk.VBox(spacing=6)
-        self.vbox_main.pack_start(channels_box)
+        channels_box = Gtk.VBox(spacing=6)
+        self.vbox_main.pack_start(channels_box, True, True, 0)
 
-        cbox = gtk.HBox(spacing=6)
-        channels_box.pack_start(cbox)
+        cbox = Gtk.HBox(spacing=6)
+        channels_box.pack_start(cbox, True, True, 0)
 
         # all channels
         self.channels_store = None
@@ -119,16 +117,16 @@ class ChannelListEditorDialog(gtk.Dialog):
         self.channels_view.connect("row-activated",
             self.on_channels_view_activated)
         treesel = self.channels_view.get_selection()
-        treesel.set_mode(gtk.SELECTION_MULTIPLE)
+        treesel.set_mode(Gtk.SelectionMode.MULTIPLE)
         treesel.connect("changed",
             self.on_channel_store_selected)
 
         left_frame = Frame("<b>%s</b>" % _("All channels"), self.channels_view)
-        cbox.pack_start(left_frame)
+        cbox.pack_start(left_frame, True, True, 0)
         
         # selected channels
-        self.selected_channels_store = gtk.ListStore(str, int) # Name, sid
-        self.selected_channels_view = gtk.TreeView(self.selected_channels_store)
+        self.selected_channels_store = Gtk.ListStore(str, long) # Name, sid
+        self.selected_channels_view = Gtk.TreeView.new_with_model(self.selected_channels_store)
         self.selected_channels_view.set_reorderable(True)
         self.selected_channels_view.set_headers_visible(False)
         self.selected_channels_view.connect("row-activated",
@@ -136,35 +134,35 @@ class ChannelListEditorDialog(gtk.Dialog):
         treesel = self.selected_channels_view.get_selection()
         treesel.connect("changed",
             self.on_selected_channels_changed)
-        treesel.set_mode(gtk.SELECTION_MULTIPLE)
-        col_name = gtk.TreeViewColumn(_("Channel"))
-        cell_name = gtk.CellRendererText()
-        col_name.pack_start(cell_name)
+        treesel.set_mode(Gtk.SelectionMode.MULTIPLE)
+        col_name = Gtk.TreeViewColumn(_("Channel"))
+        cell_name = Gtk.CellRendererText()
+        col_name.pack_start(cell_name, True)
         col_name.add_attribute(cell_name, "markup", 0)
         self.selected_channels_view.append_column(col_name)
         self.selected_channels_view.show()
         
-        self.scrolled_selected_channels = gtk.ScrolledWindow()
-        self.scrolled_selected_channels.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        self.scrolled_selected_channels.set_policy(gtk.POLICY_AUTOMATIC,
-            gtk.POLICY_AUTOMATIC)
+        self.scrolled_selected_channels = Gtk.ScrolledWindow()
+        self.scrolled_selected_channels.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        self.scrolled_selected_channels.set_policy(Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC)
         self.scrolled_selected_channels.add(self.selected_channels_view)
         
         self.select_group_helpbox = HelpBox()
         self.select_group_helpbox.set_markup(_("Choose a channel group"))
         self.right_frame = BaseFrame("<b>%s</b>" % _("Channels of group"),
             self.select_group_helpbox)
-        cbox.pack_start(self.right_frame)
+        cbox.pack_start(self.right_frame, True, True, 0)
         
-        buttonbox = gtk.HButtonBox()
+        buttonbox = Gtk.HButtonBox()
         buttonbox.set_spacing(6)
-        buttonbox.set_layout(gtk.BUTTONBOX_SPREAD)
-        self.add_channel_button = gtk.Button(stock=gtk.STOCK_ADD)
+        buttonbox.set_layout(Gtk.ButtonBoxStyle.SPREAD)
+        self.add_channel_button = Gtk.Button(stock=Gtk.STOCK_ADD)
         self.add_channel_button.connect("clicked", self.on_add_channel_clicked)
-        buttonbox.pack_start(self.add_channel_button)
-        self.remove_channel_button = gtk.Button(stock=gtk.STOCK_REMOVE)
+        buttonbox.pack_start(self.add_channel_button, True, True, 0)
+        self.remove_channel_button = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         self.remove_channel_button.connect("clicked", self.on_remove_channel_clicked)
-        buttonbox.pack_start(self.remove_channel_button)
+        buttonbox.pack_start(self.remove_channel_button, True, True, 0)
         channels_box.pack_start(buttonbox, False, False, 0)
         
         self.del_group_button.set_sensitive(False)
@@ -249,24 +247,24 @@ class ChannelListEditorDialog(gtk.Dialog):
         if success:
             self.refill_channel_groups()
         else:
-            error_dialog = gtk.MessageDialog(parent=self,
-                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+            error_dialog = Gtk.MessageDialog(parent=self,
+                flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK)
             error_dialog.set_markup(
                 "<big><span weight=\"bold\">%s</span></big>" % _("An error occured while adding the group"))
             error_dialog.run()
             error_dialog.destroy()
             
     def on_delete_group_clicked(self, button):
-        dialog = gtk.MessageDialog(parent=self,
-            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-            type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+        dialog = Gtk.MessageDialog(parent=self,
+            flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+            type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO)
         group_id, group_name = self.get_selected_channel_group()
         msg = _("Are you sure you want to delete the group '%s'?") % group_name
         dialog.set_markup (
             "<big><span weight=\"bold\">%s</span></big>\n\n%s" %
             (msg, _("All assignments to this group will be lost.")))
-        if dialog.run() == gtk.RESPONSE_YES:
+        if dialog.run() == Gtk.ResponseType.YES:
             self.model.remove_channel_group(group_id,
                 reply_handler=self.on_remove_channel_group_finished,
                 error_handler=gnomedvb.global_error_handler)
@@ -276,9 +274,9 @@ class ChannelListEditorDialog(gtk.Dialog):
         if success:
             self.refill_channel_groups()
         else:
-            error_dialog = gtk.MessageDialog(parent=self,
-                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+            error_dialog = Gtk.MessageDialog(parent=self,
+                flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK)
             error_dialog.set_markup(
                 "<big><span weight=\"bold\">%s</span></big>" % _("An error occured while removing the group"))
             error_dialog.run()

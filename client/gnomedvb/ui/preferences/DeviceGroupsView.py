@@ -16,27 +16,27 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 import gobject
 from gettext import gettext as _
 from gnomedvb.Device import Device
 
 __all__ = ["UnassignedDevicesStore", "DeviceGroupsStore", "DeviceGroupsView"]
 
-class UnassignedDevicesStore (gtk.ListStore):
+class UnassignedDevicesStore (Gtk.ListStore):
 
     (COL_DEVICE,) = range(1)
     
     def __init__(self):
-        gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT)
+        Gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT)
 
 
-class DeviceGroupsStore (gtk.TreeStore):
+class DeviceGroupsStore (Gtk.TreeStore):
 
     (COL_GROUP, COL_DEVICE,) = range(2)
 
     def __init__(self):
-        gtk.TreeStore.__init__(self, gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT)
+        Gtk.TreeStore.__init__(self, gobject.GObject, gobject.TYPE_PYOBJECT)
         
     def get_groups(self):
         groups = []
@@ -46,19 +46,20 @@ class DeviceGroupsStore (gtk.TreeStore):
         return groups
  
     
-class DeviceGroupsView (gtk.TreeView):
+class DeviceGroupsView (Gtk.TreeView):
 
     def __init__(self, model):
-        gtk.TreeView.__init__(self, model)
+        gobject.GObject.__init__(self)
+        self.set_model(model)
         self.set_headers_visible(False)
         #self.set_reorderable(True)
         
-        cell_description = gtk.CellRendererText ()
-        column_description = gtk.TreeViewColumn (_("Devices"), cell_description)
-        column_description.set_cell_data_func(cell_description, self.get_description_data)
+        cell_description = Gtk.CellRendererText ()
+        column_description = Gtk.TreeViewColumn (_("Devices"), cell_description)
+        column_description.set_cell_data_func(cell_description, self.get_description_data, None)
         self.append_column(column_description)
         
-    def get_description_data(self, column, cell, model, aiter):
+    def get_description_data(self, column, cell, model, aiter, user_data=None):
         device = model[aiter][model.COL_DEVICE]
         
         if isinstance(device, Device):

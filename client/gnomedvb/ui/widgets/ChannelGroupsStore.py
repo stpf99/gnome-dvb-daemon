@@ -16,14 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 
-class ChannelGroupsStore(gtk.ListStore):
+class ChannelGroupsStore(Gtk.ListStore):
 
     (COL_ID,
      COL_NAME,
      COL_EDITABLE,) = range(3)
 
     def __init__(self):
-        gtk.ListStore.__init__(self, int, str, bool)
+        Gtk.ListStore.__init__(self, int, str, bool)
 

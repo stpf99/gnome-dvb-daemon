@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gobject
-import gtk
+from gi.repository import Gtk
 from gettext import gettext as _
 import datetime
 import gnomedvb
@@ -26,7 +26,7 @@ from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog
 from gnomedvb.ui.timers.TimerDialog import TimerDialog
 from gnomedvb.ui.widgets.CellRendererDatetime import CellRendererDatetime
 
-class EditTimersDialog(gtk.Dialog):
+class EditTimersDialog(Gtk.Dialog):
 
     (COL_ID,
     COL_CHANNEL,
@@ -40,89 +40,89 @@ class EditTimersDialog(gtk.Dialog):
         @param device_group: ID of device group
         @type device_group: int
         @param parent: Parent window
-        @type parent: gtk.Window
+        @type parent: Gtk.Window
         """
-        gtk.Dialog.__init__(self, title=_("Recording schedule"),
-            parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
-        
+        Gtk.Dialog.__init__(self, title=_("Recording schedule"),
+            parent=parent)
+
+        self.set_modal(True)
+        self.set_destroy_with_parent(True)
         self.device_group = device_group
         self.set_recorder(device_group)
         
-        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button = self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         close_button.grab_default()
         
         self.set_default_size(550, 400)
-        self.set_has_separator(False)
         self.set_border_width(5)
         
-        self.main_box = gtk.HBox(spacing=12)
+        self.main_box = Gtk.HBox(spacing=12)
         self.main_box.set_border_width(5)
         self.main_box.show()
-        self.vbox.pack_start(self.main_box)
+        self.get_content_area().pack_start(self.main_box, True, True, 0)
         
-        self.timerslist = gtk.ListStore(int, str, str, gobject.TYPE_PYOBJECT, int, bool)
+        self.timerslist = Gtk.ListStore(long, str, str, gobject.TYPE_PYOBJECT, long, bool)
         self.timerslist.set_sort_func(self.COL_START,
             self._datetime_sort_func)
         
-        self.timersview = gtk.TreeView(self.timerslist)
+        self.timersview = Gtk.TreeView.new_with_model(self.timerslist)
         self.timersview.get_selection().connect("changed",
             self._on_timers_selection_changed)
 
-        col_channel = gtk.TreeViewColumn(_("Channel"))
-        cell_rec = gtk.CellRendererPixbuf()
-        col_channel.pack_start(cell_rec)
-        col_channel.set_cell_data_func(cell_rec, self._get_recording_icon_for_cell)
+        col_channel = Gtk.TreeViewColumn(_("Channel"))
+        cell_rec = Gtk.CellRendererPixbuf()
+        col_channel.pack_start(cell_rec, True)
+        col_channel.set_cell_data_func(cell_rec, self._get_recording_icon_for_cell, None)
         col_channel.add_attribute(cell_rec, "stock-id", self.COL_ACTIVE)
-        cell_channel = gtk.CellRendererText()
-        col_channel.pack_start(cell_channel)
+        cell_channel = Gtk.CellRendererText()
+        col_channel.pack_start(cell_channel, True)
         col_channel.add_attribute(cell_channel, "text", self.COL_CHANNEL)
 
         self.timersview.append_column(col_channel)
 
-        col_title = gtk.TreeViewColumn(_("Title"))
-        cell_title = gtk.CellRendererText()
-        col_title.pack_start(cell_title)
+        col_title = Gtk.TreeViewColumn(_("Title"))
+        cell_title = Gtk.CellRendererText()
+        col_title.pack_start(cell_title, True)
         col_title.add_attribute(cell_title, "text", self.COL_TITLE)
         
         self.timersview.append_column(col_title)
         
         cell_starttime = CellRendererDatetime()
-        col_starttime = gtk.TreeViewColumn(_("Start time"))
-        col_starttime.pack_start(cell_starttime)
+        col_starttime = Gtk.TreeViewColumn(_("Start time"))
+        col_starttime.pack_start(cell_starttime, True)
         col_starttime.add_attribute(cell_starttime, "datetime", self.COL_START)
         
         self.timersview.append_column(col_starttime)
         
-        cell_duration = gtk.CellRendererText()
-        col_duration = gtk.TreeViewColumn(_("Duration"))
-        col_duration.pack_start(cell_duration, expand=False)
-        col_duration.set_cell_data_func(cell_duration, self._get_duration_data)
+        cell_duration = Gtk.CellRendererText()
+        col_duration = Gtk.TreeViewColumn(_("Duration"))
+        col_duration.pack_start(cell_duration, False)
+        col_duration.set_cell_data_func(cell_duration, self._get_duration_data, None)
         
         self.timersview.append_column(col_duration)
         
-        self.scrolledwindow = gtk.ScrolledWindow()
-        self.scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.scrolledwindow.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.scrolledwindow = Gtk.ScrolledWindow()
+        self.scrolledwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.scrolledwindow.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         self.scrolledwindow.add(self.timersview)
-        self.main_box.pack_start(self.scrolledwindow)
+        self.main_box.pack_start(self.scrolledwindow, True, True, 0)
         
-        self.buttonbox = gtk.VButtonBox()
+        self.buttonbox = Gtk.VButtonBox()
         self.buttonbox.set_spacing(6)
-        self.buttonbox.set_layout(gtk.BUTTONBOX_START)
-        self.button_add = gtk.Button(stock=gtk.STOCK_ADD)
+        self.buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
+        self.button_add = Gtk.Button(stock=Gtk.STOCK_ADD)
         self.button_add.connect("clicked", self._on_button_add_clicked)
-        self.buttonbox.pack_start(self.button_add)
+        self.buttonbox.pack_start(self.button_add, True, True, 0)
 
-        self.button_delete = gtk.Button(stock=gtk.STOCK_DELETE)
+        self.button_delete = Gtk.Button(stock=Gtk.STOCK_DELETE)
         self.button_delete.connect("clicked", self._on_button_delete_clicked)
         self.button_delete.set_sensitive(False)
-        self.buttonbox.pack_start(self.button_delete)
+        self.buttonbox.pack_start(self.button_delete, True, True, 0)
 
-        self.button_edit = gtk.Button(stock=gtk.STOCK_EDIT)
+        self.button_edit = Gtk.Button(stock=Gtk.STOCK_EDIT)
         self.button_edit.connect("clicked", self._on_button_edit_clicked)
         self.button_edit.set_sensitive(False)
-        self.buttonbox.pack_start(self.button_edit)
+        self.buttonbox.pack_start(self.button_edit, True, True, 0)
         
         self.main_box.pack_start(self.buttonbox, False, False, 0)
         
@@ -147,8 +147,8 @@ class EditTimersDialog(gtk.Dialog):
         if success:
             starttime = datetime.datetime(*start_list)
             (duration, active, channel, title) = self.recorder.get_all_informations(timer_id)[0][1:]
-            
-            self.timerslist.append([timer_id, channel, title, starttime, duration, active])
+
+            self.timerslist.append([long(timer_id), channel, title, starttime, duration, bool(active)])
 
     def _remove_timer(self, timer_id):
         for row in self.timerslist:
@@ -158,9 +158,9 @@ class EditTimersDialog(gtk.Dialog):
     def _on_button_delete_clicked(self, button):
         def delete_timer_callback(success):
             if not success:
-                error_dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                error_dialog = Gtk.MessageDialog(parent=self,
+                    flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK)
                 error_dialog.set_markup(
                     "<big><span weight=\"bold\">%s</span></big>" % _("Timer could not be deleted"))
                 error_dialog.run()
@@ -170,9 +170,9 @@ class EditTimersDialog(gtk.Dialog):
         if aiter != None:
             timer_id = model[aiter][self.COL_ID]
             if self.recorder.is_timer_active(timer_id):
-                dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+                dialog = Gtk.MessageDialog(parent=self,
+                    flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO)
                 dialog.set_markup(
                     "<big><span weight=\"bold\">%s</span></big>" % _("Abort active recording?"))
                 dialog.format_secondary_text(
@@ -180,7 +180,7 @@ class EditTimersDialog(gtk.Dialog):
                     _("Deleting this timer will abort the recording."))
                 response = dialog.run()
                 dialog.destroy()
-                if response == gtk.RESPONSE_YES:
+                if response == Gtk.ResponseType.YES:
                     self.recorder.delete_timer(timer_id,
                         reply_handler=delete_timer_callback,
                         error_handler=global_error_handler)
@@ -198,7 +198,7 @@ class EditTimersDialog(gtk.Dialog):
     
         dialog = TimerDialog(self, self.device_group)
         response_id = dialog.run()
-        if response_id == gtk.RESPONSE_ACCEPT:
+        if response_id == Gtk.ResponseType.ACCEPT:
             duration = dialog.get_duration()
             start = dialog.get_start_time()
             channel = dialog.get_channel()
@@ -222,7 +222,7 @@ class EditTimersDialog(gtk.Dialog):
             dialog.set_time_and_date_editable(
                 not model[aiter][self.COL_ACTIVE])
             response_id = dialog.run()
-            if response_id == gtk.RESPONSE_ACCEPT:
+            if response_id == Gtk.ResponseType.ACCEPT:
                 timer_id = model[aiter][self.COL_ID]
                 new_duration = dialog.get_duration()
                 new_start = dialog.get_start_time()
@@ -256,13 +256,13 @@ class EditTimersDialog(gtk.Dialog):
     def _set_recording_state(self, recorder, timer_id, state):
         for row in self.timerslist:
             if row[self.COL_ID] == timer_id:
-                self.timerslist.set (row.iter, self.COL_ACTIVE, state)
+                self.timerslist[row.iter][self.COL_ACTIVE] = state
                 
-    def _get_recording_icon_for_cell(self, column, cell, model, aiter):
+    def _get_recording_icon_for_cell(self, column, cell, model, aiter, user_data):
         if model[aiter][self.COL_ACTIVE]:
-            cell.set_property("stock-id", gtk.STOCK_MEDIA_RECORD)
+            cell.set_property("stock-id", Gtk.STOCK_MEDIA_RECORD)
             
-    def _get_duration_data(self, column, cell, model, aiter):
+    def _get_duration_data(self, column, cell, model, aiter, user_data):
         # We have minutes but need seconds
         duration = model[aiter][self.COL_DURATION] * 60
         duration_str = gnomedvb.seconds_to_time_duration_string(duration)

@@ -18,7 +18,7 @@
 import rhythmdb
 import rb
 import gobject
-import gtk
+from gi.repository import Gtk
 import gnomedvb
 
 class DVBRhythmPlugin(rb.Plugin):

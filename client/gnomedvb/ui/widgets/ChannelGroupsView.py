@@ -16,21 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.widgets.ChannelGroupsStore import ChannelGroupsStore
 
-class ChannelGroupsView(gtk.TreeView):
+class ChannelGroupsView(Gtk.TreeView):
 
     def __init__(self, model=None):
-        if model == None:
-            gtk.TreeView.__init__(self)
-        else:
-            gtk.TreeView.__init__(self, model)
-            
-        col_name = gtk.TreeViewColumn(_("Channel group"))
-        self.cell_name = gtk.CellRendererText()
-        col_name.pack_start(self.cell_name)
+        gobject.GObject.__init__(self)
+        if model != None:
+            self.set_model(model)
+
+        col_name = Gtk.TreeViewColumn(_("Channel group"))
+        self.cell_name = Gtk.CellRendererText()
+        col_name.pack_start(self.cell_name, True)
         col_name.add_attribute(self.cell_name, "markup", ChannelGroupsStore.COL_NAME)
         col_name.add_attribute(self.cell_name, "editable", ChannelGroupsStore.COL_EDITABLE)
         self.append_column(col_name)

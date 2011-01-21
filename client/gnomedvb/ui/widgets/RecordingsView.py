@@ -16,23 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gettext import gettext as _
 
 from gnomedvb import seconds_to_time_duration_string
 from gnomedvb.ui.widgets.RecordingsStore import RecordingsStore
 from gnomedvb.ui.widgets.CellRendererDatetime import CellRendererDatetime
 
-class RecordingsView(gtk.TreeView):
+class RecordingsView(Gtk.TreeView):
 
     def __init__(self, model=None):
+        gobject.GObject.__init__(self)
         if model != None:
-            gtk.TreeView.__init__(self, model)
-        else:
-            gtk.TreeView.__init__(self)
-        
+            self.set_model(model)      
+
         cell = CellRendererDatetime()
-        col = gtk.TreeViewColumn(_("Start"), cell,
+        col = Gtk.TreeViewColumn(_("Start"), cell,
             datetime=RecordingsStore.COL_START)
         self.append_column(col)
         self._append_text_column(_("Channel"), RecordingsStore.COL_CHANNEL)
@@ -40,16 +40,16 @@ class RecordingsView(gtk.TreeView):
         
         col_length, cell_length = self._append_text_column(_("Length"),
             RecordingsStore.COL_DURATION)
-        col_length.set_cell_data_func(cell_length, self._get_length_data)
+        col_length.set_cell_data_func(cell_length, self._get_length_data, None)
             
     def _append_text_column(self, title, col_index):
-        cell = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(title, cell, markup=col_index)
+        cell = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(title, cell, markup=col_index)
         self.append_column(col)
         
         return (col, cell)
         
-    def _get_length_data(self, column, cell, model, aiter):
+    def _get_length_data(self, column, cell, model, aiter, user_data=None):
         duration = model[aiter][RecordingsStore.COL_DURATION]
         duration_str = seconds_to_time_duration_string(duration)
         cell.set_property("text", duration_str)

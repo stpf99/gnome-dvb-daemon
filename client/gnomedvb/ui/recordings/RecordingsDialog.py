@@ -16,7 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gdk
+from gi.repository import Gtk
 from gettext import gettext as _
 
 from gnomedvb import global_error_handler
@@ -24,24 +26,24 @@ from gnomedvb.ui.widgets.RecordingsStore import RecordingsStore
 from gnomedvb.ui.widgets.RecordingsView import RecordingsView
 from gnomedvb.ui.recordings.DetailsDialog import DetailsDialog
 
-class RecordingsDialog(gtk.Dialog):
+class RecordingsDialog(Gtk.Dialog):
 
     def __init__(self, parent=None):
-        gtk.Dialog.__init__(self, title=_("Recordings"),
-            parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
-            
+        Gtk.Dialog.__init__(self, title=_("Recordings"),
+            parent=parent)
+
+        self.set_modal(True)
+        self.set_destroy_with_parent(True)
         self.set_default_size(600, 400)
-        self.set_has_separator(False)
         self.set_border_width(5)
         
-        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button = self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         close_button.grab_default()
             
-        hbox_main = gtk.HBox(spacing=12)
+        hbox_main = Gtk.HBox(spacing=12)
         hbox_main.set_border_width(5)
         hbox_main.show()
-        self.vbox.pack_start(hbox_main)
+        self.get_content_area().pack_start(hbox_main, True, True, 0)
             
         self._model = RecordingsStore()
         self._model.set_sort_func(RecordingsStore.COL_START,
@@ -54,30 +56,30 @@ class RecordingsDialog(gtk.Dialog):
         treeselection = self._view.get_selection()
         treeselection.connect("changed", self._on_selection_changed)
         
-        scrolledwindow = gtk.ScrolledWindow()
-        scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
+        scrolledwindow = Gtk.ScrolledWindow()
+        scrolledwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scrolledwindow.set_shadow_type(Gtk.ShadowType.IN)
         scrolledwindow.add(self._view)
         scrolledwindow.show()
-        hbox_main.pack_start(scrolledwindow)
+        hbox_main.pack_start(scrolledwindow, True, True, 0)
         
-        buttonbox = gtk.VButtonBox()
+        buttonbox = Gtk.VButtonBox()
         buttonbox.set_spacing(6)
-        buttonbox.set_layout(gtk.BUTTONBOX_START)
+        buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
         buttonbox.show()
-        hbox_main.pack_start(buttonbox, False)
+        hbox_main.pack_start(buttonbox, False, True, 0)
         
-        self.details_button = gtk.Button(stock=gtk.STOCK_INFO)
+        self.details_button = Gtk.Button(stock=Gtk.STOCK_INFO)
         self.details_button.connect("clicked", self._on_details_clicked)
         self.details_button.set_sensitive(False)
         self.details_button.show()
-        buttonbox.pack_start(self.details_button)
+        buttonbox.pack_start(self.details_button, True, True, 0)
         
-        self.delete_button = gtk.Button(stock=gtk.STOCK_DELETE)
+        self.delete_button = Gtk.Button(stock=Gtk.STOCK_DELETE)
         self.delete_button.connect("clicked", self._on_delete_clicked)
         self.delete_button.set_sensitive(False)
         self.delete_button.show()
-        buttonbox.pack_start(self.delete_button)
+        buttonbox.pack_start(self.delete_button, True, True, 0)
         
     def _on_selection_changed(self, treeselection):
         model, rows = treeselection.get_selected_rows()
@@ -89,13 +91,13 @@ class RecordingsDialog(gtk.Dialog):
         model, aiter = self._view.get_selection().get_selected()
         
         if aiter != None:
-            dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+            dialog = Gtk.MessageDialog(parent=self,
+                    flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO)
             dialog.set_markup("<big><span weight=\"bold\">%s</span></big>" % _("Delete selected recordings?"))
             response = dialog.run()
             dialog.destroy()
-            if response == gtk.RESPONSE_YES:
+            if response == Gtk.ResponseType.YES:
                 client = self._model.get_recordings_store_client()
                 client.delete(model[aiter][RecordingsStore.COL_ID],
                     reply_handler=self._delete_callback,
@@ -110,7 +112,7 @@ class RecordingsDialog(gtk.Dialog):
             dialog.destroy ()
             
     def _on_recording_selected(self, treeview, event):
-        if event.type == gtk.gdk._2BUTTON_PRESS:
+        if event.type == getattr(Gdk.EventType, "2BUTTON_PRESS"):
             self._on_details_clicked(treeview)
                     
     def _delete_callback(self, success):

@@ -17,9 +17,10 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gnomedvb
-import gtk
+from gi.repository import GdkPixbuf
+from gi.repository import Gtk
 import gobject
-import glib
+from gi.repository import GLib
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb.ui.widgets.Frame import TextFieldLabel
@@ -54,7 +55,7 @@ class ChannelScanPage(BasePage):
         self._progressbar_timer = 0
         
         self.set_spacing(12)
-        self._theme = gtk.icon_theme_get_default()
+        self._theme = Gtk.IconTheme.get_default()
 
         text = "%s\n%s" % (
             _("This process can take some time."),
@@ -62,7 +63,7 @@ class ChannelScanPage(BasePage):
         )
         self._label.set_markup (text)
         
-        actiongroup = gtk.ActionGroup('channels')
+        actiongroup = Gtk.ActionGroup('channels')
         actiongroup.add_actions([
             ('channels-select-all', None, _('Select all'), None, None,
                 lambda x: self.__set_all_checked(True)),
@@ -70,87 +71,87 @@ class ChannelScanPage(BasePage):
                 lambda x: self.__set_all_checked(False)),
         ])
         
-        uimanager = gtk.UIManager()
+        uimanager = Gtk.UIManager()
         uimanager.add_ui_from_string(self.MENU)
         uimanager.insert_action_group(actiongroup)
         
         self.popup_menu = uimanager.get_widget("/channels-popup")
 
-        topbox = gtk.VBox(spacing=6)
-        self.pack_start(topbox)
+        topbox = Gtk.VBox(spacing=6)
+        self.pack_start(topbox, True, True, 0)
 
         ali = TextFieldLabel()
         label = ali.get_label()
         label.set_markup_with_mnemonic(_("_Channels:"))
-        topbox.pack_start(ali, False)
+        topbox.pack_start(ali, False, True, 0)
         
         # Logo, Name, active, SID, scrambled
-        self.tvchannels = gtk.ListStore(gtk.gdk.Pixbuf, str, bool, int, bool)
-        self.tvchannelsview = gtk.TreeView(self.tvchannels)
+        self.tvchannels = Gtk.ListStore(GdkPixbuf.Pixbuf, str, bool, int, bool)
+        self.tvchannelsview = Gtk.TreeView.new_with_model(self.tvchannels)
         self.tvchannelsview.connect("button-press-event",
             self.__on_treeview_button_press_event)
         self.tvchannelsview.set_reorderable(True)
         self.tvchannelsview.set_headers_visible(False)
         label.set_mnemonic_widget(self.tvchannelsview)
         
-        col_name = gtk.TreeViewColumn(_("Channel"))
+        col_name = Gtk.TreeViewColumn(_("Channel"))
         
-        cell_active = gtk.CellRendererToggle()
+        cell_active = Gtk.CellRendererToggle()
         cell_active.connect("toggled", self.__on_active_toggled)
         col_name.pack_start(cell_active, False)
         col_name.add_attribute(cell_active, "active", self.COL_ACTIVE)
         
-        cell_icon = gtk.CellRendererPixbuf()
+        cell_icon = Gtk.CellRendererPixbuf()
         col_name.pack_start(cell_icon, False)
         col_name.add_attribute(cell_icon, "pixbuf", self.COL_LOGO)
         
-        cell_name = gtk.CellRendererText()
-        col_name.pack_start(cell_name)
+        cell_name = Gtk.CellRendererText()
+        col_name.pack_start(cell_name, True)
         col_name.add_attribute(cell_name, "markup", self.COL_NAME)
         self.tvchannelsview.append_column (col_name)
 
-        scrolledtvview = gtk.ScrolledWindow()
+        scrolledtvview = Gtk.ScrolledWindow()
         scrolledtvview.add(self.tvchannelsview)
-        scrolledtvview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        scrolledtvview.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        scrolledtvview.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        scrolledtvview.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         
-        topbox.pack_start(scrolledtvview)
+        topbox.pack_start(scrolledtvview, True, True, 0)
 
-        self.scrambledbutton = gtk.CheckButton(_("Select _scrambled channels"))
+        self.scrambledbutton = Gtk.CheckButton.new_with_mnemonic(_("Select _scrambled channels"))
         self.scrambledbutton.set_active(True)
         self.scrambledbutton.connect("toggled", self.__on_select_encrypted_toggled)
-        topbox.pack_start(self.scrambledbutton, False)
+        topbox.pack_start(self.scrambledbutton, False, True, 0)
         
         self.create_signal_box()
 
-        self.progressbar = gtk.ProgressBar()
-        self.pack_start(self.progressbar, False)
+        self.progressbar = Gtk.ProgressBar()
+        self.pack_start(self.progressbar, False, True, 0)
 
     def create_signal_box(self):
-        self.progress_table = gtk.Table(rows=3, columns=2)
+        self.progress_table = Gtk.Table(rows=3, columns=2)
         self.progress_table.set_row_spacings(6)
         self.progress_table.set_col_spacings(12)
-        self.pack_start(self.progress_table, False)
+        self.pack_start(self.progress_table, False, True, 0)
 
         label = TextFieldLabel(_("Signal quality:"))
-        self.progress_table.attach(label, 0, 1, 0, 1, xoptions=gtk.FILL)
+        self.progress_table.attach(label, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
 
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame = Gtk.Frame()
+        frame.set_shadow_type(Gtk.ShadowType.NONE)
         self.progress_table.attach(frame, 1, 2, 0, 1)
 
-        self.signal_quality_bar = gtk.ProgressBar()
+        self.signal_quality_bar = Gtk.ProgressBar()
         self.signal_quality_bar.set_size_request(-1, 10)
         frame.add(self.signal_quality_bar)
 
         label = TextFieldLabel(_("Signal strength:"))
-        self.progress_table.attach(label, 0, 1, 1, 2, xoptions=gtk.FILL)
+        self.progress_table.attach(label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_NONE)
+        frame = Gtk.Frame()
+        frame.set_shadow_type(Gtk.ShadowType.NONE)
         self.progress_table.attach(frame, 1, 2, 1, 2)
 
-        self.signal_strength_bar = gtk.ProgressBar()
+        self.signal_strength_bar = Gtk.ProgressBar()
         self.signal_strength_bar.set_size_request(-1, 10)
         frame.add(self.signal_strength_bar)
         
@@ -178,7 +179,7 @@ class ChannelScanPage(BasePage):
         self._scanner.connect ("frontend-stats", self.__on_frontend_stats)
 
         self.progressbar.set_pulse_step(0.1)
-        self._progressbar_timer = glib.timeout_add(100, self._progressbar_pulse)
+        self._progressbar_timer = GLib.timeout_add(0, 100, self._progressbar_pulse, None)
         self.progressbar.show()
 
         if isinstance(tuning_data, str):
@@ -191,7 +192,7 @@ class ChannelScanPage(BasePage):
         else:
             self._scanner.destroy()
             
-    def _progressbar_pulse(self):
+    def _progressbar_pulse(self, user_data=None):
         self.progressbar.pulse()
         return True
         
@@ -199,15 +200,15 @@ class ChannelScanPage(BasePage):
         try:
             if scrambled:
                 icon = self._theme.load_icon("emblem-readonly", 16,
-                    gtk.ICON_LOOKUP_USE_BUILTIN)
+                    Gtk.IconLookupFlags.USE_BUILTIN)
             else:
                 if channeltype == "TV":
                     icon = self._theme.load_icon("video-x-generic", 16,
-                        gtk.ICON_LOOKUP_USE_BUILTIN)
+                        Gtk.IconLookupFlags.USE_BUILTIN)
                 elif channeltype == "Radio":
                     icon = self._theme.load_icon("audio-x-generic", 16,
-                        gtk.ICON_LOOKUP_USE_BUILTIN)
-        except glib.GError:
+                        Gtk.IconLookupFlags.USE_BUILTIN)
+        except GLib.GError:
             icon = None
         
         name = name.replace("&", "&amp;")
@@ -230,7 +231,7 @@ class ChannelScanPage(BasePage):
         fraction = float(self._scanned_freqs) / self._max_freqs
         # Stop progressbar from pulsing
         if self._progressbar_timer > 0:
-            glib.source_remove(self._progressbar_timer)
+            GLib.source_remove(self._progressbar_timer)
             self._progressbar_timer = 0
 
         self.progressbar.set_fraction(fraction)

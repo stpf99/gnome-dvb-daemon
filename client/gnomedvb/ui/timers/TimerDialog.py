@@ -17,7 +17,8 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import gtk
+import gobject
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.timers.CalendarDialog import CalendarDialog
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
@@ -25,39 +26,39 @@ from gnomedvb.ui.widgets.ChannelsView import ChannelsView
 from gnomedvb.ui.widgets.Frame import TextFieldLabel
 from gnomedvb.ui.widgets.DateTime import DateTimeBox
 
-class TimerDialog(gtk.Dialog):
+class TimerDialog(Gtk.Dialog):
 
     def __init__(self, parent, device_group, channel=None,
             starttime=None, duration=60):
         """
         @param parent: Parent window
-        @type parent: gtk.Window
+        @type parent: Gtk.Window
         @param device_group: DeviceGroup instance
         """
-        gtk.Dialog.__init__(self, parent=parent,
-                flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
+        Gtk.Dialog.__init__(self, parent=parent)
 
+        self.set_modal(True)
+        self.set_destroy_with_parent(True)
         self.set_default_size(320, -1)
 
         self.device_group = device_group
         self.date_valid = False
         self.allowed_delta = datetime.timedelta(hours=1)
         
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)
-        self.ok_button = self.add_button(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT)
-        
-        self.set_has_separator(False)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
+        self.ok_button = self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
+
         self.set_border_width(5)
         
-        table = gtk.Table(rows=4, columns=2)
+        table = Gtk.Table(rows=4, columns=2)
         table.set_col_spacings(18)
         table.set_row_spacings(6)
         table.set_border_width(5)
-        self.vbox.pack_start(table)
+        self.get_content_area().pack_start(table, True, True, 0)
                          
         label_channel = TextFieldLabel()
         label = label_channel.get_label()
-        table.attach(label_channel, 0, 1, 0, 1, gtk.FILL, gtk.FILL)
+        table.attach(label_channel, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
         
         if channel == None:
             self.channel_selected = False
@@ -67,9 +68,9 @@ class TimerDialog(gtk.Dialog):
             label.set_markup_with_mnemonic(_("_Channel:"))
             self.channels = ChannelsStore(device_group)
         
-            scrolledchannels = gtk.ScrolledWindow()
-            scrolledchannels.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            scrolledchannels.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+            scrolledchannels = Gtk.ScrolledWindow()
+            scrolledchannels.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+            scrolledchannels.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
             table.attach(scrolledchannels, 0, 2, 1, 2)
             
             self.channelsview = ChannelsView(self.channels)
@@ -88,14 +89,14 @@ class TimerDialog(gtk.Dialog):
             self.channels = None
             self.channelsview = None
             channel_label = TextFieldLabel(channel)
-            table.attach(channel_label, 1, 2, 0, 1, yoptions=gtk.FILL)
+            table.attach(channel_label, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.FILL)
         
         label_start = TextFieldLabel()
         label = label_start.get_label()
         label.set_markup_with_mnemonic(_("_Start time:"))
         table.attach(label_start, 0, 1, 2, 3)
         
-        hbox = gtk.HBox(spacing=6)
+        hbox = Gtk.HBox(spacing=6)
         table.attach(hbox, 1, 2, 2, 3, yoptions=0)
 
         if starttime == None:
@@ -103,27 +104,27 @@ class TimerDialog(gtk.Dialog):
         
         self.datetime_box = DateTimeBox(starttime)
         self.datetime_box.connect("changed", self._on_datetime_changed)
-        hbox.pack_start(self.datetime_box)
+        hbox.pack_start(self.datetime_box, True, True, 0)
         label.set_mnemonic_widget(self.datetime_box)
         
         label_duration = TextFieldLabel()
         label = label_duration.get_label()
         label.set_markup_with_mnemonic(_("_Duration:"))
-        table.attach(label_duration, 0, 1, 3, 4, gtk.FILL, gtk.FILL)
+        table.attach(label_duration, 0, 1, 3, 4, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
         
-        duration_hbox = gtk.HBox(spacing=6)
+        duration_hbox = Gtk.HBox(spacing=6)
         table.attach(duration_hbox, 1, 2, 3, 4)
         
-        self.duration = gtk.SpinButton()
+        self.duration = Gtk.SpinButton()
         self.duration.set_range(1, 65535)
         self.duration.set_increments(1, 10)
         self.duration.set_width_chars(3)
         self.duration.set_value(60)
-        duration_hbox.pack_start(self.duration, False)
+        duration_hbox.pack_start(self.duration, False, True, 0)
         label.set_mnemonic_widget(self.duration)
         
         minutes_label = TextFieldLabel(_("minutes"))
-        duration_hbox.pack_start(minutes_label)
+        duration_hbox.pack_start(minutes_label, True, True, 0)
         
         self.set_start_time(starttime)
         self.set_duration(duration)

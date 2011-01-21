@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 import gobject
 import gnomedvb
 from gnomedvb import global_error_handler
 from gnomedvb.Callback import Callback
 from cgi import escape
 
-class ChannelsStore(gtk.ListStore):
+class ChannelsStore(Gtk.ListStore):
 
     (COL_NAME,
      COL_SID,) = range(2)
@@ -38,10 +38,10 @@ class ChannelsStore(gtk.ListStore):
         list of channels should be retrieved
         """
     
-        gtk.ListStore.__init__(self, str, int)
+        Gtk.ListStore.__init__(self, str, long)
         
         self.set_sort_column_id(self.COL_NAME,
-            gtk.SORT_ASCENDING)
+            Gtk.SortType.ASCENDING)
             
         self._add_channels(device_group)
         
@@ -57,7 +57,7 @@ class ChannelsStore(gtk.ListStore):
             error_handler=global_error_handler)
 
 
-class ChannelsTreeStore(gtk.TreeStore):
+class ChannelsTreeStore(Gtk.TreeStore):
 
     (COL_GROUP_ID,
      COL_NAME,
@@ -69,9 +69,9 @@ class ChannelsTreeStore(gtk.TreeStore):
     }
     
     def __init__(self, use_channel_groups=False):
-        gtk.TreeStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
+        Gtk.ListStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
         
-        self.set_sort_order(gtk.SORT_ASCENDING)
+        self.set_sort_order(Gtk.SortType.ASCENDING)
         
         self._use_channel_groups = use_channel_groups
         self._manager = gnomedvb.DVBManagerClient ()

@@ -19,10 +19,11 @@
 from gnomedvb.DBusWrapper import *
 
 import gnomedvb.defs
-import gnomedvb.userdirs
+# XXX userdirs
+#import gnomedvb.userdirs
 import gettext
-import gio
-import gtk
+from gi.repository import Gio
+from gi.repository import Gtk
 import locale
 import os
 from gettext import gettext as _
@@ -61,7 +62,7 @@ def launch_default_for_uri(uri_string):
     
     @type uri_string: str 
     """
-    gfile = gio.File(uri=uri_string)
+    gfile = Gio.File(uri=uri_string)
     appinfo = gfile.query_default_handler()
     
     if appinfo != None:
@@ -71,8 +72,9 @@ def get_config_dir():
     return join(XDG_CONFIG_HOME, gnomedvb.defs.PACKAGE)
 
 def get_default_recordings_dir():
-    videos = gnomedvb.userdirs.get_xdg_user_dir(
-        gnomedvb.userdirs.DIRECTORY_VIDEOS)
+    videos = None
+    # XXX gnomedvb.userdirs.get_xdg_user_dir(
+    #    gnomedvb.userdirs.DIRECTORY_VIDEOS)
     if videos == None:
         videos = join(expanduser('~'), 'Videos')
     return join(videos, 'Recordings')

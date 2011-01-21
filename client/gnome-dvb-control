@@ -17,19 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 import gnomedvb
 from gnomedvb.ui.controlcenter.ControlCenterWindow import ControlCenterWindow
 from gnomedvb.DVBModel import DVBModel
 
 gnomedvb.setup_i18n()
 
-gtk.about_dialog_set_email_hook(lambda about, mail: gnomedvb.launch_default_for_uri("mailto:%s" % mail))
-gtk.about_dialog_set_url_hook(lambda about, url: gnomedvb.launch_default_for_uri(url))
-
 model = DVBModel()
 w = ControlCenterWindow(model)
 w.show_all()
 
-gtk.main()
+Gtk.main()
         

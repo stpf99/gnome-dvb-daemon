@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gnomedvb import global_error_handler
 from cgi import escape
 
-class RunningNextStore(gtk.ListStore):
+class RunningNextStore(Gtk.ListStore):
 
     (COL_CHANNEL,
      COL_RUNNING_START,
@@ -32,10 +33,10 @@ class RunningNextStore(gtk.ListStore):
      COL_NEXT_EVENT) = range(8)
 
     def __init__(self, group):
-        gtk.ListStore.__init__(self, str, int, str, int, str, int, int, int)
+        Gtk.ListStore.__init__(self, str, long, str, long, str, long, long, long)
         
         self.set_sort_column_id(self.COL_CHANNEL,
-            gtk.SORT_ASCENDING)
+            Gtk.SortType.ASCENDING)
           
         self._group = group
         self._fill()
@@ -49,21 +50,22 @@ class RunningNextStore(gtk.ListStore):
         def add_channels(channels):
             for sid, name, is_radio in channels:
                 aiter = self.append()
-                self.set(aiter, self.COL_CHANNEL, name)
-                self.set(aiter, self.COL_SID, sid)
+                self.set_value(aiter, self.COL_CHANNEL, name)
+                self.set_value(aiter, self.COL_SID, sid)
                 
                 sched = self._group.get_schedule(sid)
                 now = sched.now_playing()
                 if now != 0:
                     next, name, duration, short_desc = sched.get_informations(now)[0][1:]
-                    self.set(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now)[0])
-                    self.set(aiter, self.COL_RUNNING, escape(name))
-                    self.set(aiter, self.COL_RUNNING_EVENT, now)
+                    
+                    self.set_value(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now)[0])
+                    self.set_value(aiter, self.COL_RUNNING, escape(name))
+                    self.set_value(aiter, self.COL_RUNNING_EVENT, now)
                     if next != 0:
                         name, duration, short_desc = sched.get_informations(next)[0][2:]
-                        self.set(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next)[0])
-                        self.set(aiter, self.COL_NEXT, escape(name))
-                        self.set(aiter, self.COL_NEXT_EVENT, next)
+                        self.set_value(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next)[0])
+                        self.set_value(aiter, self.COL_NEXT, escape(name))
+                        self.set_value(aiter, self.COL_NEXT_EVENT, next)
         
         channellist.get_channel_infos(reply_handler=add_channels,
             error_handler=global_error_handler)

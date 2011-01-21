@@ -17,9 +17,9 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gobject
-import glib
+from gi.repository import GLib
 import gnomedvb
-import gtk
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
@@ -43,7 +43,7 @@ class AdaptersPage(BasePage):
         self.frame = None
         
         # Name, Type Name, Type, adapter, frontend, registered
-        self.deviceslist = gtk.ListStore(str, str, str, int, int, bool)
+        self.deviceslist = Gtk.ListStore(str, str, str, int, int, bool)
         
     def show_no_devices(self):
         if self.frame:
@@ -59,32 +59,32 @@ class AdaptersPage(BasePage):
         self._label.hide()
 
         if self.devicesview == None:
-            self.devicesview = gtk.TreeView(self.deviceslist)
+            self.devicesview = Gtk.TreeView.new_with_model(self.deviceslist)
             self.devicesview.get_selection().connect("changed",
                 self.on_device_selection_changed)
         
-            cell_name = gtk.CellRendererText()
-            col_name = gtk.TreeViewColumn(_("Name"))
-            col_name.pack_start(cell_name)
-            col_name.set_cell_data_func(cell_name, self.name_data_func)
+            cell_name = Gtk.CellRendererText()
+            col_name = Gtk.TreeViewColumn(_("Name"))
+            col_name.pack_start(cell_name, True)
+            col_name.set_cell_data_func(cell_name, self.name_data_func, None)
             self.devicesview.append_column(col_name)
         
-            cell_type = gtk.CellRendererText()
-            col_type = gtk.TreeViewColumn(_("Type"))
-            col_type.pack_start(cell_type)
+            cell_type = Gtk.CellRendererText()
+            col_type = Gtk.TreeViewColumn(_("Type"))
+            col_type.pack_start(cell_type, True)
             col_type.add_attribute(cell_type, "text", 1)
             self.devicesview.append_column(col_type)
         
-            scrolledview = gtk.ScrolledWindow()
-            scrolledview.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-            scrolledview.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            scrolledview = Gtk.ScrolledWindow()
+            scrolledview.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+            scrolledview.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
             scrolledview.add(self.devicesview)
             scrolledview.show_all()
         
             text = "<b>%s</b>" % _("Select the device you want to configure.")
             self.frame = BaseFrame(text, scrolledview)
             self.frame.show()
-            self.pack_start(self.frame)
+            self.pack_start(self.frame, True, True, 0)
 
         self.devicesview.grab_focus()
         
@@ -117,19 +117,19 @@ class AdaptersPage(BasePage):
         
     def show_progressbar(self):
         self._label.hide()
-        self._progressbar = gtk.ProgressBar()
+        self._progressbar = Gtk.ProgressBar()
         self._progressbar.set_text(_("Searching for devices"))
         self._progressbar.set_fraction(0.1)
         self._progressbar.show()
-        self.pack_start(self._progressbar, False)
-        self._progressbar_timer = glib.timeout_add(100, self.progressbar_pulse)
+        self.pack_start(self._progressbar, False, True, 0)
+        self._progressbar_timer = GLib.timeout_add(0, 100, self.progressbar_pulse, None)
         
     def destroy_progressbar(self):
-        glib.source_remove(self._progressbar_timer)
+        GLib.source_remove(self._progressbar_timer)
         self._progressbar_timer = None
         self._progressbar.destroy()
 
-    def progressbar_pulse(self):
+    def progressbar_pulse(self, user_data):
         self._progressbar.pulse()
         return True
 
@@ -230,7 +230,7 @@ class AdaptersPage(BasePage):
         else:
             self.emit("finished", False)
 
-    def name_data_func(self, column, cell, model, aiter):
+    def name_data_func(self, column, cell, model, aiter, user_data):
         name = model[aiter][0]
         adapter = model[aiter][3]
         frontend = model[aiter][4]

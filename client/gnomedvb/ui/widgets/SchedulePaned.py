@@ -16,37 +16,38 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 
-class SchedulePaned (gtk.VPaned):
+class SchedulePaned (Gtk.VPaned):
 
     def __init__(self):
-        gtk.VPaned.__init__(self)
+        gobject.GObject.__init__(self)
         
         self.scheduleview = ScheduleView()
         self.scheduleview.show()
         
         self.scheduleview.get_selection().connect("changed", self._on_selection_changed)
         
-        self.scrolledschedule = gtk.ScrolledWindow()
+        self.scrolledschedule = Gtk.ScrolledWindow()
         self.scrolledschedule.add(self.scheduleview)
-        self.scrolledschedule.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.scrolledschedule.set_shadow_type(gtk.SHADOW_IN)
+        self.scrolledschedule.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.scrolledschedule.set_shadow_type(Gtk.ShadowType.IN)
         self.scrolledschedule.show()
         
         self.pack1(self.scrolledschedule, True)
         
-        self.textview = gtk.TextView()
-        self.textview.set_wrap_mode(gtk.WRAP_WORD)
+        self.textview = Gtk.TextView()
+        self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_editable(False)
         self.textview.show()
         
-        self.scrolledtextview = gtk.ScrolledWindow()
+        self.scrolledtextview = Gtk.ScrolledWindow()
         self.scrolledtextview.add(self.textview)
-        self.scrolledtextview.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.scrolledtextview.set_shadow_type(gtk.SHADOW_IN)
+        self.scrolledtextview.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.scrolledtextview.set_shadow_type(Gtk.ShadowType.IN)
         self.scrolledtextview.show()
         
         self.pack2(self.scrolledtextview, False)

@@ -17,30 +17,33 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import gtk
+import gobject
+from gi.repository import Gdk
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb import global_error_handler
 from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.DetailsDialog import DetailsDialog
 from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog, TimerSuccessDialog
        
-class RunningNextView(gtk.TreeView):
+class RunningNextView(Gtk.TreeView):
 
     def __init__(self, model):
-        gtk.TreeView.__init__(self, model)
+        gobject.GObject.__init__(self)
+        self.set_model(model)
         
-        cell_channel = gtk.CellRendererText()
-        col_channel = gtk.TreeViewColumn(_("Channel"), cell_channel)
+        cell_channel = Gtk.CellRendererText()
+        col_channel = Gtk.TreeViewColumn(_("Channel"), cell_channel)
         col_channel.add_attribute(cell_channel, "markup",
             RunningNextStore.COL_CHANNEL)
         self.append_column(col_channel)
         col_channel.index = RunningNextStore.COL_CHANNEL
         
-        cell_now_start = gtk.CellRendererText()
-        cell_now = gtk.CellRendererText()
-        col_now = gtk.TreeViewColumn(_("Now"))
-        col_now.pack_start(cell_now_start, expand=False)
-        col_now.pack_start(cell_now)
+        cell_now_start = Gtk.CellRendererText()
+        cell_now = Gtk.CellRendererText()
+        col_now = Gtk.TreeViewColumn(_("Now"))
+        col_now.pack_start(cell_now_start, False)
+        col_now.pack_start(cell_now, True)
         col_now.set_cell_data_func(cell_now_start, self._format_time,
             RunningNextStore.COL_RUNNING_START)
         col_now.add_attribute(cell_now, "markup", RunningNextStore.COL_RUNNING)
@@ -48,11 +51,11 @@ class RunningNextView(gtk.TreeView):
         self.append_column(col_now)
         col_now.index = RunningNextStore.COL_RUNNING
         
-        cell_next_start = gtk.CellRendererText()
-        cell_next = gtk.CellRendererText()
-        col_next = gtk.TreeViewColumn(_("Next"))
-        col_next.pack_start(cell_next_start, expand=False)
-        col_next.pack_start(cell_next)
+        cell_next_start = Gtk.CellRendererText()
+        cell_next = Gtk.CellRendererText()
+        col_next = Gtk.TreeViewColumn(_("Next"))
+        col_next.pack_start(cell_next_start, False)
+        col_next.pack_start(cell_next, True)
         col_next.set_property("resizable", True)
         col_next.set_cell_data_func(cell_next_start, self._format_time,
             RunningNextStore.COL_NEXT_START)
@@ -100,7 +103,7 @@ class RunningNextView(gtk.TreeView):
             dialog.show()
             dialog.connect("response", lambda d, resp: d.destroy())
         
-        if event.type == gtk.gdk._2BUTTON_PRESS:
+        if event.type == getattr(Gdk.EventType, "2BUTTON_PRESS"):
             model, aiter = treeview.get_selection().get_selected()
             if aiter != None:
                 pos = treeview.get_path_at_pos(int(event.x), int(event.y))

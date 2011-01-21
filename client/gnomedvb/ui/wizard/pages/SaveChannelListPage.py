@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 import gobject
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
@@ -35,12 +35,12 @@ class SaveChannelListPage(BasePage):
         text = _("Choose a location where you want to save the list of channels.")
         self._label.set_text(text)
 
-        button_box = gtk.HButtonBox()
-        self.pack_start(button_box)
+        button_box = Gtk.HButtonBox()
+        self.pack_start(button_box, True, True, 0)
     
-        save_button = gtk.Button(stock=gtk.STOCK_SAVE)
+        save_button = Gtk.Button(stock=Gtk.STOCK_SAVE)
         save_button.connect("clicked", self.__on_save_button_clicked)
-        button_box.pack_start(save_button)
+        button_box.pack_start(save_button, True, True, 0)
             
     def get_page_title(self):
         return _("Save channels")
@@ -52,11 +52,11 @@ class SaveChannelListPage(BasePage):
         self.__channels = channels
         
     def __on_save_button_clicked(self, button):
-        filechooser = gtk.FileChooserDialog(action=gtk.FILE_CHOOSER_ACTION_SAVE,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        filechooser = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.SAVE,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+            Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
         filechooser.set_do_overwrite_confirmation(True)
-        if (filechooser.run() == gtk.RESPONSE_OK):
+        if (filechooser.run() == Gtk.ResponseType.OK):
             self.__scanner.write_channels_to_file(self.__channels, filechooser.get_filename())
             self.emit("finished", True)
         filechooser.destroy()

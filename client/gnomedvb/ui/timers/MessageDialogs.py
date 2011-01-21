@@ -16,26 +16,27 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gettext import gettext as _
 
-class TimerFailureDialog(gtk.MessageDialog):
+class TimerFailureDialog(Gtk.MessageDialog):
 
     def __init__(self, parent_window):
-        gtk.MessageDialog.__init__(self, parent=parent_window,
-            flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-            type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+        Gtk.MessageDialog.__init__(self, parent=parent_window,
+            flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+            type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK)
         self.set_markup ("<big><span weight=\"bold\">%s</span></big>" % _("Timer could not be created"))
         self.format_secondary_text(
             _("Make sure that the timer doesn't conflict with another one and doesn't start in the past.")
         )
 
-class TimerSuccessDialog(gtk.MessageDialog):
+class TimerSuccessDialog(Gtk.MessageDialog):
 
     def __init__(self, parent_window):
-        gtk.MessageDialog.__init__(self, parent=parent_window,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_INFO, buttons=gtk.BUTTONS_OK)
+        Gtk.MessageDialog.__init__(self, parent=parent_window,
+                    flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.INFO, buttons=Gtk.ButtonsType.OK)
         self.set_markup("<big><span weight=\"bold\">%s</span></big>" % (
             _("Recording has been scheduled successfully"))
         )

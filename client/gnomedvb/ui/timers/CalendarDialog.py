@@ -16,23 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gettext import gettext as _
         
-class CalendarDialog(gtk.Dialog):
+class CalendarDialog(Gtk.Dialog):
 
     def __init__(self, parent):
-        gtk.Dialog.__init__(self, title=_("Pick a date"), parent=parent,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)     
+        Gtk.Dialog.__init__(self, title=_("Pick a date"), parent=parent)
+
+        self.set_modal(True)
+        self.set_destroy_with_parent(True)
         
-        self.set_position(gtk.WIN_POS_MOUSE)
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)
-        ok_button = self.add_button(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT)
+        self.set_position(Gtk.WindowPosition.MOUSE)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
+        ok_button = self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
         ok_button.grab_default()
         
-        self.calendar = gtk.Calendar()
+        self.calendar = Gtk.Calendar()
         self.calendar.show()
-        self.vbox.add(self.calendar)
+        self.get_content_area().add(self.calendar)
         
     def get_date(self):
         return self.calendar.get_date()

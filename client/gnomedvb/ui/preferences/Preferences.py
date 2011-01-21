@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 import subprocess
 from gnomedvb import global_error_handler
 from gnomedvb.ui.preferences.Dialogs import *
@@ -25,7 +26,7 @@ from gnomedvb.ui.widgets.Frame import Frame
 from gettext import gettext as _
 from gnomedvb.Device import Device
 
-class Preferences(gtk.Window):
+class Preferences(Gtk.Window):
 
     (BUTTON_EDIT,
      BUTTON_REMOVE,
@@ -33,7 +34,7 @@ class Preferences(gtk.Window):
      BUTTON_PREFERENCES,) = range(4)
 
     def __init__(self, model, parent=None):
-        gtk.Window.__init__(self)
+        gobject.GObject.__init__(self)
 
         self.set_title(_('Digital TV Preferences'))
         if parent:
@@ -43,19 +44,19 @@ class Preferences(gtk.Window):
         self.set_destroy_with_parent(True)
         self.set_default_size(600, 450)
         
-        self.vbox = gtk.VBox()
+        self.vbox = Gtk.VBox()
         self.add(self.vbox)
         self.vbox.show()
         
         self.__create_toolbar()
 
-        self.vbox_main = gtk.VBox(spacing=12)
+        self.vbox_main = Gtk.VBox(spacing=12)
         self.vbox_main.set_border_width(12)
         self.vbox_main.show()
-        self.vbox.pack_start(self.vbox_main)
+        self.vbox.pack_start(self.vbox_main, True, True, 0)
         
-        self.action_area = gtk.HButtonBox()
-        self.action_area.set_layout(gtk.BUTTONBOX_END)
+        self.action_area = Gtk.HButtonBox()
+        self.action_area.set_layout(Gtk.ButtonBoxStyle.END)
         self.vbox_main.pack_end(self.action_area, False, True, 0)
         self.action_area.show()
         
@@ -63,9 +64,9 @@ class Preferences(gtk.Window):
         self._model.connect("group-added", self._on_manager_group_added)
         self._model.connect("group-removed", self._on_manager_group_removed)
         
-        close_button = gtk.Button(stock=gtk.STOCK_CLOSE)
+        close_button = Gtk.Button(stock=Gtk.STOCK_CLOSE)
         close_button.connect("clicked", lambda w: self.destroy())
-        close_button.set_flags(gtk.CAN_DEFAULT)
+        close_button.set_can_default(True)
         close_button.show()
         self.action_area.pack_end(close_button, False, True, 0)
         close_button.grab_default()
@@ -78,39 +79,39 @@ class Preferences(gtk.Window):
         self.devicegroupsview.grab_focus()
         
     def __create_toolbar(self):
-        toolbar = gtk.Toolbar()
+        toolbar = Gtk.Toolbar()
         toolbar.show()
-        self.vbox.pack_start(toolbar, False)
+        self.vbox.pack_start(toolbar, False, True, 0)
         
-        self.button_prefs = gtk.ToolButton(gtk.STOCK_EDIT)
+        self.button_prefs = Gtk.ToolButton.new_from_stock(Gtk.STOCK_EDIT)
         self.button_prefs.connect("clicked", self._on_button_prefs_clicked)
         self.button_prefs.set_sensitive(False)
         self.button_prefs.set_tooltip_markup(_("Edit selected group"))
         self.button_prefs.show()
         toolbar.insert(self.button_prefs, self.BUTTON_EDIT)
         
-        self.button_remove = gtk.ToolButton(gtk.STOCK_REMOVE)
+        self.button_remove = Gtk.ToolButton.new_from_stock(Gtk.STOCK_REMOVE)
         self.button_remove.connect("clicked", self._on_button_remove_clicked)
         self.button_remove.set_sensitive(False)
         self.button_remove.set_tooltip_markup(_("Remove selected device"))
         self.button_remove.show()
         toolbar.insert(self.button_remove, self.BUTTON_REMOVE)
         
-        sep = gtk.SeparatorToolItem()
+        sep = Gtk.SeparatorToolItem()
         sep.show()
         toolbar.insert(sep, self.SEP1)
         
-        prefs_image = gtk.image_new_from_stock(gtk.STOCK_PREFERENCES, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        button_setup = gtk.MenuToolButton(icon_widget=prefs_image, label=_("Setup"))
+        prefs_image = Gtk.Image.new_from_stock(Gtk.STOCK_PREFERENCES, Gtk.IconSize.SMALL_TOOLBAR)
+        button_setup = Gtk.MenuToolButton(icon_widget=prefs_image, label=_("Setup"))
         button_setup.connect("clicked", self._on_button_setup_clicked)
         button_setup.set_tooltip_markup(_("Setup devices"))
         button_setup.show()
         toolbar.insert(button_setup, self.BUTTON_PREFERENCES)
         
-        setup_menu = gtk.Menu()        
-        new_image = gtk.image_new_from_stock(gtk.STOCK_NEW, gtk.ICON_SIZE_MENU)
+        setup_menu = Gtk.Menu()        
+        new_image = Gtk.Image.new_from_stock(Gtk.STOCK_NEW, Gtk.IconSize.MENU)
         new_image.show()
-        self.button_new = gtk.ImageMenuItem(_("Create new group"))
+        self.button_new = Gtk.ImageMenuItem.new_with_label(_("Create new group"))
         self.button_new.connect("activate", self._on_button_new_clicked)
         self.button_new.set_image(new_image)
         self.button_new.set_sensitive(False)
@@ -118,9 +119,9 @@ class Preferences(gtk.Window):
         self.button_new.show()
         setup_menu.append(self.button_new)
         
-        add_image = gtk.image_new_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+        add_image = Gtk.Image.new_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.MENU)
         add_image.show()
-        self.button_add = gtk.ImageMenuItem(_("Add to group"))
+        self.button_add = Gtk.ImageMenuItem.new_with_label(_("Add to group"))
         self.button_add.connect("activate", self._on_button_add_clicked)
         self.button_add.set_image(add_image)
         self.button_add.set_sensitive(False)
@@ -131,9 +132,9 @@ class Preferences(gtk.Window):
         button_setup.set_menu(setup_menu)
         
     def __create_registered_groups(self):
-        self.groups_box = gtk.HBox(spacing=6)
+        self.groups_box = Gtk.HBox(spacing=6)
         self.groups_box.show()
-        self.vbox_main.pack_start(self.groups_box)
+        self.vbox_main.pack_start(self.groups_box, True, True, 0)
     
         self.devicegroups = DeviceGroupsStore()
         self.devicegroupsview = DeviceGroupsView(self.devicegroups)
@@ -142,7 +143,7 @@ class Preferences(gtk.Window):
         
         groups_frame = Frame("<b>%s</b>" % _("Configured devices"), self.devicegroupsview)
         groups_frame.show()
-        self.groups_box.pack_start(groups_frame)
+        self.groups_box.pack_start(groups_frame, True, True, 0)
     
     def __create_unassigned_devices(self):
         self.unassigned_devices = UnassignedDevicesStore()
@@ -153,7 +154,7 @@ class Preferences(gtk.Window):
         
         unassigned_frame = Frame("<b>%s</b>" % _("Unconfigured devices"), self.unassigned_view)
         unassigned_frame.show()
-        self.vbox_main.pack_start(unassigned_frame)
+        self.vbox_main.pack_start(unassigned_frame, True, True, 0)
         
     def _fill(self):
         def append_unassigned(devices):
@@ -172,13 +173,13 @@ class Preferences(gtk.Window):
         group.connect("device-removed", self._on_group_device_removed)
         
         group_iter = self.devicegroups.append(None)
-        self.devicegroups.set(group_iter, self.devicegroups.COL_GROUP, group)
-        self.devicegroups.set(group_iter, self.devicegroups.COL_DEVICE, group["name"])
+        self.devicegroups[group_iter][self.devicegroups.COL_GROUP] = group
+        self.devicegroups[group_iter][self.devicegroups.COL_DEVICE] = group["name"]
         
         for device in group["devices"]:
             dev_iter = self.devicegroups.append(group_iter)
-            self.devicegroups.set(dev_iter, self.devicegroups.COL_GROUP, group)
-            self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
+            self.devicegroups[dev_iter][self.devicegroups.COL_GROUP] = group
+            self.devicegroups[dev_iter][self.devicegroups.COL_DEVICE] = device
             if remove_unassigned:
                 self._remove_unassigned_device(device.adapter, device.frontend)
 
@@ -212,9 +213,9 @@ class Preferences(gtk.Window):
                 self.unassigned_devices.append([device])
             else:
                 # "Error: remove device"
-                error_dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                error_dialog = Gtk.MessageDialog(parent=self,
+                    flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK)
                 error_dialog.set_markup(
                     "<big><span weight=\"bold\">%s</big></span>" % _("Device could not be removed from group"))
                 error_dialog.run()
@@ -226,31 +227,33 @@ class Preferences(gtk.Window):
             group = device = model[aiter][model.COL_GROUP]
             device = model[aiter][model.COL_DEVICE]
         
-            dialog = gtk.MessageDialog(parent=self,
-                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                type=gtk.MESSAGE_QUESTION, buttons=gtk.BUTTONS_YES_NO)
+            dialog = Gtk.MessageDialog(parent=self,
+                flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO)            
             dialog.set_markup(
                 _("Are you sure you want to remove device <b>%s</b> from <b>%s</b>") % (device.name,
                 device.group_name))
             response = dialog.run()
             dialog.destroy()
-            if response == gtk.RESPONSE_YES:
+            if response == Gtk.ResponseType.YES:
                 if isinstance(device, Device):
                     group.remove_device(device,
                         reply_handler=remove_device_callback,
                         error_handler=global_error_handler)
                         
     def _on_button_setup_clicked(self, button):
-        subprocess.Popen(["gnome-dvb-setup",
-            "--transient-for=%d" % self.window.xid])
+        pass        
+        # XXX XID
+        #subprocess.Popen(["gnome-dvb-setup",
+        #    "--transient-for=%d" % self.get_window().xid])
 
     def _on_button_new_clicked(self, button):
         def add_device_to_new_group_callback(success):
             if not success:
                 # "Error: create group"
-                error_dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                error_dialog = Gtk.MessageDialog(parent=self,
+                    flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK)
                 error_dialog.set_markup(
                     "<big><span weight=\"bold\">%s</span></big>" % _("Group could not be created"))
                 error_dialog.format_secondary_text(
@@ -264,7 +267,7 @@ class Preferences(gtk.Window):
         if aiter != None:
             device = model[aiter][model.COL_DEVICE]
             dialog = NewGroupDialog(self)
-            if dialog.run() == gtk.RESPONSE_ACCEPT:
+            if dialog.run() == Gtk.ResponseType.ACCEPT:
                 channels = dialog.channels_entry.get_text()
                 recdir = dialog.recordings_entry.get_text()
                 name = dialog.name_entry.get_text()
@@ -279,9 +282,9 @@ class Preferences(gtk.Window):
         def add_device_callback(success):
             if not success:
                 # "Error: add to group"
-                error_dialog = gtk.MessageDialog(parent=self,
-                    flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT,
-                    type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_OK)
+                error_dialog = Gtk.MessageDialog(parent=self,
+                    flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.OK)
                 error_dialog.set_markup(
                     "<big><span weight=\"bold\">%s</span></big>" % _("Device could not be added to group"))
                 error_dialog.format_secondary_text(
@@ -295,7 +298,7 @@ class Preferences(gtk.Window):
         if aiter != None:
             device = self.unassigned_devices[aiter][0]
             dialog = AddToGroupDialog(self, self._model, device.type)
-            if dialog.run() == gtk.RESPONSE_ACCEPT:
+            if dialog.run() == Gtk.ResponseType.ACCEPT:
                 group = dialog.get_selected_group()
                 group.add_device(device.adapter, device.frontend,
                     reply_handler=add_device_callback,
@@ -312,7 +315,7 @@ class Preferences(gtk.Window):
             recdir = group.get_recordings_directory()
             
             dialog = EditGroupDialog(group_name, recdir, self)
-            if dialog.run() == gtk.RESPONSE_ACCEPT:
+            if dialog.run() == Gtk.ResponseType.ACCEPT:
                 name = dialog.name_entry.get_text()
                 group.set_name(name)
                 recdir = dialog.recordings_entry.get_text()

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb.ui.widgets.Frame import AlignedLabel
@@ -33,20 +33,20 @@ class IntroPage(BasePage):
         text = _('It will automatically configure your devices and search for channels, if necessary.')
         label2 = AlignedLabel(text)
         label2.get_label().set_line_wrap(True)
-        self.pack_start(label2, False)
+        self.pack_start(label2, False, True, 0)
         
         text = _("Click \"Forward\" to begin.")
         label3 = AlignedLabel(text)
-        self.pack_start(label3)
+        self.pack_start(label3, True, True, 0)
         
-        self.expert_mode = gtk.CheckButton(label=_('_Expert mode'))
+        self.expert_mode = Gtk.CheckButton.new_with_mnemonic(_('_Expert mode'))
         self.pack_start(self.expert_mode, False, False, 0)
         
     def get_page_title(self):
         return _("Digital TV configuration")
         
     def get_page_type(self):
-        return gtk.ASSISTANT_PAGE_INTRO
+        return Gtk.AssistantPageType.INTRO
         
     def has_expert_mode(self):
         return self.expert_mode.get_active()

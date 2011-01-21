@@ -16,25 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 from gettext import gettext as _
 
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore, ChannelsTreeStore
 
-class ChannelsView(gtk.TreeView):
+class ChannelsView(Gtk.TreeView):
 
     def __init__(self, model=None, name_col=ChannelsStore.COL_NAME):
         """
         @type model: ChannelsStore
         """
+        gobject.GObject.__init__(self)
         if model != None:
-            gtk.TreeView.__init__(self, model)
-        else:
-            gtk.TreeView.__init__(self)
+            self.set_model(model)
         
-        col_name = gtk.TreeViewColumn(_("Channel"))
-        cell_name = gtk.CellRendererText()
-        col_name.pack_start(cell_name)
+        col_name = Gtk.TreeViewColumn(_("Channel"))
+        cell_name = Gtk.CellRendererText()
+        col_name.pack_start(cell_name, True)
         col_name.add_attribute(cell_name, "markup", name_col)
         self.append_column(col_name)
         
@@ -42,5 +42,5 @@ class ChannelsView(gtk.TreeView):
         if model != None and not (isinstance(model, ChannelsStore) \
                 or isinstance(model, ChannelsTreeStore)):
             raise TypeError("model must be a ChannelsStore or ChannelsTreeStore instance")
-        gtk.TreeView.set_model(self, model)
+        Gtk.TreeView.set_model(self, model)
         

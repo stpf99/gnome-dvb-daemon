@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 import gnomedvb
 import gnomedvb.ui.widgets.DetailsDialog
 
@@ -26,7 +26,7 @@ class DetailsDialog(gnomedvb.ui.widgets.DetailsDialog.DetailsDialog):
         gnomedvb.ui.widgets.DetailsDialog.DetailsDialog.__init__(self, parent=parent)
         
         self.rec_button.hide()
-        self.action_area.set_layout(gtk.BUTTONBOX_END)
+        self.get_action_area().set_layout(Gtk.ButtonBoxStyle.END)
 
         self._fill(rec_id)
         

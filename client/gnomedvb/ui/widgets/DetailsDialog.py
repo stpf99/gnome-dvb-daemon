@@ -17,36 +17,35 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import gtk
+import gobject
+from gi.repository import Gtk
 import gnomedvb
 from gettext import gettext as _
 from gnomedvb.ui.widgets.Frame import TextFieldLabel
 
-class DetailsDialog(gtk.Dialog):
+class DetailsDialog(Gtk.Dialog):
 
     def __init__(self, parent=None):
-        gtk.Dialog.__init__(self, title=_("Details"),
-            parent=parent,
-            flags=gtk.DIALOG_DESTROY_WITH_PARENT)
-        
+        Gtk.Dialog.__init__(self, parent=parent)
+    
+        self.set_destroy_with_parent(True)
         self.set_default_size(440, 350)
         self.set_border_width(5)
-        self.set_has_separator(False)
 
-        self.action_area.set_layout(gtk.BUTTONBOX_EDGE)
+        self.get_action_area().set_layout(Gtk.ButtonBoxStyle.EDGE)
 
-        self.rec_button = gtk.Button(stock=gtk.STOCK_MEDIA_RECORD)
+        self.rec_button = Gtk.Button(stock=Gtk.STOCK_MEDIA_RECORD)
         self.rec_button.show()
-        self.action_area.pack_start(self.rec_button)
+        self.get_action_area().pack_start(self.rec_button, True, True, 0)
         
-        close_button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        close_button = self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         close_button.grab_default()
         
-        self.table = gtk.Table(6, 2)
+        self.table = Gtk.Table(6, 2)
         self.table.set_col_spacings(18)
         self.table.set_row_spacings(6)
         self.table.set_border_width(5)
-        self.vbox.pack_start(self.table)
+        self.get_content_area().pack_start(self.table, True, True, 0)
         
         self._title = TextFieldLabel()
         self._channel = TextFieldLabel()
@@ -54,38 +53,38 @@ class DetailsDialog(gtk.Dialog):
         self._duration = TextFieldLabel()
         
         title_label = TextFieldLabel("<i>%s</i>" % _("Title:"))
-        self.table.attach(title_label, 0, 1, 0, 1, gtk.FILL, gtk.FILL)
-        self.table.attach(self._title, 1, 2, 0, 1, yoptions=gtk.FILL)
+        self.table.attach(title_label, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
+        self.table.attach(self._title, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.FILL)
         
         channel_label = TextFieldLabel("<i>%s</i>" % _("Channel:"))
-        self.table.attach(channel_label, 0, 1, 1, 2, gtk.FILL, gtk.FILL)
-        self.table.attach(self._channel, 1, 2, 1, 2, yoptions=gtk.FILL)
+        self.table.attach(channel_label, 0, 1, 1, 2, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
+        self.table.attach(self._channel, 1, 2, 1, 2, yoptions=Gtk.AttachOptions.FILL)
         
         date_label = TextFieldLabel("<i>%s</i>" % _("Date:"))
-        self.table.attach(date_label, 0, 1, 2, 3, gtk.FILL, gtk.FILL)
-        self.table.attach(self._date, 1, 2, 2, 3, yoptions=gtk.FILL)
+        self.table.attach(date_label, 0, 1, 2, 3, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
+        self.table.attach(self._date, 1, 2, 2, 3, yoptions=Gtk.AttachOptions.FILL)
         
         duration_label = TextFieldLabel("<i>%s</i>" % _("Duration:"))
-        self.table.attach(duration_label, 0, 1, 3, 4, gtk.FILL, gtk.FILL)
-        self.table.attach(self._duration, 1, 2, 3, 4, yoptions=gtk.FILL)
+        self.table.attach(duration_label, 0, 1, 3, 4, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
+        self.table.attach(self._duration, 1, 2, 3, 4, yoptions=Gtk.AttachOptions.FILL)
         
         description_label = TextFieldLabel("<i>%s</i>" % _("Description:"))
-        self.table.attach(description_label, 0, 1, 4, 5, gtk.FILL,
-            yoptions=gtk.FILL)
+        self.table.attach(description_label, 0, 1, 4, 5, Gtk.AttachOptions.FILL,
+            yoptions=Gtk.AttachOptions.FILL)
             
-        self.textview = gtk.TextView()
+        self.textview = Gtk.TextView()
         self.textview.set_editable(False)
-        self.textview.set_wrap_mode(gtk.WRAP_WORD)
+        self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.show()
         
-        desc_text_ali = gtk.Alignment(xscale=1.0, yscale=1.0)
+        desc_text_ali = Gtk.Alignment(xscale=1.0, yscale=1.0)
         desc_text_ali.set_padding(0, 0, 12, 0)
         desc_text_ali.show()
         self.table.attach(desc_text_ali, 0, 2, 5, 6)
         
-        scrolledwin = gtk.ScrolledWindow()
-        scrolledwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        scrolledwin.set_shadow_type(gtk.SHADOW_IN)
+        scrolledwin = Gtk.ScrolledWindow()
+        scrolledwin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scrolledwin.set_shadow_type(Gtk.ShadowType.IN)
         scrolledwin.add(self.textview)
         scrolledwin.show()
         desc_text_ali.add(scrolledwin)
@@ -96,7 +95,7 @@ class DetailsDialog(gtk.Dialog):
         self.textview.get_buffer().set_text(text)
         
     def set_title(self, title):
-        gtk.Dialog.set_title(self, title)
+        Gtk.Dialog.set_title(self, title)
         self._title.label.set_text(title)
 
     def set_channel(self, channel):

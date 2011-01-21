@@ -16,21 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
-import pango
+import gobject
+from gi.repository import Gtk
+from gi.repository import Pango
 
-class HelpBox(gtk.EventBox):
+class HelpBox(Gtk.EventBox):
 
     def __init__(self):
-        gtk.EventBox.__init__(self)
-        self.modify_bg(gtk.STATE_NORMAL, self.style.base[gtk.STATE_NORMAL])
+        gobject.GObject.__init__(self)
+        # XXX style
+        #self.modify_bg(Gtk.StateType.NORMAL, self.style.base[Gtk.StateType.NORMAL])
                 
-        frame = gtk.Frame()
-        frame.set_shadow_type(gtk.SHADOW_IN)
+        frame = Gtk.Frame()
+        frame.set_shadow_type(Gtk.ShadowType.IN)
         self.add(frame)
         
-        self._helpview = gtk.Label()
-        self._helpview.set_ellipsize(pango.ELLIPSIZE_END)
+        self._helpview = Gtk.Label()
+        self._helpview.set_ellipsize(Pango.EllipsizeMode.END)
         self._helpview.set_alignment(0.50, 0.50)
         frame.add(self._helpview)
         

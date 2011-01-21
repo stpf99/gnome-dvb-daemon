@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb.ui.widgets.Frame import AlignedLabel
@@ -27,21 +27,21 @@ class SummaryPage(BasePage):
         BasePage.__init__(self)
         
         details_ali = AlignedLabel()
-        self.pack_start(details_ali)
+        self.pack_start(details_ali, True, True, 0)
         self._details_label = details_ali.get_label()
         self._details_label.set_line_wrap(True)
 
-        button_alignment = gtk.Alignment(xalign=0.5)
-        self.pack_start(button_alignment, False)
+        button_alignment = Gtk.Alignment(xalign=0.5)
+        self.pack_start(button_alignment, False, True, 0)
         
-        self.configure_button = gtk.Button(label=_('Configure Another Device'))
+        self.configure_button = Gtk.Button(label=_('Configure Another Device'))
         button_alignment.add(self.configure_button)
     
     def get_page_title(self):
         return _("Configuration finished")
         
     def get_page_type(self):
-        return gtk.ASSISTANT_PAGE_SUMMARY
+        return Gtk.AssistantPageType.SUMMARY
         
     def set_device_name_and_details(self, name, details, success):
         if success:

@@ -16,9 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import glib
+from gi.repository import GLib
 import gnomedvb
-import gtk
+import gobject
+from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.DVBModel import DVBModel
 from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
@@ -30,32 +31,33 @@ from gnomedvb.ui.wizard.pages.SaveChannelListPage import SaveChannelListPage
 from gnomedvb.ui.wizard.pages.SummaryPage import SummaryPage
 from gnomedvb.ui.wizard.pages.SetupDevicePage import SetupDevicePage
 
-class CloseDialog(gtk.Dialog):
+class CloseDialog(Gtk.Dialog):
 
     def __init__(self, parent=None):
-        gtk.Dialog.__init__(self, title="",
-            parent=parent,
-            flags=gtk.DIALOG_DESTROY_WITH_PARENT)
+        Gtk.Dialog.__init__(self, title="",
+            parent=parent)
 
+        self.set_destroy_with_parent(True)
         self.set_border_width(5)
-        self.set_has_separator(False)
-        self.vbox.set_spacing(6)
+        self.get_content_area().set_spacing(6)
 
-        label = gtk.Label(_("Cleaning up. This may take a while."))
+        vbox = self.get_content_area()
+
+        label = Gtk.Label(label=_("Cleaning up. This may take a while."))
         label.show()
-        self.vbox.pack_start(label, False)
+        vbox.pack_start(label, False, True, 0)
 
-        self.progressbar = gtk.ProgressBar()
+        self.progressbar = Gtk.ProgressBar()
         self.progressbar.set_pulse_step(0.1)
-        self._progressbar_timer = glib.timeout_add(100, self._progressbar_pulse)
+        self._progressbar_timer = GLib.timeout_add(0, 100, self._progressbar_pulse, None)
         self.progressbar.show()
-        self.vbox.pack_start(self.progressbar, False)
+        vbox.pack_start(self.progressbar, False, True, 0)
             
-    def _progressbar_pulse(self):
+    def _progressbar_pulse(self, user_data):
         self.progressbar.pulse()
         return True
 
-class SetupWizard(gtk.Assistant):
+class SetupWizard(Gtk.Assistant):
 
     (INTRO_PAGE,
      ADAPTERS_PAGE,
@@ -66,7 +68,7 @@ class SetupWizard(gtk.Assistant):
      SUMMARY_PAGE) = range(7)
 
     def __init__(self):
-        gtk.Assistant.__init__(self)
+        gobject.GObject.__init__(self)
         self.__ask_on_exit = False
         self.__adapter_info = None
         self.__model = DVBModel()
@@ -74,10 +76,10 @@ class SetupWizard(gtk.Assistant):
         self.__create_group = False
         
         self.connect ('delete-event', self.confirm_quit)
-        self.connect ('cancel', self.confirm_quit)
-        self.connect ('close', self.confirm_quit)
-        self.connect ('prepare', self.on_prepare)
-        self.set_forward_page_func(self.page_func)
+        #self.connect ('cancel', self.confirm_quit)
+        #self.connect ('close', self.confirm_quit)
+        #self.connect ('prepare', self.on_prepare)
+        self.set_forward_page_func(self.page_func, None)
         self.set_default_size(500, 400)
         self.set_title(_("Setup digital TV"))
         
@@ -85,11 +87,11 @@ class SetupWizard(gtk.Assistant):
         self.append_page(self.intro_page)
         self.set_page_complete(self.intro_page, True)
         
-        self.adapters_page = AdaptersPage(self.__model)
+        self.adapters_page = AdaptersPage(self.__model)        
         self.adapters_page.connect("finished", self.on_adapter_page_finished)
         self.adapters_page.connect("next-page", self.on_next_page)
         self.append_page(self.adapters_page)
-        
+        """
         self.tuning_data_page = InitialTuningDataPage()
         self.tuning_data_page.connect("finished", self.on_page_finished)
         self.append_page(self.tuning_data_page)
@@ -111,20 +113,17 @@ class SetupWizard(gtk.Assistant):
             lambda button: self.set_current_page(self.INTRO_PAGE))
         self.append_page(self.summary_page)
 
-        icon_theme = gtk.icon_theme_get_default()
-        width, height = gtk.icon_size_lookup(gtk.ICON_SIZE_DIALOG)
-        try:
-            pixbuf = icon_theme.load_icon("gnome-dvb-setup", height, 0)
-            for i in range(self.get_n_pages()):
-                page = self.get_nth_page(i)
-                self.set_page_header_image(page, pixbuf)
-        except glib.GError:
-            pass
+        image = Gtk.Image.new_from_icon_name("gnome-dvb-setup", Gtk.IconSize.DIALOG)
+        pixbuf = image.get_property("pixbuf")
+        for i in range(self.get_n_pages()):
+            page = self.get_nth_page(i)
+            self.set_page_header_image(page, pixbuf)
 
-        gtk.window_set_default_icon_name("gnome-dvb-setup")
+        Gtk.Window.set_default_icon_name("gnome-dvb-setup")
+        """
         
     def append_page(self, page):
-        gtk.Assistant.append_page(self, page)
+        Gtk.Assistant.append_page(self, page)
         self.set_page_type(page, page.get_page_type())
         
     def on_prepare(self, assistant, page):
@@ -196,14 +195,14 @@ class SetupWizard(gtk.Assistant):
     def confirm_quit(self, *args):
         scanner = self.scan_page.get_scanner()
         if self.__ask_on_exit:
-            dialog = gtk.MessageDialog(parent=self,
-                flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                type=gtk.MESSAGE_QUESTION,
-                buttons=gtk.BUTTONS_YES_NO,
+            dialog = Gtk.MessageDialog(parent=self,
+                flags=Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                type=Gtk.MessageType.QUESTION,
+                buttons=Gtk.ButtonsType.YES_NO,
                 message_format=_("Are you sure you want to abort?\nAll process will be lost."))
             
             response = dialog.run()
-            if response == gtk.RESPONSE_YES:
+            if response == Gtk.ResponseType.YES:
                 dialog.destroy()
                 self.destroy_scanner(scanner)
             else:
@@ -215,12 +214,12 @@ class SetupWizard(gtk.Assistant):
 
     def destroy_scanner(self, scanner):
         if scanner != None:
-            scanner.destroy(reply_handler=gtk.main_quit,
+            scanner.destroy(reply_handler=Gtk.main_quit,
                 error_handler=gnomedvb.global_error_handler)
             close_dialog = CloseDialog(self)
             close_dialog.show()
         else:
-            gtk.main_quit()
+            Gtk.main_quit()
             
     def on_next_page(self, adapters_page):
         if not self.__expert_mode and self.__adapter_info == None:

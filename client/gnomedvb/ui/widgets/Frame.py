@@ -16,23 +16,24 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gobject
+from gi.repository import Gtk
 
 __all__ = ["AlignedLabel", "Frame", "BaseFrame", "TextFieldLabel"]
 
-class AlignedChild(gtk.Alignment):
+class AlignedChild(Gtk.Alignment):
     
     def __init__(self, child):
-        gtk.Alignment.__init__(self, xscale=1.0, yscale=1.0)
+        gobject.GObject.__init__(self, xscale=1.0, yscale=1.0)
         
         self.set_padding(0, 0, 12, 0)
         self.add(child)
         child.show()
        
-class BaseFrame(gtk.VBox):
+class BaseFrame(Gtk.VBox):
 
     def __init__(self, markup, child, expand=True, fill=True, padding=0):
-        gtk.VBox.__init__(self, spacing=6)
+        gobject.GObject.__init__(self, spacing=6)
     
         label = AlignedLabel(markup)
         label.show()
@@ -47,12 +48,12 @@ class BaseFrame(gtk.VBox):
         self.child_widget.add(child)
         child.show()
 
-class AlignedLabel (gtk.Alignment):
+class AlignedLabel (Gtk.Alignment):
 
     def __init__(self, markup=None):
-        gtk.Alignment.__init__(self)
+        gobject.GObject.__init__(self)
         
-        self.label = gtk.Label()
+        self.label = Gtk.Label()
         if markup:
             self.label.set_markup(markup)
         self.label.show()
@@ -71,9 +72,9 @@ class TextFieldLabel (AlignedLabel):
 class Frame (BaseFrame):
 
     def __init__(self, markup, treeview):
-        scrolled = gtk.ScrolledWindow()
-        scrolled.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        scrolled.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolled = Gtk.ScrolledWindow()
+        scrolled.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolled.add(treeview)
         
         BaseFrame.__init__(self, markup, scrolled)

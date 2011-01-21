@@ -18,11 +18,11 @@
 
 import datetime
 import gobject
-import gtk
+from gi.repository import Gtk
 from gnomedvb import DVBRecordingsStoreClient, global_error_handler
 from cgi import escape
 
-class RecordingsStore(gtk.ListStore):
+class RecordingsStore(Gtk.ListStore):
     
     (COL_START,
     COL_CHANNEL,
@@ -32,7 +32,7 @@ class RecordingsStore(gtk.ListStore):
     COL_ID,) = range(6)
 
     def __init__(self):
-        gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT, str, str, int, str, int)
+        Gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT, str, str, long, str, long)
         
         self._recstore = DVBRecordingsStoreClient()
         self._recstore.connect("changed", self._on_changed)
@@ -51,7 +51,6 @@ class RecordingsStore(gtk.ListStore):
             start = datetime.datetime.fromtimestamp(info[4])
             duration = info[3]
             location = info[6]
-            #print "Desc", recstore.get_description(rec_id)
     
             self.append([start, channame, name, duration, location, rec_id])
         
