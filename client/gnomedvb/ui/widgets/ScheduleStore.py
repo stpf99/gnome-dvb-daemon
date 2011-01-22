@@ -93,8 +93,7 @@ class ScheduleStore(Gtk.ListStore):
             self._client.get_channel_sid())
         
         # %X -> display locale's time representation
-        return self.append([datetime.datetime(*start_arr), "%X",
-            #None, None, None, None, None, None])            
+        return self.append([datetime.datetime(*start_arr), "%X",            
             duration, name, short_desc, "",
             rec, event_id])
             

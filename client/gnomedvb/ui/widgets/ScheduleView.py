@@ -96,11 +96,11 @@ class ScheduleView(Gtk.TreeView):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
         
         # XXX style
-        sc = self.get_style_context()
-        if event_id == ScheduleStore.NEW_DAY:
-            cell.set_property ("cell-background-rgba", sc.get_background_color(Gtk.StateFlags.NORMAL))
-        else:
-            cell.set_property ("cell-background-rgba", sc.get_border_color(Gtk.StateFlags.NORMAL))
+        #sc = self.get_style_context()
+        #if event_id == ScheduleStore.NEW_DAY:
+        #    cell.set_property ("cell-background-rgba", sc.get_background_color(Gtk.StateFlags.NORMAL))
+        #else:
+        #    cell.set_property ("cell-background-rgba", sc.get_border_color(Gtk.StateFlags.NORMAL))
             
     def _get_rec_data(self, column, cell, model, aiter, user_data=None):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
@@ -111,7 +111,7 @@ class ScheduleView(Gtk.TreeView):
         #    cell.set_property ("cell-background-gdk", self.style.base[Gtk.StateType.NORMAL])
     
         if model[aiter][ScheduleStore.COL_RECORDED] > 1:
-            cell.set_property("icon-name", "stock_timer")
+            cell.set_property("icon-name", "appointment-soon")
         else:
             cell.set_property("icon-name", None)
 

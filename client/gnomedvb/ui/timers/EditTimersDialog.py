@@ -256,7 +256,7 @@ class EditTimersDialog(Gtk.Dialog):
     def _set_recording_state(self, recorder, timer_id, state):
         for row in self.timerslist:
             if row[self.COL_ID] == timer_id:
-                self.timerslist[row.iter][self.COL_ACTIVE] = state
+                self.timerslist[row.iter][self.COL_ACTIVE] = bool(state)
                 
     def _get_recording_icon_for_cell(self, column, cell, model, aiter, user_data):
         if model[aiter][self.COL_ACTIVE]:
