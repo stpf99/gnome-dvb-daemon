@@ -21,7 +21,6 @@ import os.path
 from gi.repository import Gdk
 from gi.repository import Gtk
 import gobject
-from gi.repository import GLib
 import gettext
 import locale
 from gettext import gettext as _
@@ -301,7 +300,7 @@ class InitialTuningDataPage(BasePage):
                 toplevel_window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
                 
                 # Fill list async
-                GLib.idle_add(0, self._fill_providers, selected_country)            
+                gobject.idle_add(self._fill_providers, selected_country)            
 
     def _fill_providers(self, selected_country):
         # Only DVB-T has bruteforce scan

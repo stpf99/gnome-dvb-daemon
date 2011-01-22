@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
 import gnomedvb
 import gobject
 from gi.repository import Gtk
@@ -49,7 +48,7 @@ class CloseDialog(Gtk.Dialog):
 
         self.progressbar = Gtk.ProgressBar()
         self.progressbar.set_pulse_step(0.1)
-        self._progressbar_timer = GLib.timeout_add(0, 100, self._progressbar_pulse, None)
+        self._progressbar_timer = gobject.timeout_add(100, self._progressbar_pulse)
         self.progressbar.show()
         vbox.pack_start(self.progressbar, False, True, 0)
             
@@ -76,9 +75,9 @@ class SetupWizard(Gtk.Assistant):
         self.__create_group = False
         
         self.connect ('delete-event', self.confirm_quit)
-        #self.connect ('cancel', self.confirm_quit)
-        #self.connect ('close', self.confirm_quit)
-        #self.connect ('prepare', self.on_prepare)
+        self.connect ('cancel', self.confirm_quit)
+        self.connect ('close', self.confirm_quit)
+        self.connect ('prepare', self.on_prepare)
         self.set_forward_page_func(self.page_func, None)
         self.set_default_size(500, 400)
         self.set_title(_("Setup digital TV"))
@@ -91,7 +90,7 @@ class SetupWizard(Gtk.Assistant):
         self.adapters_page.connect("finished", self.on_adapter_page_finished)
         self.adapters_page.connect("next-page", self.on_next_page)
         self.append_page(self.adapters_page)
-        """
+
         self.tuning_data_page = InitialTuningDataPage()
         self.tuning_data_page.connect("finished", self.on_page_finished)
         self.append_page(self.tuning_data_page)
@@ -120,7 +119,6 @@ class SetupWizard(Gtk.Assistant):
             self.set_page_header_image(page, pixbuf)
 
         Gtk.Window.set_default_icon_name("gnome-dvb-setup")
-        """
         
     def append_page(self, page):
         Gtk.Assistant.append_page(self, page)

@@ -17,7 +17,6 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gobject
-from gi.repository import GLib
 import gnomedvb
 from gi.repository import Gtk
 import os.path
@@ -91,10 +90,10 @@ class SetupDevicePage(BasePage):
         self._progressbar.set_fraction(0.1)
         self._progressbar.show()
         self.pack_start(self._progressbar, False, True, 0)
-        self._progressbar_timer = GLib.timeout_add(100, self.progressbar_pulse)
+        self._progressbar_timer = gobject.timeout_add(100, self.progressbar_pulse)
         
     def destroy_progressbar(self):
-        GLib.source_remove(self._progressbar_timer)
+        gobject.source_remove(self._progressbar_timer)
         self._progressbar_timer = None
         self._progressbar.destroy()
 

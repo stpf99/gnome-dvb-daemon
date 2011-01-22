@@ -20,7 +20,6 @@ import gnomedvb
 from gi.repository import GdkPixbuf
 from gi.repository import Gtk
 import gobject
-from gi.repository import GLib
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb.ui.widgets.Frame import TextFieldLabel
@@ -179,7 +178,7 @@ class ChannelScanPage(BasePage):
         self._scanner.connect ("frontend-stats", self.__on_frontend_stats)
 
         self.progressbar.set_pulse_step(0.1)
-        self._progressbar_timer = GLib.timeout_add(0, 100, self._progressbar_pulse, None)
+        self._progressbar_timer = gobject.timeout_add(100, self._progressbar_pulse)
         self.progressbar.show()
 
         if isinstance(tuning_data, str):
@@ -208,7 +207,7 @@ class ChannelScanPage(BasePage):
                 elif channeltype == "Radio":
                     icon = self._theme.load_icon("audio-x-generic", 16,
                         Gtk.IconLookupFlags.USE_BUILTIN)
-        except GLib.GError:
+        except gobject.GError:
             icon = None
         
         name = name.replace("&", "&amp;")
@@ -231,7 +230,7 @@ class ChannelScanPage(BasePage):
         fraction = float(self._scanned_freqs) / self._max_freqs
         # Stop progressbar from pulsing
         if self._progressbar_timer > 0:
-            GLib.source_remove(self._progressbar_timer)
+            gobject.source_remove(self._progressbar_timer)
             self._progressbar_timer = 0
 
         self.progressbar.set_fraction(fraction)
