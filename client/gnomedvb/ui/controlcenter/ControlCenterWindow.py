@@ -232,8 +232,9 @@ class ControlCenterWindow(Gtk.Window):
         whatson_image = Gtk.Image.new_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.MENU)
         whatson_image.show()
         
-        whatons_item = uimanager.get_widget('/MenuBar/View/WhatsOnNow')
-        whatons_item.set_image(whatson_image)
+        self.whatons_item = uimanager.get_widget('/MenuBar/View/WhatsOnNow')
+        self.whatons_item.set_image(whatson_image)
+        self.whatons_item.set_sensitive(False)
         
         self.refresh_menuitem = uimanager.get_widget('/MenuBar/View/Refresh')
         self.refresh_menuitem.set_sensitive(False)
@@ -283,11 +284,12 @@ class ControlCenterWindow(Gtk.Window):
         whatson_image = Gtk.Image.new_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.LARGE_TOOLBAR)
         whatson_image.show()
         
-        button_whatson = Gtk.ToolButton(icon_widget=whatson_image, label=_("What's on now"))
-        button_whatson.set_is_important(True)
-        button_whatson.connect("clicked", self._on_whats_on_now_clicked)
-        button_whatson.show()
-        self.toolbar.insert(button_whatson, 2)
+        self.button_whatson = Gtk.ToolButton(icon_widget=whatson_image, label=_("What's on now"))
+        self.button_whatson.set_is_important(True)
+        self.button_whatson.set_sensitive(False)
+        self.button_whatson.connect("clicked", self._on_whats_on_now_clicked)
+        self.button_whatson.show()
+        self.toolbar.insert(self.button_whatson, 2)
          
         sep = Gtk.SeparatorToolItem()
         sep.show()
@@ -403,6 +405,7 @@ class ControlCenterWindow(Gtk.Window):
         group = self._get_selected_group()
         if group != None:
             self._set_timers_sensitive(True)
+            self._set_whatson_sensitive(True)
             
             self.channelsstore = ChannelsStore(group)
             self.channelsview.set_model(self.channelsstore)
@@ -489,7 +492,11 @@ class ControlCenterWindow(Gtk.Window):
     def _set_refresh_sensitive(self, val):
         self.refresh_button.set_sensitive(val) 
         self.refresh_menuitem.set_sensitive(val)
-       
+
+    def _set_whatson_sensitive(self, val):
+        self.whatons_item.set_sensitive(val)
+        self.button_whatson.set_sensitive(val)
+
     def _on_event_selected(self, treeview, event):
         if event.type == getattr(Gdk.EventType, "2BUTTON_PRESS"):
             model, aiter = treeview.get_selection().get_selected()
