@@ -24,18 +24,22 @@ class HelpBox(Gtk.EventBox):
 
     def __init__(self):
         gobject.GObject.__init__(self)
-        # XXX style
-        #self.modify_bg(Gtk.StateType.NORMAL, self.style.base[Gtk.StateType.NORMAL])
-                
+
         frame = Gtk.Frame()
         frame.set_shadow_type(Gtk.ShadowType.IN)
         self.add(frame)
-        
+
         self._helpview = Gtk.Label()
         self._helpview.set_ellipsize(Pango.EllipsizeMode.END)
         self._helpview.set_alignment(0.50, 0.50)
         frame.add(self._helpview)
-        
+
+        style = self._helpview.get_style_context()
+        style.add_class(Gtk.STYLE_CLASS_ENTRY)
+
+        color = style.get_background_color(Gtk.StateFlags.NORMAL)
+        self.override_background_color(Gtk.StateFlags.NORMAL, color)
+
     def set_markup(self, helptext):
         self._helpview.set_markup("<span foreground='grey50'>%s</span>" % helptext)
-  
+

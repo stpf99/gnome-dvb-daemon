@@ -55,6 +55,16 @@ class ScheduleView(Gtk.TreeView):
         col.set_cell_data_func(cell_description, self._get_description_data, None)
         self.append_column(col)
 
+        self._set_colors()
+
+    def _set_colors(self):
+        # FIXME workaround to retrieve button bg color
+        style = Gtk.Button().get_style_context()
+        self.date_color = style.get_background_color(Gtk.StateFlags.NORMAL)
+
+        style = self.get_style_context()
+        self.entry_color = style.get_background_color(Gtk.StateFlags.NORMAL)
+
     def set_model(self, model):
         Gtk.TreeView.set_model(self, model)
 
@@ -76,10 +86,10 @@ class ScheduleView(Gtk.TreeView):
             date = model[aiter][ScheduleStore.COL_DATETIME]
             description = "<big><b>%s</b></big>" % date.strftime("%A %x")
             cell.set_property("xalign", 0.5)
-            #XXX cell.set_property ("cell-background-gdk", self.style.bg[Gtk.StateType.NORMAL])
+            cell.set_property ("cell-background-rgba", self.date_color)
         else:
             cell.set_property("xalign", 0)
-            #XXX cell.set_property ("cell-background-gdk", self.style.base[Gtk.StateType.NORMAL])
+            cell.set_property ("cell-background-rgba", self.entry_color)
             
             duration = seconds_to_time_duration_string(model[aiter][ScheduleStore.COL_DURATION])
             title = model[aiter][ScheduleStore.COL_TITLE]
@@ -94,22 +104,20 @@ class ScheduleView(Gtk.TreeView):
         
     def _get_time_data(self, column, cell, model, aiter, user_data=None):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
-        
-        # XXX style
-        #sc = self.get_style_context()
-        #if event_id == ScheduleStore.NEW_DAY:
-        #    cell.set_property ("cell-background-rgba", sc.get_background_color(Gtk.StateFlags.NORMAL))
-        #else:
-        #    cell.set_property ("cell-background-rgba", sc.get_border_color(Gtk.StateFlags.NORMAL))
-            
+
+        if event_id == ScheduleStore.NEW_DAY:
+            cell.set_property ("cell-background-rgba", self.date_color)
+        else:
+            cell.set_property ("cell-background-rgba", self.entry_color)
+
     def _get_rec_data(self, column, cell, model, aiter, user_data=None):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
-        # XXX style
-        #if event_id == ScheduleStore.NEW_DAY:
-        #    cell.set_property ("cell-background-gdk", self.style.bg[Gtk.StateType.NORMAL])
-        #else:
-        #    cell.set_property ("cell-background-gdk", self.style.base[Gtk.StateType.NORMAL])
-    
+
+        if event_id == ScheduleStore.NEW_DAY:
+            cell.set_property ("cell-background-rgba", self.date_color)
+        else:
+            cell.set_property ("cell-background-rgba", self.entry_color)
+
         if model[aiter][ScheduleStore.COL_RECORDED] > 1:
             cell.set_property("icon-name", "appointment-soon")
         else:

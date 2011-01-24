@@ -182,6 +182,13 @@ class DateTimeBox(Gtk.Bin):
         self.add(self.hbox)
         self.get_child().show_all()
 
+        self._set_colors()
+
+    def _set_colors(self):
+        style = self.entry.get_style_context()
+        self.valid_color = style.get_background_color(Gtk.StateFlags.NORMAL)
+        self.invalid_color = style.get_background_color(Gtk.StateFlags.INSENSITIVE)
+
     def do_size_allocate(self, alloc):
         self.set_allocation(alloc)
         self.get_child().size_allocate(alloc)
@@ -205,13 +212,12 @@ class DateTimeBox(Gtk.Bin):
         return True
 
     def mark_valid(self, val):
-        sc = self.get_style_context()        
-        # XXX
-        #if val:
-        #    color = self.style.text[Gtk.StateType.NORMAL]
-        #else:
-        #    color = self.style.text[Gtk.StateType.INSENSITIVE]
-        #self.entry.modify_text(Gtk.StateType.NORMAL, color)
+        if val:
+            color = self.valid_color
+        else:
+            color = self.invalid_color
+
+        self.entry.override_background_color(Gtk.StateFlags.NORMAL, color)
 
     def get_date_and_time(self):
         return self.popup_win.get_date_and_time()
