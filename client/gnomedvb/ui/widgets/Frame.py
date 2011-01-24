@@ -19,55 +19,40 @@
 import gobject
 from gi.repository import Gtk
 
-__all__ = ["AlignedLabel", "Frame", "BaseFrame", "TextFieldLabel"]
+__all__ = ["Frame", "BaseFrame", "TextFieldLabel"]
 
-class AlignedChild(Gtk.Alignment):
-    
-    def __init__(self, child):
-        gobject.GObject.__init__(self, xscale=1.0, yscale=1.0)
-        
-        self.set_padding(0, 0, 12, 0)
-        self.add(child)
-        child.show()
-       
 class BaseFrame(Gtk.VBox):
 
     def __init__(self, markup, child, expand=True, fill=True, padding=0):
         gobject.GObject.__init__(self, spacing=6)
     
-        label = AlignedLabel(markup)
+        label = Gtk.Label()
+        label.set_halign(Gtk.Align.START)
+        label.set_markup(markup)
         label.show()
         self.pack_start(label, False, False, 0)
         
-        self.child_widget = AlignedChild(child)
+        self.child_widget = child
+        self.child_widget.set_margin_left(12)
         self.child_widget.show()
         self.pack_start(self.child_widget, expand, fill, padding)
         
     def set_aligned_child(self, child, expand=True, fill=True, padding=0):
-        self.child_widget.remove(self.child_widget.get_children()[0])
-        self.child_widget.add(child)
-        child.show()
+        self.remove(child)        
+        self.child_widget = child
+        self.child_widget.set_margin_left(12)
+        self.child_widget.show()
+        self.pack_start(self.child_widget, expand, fill, padding)
 
-class AlignedLabel (Gtk.Alignment):
+class TextFieldLabel(Gtk.Label):
 
-    def __init__(self, markup=None):
-        gobject.GObject.__init__(self)
+    def __init__(self, markup=None, **kwargs):
+        gobject.GObject.__init__(self, **kwargs)
         
-        self.label = Gtk.Label()
         if markup:
-            self.label.set_markup(markup)
-        self.label.show()
-        self.add(self.label)
-        
-    def get_label(self):
-        return self.label
-        
-class TextFieldLabel (AlignedLabel):
-
-    def __init__(self, markup=None):
-        AlignedLabel.__init__(self, markup)
-        
-        self.set_property("yalign", 0.5)
+            self.set_markup(markup)
+        self.set_halign(Gtk.Align.START)
+        self.set_valign(Gtk.Align.CENTER)
 
 class Frame (BaseFrame):
 

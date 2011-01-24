@@ -57,7 +57,6 @@ class TimerDialog(Gtk.Dialog):
         self.get_content_area().pack_start(table, True, True, 0)
                          
         label_channel = TextFieldLabel()
-        label = label_channel.get_label()
         table.attach(label_channel, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
         
         if channel == None:
@@ -65,7 +64,7 @@ class TimerDialog(Gtk.Dialog):
             self.set_title(_("Add Timer"))
             self.ok_button.set_sensitive(False)
 
-            label.set_markup_with_mnemonic(_("_Channel:"))
+            label_channel.set_markup_with_mnemonic(_("_Channel:"))
             self.channels = ChannelsStore(device_group)
         
             scrolledchannels = Gtk.ScrolledWindow()
@@ -78,22 +77,21 @@ class TimerDialog(Gtk.Dialog):
             self.channelsview.get_selection().connect("changed",
                 self._on_channel_changed)
             scrolledchannels.add(self.channelsview)
-            label.set_mnemonic_widget(self.channelsview)
+            label_channel.set_mnemonic_widget(self.channelsview)
             self.channelsview.grab_focus()
         else:
             self.channel_selected = True
             self.set_title(_("Edit Timer"))
             self.ok_button.set_sensitive(True)
 
-            label.set_text(_("Channel:"))
+            label_channel.set_text(_("Channel:"))
             self.channels = None
             self.channelsview = None
             channel_label = TextFieldLabel(channel)
             table.attach(channel_label, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.FILL)
         
         label_start = TextFieldLabel()
-        label = label_start.get_label()
-        label.set_markup_with_mnemonic(_("_Start time:"))
+        label_start.set_markup_with_mnemonic(_("_Start time:"))
         table.attach(label_start, 0, 1, 2, 3)
         
         hbox = Gtk.HBox(spacing=6)
@@ -105,11 +103,10 @@ class TimerDialog(Gtk.Dialog):
         self.datetime_box = DateTimeBox(starttime)
         self.datetime_box.connect("changed", self._on_datetime_changed)
         hbox.pack_start(self.datetime_box, True, True, 0)
-        label.set_mnemonic_widget(self.datetime_box)
+        label_start.set_mnemonic_widget(self.datetime_box)
         
         label_duration = TextFieldLabel()
-        label = label_duration.get_label()
-        label.set_markup_with_mnemonic(_("_Duration:"))
+        label_duration.set_markup_with_mnemonic(_("_Duration:"))
         table.attach(label_duration, 0, 1, 3, 4, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
         
         duration_hbox = Gtk.HBox(spacing=6)
@@ -121,7 +118,7 @@ class TimerDialog(Gtk.Dialog):
         self.duration.set_width_chars(3)
         self.duration.set_value(60)
         duration_hbox.pack_start(self.duration, False, True, 0)
-        label.set_mnemonic_widget(self.duration)
+        label_duration.set_mnemonic_widget(self.duration)
         
         minutes_label = TextFieldLabel(_("minutes"))
         duration_hbox.pack_start(minutes_label, True, True, 0)

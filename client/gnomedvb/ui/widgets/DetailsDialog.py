@@ -76,18 +76,14 @@ class DetailsDialog(Gtk.Dialog):
         self.textview.set_editable(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.show()
-        
-        desc_text_ali = Gtk.Alignment(xscale=1.0, yscale=1.0)
-        desc_text_ali.set_padding(0, 0, 12, 0)
-        desc_text_ali.show()
-        self.table.attach(desc_text_ali, 0, 2, 5, 6)
-        
+
         scrolledwin = Gtk.ScrolledWindow()
         scrolledwin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolledwin.set_shadow_type(Gtk.ShadowType.IN)
+        scrolledwin.set_margin_left(12)
         scrolledwin.add(self.textview)
         scrolledwin.show()
-        desc_text_ali.add(scrolledwin)
+        self.table.attach(scrolledwin, 0, 2, 5, 6)
         
         self.table.show_all()
         
@@ -96,18 +92,18 @@ class DetailsDialog(Gtk.Dialog):
         
     def set_title(self, title):
         Gtk.Dialog.set_title(self, title)
-        self._title.label.set_text(title)
+        self._title.set_text(title)
 
     def set_channel(self, channel):
-        self._channel.label.set_text(channel)
+        self._channel.set_text(channel)
         
     def set_duration(self, duration):
         duration_str = gnomedvb.seconds_to_time_duration_string(duration)
-        self._duration.label.set_text(duration_str)
+        self._duration.set_text(duration_str)
         
     def set_date(self, timestamp):
         date = datetime.datetime.fromtimestamp(timestamp)
-        self._date.label.set_text(date.strftime("%c"))
+        self._date.set_text(date.strftime("%c"))
 
     def get_record_button(self):
         return self.rec_button

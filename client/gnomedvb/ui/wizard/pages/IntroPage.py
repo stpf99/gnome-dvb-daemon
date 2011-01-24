@@ -19,7 +19,6 @@
 from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
-from gnomedvb.ui.widgets.Frame import AlignedLabel
 
 class IntroPage(BasePage):
     
@@ -30,14 +29,13 @@ class IntroPage(BasePage):
         self._label.set_markup(text)
         self._label.set_line_wrap(False)
 
-        text = _('It will automatically configure your devices and search for channels, if necessary.')
-        label2 = AlignedLabel(text)
-        label2.get_label().set_line_wrap(True)
-        self.pack_start(label2, False, True, 0)
-        
-        text = _("Click \"Forward\" to begin.")
-        label3 = AlignedLabel(text)
-        self.pack_start(label3, True, True, 0)
+        text1 = _('It will automatically configure your devices and search for channels, if necessary.')
+        text2 = _("Click \"Forward\" to begin.")
+        label2 = Gtk.Label(text1 + "\n\n" + text2)
+        label2.set_line_wrap(True)
+        label2.set_halign(Gtk.Align.START)
+        label2.set_valign(Gtk.Align.START)
+        self.pack_start(label2, True, True, 0)
         
         self.expert_mode = Gtk.CheckButton.new_with_mnemonic(_('_Expert mode'))
         self.pack_start(self.expert_mode, False, False, 0)

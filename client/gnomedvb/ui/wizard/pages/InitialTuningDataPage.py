@@ -148,10 +148,9 @@ class InitialTuningDataPage(BasePage):
             countries[lang] = t.ugettext(COUNTRIES[lang])
         
         self._create_table()
-        
-        country = TextFieldLabel()
-        label = country.get_label()
-        label.set_markup_with_mnemonic(_("_Country:"))
+
+        country = Gtk.Label()
+        country.set_markup_with_mnemonic(_("_Country:"))
         country.show()
         self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
 
@@ -172,11 +171,10 @@ class InitialTuningDataPage(BasePage):
         self.country_combo.show()
         self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
         self.country_combo.set_active(0)
-        label.set_mnemonic_widget(self.country_combo)
+        country.set_mnemonic_widget(self.country_combo)
         
-        providers = TextFieldLabel()
-        label = providers.get_label()
-        label.set_markup_with_mnemonic(_("_Antenna:"))
+        providers = Gtk.Label()
+        providers.set_markup_with_mnemonic(_("_Antenna:"))
         providers.show()
         self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
         
@@ -188,7 +186,7 @@ class InitialTuningDataPage(BasePage):
             self.providers, _("Antenna"))
         self.providers_view.get_selection().connect('changed',
             self.on_providers_changed)
-        label.set_mnemonic_widget(self.providers_view)
+        providers.set_mnemonic_widget(self.providers_view)
         
         self.table.attach(scrolledview, 0, 2, 2, 3)
         
@@ -196,9 +194,8 @@ class InitialTuningDataPage(BasePage):
    
     def setup_dvb_s(self):
         
-        satellite = TextFieldLabel()
-        label = satellite.get_label()
-        label.set_markup_with_mnemonic(_("_Satellite:"))
+        satellite = Gtk.Label()
+        satellite.set_markup_with_mnemonic(_("_Satellite:"))
         satellite.show()
         self.pack_start(satellite, False, False, 0)
         
@@ -209,7 +206,7 @@ class InitialTuningDataPage(BasePage):
             self.satellites, _("Satellite"))
         self.satellite_view.get_selection().connect("changed",
             self.on_satellite_changed)
-        label.set_mnemonic_widget(self.satellite_view)
+        satellite.set_mnemonic_widget(self.satellite_view)
         self.pack_start(scrolledview, True, True, 0)
         
         self.read_satellites()
@@ -223,9 +220,8 @@ class InitialTuningDataPage(BasePage):
             
         self._create_table()
             
-        country = TextFieldLabel()
-        label = country.get_label()
-        label.set_markup_with_mnemonic(_("_Country:"))
+        country = Gtk.Label()
+        country.set_markup_with_mnemonic(_("_Country:"))
         country.show()
         self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
     
@@ -244,11 +240,10 @@ class InitialTuningDataPage(BasePage):
         self.country_combo.set_entry_text_column(0)
         self.country_combo.show()
         self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
-        label.set_mnemonic_widget(self.country_combo)
+        country.set_mnemonic_widget(self.country_combo)
         
-        providers = TextFieldLabel()
-        label = providers.get_label()
-        label.set_markup_with_mnemonic(_("_Providers:"))
+        providers = Gtk.Label()
+        providers.set_markup_with_mnemonic(_("_Providers:"))
         providers.show()
         self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
         
@@ -259,7 +254,7 @@ class InitialTuningDataPage(BasePage):
             self.providers, _("Provider"))
         self.providers_view.get_selection().connect('changed',
             self.on_providers_changed)
-        label.set_mnemonic_widget(self.providers_view)
+        providers.set_mnemonic_widget(self.providers_view)
         
         self.table.attach(scrolledview, 0, 2, 2, 3)
         self.providers_view.set_sensitive(False)

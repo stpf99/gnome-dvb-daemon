@@ -20,7 +20,6 @@ from gettext import gettext as _
 import gobject
 from gi.repository import Gdk
 from gi.repository import Gtk
-from gi.repository import Gdk
 import datetime
 
 class CalendarPopup(Gtk.Window):
@@ -51,11 +50,8 @@ class CalendarPopup(Gtk.Window):
         time_label.set_markup_with_mnemonic(_("_Time:"))
         self.time_box.pack_start(time_label, False, True, 0)
 
-        ali = Gtk.Alignment()
-        self.time_box.pack_start(ali, True, True, 0)
-
         spinners_box = Gtk.HBox(spacing=6)
-        ali.add(spinners_box)
+        self.time_box.pack_start(spinners_box, True, True, 0)
 
         self.hour = Gtk.SpinButton()
         self.hour.connect("changed", self._emit_changed)
@@ -123,7 +119,7 @@ class CalendarPopup(Gtk.Window):
         return year, mon+1, day, hour, minute
 
     def _on_key_press_event(self, widget, event):
-        if event.keyval == Gtk.keysyms.Escape:
+        if event.keyval == Gdk.KEY_Escape:
             self.popdown()
 
     def _on_button_press_event(self, widget, event):

@@ -48,8 +48,7 @@ class AddToGroupDialog (Gtk.Dialog):
                 
         group_label = TextFieldLabel()
         group_label.show()
-        label = group_label.get_label()
-        label.set_markup_with_mnemonic(_("_Group:"))
+        group_label.set_markup_with_mnemonic(_("_Group:"))
         groupbox.pack_start(group_label, False, False, 0)
         
         self.groups = Gtk.ListStore(str, gobject.TYPE_PYOBJECT)
@@ -112,20 +111,18 @@ class NewGroupDialog (Gtk.Dialog):
         self.vbox_main.pack_start(general_frame, True, True, 0)
         
         name = TextFieldLabel()
-        label = name.get_label()
-        label.set_markup_with_mnemonic(_("_Name:"))
+        name.set_markup_with_mnemonic(_("_Name:"))
         name.show()
         
         self.name_entry = Gtk.Entry()
         self.name_entry.show()
-        label.set_mnemonic_widget(self.name_entry)
+        name.set_mnemonic_widget(self.name_entry)
         
         self.table.attach(name, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
         self.table.attach(self.name_entry, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.FILL)
         
         self.channels = TextFieldLabel()
-        label = self.channels.get_label()
-        label.set_markup_with_mnemonic(_("Channels _file:"))
+        self.channels.set_markup_with_mnemonic(_("Channels _file:"))
         self.channels.show()
         
         self.channelsbox = Gtk.HBox(spacing=6)
@@ -135,7 +132,7 @@ class NewGroupDialog (Gtk.Dialog):
         self.channels_entry.set_editable(False)
         self.channels_entry.show()
         self.channelsbox.pack_start(self.channels_entry, True, True, 0)
-        label.set_mnemonic_widget(self.channels_entry)
+        self.channels.set_mnemonic_widget(self.channels_entry)
         
         channels_open = Gtk.Button(stock=Gtk.STOCK_OPEN)
         channels_open.connect("clicked", self._on_channels_open_clicked)
@@ -153,8 +150,7 @@ class NewGroupDialog (Gtk.Dialog):
         self.vbox_main.pack_start(recordings_frame, True, True, 0)
         
         recordings = TextFieldLabel()
-        label = recordings.get_label()
-        label.set_markup_with_mnemonic(_("_Directory:"))
+        recordings.set_markup_with_mnemonic(_("_Directory:"))
         recordings.show()
         recbox.pack_start(recordings, False, True, 0)
         
@@ -166,7 +162,7 @@ class NewGroupDialog (Gtk.Dialog):
         self.recordings_entry.set_editable(False)
         self.recordings_entry.show()
         recentrybox.pack_start(self.recordings_entry, True, True, 0)
-        label.set_mnemonic_widget(self.recordings_entry)
+        recordings.set_mnemonic_widget(self.recordings_entry)
         
         recordings_open = Gtk.Button(stock=Gtk.STOCK_OPEN)
         recordings_open.connect("clicked", self._on_recordings_open_clicked)

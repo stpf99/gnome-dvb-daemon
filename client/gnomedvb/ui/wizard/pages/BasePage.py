@@ -18,7 +18,6 @@
 
 import gobject
 from gi.repository import Gtk
-from gnomedvb.ui.widgets.Frame import AlignedLabel
 
 class BasePage(Gtk.VBox):
 
@@ -26,12 +25,11 @@ class BasePage(Gtk.VBox):
         gobject.GObject.__init__(self, spacing=6)
         self.set_border_width(24)
 
-        ali = AlignedLabel()
-        ali.show()
-        self.pack_start(ali, False, False, 0)
-
-        self._label = ali.get_label()
+        self._label = Gtk.Label()
+        self._label.set_halign(Gtk.Align.START)
         self._label.set_line_wrap(True)
+
+        self.pack_start(self._label, False, False, 0)
         
     def get_page_title(self):
         raise NotImplementedError

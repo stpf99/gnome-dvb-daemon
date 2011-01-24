@@ -79,10 +79,9 @@ class ChannelScanPage(BasePage):
         topbox = Gtk.VBox(spacing=6)
         self.pack_start(topbox, True, True, 0)
 
-        ali = TextFieldLabel()
-        label = ali.get_label()
+        label = TextFieldLabel()
         label.set_markup_with_mnemonic(_("_Channels:"))
-        topbox.pack_start(ali, False, True, 0)
+        topbox.pack_start(label, False, True, 0)
         
         # Logo, Name, active, SID, scrambled
         self.tvchannels = Gtk.ListStore(GdkPixbuf.Pixbuf, str, bool, int, bool)

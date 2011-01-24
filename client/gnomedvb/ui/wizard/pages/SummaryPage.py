@@ -19,23 +19,19 @@
 from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
-from gnomedvb.ui.widgets.Frame import AlignedLabel
 
 class SummaryPage(BasePage):
 
     def __init__(self):
         BasePage.__init__(self)
         
-        details_ali = AlignedLabel()
-        self.pack_start(details_ali, True, True, 0)
-        self._details_label = details_ali.get_label()
+        self._details_label = Gtk.Label()
         self._details_label.set_line_wrap(True)
+        self.pack_start(self._details_label, True, True, 0)
 
-        button_alignment = Gtk.Alignment(xalign=0.5)
-        self.pack_start(button_alignment, False, True, 0)
-        
         self.configure_button = Gtk.Button(label=_('Configure Another Device'))
-        button_alignment.add(self.configure_button)
+        self.configure_button.set_halign(Gtk.Align.CENTER)
+        self.pack_start(button_alignment, False, True, 0)
     
     def get_page_title(self):
         return _("Configuration finished")
