@@ -112,7 +112,7 @@ AC_ARG_WITH([totem-plugin-dir],
 
 if test "x$enable_totem" = "xyes"; then		
 	if test "x$with_totem_plugin_dir" = "x"; then
-		TOTEM_PLUGIN_DIR="$libdir/totem/plugins"
+		TOTEM_PLUGIN_DIR=`$PKG_CONFIG --variable=pluginsdir totem`
 	else
 		TOTEM_PLUGIN_DIR="$with_totem_plugin_dir"
 	fi
