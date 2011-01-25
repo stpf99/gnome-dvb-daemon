@@ -69,7 +69,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
     }
     
     def __init__(self, use_channel_groups=False):
-        Gtk.ListStore.__init__(self, int, str, int, gobject.TYPE_PYOBJECT)
+        Gtk.TreeStore.__init__(self, int, str, long, gobject.GObject)
         
         self.set_sort_order(Gtk.SortType.ASCENDING)
         
@@ -78,7 +78,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
         self._manager.connect('group-added', self._on_manager_group_added)
         self._manager.connect('group-removed', self._on_manager_group_removed)
         self._add_channels()
-            
+
     def _add_channels(self):
         def append_groups(dev_groups):
             for dev_group in dev_groups:
@@ -90,7 +90,8 @@ class ChannelsTreeStore(Gtk.TreeStore):
     def _append_group(self, dev_group):
         group_id = dev_group.get_id()
         group_name = dev_group.get_name()
-        group_iter = self.append(None, [group_id, group_name, 0, dev_group])
+
+        group_iter = self.append(None, [group_id, group_name, 0L, dev_group])
         channellist = dev_group.get_channel_list()
         
         d = Callback()
@@ -102,9 +103,9 @@ class ChannelsTreeStore(Gtk.TreeStore):
                 error_handler=global_error_handler)
             # Put all available channels either in TV or radio group
             tv_group_iter = self.append(group_iter,
-                [group_id, _("TV Channels"), 0, dev_group])
+                [group_id, _("TV Channels"), 0L, dev_group])
             radio_group_iter = self.append(group_iter,
-                [group_id, _("Radio Channels"), 0, dev_group])
+                [group_id, _("Radio Channels"), 0L, dev_group])
         else:
             # Do not distinguish between radio and TV
             tv_group_iter = group_iter
@@ -123,6 +124,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
                 group_iter = radio_group_iter
             else:
                 group_iter = tv_group_iter
+
             self.append(group_iter,
                 [group_id,
                 escape(name),
