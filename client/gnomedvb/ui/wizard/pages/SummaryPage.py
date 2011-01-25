@@ -31,7 +31,7 @@ class SummaryPage(BasePage):
 
         self.configure_button = Gtk.Button(label=_('Configure Another Device'))
         self.configure_button.set_halign(Gtk.Align.CENTER)
-        self.pack_start(button_alignment, False, True, 0)
+        self.pack_start(self.configure_button, False, True, 0)
     
     def get_page_title(self):
         return _("Configuration finished")
