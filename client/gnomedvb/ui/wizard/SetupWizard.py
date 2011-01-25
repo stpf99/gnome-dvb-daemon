@@ -52,7 +52,7 @@ class CloseDialog(Gtk.Dialog):
         self.progressbar.show()
         vbox.pack_start(self.progressbar, False, True, 0)
             
-    def _progressbar_pulse(self, user_data):
+    def _progressbar_pulse(self, user_data=None):
         self.progressbar.pulse()
         return True
 
