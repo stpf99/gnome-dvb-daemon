@@ -565,9 +565,9 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
                     # We are in the recordings section
                     if model.iter_parent(aiter) != None:
                         # A child is selected
-                        self.popup_recordings.popup(None, None, None, event.button, time)
+                        self.popup_recordings.popup(None, None, None, None, event.button, time)
                 else:
-                    self.popup_menu.popup(None, None, None, event.button, time)
+                    self.popup_menu.popup(None, None, None, None, event.button, time)
         
     def _on_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
