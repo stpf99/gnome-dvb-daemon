@@ -138,10 +138,10 @@ class CalendarPopup(Gtk.Window):
             Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK,
             None, Gtk.get_current_event_time())
         if grab_val == Gdk.GrabStatus.SUCCESS:
-            Gtk.grab_add(self)
+            self.grab_add()
 
     def _remove_grab(self):
-        Gtk.grab_remove(self)
+        self.grab_remove()
         dev = Gtk.get_current_event_device()
         dev.ungrab(Gtk.get_current_event_time())
 
