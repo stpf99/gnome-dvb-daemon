@@ -298,19 +298,22 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
             self._setup_sidebar()
             self._setup_menu()
 
-            # Add recordings
-            self.rec_iter = self.channels.append(None)
-            self.channels[self.rec_iter][ChannelsTreeStore.COL_GROUP_ID] = self.REC_GROUP_ID
-            self.channels[self.rec_iter][ChannelsTreeStore.COL_NAME] = _("Recordings")
-            
-            self.recstore = gnomedvb.DVBRecordingsStoreClient()
-            self.recstore.connect("changed", self._on_recstore_changed)
-            add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
-            self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
+            self._get_and_add_recordings()
             
             self.totem_object.add_sidebar_page ("dvb-daemon", _("Digital TV"), self.sidebar)
             self.sidebar.show_all()
-        
+
+    def _get_and_add_recordings(self):
+        # Add recordings
+        self.rec_iter = self.channels.append(None)
+        self.channels[self.rec_iter][ChannelsTreeStore.COL_GROUP_ID] = self.REC_GROUP_ID
+        self.channels[self.rec_iter][ChannelsTreeStore.COL_NAME] = _("Recordings")
+
+        self.recstore = gnomedvb.DVBRecordingsStoreClient()
+        self.recstore.connect("changed", self._on_recstore_changed)
+        add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
+        self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
+
     def _setup_sidebar(self):
         self.sidebar = Gtk.VBox(spacing=6)
         
@@ -633,6 +636,7 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
         elif val == self.ORDER_BY_GROUP_ID:
             self.channels = ChannelsTreeStore(True)
         self.channels.set_sort_order(sort_order)
+        self._get_and_add_recordings()
         self.channels_view.set_model(self.channels)
         
     def _on_order_reverse_toggled(self, action, user_date=None):
