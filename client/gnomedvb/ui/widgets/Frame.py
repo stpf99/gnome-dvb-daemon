@@ -38,7 +38,7 @@ class BaseFrame(Gtk.VBox):
         self.pack_start(self.child_widget, expand, fill, padding)
         
     def set_aligned_child(self, child, expand=True, fill=True, padding=0):
-        self.remove(child)        
+        self.remove(self.child_widget)
         self.child_widget = child
         self.child_widget.set_margin_left(12)
         self.child_widget.show()
