@@ -282,7 +282,7 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
             if old_owner == "":
                 self.construct()
             elif new_owner == "":
-                self.deactivate(self.totem_object)
+                self.deactivate()
 
     def construct(self):
         self.manager = DVBModel()

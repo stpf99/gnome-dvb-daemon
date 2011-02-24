@@ -100,9 +100,9 @@ dnl ****************
 dnl * Totem plugin
 dnl ****************
 AC_ARG_ENABLE([totem-plugin],
-	AS_HELP_STRING([--enable-totem-plugin], [Install the Totem plugin]),
-	enable_totem="yes",
-	enable_totem="no")
+	AS_HELP_STRING([--enable-totem-plugin], [Install the Totem plugin (default: no)]),
+	[enable_totem=$enableval],
+	[enable_totem=no])
 	
 AM_CONDITIONAL(ENABLE_TOTEM, test "x$enable_totem" = "xyes")
 
@@ -110,9 +110,19 @@ AC_ARG_WITH([totem-plugin-dir],
 	AS_HELP_STRING([--with-totem-plugin-dir],
 		[Directory where Totem plugins are installed (default: LIBDIR/totem/plugins)]))
 
-if test "x$enable_totem" = "xyes"; then		
+if test "x$enable_totem" = "xyes"; then
 	if test "x$with_totem_plugin_dir" = "x"; then
 		TOTEM_PLUGIN_DIR=`$PKG_CONFIG --variable=pluginsdir totem`
+		if test "x$TOTEM_PLUGIN_DIR" = "x"; then
+			AC_MSG_ERROR(
+			[
+
+	*** Could not determinate totem plugin directory. 
+	
+	Please make sure totem is installed or set the directory
+	manually using --with-totem-plugin-dir
+			])
+		fi
 	else
 		TOTEM_PLUGIN_DIR="$with_totem_plugin_dir"
 	fi
@@ -182,4 +192,5 @@ $PACKAGE_NAME $PACKAGE_VERSION
     Libdir:                       ${expanded_libdir}
     D-Bus dir:                    ${DBUS_SERVICES_DIR}
     Python dir:                   ${pythondir}
+    Build Totem plugin            ${enable_totem}
 "

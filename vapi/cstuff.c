@@ -74,6 +74,9 @@ get_adapters ()
     }
 
     for (iter = ifap; iter; iter = iter->ifa_next) {
+        if (iter->ifa_addr == NULL)
+            continue;
+
         family = iter->ifa_addr->sa_family;
         if (family == AF_INET) { /* IPv4 only */
             errnum = getnameinfo (iter->ifa_addr, sizeof(struct sockaddr_in),
