@@ -535,7 +535,8 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
             dialog.destroy()
     
     def do_deactivate (self):
-        self.totem_object.remove_sidebar_page ("dvb-daemon")
+        if self.totem_object != None:
+            self.totem_object.remove_sidebar_page ("dvb-daemon")
         
     def _on_channel_selected(self, treeview, event):
         if event.type == Gdk.EventType._2BUTTON_PRESS:
