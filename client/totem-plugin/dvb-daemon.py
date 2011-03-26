@@ -238,7 +238,7 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
      ORDER_BY_GROUP_ID,) = range(2)
 
     def __init__ (self):
-        self.totem_object = self.object
+        self.totem_object = None
         self.channels = None
         self.channels_view = None
         self.scrolledchannels = None
@@ -285,6 +285,7 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
                 self.deactivate()
 
     def construct(self):
+        self.totem_object = self.object
         self.manager = DVBModel()
 
         self.setup = DvbSetup()
