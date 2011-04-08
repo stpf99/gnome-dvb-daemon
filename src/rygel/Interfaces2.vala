@@ -19,7 +19,7 @@
 [DBus (name = "org.gnome.UPnP.MediaObject2")]
 public interface MediaObject2 : GLib.Object {
     
-    public abstract DBus.ObjectPath Parent {
+    public abstract ObjectPath Parent {
         owned get;
     }
     
@@ -57,14 +57,14 @@ public interface MediaContainer2 : GLib.Object {
         get;
     }
     
-    public abstract GLib.HashTable<string, Value?>[] ListChildren (
-        uint offset, uint max, string[] filter) throws DBus.Error;
+    public abstract GLib.HashTable<string, Variant?>[] ListChildren (
+        uint offset, uint max, string[] filter) throws DBusError;
 
-    public abstract GLib.HashTable<string, Value?>[] ListContainers (
-        uint offset, uint max, string[] filter) throws DBus.Error;
+    public abstract GLib.HashTable<string, Variant?>[] ListContainers (
+        uint offset, uint max, string[] filter) throws DBusError;
 
-    public abstract GLib.HashTable<string, Value?>[] ListItems (
-        uint offset, uint max, string[] filter) throws DBus.Error;
+    public abstract GLib.HashTable<string, Variant?>[] ListItems (
+        uint offset, uint max, string[] filter) throws DBusError;
     
 }
 

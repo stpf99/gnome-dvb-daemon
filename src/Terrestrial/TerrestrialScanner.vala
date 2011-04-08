@@ -31,10 +31,10 @@ namespace DVB {
         public abstract signal void frontend_stats (double signal_strength,
             double signal_noise_ratio);
         
-        public abstract void Run () throws DBus.Error;
-        public abstract void Destroy () throws DBus.Error;
-        public abstract bool WriteAllChannelsToFile (string path) throws DBus.Error;
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBus.Error;
+        public abstract void Run () throws DBusError;
+        public abstract void Destroy () throws DBusError;
+        public abstract bool WriteAllChannelsToFile (string path) throws DBusError;
+        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBusError;
         
         public abstract void AddScanningData (uint frequency,
                                      uint hierarchy, // 0-3
@@ -43,7 +43,7 @@ namespace DVB {
                                      string code_rate_hp, // "1/2", "2/3", "3/4", ..., "8/9"
                                      string code_rate_lp,
                                      string constellation, // QPSK, QAM16, QAM64
-                                     uint guard) throws DBus.Error;  // 4, 8, 16, 32
+                                     uint guard) throws DBusError;  // 4, 8, 16, 32
         
         /**
          * @path: Path to file containing scanning data
@@ -51,7 +51,7 @@ namespace DVB {
          *
          * Parses initial tuning data from a file as provided by dvb-apps
          */                             
-        public abstract bool AddScanningDataFromFile (string path) throws DBus.Error;
+        public abstract bool AddScanningDataFromFile (string path) throws DBusError;
     }
     
     public class TerrestrialScanner : Scanner, IDBusTerrestrialScanner {
@@ -66,7 +66,7 @@ namespace DVB {
         public void AddScanningData (uint frequency, uint hierarchy,
                 uint bandwidth, string transmode, string code_rate_hp,
                 string code_rate_lp, string constellation, uint guard)
-                throws DBus.Error
+                throws DBusError
         {
                 
                 this.add_scanning_data (frequency, hierarchy,

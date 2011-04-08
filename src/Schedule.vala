@@ -287,7 +287,7 @@ namespace DVB {
             return result;
         }
 
-        public uint32[] GetAllEvents () throws DBus.Error {
+        public uint32[] GetAllEvents () throws DBusError {
             ArrayList<uint32> events = new ArrayList<uint32> ();
             lock (this.events) {
                  foreach (EventElement element in this.events) {
@@ -304,7 +304,7 @@ namespace DVB {
             return event_ids;
         }
 
-        public EventInfo[] GetAllEventInfos () throws DBus.Error {
+        public EventInfo[] GetAllEventInfos () throws DBusError {
             ArrayList<Event> all_events = new ArrayList<Event> ();
             lock (this.events) {
                 foreach (EventElement element in this.events) {
@@ -337,7 +337,7 @@ namespace DVB {
         }
 
         public bool GetInformations (uint32 event_id, out EventInfo event_info)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret;
             
@@ -368,13 +368,13 @@ namespace DVB {
             return ret;
         }
         
-        public uint32 NowPlaying () throws DBus.Error {
+        public uint32 NowPlaying () throws DBusError {
             Event? event = this.get_running_event ();
             
             return (event == null) ? 0 : event.id;
         }
         
-        public uint32 Next (uint32 event_id) throws DBus.Error {
+        public uint32 Next (uint32 event_id) throws DBusError {
             uint32 next_event = 0;
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
@@ -393,7 +393,7 @@ namespace DVB {
             return next_event;
         }
         
-        public bool GetName (uint32 event_id, out string name) throws DBus.Error {
+        public bool GetName (uint32 event_id, out string name) throws DBusError {
             bool ret = false;
 
             lock (this.events) {        
@@ -412,7 +412,7 @@ namespace DVB {
         }
         
         public bool GetShortDescription (uint32 event_id,
-                out string description) throws DBus.Error
+                out string description) throws DBusError
         {
             bool ret = false;
             
@@ -432,7 +432,7 @@ namespace DVB {
         }
         
         public bool GetExtendedDescription (uint32 event_id,
-                out string description) throws DBus.Error
+                out string description) throws DBusError
         {
             bool ret = false;
             
@@ -452,7 +452,7 @@ namespace DVB {
         }
         
         public bool GetDuration (uint32 event_id, out uint duration)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret = false;
         
@@ -472,7 +472,7 @@ namespace DVB {
         }
         
         public bool GetLocalStartTime (uint32 event_id, out uint[] start_time)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret = false;
         
@@ -496,7 +496,7 @@ namespace DVB {
         }
         
         public bool GetLocalStartTimestamp (uint32 event_id, out int64 timestamp)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret = false;
             lock (this.events) {
@@ -513,7 +513,7 @@ namespace DVB {
         }
         
         public bool IsRunning (uint32 event_id, out bool running)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret = false;
         
@@ -533,7 +533,7 @@ namespace DVB {
         }
         
         public bool IsScrambled (uint32 event_id, out bool scrambled)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret = false;
         

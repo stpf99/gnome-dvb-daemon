@@ -204,17 +204,6 @@ namespace DVB.Utils {
         dir.delete (null);
     }
 
-    public static inline DBus.Connection? get_dbus_connection () {
-        DBus.Connection conn;
-        try {
-            conn = DBus.Bus.get (DBus.BusType.SESSION);
-        } catch (Error e) {
-            critical ("Could not get D-Bus session bus: %s", e.message);
-            return null;
-        }
-        return conn;
-    }
-
     public static time_t t_max (time_t a, time_t b) {
         return (a < b) ? b : a;
     }
@@ -244,6 +233,22 @@ namespace DVB.Utils {
         }
 
         return diff;
+    }
+
+    public static void dbus_own_name (string service_name, BusAcquiredCallback cb) {
+        message ("Creating D-Bus service %s", service_name);
+        Bus.own_name (BusType.SESSION, service_name, BusNameOwnerFlags.NONE,
+            cb,
+            () => {},
+            () => warning ("Could not acquire name"));
+    }
+
+    public static inline void dbus_register_object<T> (DBusConnection conn, string object_path, T obj) {
+        try {
+            conn.register_object (object_path, obj);
+        } catch (IOError e) {
+            critical ("Could not register object '%s': %s", object_path, e.message);
+        }
     }
 
 }

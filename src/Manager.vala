@@ -98,9 +98,9 @@ namespace DVB {
          * Get the object path of the channel scanner for this device.
          */
         public bool GetScannerForDevice (uint adapter, uint frontend,
-                out DBus.ObjectPath opath, out string dbusiface) throws DBus.Error {
+                out ObjectPath opath, out string dbusiface) throws DBusError {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
-            opath = new DBus.ObjectPath (path);
+            opath = new ObjectPath (path);
             
             Device device;
             Device? reg_dev = this.get_registered_device (adapter, frontend);
@@ -146,14 +146,23 @@ namespace DVB {
                     switch (device.Type) {
                         case AdapterType.DVB_T:
                         scanner = new TerrestrialScanner (device);
+
+                        Utils.dbus_register_object<IDBusTerrestrialScanner> (Main.conn,
+                            path, (TerrestrialScanner)scanner);
                         break;
                         
                         case AdapterType.DVB_S:
                         scanner = new SatelliteScanner (device);
+
+                        Utils.dbus_register_object<IDBusSatelliteScanner> (Main.conn,
+                            path, (SatelliteScanner)scanner);
                         break;
                         
                         case AdapterType.DVB_C:
                         scanner = new CableScanner (device);
+
+                        Utils.dbus_register_object<IDBusCableScanner> (Main.conn,
+                            path, (CableScanner)scanner);
                         break;
                     }
                     
@@ -165,13 +174,6 @@ namespace DVB {
                     scanner.destroyed.connect (this.on_scanner_destroyed);
                     
                     this.scanners.set (path, scanner);
-                    
-                    var conn = Utils.get_dbus_connection ();
-                    if (conn == null) return false;
-                    
-                    conn.register_object (
-                        path,
-                        scanner);
                     
                     debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
                           adapter, frontend, dbusiface);
@@ -186,16 +188,16 @@ namespace DVB {
          * @path: Device group's DBus path
          * @returns: TRUE on success
          */
-        public bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath)
-                throws DBus.Error
+        public bool GetDeviceGroup (uint group_id, out ObjectPath opath)
+                throws DBusError
         {
             bool ret;
             lock (this.devices) {
                 if (this.devices.has_key (group_id)) {
-                    opath = new DBus.ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
+                    opath = new ObjectPath (Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id));
                     ret = true;
                 } else {
-                    opath = new DBus.ObjectPath ("");
+                    opath = new ObjectPath ("");
                     ret = false;
                 }
             }
@@ -205,12 +207,12 @@ namespace DVB {
         /**
          * @returns: Device groups' DBus path
          */
-        public DBus.ObjectPath[] GetRegisteredDeviceGroups () throws DBus.Error {
-            DBus.ObjectPath[] devs = new DBus.ObjectPath[this.devices.size];
+        public ObjectPath[] GetRegisteredDeviceGroups () throws DBusError {
+            ObjectPath[] devs = new ObjectPath[this.devices.size];
             int i = 0;
             lock (this.devices) {
                 foreach (uint key in this.devices.keys) {
-                    devs[i] = new DBus.ObjectPath (
+                    devs[i] = new ObjectPath (
                         Constants.DBUS_DEVICE_GROUP_PATH.printf (key));
                     i++;
                 }
@@ -233,7 +235,7 @@ namespace DVB {
          */
         public bool AddDeviceToNewGroup (uint adapter, uint frontend,
                 string channels_conf, string recordings_dir, string name)
-                throws DBus.Error
+                throws DBusError
         {   
             File chan_file = File.new_for_path (channels_conf);
             File rec_dir = File.new_for_path (recordings_dir);
@@ -272,7 +274,7 @@ namespace DVB {
          * is returned.
          */
         public bool GetNameOfRegisteredDevice (uint adapter, uint frontend,
-                out string name) throws DBus.Error
+                out string name) throws DBusError
         {
             Device? dev = this.get_registered_device (adapter, frontend);
             
@@ -288,14 +290,14 @@ namespace DVB {
         /**
          * @returns: the numner of configured device groups
          */
-        public int GetDeviceGroupSize () throws DBus.Error {
+        public int GetDeviceGroupSize () throws DBusError {
             return this.devices.size;
         }
         
         /**
          * @returns: ID and name of each channel group
          */
-		public ChannelGroupInfo[] GetChannelGroups () throws DBus.Error {
+		public ChannelGroupInfo[] GetChannelGroups () throws DBusError {
             ConfigStore config = Factory.get_config_store ();
             Gee.List<ChannelGroup> groups;
             try {
@@ -318,7 +320,7 @@ namespace DVB {
          * @name: Name of the new group
          * @returns: TRUE on success
          */
-		public bool AddChannelGroup (string name, out int channel_group_id) throws DBus.Error {
+		public bool AddChannelGroup (string name, out int channel_group_id) throws DBusError {
             ConfigStore config = Factory.get_config_store ();
             bool ret;
             try {
@@ -334,7 +336,7 @@ namespace DVB {
 	     * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
-		public bool RemoveChannelGroup (int channel_group_id) throws DBus.Error {
+		public bool RemoveChannelGroup (int channel_group_id) throws DBusError {
             ConfigStore config = Factory.get_config_store ();
             bool ret;
             try {
@@ -350,7 +352,7 @@ namespace DVB {
          * @returns: informations about all connected
          * devices retrieved via udev
          */
-        public GLib.HashTable<string, string>[] GetDevices () throws DBus.Error {
+        public GLib.HashTable<string, string>[] GetDevices () throws DBusError {
             GLib.List<GUdev.Device> devices = 
                 this.udev_client.query_by_subsystem ("dvb");
             var devices_list = new GLib.List<HashTable<string, string>> ();
@@ -413,15 +415,10 @@ namespace DVB {
                 return false;
             }
             devgroup.device_removed.connect (this.on_device_removed_from_group);
-            
-            // Register D-Bus object
-            var conn = Utils.get_dbus_connection ();
-            if (conn == null) return false;
-            
+
             string path = Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id);
-            conn.register_object (
-                path,
-                devgroup);
+            Utils.dbus_register_object<IDBusDeviceGroup> (Main.conn,
+                path, devgroup);
             
             if (group_id > device_group_counter)
                 device_group_counter = group_id;

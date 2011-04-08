@@ -85,7 +85,7 @@ namespace DVB {
         public bool AddTimer (uint channel,
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration,
-                out uint32 timer_id) throws DBus.Error {
+                out uint32 timer_id) throws DBusError {
             
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
@@ -109,7 +109,7 @@ namespace DVB {
         public bool AddTimerWithMargin (uint channel,
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration,
-                out uint32 timer_id) throws DBus.Error {
+                out uint32 timer_id) throws DBusError {
             
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
@@ -192,7 +192,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool AddTimerForEPGEvent (uint event_id, uint channel_sid,
-                out uint32 timer_id) throws DBus.Error {
+                out uint32 timer_id) throws DBusError {
             EPGStore epgstore = Factory.get_epg_store ();
             Event? event = null;
             try {
@@ -220,7 +220,7 @@ namespace DVB {
          * Delete timer. If the id belongs to the currently
          * active timer recording is aborted.
          */
-        public bool DeleteTimer (uint32 timer_id) throws DBus.Error {
+        public bool DeleteTimer (uint32 timer_id) throws DBusError {
             return this.delete_timer (timer_id);
         }
 
@@ -253,7 +253,7 @@ namespace DVB {
          * dvb_recorder_GetTimers
          * @returns: A list of all timer ids
          */
-        public uint32[] GetTimers () throws DBus.Error {
+        public uint32[] GetTimers () throws DBusError {
             uint32[] timer_arr;
             lock (this.timers) {
                 timer_arr = new uint32[this.timers.size];
@@ -275,7 +275,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool GetStartTime (uint32 timer_id, out uint32[] start_time)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret;
             lock (this.timers) {
@@ -302,7 +302,7 @@ namespace DVB {
           */
         public bool SetStartTime (uint32 timer_id, int start_year,
                 int start_month, int start_day, int start_hour,
-                int start_minute) throws DBus.Error
+                int start_minute) throws DBusError
         {
             bool ret = false;
             lock (this.timers) {
@@ -331,7 +331,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool GetEndTime (uint32 timer_id, out uint[] end_time)
-                throws DBus.Error
+                throws DBusError
         {
             bool ret;
             lock (this.timers) {
@@ -353,7 +353,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool GetDuration (uint32 timer_id, out uint duration)
-            throws DBus.Error
+            throws DBusError
         {
             bool ret = false;
             lock (this.timers) {
@@ -371,7 +371,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool SetDuration (uint32 timer_id, uint duration)
-            throws DBus.Error
+            throws DBusError
         {
             bool ret;
             lock (this.timers) {
@@ -395,7 +395,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool GetChannelName (uint32 timer_id, out string name)
-            throws DBus.Error
+            throws DBusError
         {
             bool ret;
             lock (this.timers) {
@@ -419,7 +419,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public bool GetTitle (uint32 timer_id, out string title)
-            throws DBus.Error
+            throws DBusError
         {
             bool ret = false;
             lock (this.timers) {
@@ -435,7 +435,7 @@ namespace DVB {
         }
 
         public bool GetAllInformations (uint32 timer_id, out TimerInfo info)
-                throws DBus.Error
+                throws DBusError
         {
             info = TimerInfo ();
             bool ret;
@@ -472,7 +472,7 @@ namespace DVB {
         /**
          * @returns: The currently active timers
          */
-        public uint32[] GetActiveTimers () throws DBus.Error {
+        public uint32[] GetActiveTimers () throws DBusError {
             uint32[] val = new uint32[this.active_timers.size];
             
             int i=0;
@@ -488,7 +488,7 @@ namespace DVB {
          * @timer_id: Timer's id
          * @returns: TRUE if timer is currently active
          */
-        public bool IsTimerActive (uint32 timer_id) throws DBus.Error {
+        public bool IsTimerActive (uint32 timer_id) throws DBusError {
             return this.is_timer_active (timer_id);
         }
 
@@ -502,7 +502,7 @@ namespace DVB {
          */
         public bool HasTimer (uint start_year, uint start_month, uint start_day,
                 uint start_hour, uint start_minute, uint duration)
-                throws DBus.Error
+                throws DBusError
         {
             bool val = false;
             lock (this.timers) {
@@ -523,7 +523,7 @@ namespace DVB {
         }
         
         public OverlapType HasTimerForEvent (uint event_id, uint channel_sid)
-                throws DBus.Error
+                throws DBusError
         {
             EPGStore epgstore = Factory.get_epg_store ();
             Event? event = null;

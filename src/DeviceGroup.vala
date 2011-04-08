@@ -216,7 +216,7 @@ namespace DVB {
          * @returns: Name of adapter type the group holds
          * or an empty string when group with given id doesn't exist.
          */
-        public string GetType () {
+        public string GetType () throws DBusError {
             string type_str;
             switch (this.Type) {
                 case AdapterType.DVB_T: type_str = "DVB-T"; break;
@@ -236,7 +236,7 @@ namespace DVB {
          * The new device will inherit all settings from the group's
          * reference device.
          */
-        public bool AddDevice (uint adapter, uint frontend) throws DBus.Error {
+        public bool AddDevice (uint adapter, uint frontend) throws DBusError {
             // When the device is already registered we
             // might see some errors if the device is
             // currently in use
@@ -277,8 +277,8 @@ namespace DVB {
          * 
          * Returns the object path to the device's recorder.
          */
-        public DBus.ObjectPath GetRecorder () throws DBus.Error {
-            return new DBus.ObjectPath (
+        public ObjectPath GetRecorder () throws DBusError {
+            return new ObjectPath (
                 Constants.DBUS_RECORDER_PATH.printf (this.Id));
         }   
             
@@ -287,15 +287,11 @@ namespace DVB {
                 this.Id);
             
             Recorder recorder = this.recorder;
-            
-            var conn = Utils.get_dbus_connection ();
-            if (conn == null) return false;
-            
+
             string path = Constants.DBUS_RECORDER_PATH.printf (this.Id);
-            conn.register_object (
-                path,
-                recorder);
-                
+            Utils.dbus_register_object<IDBusRecorder> (Main.conn,
+                path, recorder);
+
             return true;
         }
         
@@ -307,7 +303,7 @@ namespace DVB {
          * Removes the device from the group. If the group contains
          * no devices after the removal it's removed as well.
          */
-        public bool RemoveDevice (uint adapter, uint frontend) throws DBus.Error {
+        public bool RemoveDevice (uint adapter, uint frontend) throws DBusError {
             Device dev = new Device (adapter, frontend);
             
             if (this.contains (dev)) {
@@ -341,7 +337,7 @@ namespace DVB {
         /**
          * @returns: Name of the device group
          */
-        public string GetName () throws DBus.Error {
+        public string GetName () throws DBusError {
             return this.Name;
         }
         
@@ -349,7 +345,7 @@ namespace DVB {
          * @name: Name of the group
          * @returns: TRUE on success
          */
-        public bool SetName (string name) throws DBus.Error {
+        public bool SetName (string name) throws DBusError {
             this.Name = name;
             try {
                 ConfigStore config = Factory.get_config_store();
@@ -364,8 +360,8 @@ namespace DVB {
         /**
          * @returns: Object path to the ChannelList service for this device
          */
-        public DBus.ObjectPath GetChannelList () throws DBus.Error {
-            return new DBus.ObjectPath (
+        public ObjectPath GetChannelList () throws DBusError {
+            return new ObjectPath (
                 Constants.DBUS_CHANNEL_LIST_PATH.printf (this.Id));
         }
         
@@ -374,14 +370,10 @@ namespace DVB {
                 this.Id);
             
             ChannelList channels = this.Channels;
-            
-            var conn = Utils.get_dbus_connection ();
-            if (conn == null) return false;
-            
+
             string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (this.Id);
-            conn.register_object (
-                path,
-                channels);
+            Utils.dbus_register_object<IDBusChannelList> (Main.conn,
+                path, channels);
             
             return true;
         }
@@ -390,7 +382,7 @@ namespace DVB {
          * @returns: List of paths to the devices that are part of
          * the group (e.g. /dev/dvb/adapter0/frontend0)
          */
-        public string[] GetMembers () throws DBus.Error {
+        public string[] GetMembers () throws DBusError {
             string[] groupdevs = new string[this.size];
             
             int i=0;
@@ -409,36 +401,32 @@ namespace DVB {
          * @opath: Device group's DBus path
          * @returns: TRUE on success
          */
-        public bool GetSchedule (uint channel_sid, out DBus.ObjectPath opath) throws DBus.Error {
+        public bool GetSchedule (uint channel_sid, out ObjectPath opath) throws DBusError {
             if (this.Channels.contains (channel_sid)) {
                 string path = Constants.DBUS_SCHEDULE_PATH.printf (this.Id, channel_sid);
                 
                 if (!this.schedules.contains (path)) {
-                    var conn = Utils.get_dbus_connection ();
-                    if (conn == null) new DBus.ObjectPath ("");
-                    
                     Schedule schedule = this.Channels.get_channel (
                         channel_sid).Schedule;
                     
-                    conn.register_object (
-                        path,
-                        schedule);
+                    Utils.dbus_register_object<IDBusSchedule> (Main.conn,
+                        path, schedule);
                         
                     this.schedules.add (path);
                 }
                 
-                opath = new DBus.ObjectPath (path);
+                opath = new ObjectPath (path);
                 return true;
             }
         
-            opath = new DBus.ObjectPath ("");
+            opath = new ObjectPath ("");
             return false;
         }
 
         /**
          * @returns: Location of the recordings directory
          */
-        public string GetRecordingsDirectory () throws DBus.Error {
+        public string GetRecordingsDirectory () throws DBusError {
             return this.RecordingsDirectory.get_path ();
         }
         
@@ -446,7 +434,7 @@ namespace DVB {
          * @location: Location of the recordings directory
          * @returns: TRUE on success
          */
-        public bool SetRecordingsDirectory (string location) throws DBus.Error {
+        public bool SetRecordingsDirectory (string location) throws DBusError {
             this.RecordingsDirectory = File.new_for_path (location);
             try {
                 ConfigStore config = Factory.get_config_store();

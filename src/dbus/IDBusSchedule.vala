@@ -33,37 +33,37 @@ namespace DVB {
     [DBus (name = "org.gnome.DVB.Schedule")]
     public interface IDBusSchedule : GLib.Object {
     
-        public abstract uint32[] GetAllEvents () throws DBus.Error;
+        public abstract uint32[] GetAllEvents () throws DBusError;
         
-        public abstract EventInfo[] GetAllEventInfos () throws DBus.Error;
+        public abstract EventInfo[] GetAllEventInfos () throws DBusError;
         
-        public abstract bool GetInformations (uint32 event_id, out EventInfo event_info) throws DBus.Error;
+        public abstract bool GetInformations (uint32 event_id, out EventInfo event_info) throws DBusError;
     
         /**
          * @returns: ID of currently running event
          */
-        public abstract uint32 NowPlaying () throws DBus.Error;
+        public abstract uint32 NowPlaying () throws DBusError;
         
         /**
          * @returnns: ID of event that follows the given event
          */
-        public abstract uint32 Next (uint32 event_id) throws DBus.Error;
+        public abstract uint32 Next (uint32 event_id) throws DBusError;
         
-        public abstract bool GetName (uint32 event_id, out string name) throws DBus.Error;
+        public abstract bool GetName (uint32 event_id, out string name) throws DBusError;
         
-        public abstract bool GetShortDescription (uint32 event_id, out string description) throws DBus.Error;
+        public abstract bool GetShortDescription (uint32 event_id, out string description) throws DBusError;
         
-        public abstract bool GetExtendedDescription (uint32 event_id, out string description) throws DBus.Error;
+        public abstract bool GetExtendedDescription (uint32 event_id, out string description) throws DBusError;
         
-        public abstract bool GetDuration (uint32 event_id, out uint duration) throws DBus.Error;
+        public abstract bool GetDuration (uint32 event_id, out uint duration) throws DBusError;
         
-        public abstract bool GetLocalStartTime (uint32 event_id, out uint[] start_time) throws DBus.Error;
+        public abstract bool GetLocalStartTime (uint32 event_id, out uint[] start_time) throws DBusError;
         
-        public abstract bool GetLocalStartTimestamp (uint32 event_id, out int64 timestamp) throws DBus.Error;
+        public abstract bool GetLocalStartTimestamp (uint32 event_id, out int64 timestamp) throws DBusError;
         
-        public abstract bool IsRunning (uint32 event_id, out bool running) throws DBus.Error;
+        public abstract bool IsRunning (uint32 event_id, out bool running) throws DBusError;
         
-        public abstract bool IsScrambled (uint32 event_id, out bool scrambled) throws DBus.Error;
+        public abstract bool IsScrambled (uint32 event_id, out bool scrambled) throws DBusError;
         /*
         public abstract bool IsHighDefinition (uint32 event_id);
         

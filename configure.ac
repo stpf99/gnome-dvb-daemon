@@ -59,10 +59,9 @@ fi
 dnl ******************
 dnl * Check for libs
 dnl ******************
-GLIB_REQUIRED=2.16.0
-GIO_REQUIRED=2.16.0
+GLIB_REQUIRED=2.26.0
+GIO_REQUIRED=2.26.0
 GST_REQUIRED=0.10.29
-DBUS_REQUIRED=0.74
 GEE_REQUIRED=0.5.0
 SQLITE_REQUIRED=3.4
 GST_RTSP_SERVER_REQUIRED=0.10.7
@@ -75,7 +74,6 @@ AC_SUBST(GST_LIBS)
 PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
                             gio-2.0 >= $GIO_REQUIRED
                             gobject-2.0 >= $GLIB_REQUIRED
-                            dbus-glib-1 >= $DBUS_REQUIRED
                             gee-1.0 >= $GEE_REQUIRED
                             sqlite3 >= $SQLITE_REQUIRED
                             gst-rtsp-server-0.10 >= $GST_RTSP_SERVER_REQUIRED)

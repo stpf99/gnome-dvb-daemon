@@ -106,7 +106,7 @@ namespace DVB {
         /**
          * @returns: A list of ids for all recordings
          */
-        public uint32[] GetRecordings () throws DBus.Error {
+        public uint32[] GetRecordings () throws DBusError {
             uint32[] ids;
             lock (this.recordings) {
                 ids = new uint32[this.recordings.size];
@@ -126,7 +126,7 @@ namespace DVB {
          * @location: The location of the recording on the filesystem
          * @returns: TRUE on success
          */
-        public bool GetLocation (uint32 rec_id, out string location) throws DBus.Error {
+        public bool GetLocation (uint32 rec_id, out string location) throws DBusError {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.has_key (rec_id)) {
@@ -144,7 +144,7 @@ namespace DVB {
          * a TV show)
          * @returns: TRUE on success
          */
-        public bool GetName (uint32 rec_id, out string name) throws DBus.Error {
+        public bool GetName (uint32 rec_id, out string name) throws DBusError {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.has_key (rec_id)) {
@@ -163,7 +163,7 @@ namespace DVB {
          * (e.g. the description from EPG)
          * @returns: TRUE on success
          */
-        public bool GetDescription (uint32 rec_id, out string description) throws DBus.Error {
+        public bool GetDescription (uint32 rec_id, out string description) throws DBusError {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.has_key (rec_id)) {
@@ -181,7 +181,7 @@ namespace DVB {
          * @start_time: The starting time of the recording
          * @returns: TRUE on success
          */
-        public bool GetStartTime (uint32 rec_id, out uint[] start_time) throws DBus.Error {
+        public bool GetStartTime (uint32 rec_id, out uint[] start_time) throws DBusError {
             bool ret;
             lock (this.recordings) {
                 if (this.recordings.has_key (rec_id)) {
@@ -201,7 +201,7 @@ namespace DVB {
          * @timestamp: Start time as UNIX timestamp
          * @returns: TRUE on success
          */
-        public bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) throws DBus.Error {
+        public bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) throws DBusError {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.has_key (rec_id)) {
@@ -218,7 +218,7 @@ namespace DVB {
          * @length: The length of the recording in seconds
          * @returns: TRUE on success
          */
-        public bool GetLength (uint32 rec_id, out int64 length) throws DBus.Error {
+        public bool GetLength (uint32 rec_id, out int64 length) throws DBusError {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.has_key (rec_id)) {
@@ -237,7 +237,7 @@ namespace DVB {
          * Delete the recording. This deletes all files in the directory
          * created by the Recorder
          */
-        public bool Delete (uint32 rec_id) throws DBus.Error {
+        public bool Delete (uint32 rec_id) throws DBusError {
             bool val = false;
             lock (this.recordings) {
                 if (!this.recordings.has_key (rec_id)) val = false;
@@ -264,7 +264,7 @@ namespace DVB {
          * rec_id doesn't exist
          * @returns: TRUE on success
          */
-        public bool GetChannelName (uint32 rec_id, out string name) throws DBus.Error {
+        public bool GetChannelName (uint32 rec_id, out string name) throws DBusError {
             bool ret = false;
             lock (this.recordings) {
                 if (this.recordings.has_key (rec_id)) {
@@ -277,7 +277,7 @@ namespace DVB {
             return ret;
         }
         
-        public bool GetAllInformations (uint32 rec_id, out RecordingInfo info) throws DBus.Error {
+        public bool GetAllInformations (uint32 rec_id, out RecordingInfo info) throws DBusError {
             bool ret;
             info = RecordingInfo ();
             lock (this.recordings) {

@@ -42,19 +42,19 @@ namespace DVB {
          * Get the object path of the channel scanner for this device.
          */
         public abstract bool GetScannerForDevice (uint adapter, uint frontend,
-                out DBus.ObjectPath opath, out string dbusiface) throws DBus.Error;
+                out ObjectPath opath, out string dbusiface) throws DBusError;
         
         /**
          * @returns: Device groups' DBus path
          */
-        public abstract DBus.ObjectPath[] GetRegisteredDeviceGroups () throws DBus.Error;
+        public abstract ObjectPath[] GetRegisteredDeviceGroups () throws DBusError;
         
         /**
          * @group_id: A group ID
          * @opath: Device group's DBus path
          * @returns: TRUE on success
          */
-        public abstract bool GetDeviceGroup (uint group_id, out DBus.ObjectPath opath) throws DBus.Error;
+        public abstract bool GetDeviceGroup (uint group_id, out ObjectPath opath) throws DBusError;
         
         /**
          * @adapter: Number of the device's adapter
@@ -70,7 +70,7 @@ namespace DVB {
          * of the reference device).
          */
         public abstract bool AddDeviceToNewGroup (uint adapter, uint frontend,
-                string channels_conf, string recordings_dir, string name) throws DBus.Error;
+                string channels_conf, string recordings_dir, string name) throws DBusError;
 
         /**
          * @adapter: Adapter of device
@@ -82,36 +82,36 @@ namespace DVB {
          * is returned.
          */
         public abstract bool GetNameOfRegisteredDevice (uint adapter, uint frontend,
-        	out string name) throws DBus.Error;
+        	out string name) throws DBusError;
         
         /**
          * @returns: the numner of configured device groups
          */
-        public abstract int GetDeviceGroupSize () throws DBus.Error;
+        public abstract int GetDeviceGroupSize () throws DBusError;
 
         /**
          * @returns: ID and name of each channel group
          */
-        public abstract ChannelGroupInfo[] GetChannelGroups () throws DBus.Error;
+        public abstract ChannelGroupInfo[] GetChannelGroups () throws DBusError;
 
         /**
          * @name: Name of the new group
          * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
-        public abstract bool AddChannelGroup (string name, out int channel_group_id) throws DBus.Error;
+        public abstract bool AddChannelGroup (string name, out int channel_group_id) throws DBusError;
 
         /**
          * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
-        public abstract bool RemoveChannelGroup (int channel_group_id) throws DBus.Error;
+        public abstract bool RemoveChannelGroup (int channel_group_id) throws DBusError;
 
         /**
          * @returns: informations about all connected
          * devices retrieved via udev
          */
-		public abstract GLib.HashTable<string, string>[] GetDevices () throws DBus.Error;
+		public abstract GLib.HashTable<string, string>[] GetDevices () throws DBusError;
 
     }
 

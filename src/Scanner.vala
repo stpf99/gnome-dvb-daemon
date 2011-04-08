@@ -149,7 +149,7 @@ namespace DVB {
         /**
          * Start the scanner
          */
-        public void Run () throws DBus.Error {
+        public void Run () throws DBusError {
             if (this.running) return;
             this.running = true;
         
@@ -184,7 +184,7 @@ namespace DVB {
         /**
          * Abort scanning and cleanup
          */
-        public void Destroy () throws DBus.Error {
+        public void Destroy () throws DBusError {
             this.do_destroy ();
         }
 
@@ -210,7 +210,7 @@ namespace DVB {
          *
          * Write all the channels stored in this.Channels to file
          */
-        public bool WriteAllChannelsToFile (string path) throws DBus.Error {
+        public bool WriteAllChannelsToFile (string path) throws DBusError {
             bool success = true;
             var writer = new io.ChannelListWriter (File.new_for_path (path));
             foreach (DVB.Channel c in this.channels) {
@@ -239,7 +239,7 @@ namespace DVB {
          * Write the channels with the given SIDs to file @path
          */
         public bool WriteChannelsToFile (uint[] channel_sids, string path)
-                throws DBus.Error
+                throws DBusError
         {
             bool success = true;
             var writer = new io.ChannelListWriter (File.new_for_path (path));
@@ -267,7 +267,7 @@ namespace DVB {
             return success;
         }
 
-        public bool AddScanningDataFromFile (string path) throws DBus.Error {
+        public bool AddScanningDataFromFile (string path) throws DBusError {
             File datafile = File.new_for_path(path);
             
             debug ("Reading scanning data from %s", path);

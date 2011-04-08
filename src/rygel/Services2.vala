@@ -35,7 +35,7 @@ namespace DVB.MediaServer2 {
     public class DeviceGroupsMediaContainer2 : GLib.Object, MediaContainer2, MediaObject2 {
         
         private HashMap<uint, ChannelsMediaContainer2> containers;
-        private DBus.ObjectPath path;
+        private ObjectPath path;
         
         construct {
             containers = new  HashMap<uint, ChannelsMediaContainer2> ();
@@ -44,7 +44,7 @@ namespace DVB.MediaServer2 {
             manager.group_added.connect (this.on_device_added);
             manager.group_removed.connect (this.on_device_removed);
             
-            this.path = new DBus.ObjectPath (ROOT_PATH);
+            this.path = new ObjectPath (ROOT_PATH);
         }
         
         public void create_container_services () {
@@ -57,23 +57,21 @@ namespace DVB.MediaServer2 {
         
         private void create_service (DeviceGroup devgroup) {
             debug ("Creating container for device group %u", devgroup.Id);
-        
-            var conn = Utils.get_dbus_connection ();
-            if (conn == null) {
-                critical ("Could not get DBus connection");
-                return;
-            }
+
             var devgroup_container = new ChannelsMediaContainer2 (
                     devgroup, this.path);
-            conn.register_object (
+            Utils.dbus_register_object<MediaContainer2> (conn,
                     devgroup_container.Path,
                     devgroup_container);
-            devgroup_container.create_item_services ();
-                    
+            Utils.dbus_register_object<MediaObject2> (conn,
+                    devgroup_container.Path,
+                    devgroup_container);
+            devgroup_container.create_item_services (conn);
+
             this.containers.set (devgroup.Id, devgroup_container);
         }
         
-        public DBus.ObjectPath Parent {
+        public ObjectPath Parent {
             owned get {
                 // root container => ref to itsself
                 return this.path;
@@ -122,18 +120,18 @@ namespace DVB.MediaServer2 {
             }
         }
      
-        public GLib.HashTable<string, Value?>[] ListContainers (
-                uint offset, uint max, string[] filter) throws DBus.Error {
+        public GLib.HashTable<string, Variant?>[] ListContainers (
+                uint offset, uint max, string[] filter) throws DBusError {
 
             uint num_elements = get_num_elements (this.containers.size, offset, max);
-            GLib.HashTable<string, Value?>[] hash =
-                new GLib.HashTable<string, Value?>[num_elements];
+            GLib.HashTable<string, Variant?>[] hash =
+                new GLib.HashTable<string, Variant?>[num_elements];
 
             int i = 0;
             foreach (ChannelsMediaContainer2 container in this.containers.values) {
                 if (i >= offset) {
                     uint index = i - offset;
-                    hash[index] = new GLib.HashTable<string, Value?> (GLib.str_hash, GLib.str_equal);
+                    hash[index] = new GLib.HashTable<string, Variant?> (GLib.str_hash, GLib.str_equal);
                     hash[index].insert("Path", container.Path);
                     hash[index].insert("DisplayName", container.DisplayName);
                     hash[index].insert("ChildCount", container.ChildCount);
@@ -149,14 +147,14 @@ namespace DVB.MediaServer2 {
             return hash;
         }
 
-        public GLib.HashTable<string, Value?>[] ListChildren (
-                uint offset, uint max, string[] filter) throws DBus.Error {
+        public GLib.HashTable<string, Variant?>[] ListChildren (
+                uint offset, uint max, string[] filter) throws DBusError {
             return ListContainers(offset, max, filter);
         }
 
-        public GLib.HashTable<string, Value?>[] ListItems (
-                uint offset, uint max, string[] filter) throws DBus.Error {
-            return new GLib.HashTable<string, Value?>[0];
+        public GLib.HashTable<string, Variant?>[] ListItems (
+                uint offset, uint max, string[] filter) throws DBusError {
+            return new GLib.HashTable<string, Variant?>[0];
         }
         
         private void on_device_added (uint group_id) {
@@ -180,7 +178,7 @@ namespace DVB.MediaServer2 {
      */
     public class ChannelsMediaContainer2 : GLib.Object, MediaContainer2, MediaObject2 {
 
-        public DBus.ObjectPath parent;
+        public ObjectPath parent;
 
         private DeviceGroup device_group;
         private HashMap<uint, ChannelMediaItem2> items;
@@ -189,12 +187,12 @@ namespace DVB.MediaServer2 {
             this.items = new HashMap<uint, ChannelMediaItem2> ();
         }
         
-        public ChannelsMediaContainer2(DeviceGroup devgroup, DBus.ObjectPath parent) {
+        public ChannelsMediaContainer2(DeviceGroup devgroup, ObjectPath parent) {
             this.device_group = devgroup;
             this.parent = parent;
         }
         
-        public void create_item_services () {
+        public void create_item_services (DBusConnection conn) {
             foreach (Channel channel in this.device_group.Channels) {
                 this.create_service (channel);
             }
@@ -202,22 +200,18 @@ namespace DVB.MediaServer2 {
         
         public void create_service (Channel channel) {
             debug ("Creating container for channel %u", channel.Sid);
-        
-            var conn = Utils.get_dbus_connection ();
-            if (conn == null) {
-                critical ("Could not get DBus connection");
-                return;
-            }
+
             var channel_item = new ChannelMediaItem2 (
-                    channel, new DBus.ObjectPath (this.Path));
-            conn.register_object (
-                    channel_item.Path,
-                    channel_item);
+                    channel, new ObjectPath (this.Path));
+            Utils.dbus_register_object<MediaItem2> (conn,
+                    channel_item.Path, channel_item);
+            Utils.dbus_register_object<MediaObject2> (conn,
+                    channel_item.Path, channel_item);
                     
             this.items.set (channel.Sid, channel_item);
         }
     
-        public DBus.ObjectPath Parent {
+        public ObjectPath Parent {
             owned get {
                 return this.parent;
             }
@@ -265,19 +259,19 @@ namespace DVB.MediaServer2 {
             }
         }
 
-        public GLib.HashTable<string, Value?>[] ListItems (
-                uint offset, uint max, string[] filter) throws DBus.Error {
+        public GLib.HashTable<string, Variant?>[] ListItems (
+                uint offset, uint max, string[] filter) throws DBusError {
         
             uint num_elements = get_num_elements (this.items.size, offset, max);
 
-            GLib.HashTable<string, Value?>[] hash =
-                new GLib.HashTable<string, Value?>[num_elements];
+            GLib.HashTable<string, Variant?>[] hash =
+                new GLib.HashTable<string, Variant?>[num_elements];
 
             uint i = 0;
             foreach (ChannelMediaItem2 item in this.items.values) {
                 if (i >= offset) {
                     uint index = i - offset;
-                    hash[index] = new  GLib.HashTable<string, Value?> (GLib.str_hash, GLib.str_equal);
+                    hash[index] = new  GLib.HashTable<string, Variant?> (GLib.str_hash, GLib.str_equal);
                     hash[index].insert("Path", item.Path);
                     hash[index].insert("DisplayName", item.DisplayName);
                     hash[index].insert("Type", item.Type);
@@ -293,13 +287,13 @@ namespace DVB.MediaServer2 {
             return hash;
         }
         
-        public GLib.HashTable<string, Value?>[] ListContainers (
-                uint offset, uint max, string[] filter) throws DBus.Error {
-            return new GLib.HashTable<string, Value?>[0];
+        public GLib.HashTable<string, Variant?>[] ListContainers (
+                uint offset, uint max, string[] filter) throws DBusError {
+            return new GLib.HashTable<string, Variant?>[0];
         }
 
-        public GLib.HashTable<string, Value?>[] ListChildren (
-                uint offset, uint max, string[] filter) throws DBus.Error {
+        public GLib.HashTable<string, Variant?>[] ListChildren (
+                uint offset, uint max, string[] filter) throws DBusError {
             return ListItems(offset, max, filter);
         }
         
@@ -312,14 +306,14 @@ namespace DVB.MediaServer2 {
     public class ChannelMediaItem2 : GLib.Object, MediaItem2, MediaObject2 {
 
         private Channel channel;
-        private DBus.ObjectPath parent;
+        private ObjectPath parent;
 
-        public ChannelMediaItem2(Channel channel, DBus.ObjectPath parent) {
+        public ChannelMediaItem2(Channel channel, ObjectPath parent) {
             this.channel = channel;
             this.parent = parent;
         }
     
-        public DBus.ObjectPath Parent {
+        public ObjectPath Parent {
             owned get {
                 return this.parent;
             }
@@ -373,35 +367,20 @@ namespace DVB.MediaServer2 {
     }
 
     private static DeviceGroupsMediaContainer2 root_container;
+    private static DBusConnection conn;
+
+    public static void on_bus_acquired (DBusConnection _conn) {
+        root_container = new DeviceGroupsMediaContainer2 ();
+        Utils.dbus_register_object<MediaContainer2> (_conn, root_container.Parent,
+            root_container);
+        Utils.dbus_register_object<MediaObject2> (_conn, root_container.Parent,
+            root_container);
+        conn = _conn;
+        root_container.create_container_services ();
+    }
 
     public static bool start_rygel_services () {
-        try {
-            var conn = DBus.Bus.get (DBus.BusType.SESSION);
-
-            dynamic DBus.Object bus = conn.get_object (
-                    "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
-
-            // try to register service in session bus
-            uint request_name_result = bus.RequestName (SERVICE_NAME, (uint) 0);
-
-            if (request_name_result == DBus.RequestNameReply.PRIMARY_OWNER) {
-                message ("Creating new Rygel MediaServer D-Bus service");
-
-                root_container = new DeviceGroupsMediaContainer2 ();
-                root_container.create_container_services ();
-
-                conn.register_object (
-                    root_container.Parent,
-                    root_container);
-            } else {
-                warning ("Rygel MediaServer D-Bus service is already running");
-                return false;
-            }
-
-        } catch (Error e) {
-            critical ("Oops %s", e.message);
-            return false;
-        }
+        Utils.dbus_own_name (SERVICE_NAME, on_bus_acquired);
         return false;
     }
 

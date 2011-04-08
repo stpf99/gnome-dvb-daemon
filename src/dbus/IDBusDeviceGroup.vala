@@ -31,14 +31,14 @@ namespace DVB {
          * @returns: Name of adapter type the group holds
          * or an empty string when group with given id doesn't exist.
          */
-        public abstract string GetType () throws DBus.Error;
+        public abstract string GetType () throws DBusError;
         
         /**
          * @returns: Object path of the device's recorder
          * 
          * Returns the object path to the device's recorder.
          */
-        public abstract DBus.ObjectPath GetRecorder () throws DBus.Error;
+        public abstract ObjectPath GetRecorder () throws DBusError;
                
          /**
          * @adapter: Number of the device's adapter
@@ -50,7 +50,7 @@ namespace DVB {
          * The new device will inherit all settings from the group's
          * reference device.
          */
-        public abstract bool AddDevice (uint adapter, uint frontend) throws DBus.Error; 
+        public abstract bool AddDevice (uint adapter, uint frontend) throws DBusError; 
               
         /**
          * @adapter: Number of the device's adapter
@@ -60,47 +60,47 @@ namespace DVB {
          * Removes the device from the group. If the group contains
          * no devices after the removal it's removed as well.
          */
-        public abstract bool RemoveDevice (uint adapter, uint frontend) throws DBus.Error;
+        public abstract bool RemoveDevice (uint adapter, uint frontend) throws DBusError;
             
         /**
          * @returns: Object path to the ChannelList service for this device
          */
-        public abstract DBus.ObjectPath GetChannelList () throws DBus.Error;
+        public abstract ObjectPath GetChannelList () throws DBusError;
         
         /**
          * @returns: Name of the device group
          */
-        public abstract string GetName () throws DBus.Error;
+        public abstract string GetName () throws DBusError;
         
         /**
          * @name: Name of the group
          * @returns: TRUE on success
          */
-        public abstract bool SetName (string name) throws DBus.Error;
+        public abstract bool SetName (string name) throws DBusError;
         
         /**
          * @returns: List of paths to the devices that are part of
          * the group (e.g. /dev/dvb/adapter0/frontend0)
          */
-        public abstract string[] GetMembers () throws DBus.Error;
+        public abstract string[] GetMembers () throws DBusError;
         
         /**
          * @channel_sid: ID of the channel
          * @opath: Object path to Schedule service
          * @returns: TRUE on success
          */
-        public abstract bool GetSchedule (uint channel_sid, out DBus.ObjectPath opath) throws DBus.Error;
+        public abstract bool GetSchedule (uint channel_sid, out ObjectPath opath) throws DBusError;
 
         /**
          * @returns: Location of the recordings directory
          */
-        public abstract string GetRecordingsDirectory () throws DBus.Error;
+        public abstract string GetRecordingsDirectory () throws DBusError;
         
         /**
          * @location: Location of the recordings directory
          * @returns: TRUE on success
          */
-        public abstract bool SetRecordingsDirectory (string location) throws DBus.Error;
+        public abstract bool SetRecordingsDirectory (string location) throws DBusError;
 
     }
     

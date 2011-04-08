@@ -27,8 +27,8 @@ namespace Main {
     private static bool has_version;
     private static bool disable_epg_scanner;
     private static bool disable_mediaserver;
-    private static bool enable_mediaserver2;
     private static MainLoop mainloop;
+    public static DBusConnection conn;
 
     const OptionEntry[] options =  {
         { "debug", 'd', 0, OptionArg.NONE, out has_debug,
@@ -37,64 +37,35 @@ namespace Main {
         "Display version number", null},
         { "disable-epg-scanner", 0, 0, OptionArg.NONE,
         out disable_epg_scanner, "Disable scanning for EPG data", null},
-        { "disable-mediaserver", 0, 0, OptionArg.NONE,
-        out disable_mediaserver, "Disable exporting devices and channels for Rygel", null},
-        { "enable-mediaserver2", 0 ,0, OptionArg.NONE, out enable_mediaserver2,
-        "Export devices and channels according to Rygel's MediaServer2 specification",
+        { "disable-mediaserver2", 0 ,0, OptionArg.NONE, out disable_mediaserver,
+        "Disable exporting devices and channels according to Rygel's MediaServer2 specification",
         null},
         { null }
     };
-    
-    private static bool start_manager () {
-        try {
-            var conn = DBus.Bus.get (DBus.BusType.SESSION);
-            
-            dynamic DBus.Object bus = conn.get_object (
-                    "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
-            
-            // try to register service in session bus
-            uint request_name_result = bus.RequestName (DVB.Constants.DBUS_SERVICE, (uint) 0);
 
-            if (request_name_result == DBus.RequestNameReply.PRIMARY_OWNER) {
-                message ("Creating new Manager D-Bus service");
-            
-                manager = DVB.Manager.get_instance ();
-                                
-                conn.register_object (
-                    DVB.Constants.DBUS_MANAGER_PATH,
-                    manager);
-            } else {
-                warning ("Manager D-Bus service is already running");
-                return false;
-            }
+    private static void start_manager () {
+        manager = DVB.Manager.get_instance ();
+        DVB.Utils.dbus_own_name (DVB.Constants.DBUS_SERVICE,
+            on_bus_acquired);
+    }
 
-        } catch (Error e) {
-            critical ("Oops %s", e.message);
-            return false;
-        }
-        
-        return true;
+    private static void on_bus_acquired (DBusConnection _conn) {
+        DVB.Utils.dbus_register_object<DVB.IDBusManager> (_conn,
+            DVB.Constants.DBUS_MANAGER_PATH, manager);
+        conn = _conn;
+        start_recordings_store ();
+
+        restore_device_groups ();
     }
-    
-    private static bool start_recordings_store () {
-       message ("Creating new RecordingsStore D-Bus service");
-       
-       try {
-            var conn = DBus.Bus.get (DBus.BusType.SESSION);
-        
-            recstore = DVB.RecordingsStore.get_instance ();
-                            
-            conn.register_object (
-                DVB.Constants.DBUS_RECORDINGS_STORE_PATH,
-                recstore);
-        } catch (Error e) {
-            critical ("Oops %s", e.message);
-            return false;
-        }
-        
-        return true;
+
+    private static void start_recordings_store () {
+        message ("Creating new RecordingsStore D-Bus service");
+
+        recstore = DVB.RecordingsStore.get_instance ();
+        DVB.Utils.dbus_register_object<DVB.IDBusRecordingsStore> (conn,
+                DVB.Constants.DBUS_RECORDINGS_STORE_PATH, recstore);
     }
-    
+
     private static void on_exit (int signum) {
         message ("Exiting");
         
@@ -206,19 +177,12 @@ namespace Main {
             return -1;
         }
         
-        if (!start_manager ()) return -1;
-
-        if (!start_recordings_store ()) return -1;
-        
-        restore_device_groups ();
+        start_manager ();
 
         Idle.add (DVB.RTSPServer.start);
 
         if (!disable_mediaserver) {
-            if (enable_mediaserver2)
-                Idle.add (DVB.MediaServer2.start_rygel_services);
-            else
-                Idle.add (DVB.MediaServer.start_rygel_services);
+            Idle.add (DVB.MediaServer2.start_rygel_services);
         }
 
         // Start GLib mainloop

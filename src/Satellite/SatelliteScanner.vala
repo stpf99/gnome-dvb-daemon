@@ -31,14 +31,14 @@ namespace DVB {
         public abstract signal void frontend_stats (double signal_strength,
             double signal_noise_ratio);
         
-        public abstract void Run () throws DBus.Error;
-        public abstract void Destroy () throws DBus.Error;
-        public abstract bool WriteAllChannelsToFile (string path) throws DBus.Error;
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBus.Error;
+        public abstract void Run () throws DBusError;
+        public abstract void Destroy () throws DBusError;
+        public abstract bool WriteAllChannelsToFile (string path) throws DBusError;
+        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBusError;
         
         public abstract void AddScanningData (uint frequency,
                                      string polarization, // "horizontal", "vertical"
-                                     uint symbol_rate) throws DBus.Error;
+                                     uint symbol_rate) throws DBusError;
         
         /**
          * @path: Path to file containing scanning data
@@ -46,7 +46,7 @@ namespace DVB {
          *
          * Parses initial tuning data from a file as provided by dvb-apps
          */                            
-        public abstract bool AddScanningDataFromFile (string path) throws DBus.Error;
+        public abstract bool AddScanningDataFromFile (string path) throws DBusError;
     }
     
     public class SatelliteScanner : Scanner, IDBusSatelliteScanner {
@@ -56,7 +56,7 @@ namespace DVB {
         }
      
         public void AddScanningData (uint frequency,
-                string polarization, uint symbol_rate) throws DBus.Error {
+                string polarization, uint symbol_rate) throws DBusError {
             this.add_scanning_data (frequency, polarization, symbol_rate);
         }
                 

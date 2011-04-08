@@ -36,17 +36,17 @@ namespace DVB {
         /**
          * @returns: List of channel IDs aka SIDs of all channels
          */
-        public abstract uint[] GetChannels () throws DBus.Error;
+        public abstract uint[] GetChannels () throws DBusError;
         
         /**
          * @returns: List of channel IDs aka SIDs of radio channels
          */
-        public abstract uint[] GetRadioChannels () throws DBus.Error;
+        public abstract uint[] GetRadioChannels () throws DBusError;
         
         /**
          * @returns: List of channel IDs aka SIDs of TV channels
          */
-        public abstract uint[] GetTVChannels () throws DBus.Error;
+        public abstract uint[] GetTVChannels () throws DBusError;
         
         /**
          * @channel_id: ID of channel
@@ -54,7 +54,7 @@ namespace DVB {
          * otherwise an empty string
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelName (uint channel_id, out string channel_name) throws DBus.Error;
+        public abstract bool GetChannelName (uint channel_id, out string channel_name) throws DBusError;
         
         /**
          * @channel_id: ID of channel
@@ -63,44 +63,44 @@ namespace DVB {
          * string
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelNetwork (uint channel_id, out string network) throws DBus.Error;
+        public abstract bool GetChannelNetwork (uint channel_id, out string network) throws DBusError;
         
         /**
          * @channel_id: ID of channel
          * @radio: Whether the channel is a radio channel or not
          * @returns: TRUE on success
          */
-        public abstract bool IsRadioChannel (uint channel_id, out bool radio) throws DBus.Error;
+        public abstract bool IsRadioChannel (uint channel_id, out bool radio) throws DBusError;
         
         /**
          * @channel_id: ID of channel
          * @url: URL to watch the channel
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelURL (uint channel_id, out string url) throws DBus.Error;
+        public abstract bool GetChannelURL (uint channel_id, out string url) throws DBusError;
         
-        public abstract ChannelInfo[] GetChannelInfos () throws DBus.Error;
+        public abstract ChannelInfo[] GetChannelInfos () throws DBusError;
 
 		/**
          * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
 		public abstract bool GetChannelsOfGroup (int channel_group_id,
-			out uint[] channel_ids) throws DBus.Error;
+			out uint[] channel_ids) throws DBusError;
 
 		/**
          * @channel_id: ID of channel
 	     * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */
-		public abstract bool AddChannelToGroup (uint channel_id, int channel_group_id) throws DBus.Error;
+		public abstract bool AddChannelToGroup (uint channel_id, int channel_group_id) throws DBusError;
 
  		/**
 		 * @channel_id: ID of channel
 	     * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
          */       
-		public abstract bool RemoveChannelFromGroup (uint channel_id, int channel_group_id) throws DBus.Error;
+		public abstract bool RemoveChannelFromGroup (uint channel_id, int channel_group_id) throws DBusError;
 	}
 
 }
