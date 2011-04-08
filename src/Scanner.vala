@@ -576,7 +576,7 @@ namespace DVB {
                 // Returns "service-%d"
                 string name = service.get_name ();
                 // Get the number at the end
-                int sid = name.substring (8, name.length - 8).to_int ();
+                int sid = int.parse (name.substring (8, name.length - 8));
                 
                 if (service.has_field ("name"))
                     name = service.get_string ("name");

@@ -101,7 +101,7 @@ namespace DVB {
                 return;
             }
             
-            uint freq = (uint)cols[1].to_int ();
+            uint freq = (uint)int.parse (cols[1]);
             
             uint hierarchy = 0;
             if (cols[8] == "1") {
@@ -113,18 +113,18 @@ namespace DVB {
             }
             
             string bandwidth_str = cols[2].split("MHz")[0];
-            uint bandwidth = (uint)bandwidth_str.to_int ();
+            uint bandwidth = (uint)int.parse (bandwidth_str);
             string transmode = cols[6];
             string code_rate_hp = cols[3];
             string code_rate_lp = cols[4];
             string constellation = cols[5];
 
             uint guard;
-            if (cols[7].str ("/") == null) {
+            if (cols[7].index_of ("/") == -1) {
                 guard = 0;
             } else {
                 string guard_str = cols[7].split("/")[1];
-                guard = (uint)guard_str.to_int ();
+                guard = (uint)int.parse (guard_str);
             }
 
             this.add_scanning_data (freq, hierarchy,

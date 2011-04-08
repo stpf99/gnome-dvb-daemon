@@ -77,8 +77,8 @@ namespace DVB {
 
             if (cols.length < 5) return;
             
-            uint freq = (uint)cols[1].to_int ();
-            uint symbol_rate = (uint)cols[3].to_int () / 1000;
+            uint freq = (uint)int.parse (cols[1]);
+            uint symbol_rate = (uint)(int.parse (cols[3]) / 1000);
             
             string pol;
             string lower_pol = cols[2].down ();

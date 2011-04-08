@@ -78,9 +78,9 @@ namespace DVB {
    
             if (cols.length < 5) return;
             
-            uint freq = (uint)cols[1].to_int ();
+            uint freq = (uint)int.parse (cols[1]);
             string modulation = cols[4];
-            uint symbol_rate = (uint)(cols[2].to_int () / 1000);
+            uint symbol_rate = (uint)(int.parse (cols[2]) / 1000);
             string code_rate = cols[3];
             
             this.add_scanning_data (freq, modulation, symbol_rate, code_rate);

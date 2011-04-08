@@ -104,7 +104,7 @@ namespace DVB.io {
                         channel.Name = "Bad encoding";
                     }
                 } else if (i == 1) {
-                    channel.Frequency = (uint)val.to_int ();
+                    channel.Frequency = (uint)int.parse (val);
                 } else if (i == 2) {
                     int eval;
                     if (get_value_with_prefix (typeof(DvbSrcInversion), val,
@@ -178,11 +178,11 @@ namespace DVB.io {
                         break;
                     }
                 } else if (i == 10) {                
-                    channel.VideoPID = (uint)val.to_int ();
+                    channel.VideoPID = (uint)int.parse (val);
                 } else if (i == 11) {
-                    channel.AudioPIDs.add ((uint)val.to_int ());
+                    channel.AudioPIDs.add ((uint)int.parse (val));
                 } else if (i == 12) {
-                    channel.Sid = (uint)val.to_int ();
+                    channel.Sid = (uint)int.parse (val);
                 }
                 
                 i++;
@@ -214,21 +214,21 @@ namespace DVB.io {
                     }
                 } else if (i == 1) {
                     // frequency is stored in MHz
-                    channel.Frequency = (uint)(val.to_int () * 1000);
+                    channel.Frequency = (uint)(int.parse (val) * 1000);
                 } else if (i == 2) {
                     channel.Polarization = val;
                 } else if (i == 3) {
                     // Sat number
-                    channel.DiseqcSource = val.to_int ();
+                    channel.DiseqcSource = int.parse (val);
                 } else if (i == 4) {
                     // symbol rate is stored in kBaud
-                    channel.SymbolRate = (uint)val.to_int();
+                    channel.SymbolRate = (uint)int.parse (val);
                 } else if (i == 5) {                
-                    channel.VideoPID = (uint)val.to_int ();
+                    channel.VideoPID = (uint)int.parse (val);
                 } else if (i == 6) {
-                    channel.AudioPIDs.add ((uint)val.to_int ());
+                    channel.AudioPIDs.add ((uint)int.parse (val));
                 } else if (i == 7) {
-                    channel.Sid = (uint)val.to_int ();
+                    channel.Sid = (uint)int.parse (val);
                 }
                 
                 i++;
@@ -259,7 +259,7 @@ namespace DVB.io {
                         channel.Name = "Bad encoding";
                     }
                 } else if (i == 1) {
-                    channel.Frequency = (uint)val.to_int ();
+                    channel.Frequency = (uint)int.parse (val);
                 } else if (i == 2) {
                     int eval;
                     if (get_value_with_prefix (typeof(DvbSrcInversion), val,
@@ -270,7 +270,7 @@ namespace DVB.io {
                         break;
                     }
                 } else if (i == 3) {
-                    channel.SymbolRate = (uint)(val.to_int () / 1000);
+                    channel.SymbolRate = (uint)(int.parse (val) / 1000);
                 } else if (i == 4) {
                     int eval;
                     if (get_value_with_prefix (typeof(DvbSrcCodeRate), val,
@@ -290,11 +290,11 @@ namespace DVB.io {
                         break;
                     }
                 } else if (i == 6) {                
-                    channel.VideoPID = (uint)val.to_int ();
+                    channel.VideoPID = (uint)int.parse (val);
                 } else if (i == 7) {
-                    channel.AudioPIDs.add ((uint)val.to_int ());
+                    channel.AudioPIDs.add ((uint)int.parse (val));
                 } else if (i == 8) {
-                    channel.Sid = (uint)val.to_int ();
+                    channel.Sid = (uint)int.parse (val);
                 }
                 
                 i++;

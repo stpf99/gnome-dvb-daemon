@@ -148,7 +148,7 @@ namespace DVB.io {
         	while ((line = reader.read_line (out len, null)) != null) {
                 switch (line_number) {
                     case 0:
-                        rec.Id = (uint32)line.to_int ();
+                        rec.Id = (uint32)int.parse (line);
                     break;
                     
                     case 1:
@@ -175,7 +175,7 @@ namespace DVB.io {
                     }
                     
                     case 4:
-                        rec.Length = (int64)line.to_int ();
+                        rec.Length = (int64)int.parse (line);
                     break;
                     
                     case 5:

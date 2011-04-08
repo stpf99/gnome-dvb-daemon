@@ -36,9 +36,9 @@ namespace DVB {
           	string elem;
           	while ((elem = path_elements[i]) != null) {
           	    if (i == 1)
-          	        grpnr = (uint)elem.to_int ();
+          	        grpnr = (uint)int.parse (elem);
           	    else if (i == 2)
-          	        sidnr = (uint)elem.to_int ();
+          	        sidnr = (uint)int.parse (elem);
           	    
           	    i++;
           	}
