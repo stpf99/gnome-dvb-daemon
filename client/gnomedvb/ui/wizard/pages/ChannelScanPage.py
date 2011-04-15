@@ -163,7 +163,7 @@ class ChannelScanPage(BasePage):
         return [row[self.COL_SID] for row in self.tvchannels if row[self.COL_ACTIVE]]
         
     def start_scanning(self, adapter, frontend, tuning_data):
-        def data_loaded(success):
+        def data_loaded(proxy, success, user_data):
             if success:
                 self._scanner.run()
             else:
@@ -182,7 +182,7 @@ class ChannelScanPage(BasePage):
 
         if isinstance(tuning_data, str):
             self._scanner.add_scanning_data_from_file (tuning_data,
-                reply_handler=data_loaded, error_handler=global_error_handler)
+                result_handler=data_loaded, error_handler=global_error_handler)
         elif isinstance(tuning_data, list):
             for data in tuning_data:
                 self._scanner.add_scanning_data(data)

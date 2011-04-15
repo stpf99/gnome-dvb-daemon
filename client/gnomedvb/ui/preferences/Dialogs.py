@@ -69,7 +69,7 @@ class AddToGroupDialog (Gtk.Dialog):
                     if name == "":
                         name = "Group %d" % group["id"]
                     self.groups.append([name, group])
-        model.get_registered_device_groups(reply_handler=append_groups)
+        model.get_registered_device_groups(result_handler=append_groups)
             
     def on_combo_changed(self, combo):
         aiter = combo.get_active_iter()

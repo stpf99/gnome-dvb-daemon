@@ -68,17 +68,17 @@ class SetupDevicePage(BasePage):
     def run(self, create_group):
         self.show_progressbar()
         
-        def reply_handler(success):
+        def reply_handler(proxy, success, user_data):
             self.destroy_progressbar()
             self.__success = True
             self.emit("finished", True)
         
         existing_group = self.get_existing_group_of_same_type()
         if existing_group == None:
-            self.create_group_automatically(reply_handler=reply_handler,
+            self.create_group_automatically(result_handler=reply_handler,
                 error_handler=gnomedvb.global_error_handler)
         else:
-            self.add_to_group(existing_group, reply_handler=reply_handler,
+            self.add_to_group(existing_group, result_handler=reply_handler,
                 error_handler=gnomedvb.global_error_handler)
          
     def show_progressbar(self):
@@ -111,15 +111,15 @@ class SetupDevicePage(BasePage):
                 break
         return existing_group
 
-    def create_group_automatically(self, reply_handler, error_handler):
-        def write_channels_handler(success):
+    def create_group_automatically(self, result_handler, error_handler):
+        def write_channels_handler(proxy, success, user_data):
             if success:
                 recordings_dir = gnomedvb.get_default_recordings_dir()
                 name = "%s %s" % (DVB_TYPE_TO_DESC[self.__adapter_info["type"]], _("TV"))
                 self.__model.add_device_to_new_group(self.__adapter_info['adapter'],
                                 self.__adapter_info['frontend'], channels_file,
                                 recordings_dir, name,
-                                reply_handler=reply_handler, error_handler=error_handler)
+                                result_handler=result_handler, error_handler=error_handler)
             else:
                 self.show_error()
 
@@ -133,12 +133,12 @@ class SetupDevicePage(BasePage):
                 "channels_%s.conf" % self.__adapter_info["type"])
             
             self.__scanner.write_channels_to_file(self.__channels, channels_file,
-                reply_handler=write_channels_handler, error_handler=error_handler)
+                result_handler=write_channels_handler, error_handler=error_handler)
                         
-    def add_to_group(self, group, reply_handler, error_handler):
+    def add_to_group(self, group, result_handler, error_handler):
         self.__summary = _('The device has been added to the group %s.') % group['name']
         group.add_device(self.__adapter_info['adapter'],
-            self.__adapter_info['frontend'], reply_handler=reply_handler,
+            self.__adapter_info['frontend'], result_handler=result_handler,
             error_handler=error_handler)
 
     def show_error(self):

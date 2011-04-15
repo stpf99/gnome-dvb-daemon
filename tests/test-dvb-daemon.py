@@ -1,17 +1,17 @@
 import gnomedvb
 import gobject
 import unittest
-import dbus
 import sys
 import random
 import datetime
 import time
 import re
+from gi.repository import GLib
 
 class DVBTestCase(unittest.TestCase):
 
     def assertSuccessAndType(self, data, objtype):
-        self.assertType(data[1], dbus.Boolean)
+        self.assertType(data[1], bool)
         self.assertTrue(data[1])
         self.assertType(data[0], objtype)
         
@@ -32,15 +32,15 @@ class TestManager(DVBTestCase):
             
     def testGetChannelGroups(self):
         data = self.manager.get_channel_groups()
-        self.assertType(data, dbus.Array)
+        self.assertType(data, list)
         for cid, name in data:
-            self.assertType(cid, dbus.Int32)
-            self.assertType(name, dbus.String)
+            self.assertType(cid, int)
+            self.assertType(name, str)
             
     def testAddDeleteChannelGroup(self):
         name = "Test Group %f" % random.random()
         data = self.manager.add_channel_group(name)
-        self.assertSuccessAndType(data, dbus.Int32)
+        self.assertSuccessAndType(data, int)
         has_group = False
         for gid, gname in self.manager.get_channel_groups():
             if gid == data[0]:
@@ -72,10 +72,10 @@ class TestDeviceGroup(DeviceGroupTestCase):
     def testGetSetType(self):
         for dg in self.devgroups:
             dtype = dg.get_type()
-            self.assertType(dtype, dbus.String)
+            self.assertType(dtype, str)
             self.assert_(dtype in ("DVB-C", "DVB-S", "DVB-T"))
             name_before = dg.get_name()
-            self.assertType(name_before, dbus.String)
+            self.assertType(name_before, str)
             new_name = "%s %f" % (name_before, random.random())
             self.assertTrue(dg.set_name(new_name))
             self.assertEqual(dg.get_name(), new_name)
@@ -88,7 +88,7 @@ class TestDeviceGroup(DeviceGroupTestCase):
                 
     def testGetRecordingsDirectory(self):
         for dg in self.devgroups:
-            self.assertType(dg.get_recordings_directory(), dbus.String)
+            self.assertType(dg.get_recordings_directory(), str)
 
 class TestScanner(DeviceGroupTestCase):
 
@@ -102,11 +102,26 @@ class TestScanner(DeviceGroupTestCase):
                 match = self.path_regex.search(member)
                 self.assertNotEqual(match, None)
                 adapter, frontend = match.group(1, 2)
-                scanner = self.manager.get_scanner_for_device(adapter,
-                    frontend)
+                scanner = self.manager.get_scanner_for_device(int(adapter),
+                    int(frontend))
                 self.assertType(scanner, gnomedvb.DVBScannerClient)
-                scanner.destroy()
 
+                data = {"frequency": GLib.Variant('u', 738000000),
+                    "hierarchy": GLib.Variant('u', 0), # NONE
+                    "bandwidth": GLib.Variant('u', 8), # 8MHz
+                    "transmission-mode": GLib.Variant('s', "8k"),
+                    "code-rate-hp": GLib.Variant('s', "2/3"),
+                    "code-rate-lp": GLib.Variant('s', "NONE"),
+                    "constellation": GLib.Variant('s', "QAM16"),
+                    "guard-interval": GLib.Variant('u', 4),} # 1/4
+                success = scanner.add_scanning_data(data)
+                self.assertTrue(success)
+                self.assertType(success, bool)
+                scanner.run()
+
+                time.sleep(15)
+
+                scanner.destroy()
 
 class TestChannelList(DeviceGroupTestCase):
     
@@ -121,38 +136,38 @@ class TestChannelList(DeviceGroupTestCase):
     def testGetChannels(self):
         for cl in self.chanlists:
             ids = cl.get_channels()
-            self.assertTypeAll(ids, dbus.UInt32)
+            self.assertTypeAll(ids, long)
             for cid in ids:
                 self.assertSuccessAndType(cl.get_channel_name(cid),
-                    dbus.String)
+                    str)
                 self.assertSuccessAndType(cl.get_channel_network(cid),
-                    dbus.String)
+                    str)
                 self.assertSuccessAndType(cl.get_channel_url(cid),
-                    dbus.String)
+                    str)
                     
     def testGetChannelInfos(self):
         for cl in self.chanlists:
             for cid, name, is_radio in cl.get_channel_infos():
-                self.assertType(cid, dbus.UInt32)
-                self.assertType(name, dbus.String)
-                self.assertType(is_radio, dbus.Boolean)
+                self.assertType(cid, long)
+                self.assertType(name, str)
+                self.assertType(is_radio, bool)
             
     def testGetTVChannels(self):
         for cl in self.chanlists:
             ids = cl.get_tv_channels()
-            self.assertTypeAll(ids, dbus.UInt32)
+            self.assertTypeAll(ids, long)
             for cid in ids:
                 data = cl.is_radio_channel(cid)
-                self.assertSuccessAndType(data, dbus.Boolean)
+                self.assertSuccessAndType(data, bool)
                 self.assertFalse(data[0])
             
     def testGetRadioChannels(self):
         for cl in self.chanlists:
             ids = cl.get_radio_channels()
-            self.assertTypeAll(ids, dbus.UInt32)
+            self.assertTypeAll(ids, long)
             for cid in ids:
                 data = cl.is_radio_channel(cid)
-                self.assertSuccessAndType(data, dbus.Boolean)
+                self.assertSuccessAndType(data, bool)
                 self.assertTrue(data[0])
                 
     def testGetChannelsOfGroup(self):
@@ -161,7 +176,7 @@ class TestChannelList(DeviceGroupTestCase):
             for gid in self.changroups:
                 data = cl.get_channels_of_group(gid)
                 self.assertTrue(data[1])
-                self.assertTypeAll(data[0], dbus.UInt32)
+                self.assertTypeAll(data[0], long)
                 group_chans = set(data[0])
                 other_chans = all_channels - group_chans
                 for chan in other_chans:
@@ -203,7 +218,7 @@ class TestRecorder(DeviceGroupTestCase):
         self.assertTypeAll(self.recorder, gnomedvb.DVBRecorderClient)
 
     def _assert_time_equals(self, expected, actual):
-        self.assertTypeAll(actual, dbus.UInt32)
+        self.assertTypeAll(actual, long)
         self.assertEqual(len(actual), 5)
         self.assertEqual(expected.year, actual[0])
         self.assertEqual(expected.month, actual[1])
@@ -220,30 +235,30 @@ class TestRecorder(DeviceGroupTestCase):
 
             data = rec.add_timer(chan, delayed.year, delayed.month,
                 delayed.day, delayed.hour, delayed.minute, self.DURATION * 2)
-            self.assertSuccessAndType(data, dbus.UInt32)
+            self.assertSuccessAndType(data, long)
             rec_id = data[0]
 
             data = rec.get_start_time(rec_id)
-            self.assertSuccessAndType(data, dbus.Array)
+            self.assertSuccessAndType(data, list)
             start = data[0]
             self._assert_time_equals(delayed, start)
         
             data = rec.get_duration(rec_id)
-            self.assertSuccessAndType(data, dbus.UInt32)
+            self.assertSuccessAndType(data, long)
             self.assertEqual(data[0], self.DURATION * 2)
                 
             self.assertTrue(rec.set_start_time(rec_id, now.year, now.month,
                 now.day, now.hour, now.minute))
             
             data = rec.get_start_time(rec_id)
-            self.assertSuccessAndType(data, dbus.Array)
+            self.assertSuccessAndType(data, list)
             start = data[0]
             self._assert_time_equals(now, start)
 
             self.assertTrue(rec.set_duration(rec_id, self.DURATION))
             
             data = rec.get_duration(rec_id)
-            self.assertSuccessAndType(data, dbus.UInt32)
+            self.assertSuccessAndType(data, long)
             self.assertEqual(data[0], self.DURATION)
             
             time.sleep(10)
@@ -254,26 +269,26 @@ class TestRecorder(DeviceGroupTestCase):
                 now.hour, now.minute, self.DURATION))
             
             data = rec.get_end_time(rec_id)
-            self.assertSuccessAndType(data, dbus.Array)
+            self.assertSuccessAndType(data, list)
             end = data[0]
-            self.assertTypeAll(end, dbus.UInt32)
+            self.assertTypeAll(end, long)
             self.assertEqual(len(end), 5)
             endt = datetime.datetime(*end)
             self.assertEqual(endt - now,
                 datetime.timedelta(minutes=self.DURATION))
             
             self.assertSuccessAndType(rec.get_channel_name(rec_id),
-                dbus.String)
-            self.assertSuccessAndType(rec.get_title(rec_id), dbus.String)
+                str)
+            self.assertSuccessAndType(rec.get_title(rec_id), str)
             
             data = rec.get_all_informations(rec_id)
-            self.assertSuccessAndType(data, dbus.Struct)
+            self.assertSuccessAndType(data, tuple)
             rid, duration, active, channel, title = data[0]
             self.assertEqual(rid, rec_id)
             self.assertEqual(duration, self.DURATION)
             self.assertTrue(active)
-            self.assertType(channel, dbus.String)
-            self.assertType(title, dbus.String)
+            self.assertType(channel, str)
+            self.assertType(title, str)
 
             self.assertFalse(rec.set_start_time(rec_id, delayed.year,
                 delayed.month, delayed.day, delayed.hour, delayed.minute))
@@ -296,7 +311,7 @@ class TestRecorder(DeviceGroupTestCase):
             self.assertFalse(rec.get_all_informations(rec_id)[1])
             self.assertFalse(rec.set_start_time(rec_id, 2010, 1, 5, 15, 0))
 
-    
+
 class TestSchedule(DeviceGroupTestCase):
 
     def setUp(self):
@@ -314,33 +329,33 @@ class TestSchedule(DeviceGroupTestCase):
                 self._get_event_details(sched, eid)
             
     def _get_event_details(self, sched, eid):
-        self.assertSuccessAndType(sched.get_name(eid), dbus.String)
+        self.assertSuccessAndType(sched.get_name(eid), str)
         self.assertSuccessAndType(sched.get_short_description(eid),
-            dbus.String)
+            str)
         self.assertSuccessAndType(sched.get_extended_description(eid),
-            dbus.String)
-        self.assertSuccessAndType(sched.get_duration(eid), dbus.UInt32)
+            str)
+        self.assertSuccessAndType(sched.get_duration(eid), long)
         data = sched.get_local_start_time(eid)
-        self.assertSuccessAndType(data, dbus.Array)
-        self.assertTypeAll(data[0], dbus.UInt32)
+        self.assertSuccessAndType(data, list)
+        self.assertTypeAll(data[0], long)
         self.assertSuccessAndType(sched.get_local_start_timestamp(eid),
-            dbus.Int64)
-        self.assertSuccessAndType(sched.is_running(eid), dbus.Boolean)
-        self.assertSuccessAndType(sched.is_scrambled(eid), dbus.Boolean)
+            long)
+        self.assertSuccessAndType(sched.is_running(eid), bool)
+        self.assertSuccessAndType(sched.is_scrambled(eid), bool)
         
         data = sched.get_informations(eid)
-        self.assertSuccessAndType(data, dbus.Struct)
+        self.assertSuccessAndType(data, tuple)
         eeid, next, name, duration, desc = data[0]
         self.assertEqual(eeid, eid)
-        self.assertType(next, dbus.UInt32)
-        self.assertType(name, dbus.String)
-        self.assertType(duration, dbus.UInt32)
-        self.assertType(desc, dbus.String)
+        self.assertType(next, long)
+        self.assertType(name, str)
+        self.assertType(duration, long)
+        self.assertType(desc, str)
                 
     def testNowPlaying(self):
         for sched in self.schedules:
             eid = sched.now_playing()
-            self.assertType(eid, dbus.UInt32)
+            self.assertType(eid, long)
             if eid != 0:
                 self._get_event_details(sched, eid)
                 
@@ -349,7 +364,7 @@ class TestSchedule(DeviceGroupTestCase):
             eid = sched.now_playing()
             while eid != 0:
                 eid = sched.next(eid)
-                self.assertType(eid, dbus.UInt32)
+                self.assertType(eid, long)
                 
     def testEventNotExists(self):
         eid = 1
@@ -374,22 +389,22 @@ class TestRecordingsStore(DVBTestCase):
         rec_ids = self.recstore.get_recordings()
         for rid in rec_ids:
             self.assertSuccessAndType(self.recstore.get_channel_name(rid),
-                dbus.String)
+                str)
             self.assertSuccessAndType(self.recstore.get_location(rid),
-                dbus.String)
+                str)
             start_data = self.recstore.get_start_time(rid)
-            self.assertSuccessAndType(start_data, dbus.Array)
+            self.assertSuccessAndType(start_data, list)
             start = start_data[0]
             self.assertEqual(len(start), 5)
-            self.assertTypeAll(start, dbus.UInt32)
+            self.assertTypeAll(start, long)
             self.assertSuccessAndType(self.recstore.get_start_timestamp(rid),
-                dbus.Int64)
+                long)
             self.assertSuccessAndType(self.recstore.get_length(rid),
-                dbus.Int64)
+                long)
             self.assertSuccessAndType(self.recstore.get_name (rid),
-                dbus.String)
+                str)
             self.assertSuccessAndType(self.recstore.get_description(rid),
-                dbus.String)
+                str)
             
     def testGetRecordingsNotExists(self):
         rid = 1000
@@ -405,23 +420,23 @@ class TestRecordingsStore(DVBTestCase):
         rec_ids = self.recstore.get_recordings()
         for rid in rec_ids:
             data = self.recstore.get_all_informations(rid)
-            self.assertType(data[1], dbus.Boolean)
+            self.assertType(data[1], bool)
             self.assertTrue(data[1])
-            self.assertType(data[0], dbus.Struct)
+            self.assertType(data[0], tuple)
             rrid, name, desc, length, ts, chan, loc = data[0]
-            self.assertType(rrid, dbus.UInt32)
+            self.assertType(rrid, long)
             self.assertEqual(rrid, rid)
-            self.assertType(name, dbus.String)
-            self.assertType(desc, dbus.String)
-            self.assertType(length, dbus.Int64)
-            self.assertType(ts, dbus.Int64)
-            self.assertType(chan, dbus.String)
-            self.assertType(loc, dbus.String)
+            self.assertType(name, str)
+            self.assertType(desc, str)
+            self.assertType(length, long)
+            self.assertType(ts, long)
+            self.assertType(chan, str)
+            self.assertType(loc, str)
             
     def testGetAllInformationsNotExists(self):
         rid = 1000
         data = self.recstore.get_all_informations(rid)
-        self.assertType(data[1], dbus.Boolean)
+        self.assertType(data[1], bool)
         self.assertFalse(data[1])
 
 

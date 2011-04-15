@@ -175,11 +175,11 @@ class ChannelListEditorDialog(Gtk.Dialog):
         self.show_all()
         
     def fill_channel_groups(self):
-        def add_groups(groups):
+        def add_groups(proxy, groups, user_data):
             for gid, name in groups:
                 self.channel_groups.append([gid, name, False]) # not editable
         
-        self.model.get_channel_groups(reply_handler=add_groups,
+        self.model.get_channel_groups(result_handler=add_groups,
             error_handler=gnomedvb.global_error_handler)
             
     def fill_device_groups(self):
@@ -193,7 +193,7 @@ class ChannelListEditorDialog(Gtk.Dialog):
                 self.devgroups_frame.show()
             self.devgroupscombo.set_active(0)
                 
-        self.model.get_registered_device_groups(reply_handler=append_groups,
+        self.model.get_registered_device_groups(result_handler=append_groups,
             error_handler=gnomedvb.global_error_handler)
             
     def refill_channel_groups(self):
@@ -201,7 +201,8 @@ class ChannelListEditorDialog(Gtk.Dialog):
         self.fill_channel_groups()
         
     def fill_group_members(self):
-        def add_channels(channels, success):
+        def add_channels(proxy, data, user_data):
+            channels, success = data
             if success:
                 for channel_id in channels:
                     name, success = self.channel_list.get_channel_name(channel_id)
@@ -213,7 +214,7 @@ class ChannelListEditorDialog(Gtk.Dialog):
         if data:
             group_id, group_name = data
             self.channel_list.get_channels_of_group(group_id,
-                reply_handler=add_channels,
+                result_handler=add_channels,
                 error_handler=gnomedvb.global_error_handler)
             
     def get_selected_channels_all(self):
@@ -243,7 +244,8 @@ class ChannelListEditorDialog(Gtk.Dialog):
             self.channel_groups_view.get_column(0), True)
         self.channel_groups_view.scroll_to_cell(path)
         
-    def on_add_channel_group_finished(self, group_id, success):
+    def on_add_channel_group_finished(self, proxy, data, user_data):
+        group_id, success = data
         if success:
             self.refill_channel_groups()
         else:
@@ -266,11 +268,11 @@ class ChannelListEditorDialog(Gtk.Dialog):
             (msg, _("All assignments to this group will be lost.")))
         if dialog.run() == Gtk.ResponseType.YES:
             self.model.remove_channel_group(group_id,
-                reply_handler=self.on_remove_channel_group_finished,
+                result_handler=self.on_remove_channel_group_finished,
                 error_handler=gnomedvb.global_error_handler)
         dialog.destroy()
         
-    def on_remove_channel_group_finished(self, success):
+    def on_remove_channel_group_finished(self, proxy, success, user_data):
         if success:
             self.refill_channel_groups()
         else:
@@ -325,7 +327,7 @@ class ChannelListEditorDialog(Gtk.Dialog):
             self.channel_groups.remove(aiter)
         else:
             self.model.add_channel_group(new_text,
-                reply_handler=self.on_add_channel_group_finished,
+                result_handler=self.on_add_channel_group_finished,
                 error_handler=gnomedvb.global_error_handler)
                 
     def get_selected_group(self):

@@ -55,11 +55,11 @@ class RecordingsStore(Gtk.ListStore):
             self.append([start, channame, name, duration, location, rec_id])
         
     def _fill(self):
-        def append_rec(rids):
+        def append_rec(proxy, rids, user_data):
             for rid in rids:
                 self._append_recording(rid)
     
-        self._recstore.get_recordings(reply_handler=append_rec, error_handler=global_error_handler)
+        self._recstore.get_recordings(result_handler=append_rec, error_handler=global_error_handler)
 
     def _on_changed(self, recstore, rec_id, change_type):
         if change_type == 0:

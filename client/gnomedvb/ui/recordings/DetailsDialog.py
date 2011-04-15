@@ -31,7 +31,8 @@ class DetailsDialog(gnomedvb.ui.widgets.DetailsDialog.DetailsDialog):
         self._fill(rec_id)
         
     def _fill(self, rec_id):
-        def get_all_informations_callback(infos, success):
+        def get_all_informations_callback(proxy, data, user_data):
+            infos, success = data
             if success:
                 self.set_title(infos[1])
                 self.set_description(infos[2])
@@ -41,6 +42,6 @@ class DetailsDialog(gnomedvb.ui.widgets.DetailsDialog.DetailsDialog):
     
         recstore = gnomedvb.DVBRecordingsStoreClient()
         recstore.get_all_informations(rec_id,
-            reply_handler=get_all_informations_callback,
+            result_handler=get_all_informations_callback,
             error_handler=gnomedvb.global_error_handler)
 

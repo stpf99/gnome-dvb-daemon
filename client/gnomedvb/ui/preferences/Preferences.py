@@ -165,8 +165,8 @@ class Preferences(Gtk.Window):
             for group in groups:
                 self._append_group(group)
                 
-        self._model.get_unregistered_devices(reply_handler=append_unassigned)
-        self._model.get_registered_device_groups(reply_handler=append_registered)
+        self._model.get_unregistered_devices(result_handler=append_unassigned)
+        self._model.get_registered_device_groups(result_handler=append_registered)
 
     def _append_group(self, group, remove_unassigned=False):
         group.connect("device-added", self._on_group_device_added)
@@ -206,7 +206,7 @@ class Preferences(Gtk.Window):
         self.button_add.set_sensitive(val)
 
     def _on_button_remove_clicked(self, button):
-        def remove_device_callback(success):
+        def remove_device_callback(proxy, success, user_data):
             if success:
                 # "Success: remove device"
                 # Add device to unassigned devices
@@ -238,7 +238,7 @@ class Preferences(Gtk.Window):
             if response == Gtk.ResponseType.YES:
                 if isinstance(device, Device):
                     group.remove_device(device,
-                        reply_handler=remove_device_callback,
+                        result_handler=remove_device_callback,
                         error_handler=global_error_handler)
                         
     def _on_button_setup_clicked(self, button):
@@ -248,7 +248,7 @@ class Preferences(Gtk.Window):
         #    "--transient-for=%d" % self.get_window().xid])
 
     def _on_button_new_clicked(self, button):
-        def add_device_to_new_group_callback(success):
+        def add_device_to_new_group_callback(proxy, success, user_data):
             if not success:
                 # "Error: create group"
                 error_dialog = Gtk.MessageDialog(parent=self,
@@ -273,13 +273,13 @@ class Preferences(Gtk.Window):
                 name = dialog.name_entry.get_text()
                 self._model.add_device_to_new_group(device.adapter,
                         device.frontend, channels, recdir, name,
-                        reply_handler=add_device_to_new_group_callback,
+                        result_handler=add_device_to_new_group_callback,
                         error_handler=global_error_handler)
                     
             dialog.destroy()
             
     def _on_button_add_clicked(self, button):
-        def add_device_callback(success):
+        def add_device_callback(proxy, success, user_data):
             if not success:
                 # "Error: add to group"
                 error_dialog = Gtk.MessageDialog(parent=self,
@@ -301,7 +301,7 @@ class Preferences(Gtk.Window):
             if dialog.run() == Gtk.ResponseType.ACCEPT:
                 group = dialog.get_selected_group()
                 group.add_device(device.adapter, device.frontend,
-                    reply_handler=add_device_callback,
+                    result_handler=add_device_callback,
                     error_handler=global_error_handler)
                 
             dialog.destroy()

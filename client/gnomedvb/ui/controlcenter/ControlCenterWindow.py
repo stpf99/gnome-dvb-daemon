@@ -324,7 +324,7 @@ class ControlCenterWindow(Gtk.Window):
             for group in groups:
                 self._append_group(group)
             self.check_single_group_mode()
-        self.manager.get_registered_device_groups(reply_handler=append_groups)
+        self.manager.get_registered_device_groups(result_handler=append_groups)
         
     def check_single_group_mode(self):
         val = len(self.devgroupslist) == 1

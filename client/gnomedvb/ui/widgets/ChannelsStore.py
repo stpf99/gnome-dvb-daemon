@@ -48,12 +48,12 @@ class ChannelsStore(Gtk.ListStore):
     def _add_channels(self, device_group):
         channellist = device_group.get_channel_list()
         
-        def append_channel(channels):
+        def append_channel(proxy, channels, user_data):
             for channel_id, name, is_radio in channels:
                 self.append([name, channel_id])
             self.emit("loading-finished")
         
-        channellist.get_channel_infos(reply_handler=append_channel,
+        channellist.get_channel_infos(result_handler=append_channel,
             error_handler=global_error_handler)
 
 
@@ -84,7 +84,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
             for dev_group in dev_groups:
                 self._append_group(dev_group)
 
-        self._manager.get_registered_device_groups(reply_handler=append_groups,
+        self._manager.get_registered_device_groups(result_handler=append_groups,
             error_handler=global_error_handler)
     
     def _append_group(self, dev_group):
@@ -99,7 +99,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
             d.add_callback(self._append_channel_groups, channellist, group_id,
                 group_iter, dev_group)
             self._manager.get_channel_groups(
-                reply_handler=lambda x: d.callback(x),
+                result_handler=lambda p,x,u: d.callback(x),
                 error_handler=global_error_handler)
             # Put all available channels either in TV or radio group
             tv_group_iter = self.append(group_iter,
@@ -115,7 +115,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
         d_all.add_callback(self._append_channels, group_id,
             dev_group, tv_group_iter, radio_group_iter)
         channellist.get_channel_infos(
-            reply_handler=lambda x: d_all.callback(x),
+            result_handler=lambda p,x,u: d_all.callback(x),
             error_handler=global_error_handler)
      
     def _append_channels(self, channels, group_id, dev_group, tv_group_iter, radio_group_iter):
@@ -149,7 +149,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
             d = Callback()
             d.add_callback(append_channel, chan_group_iter)
             channellist.get_channels_of_group(chan_group_id,
-                reply_handler=lambda x, success: d.callback(x),
+                result_handler=lambda p,data,u: d.callback(data[1]),
                 error_handler=global_error_handler)
                 
         self.emit("loading-finished", group_id)

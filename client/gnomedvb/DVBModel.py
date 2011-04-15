@@ -32,18 +32,18 @@ class DVBModel (gnomedvb.DVBManagerClient):
         else:
             return None
         
-    def get_registered_device_groups(self, reply_handler,
+    def get_registered_device_groups(self, result_handler,
             error_handler=gnomedvb.global_error_handler):
-        def groups_handler(paths):
-            reply_handler([DeviceGroup(path) for path in paths])
+        def groups_handler(proxy, paths, user_data):
+            result_handler([DeviceGroup(path) for path in paths])
             
-        if reply_handler:
-            self.manager.GetRegisteredDeviceGroups(reply_handler=groups_handler,
+        if result_handler:
+            self.manager.GetRegisteredDeviceGroups(result_handler=groups_handler,
                 error_handler=error_handler)
         else:
             return [DeviceGroup(path) for path in self.manager.GetRegisteredDeviceGroups()]
 
-    def get_all_devices(self, reply_handler,
+    def get_all_devices(self, result_handler,
             error_handler=gnomedvb.global_error_handler):
         """
         @returns: list of Device
@@ -53,9 +53,9 @@ class DVBModel (gnomedvb.DVBManagerClient):
             dev = Device (0, "Unknown", info["adapter"], info["frontend"],
                 "Unknown")
             devs.append(dev)
-        reply_handler(devs)
+        result_handler(devs)
         
-    def get_unregistered_devices(self, reply_handler,
+    def get_unregistered_devices(self, result_handler,
             error_handler=gnomedvb.global_error_handler):
         """
         @returns: set of Device
@@ -70,17 +70,17 @@ class DVBModel (gnomedvb.DVBManagerClient):
                         dev.name = info["name"]
                         dev.type = info["type"]
                         unregistered.add(dev)
-            reply_handler(unregistered)
+            result_handler(unregistered)
         
         def registered_handler(devgroups):
             for group in devgroups:
                 for dev in group["devices"]:
                     registered.add(dev)
-            self.get_all_devices(reply_handler=devices_handler,
+            self.get_all_devices(result_handler=devices_handler,
                 error_handler=error_handler)
         
         registered = set()
-        self.get_registered_device_groups(reply_handler=registered_handler,
+        self.get_registered_device_groups(result_handler=registered_handler,
             error_handler=error_handler)
 
 class DeviceGroup(gnomedvb.DVBDeviceGroupClient):

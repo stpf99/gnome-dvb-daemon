@@ -227,7 +227,7 @@ class SetupWizard(Gtk.Assistant):
 
     def destroy_scanner(self, scanner):
         if scanner != None:
-            scanner.destroy(reply_handler=Gtk.main_quit,
+            scanner.destroy(result_handler=Gtk.main_quit,
                 error_handler=gnomedvb.global_error_handler)
             close_dialog = CloseDialog(self)
             close_dialog.show()

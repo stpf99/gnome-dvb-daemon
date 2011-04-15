@@ -77,7 +77,8 @@ class RunningNextView(Gtk.TreeView):
         
     def _on_button_press_event(self, treeview, event):
             
-        def show_details(data, success):
+        def show_details(proxy, result, user_data):
+            data, success = result
             if not success:
                 return
             event_id, next, name, duration, desc = data
@@ -120,11 +121,12 @@ class RunningNextView(Gtk.TreeView):
                     sid = model[aiter][RunningNextStore.COL_SID]
                     schedule = devgroup.get_schedule(sid)
                     schedule.get_informations(event_id,
-                        reply_handler=show_details,
+                        result_handler=show_details,
                         error_handler=global_error_handler)
 
     def _on_record_clicked(self, button, data):
-        def on_reply(timer_id, success):
+        def on_reply(proxy, data, user_data):
+            timer_id, success = data
             if success:
                 dialog = TimerSuccessDialog(self.get_toplevel())
             else:
@@ -134,6 +136,6 @@ class RunningNextView(Gtk.TreeView):
 
         recorder, event_id, channel_sid = data
         recorder.add_timer_for_epg_event(event_id, channel_sid,
-            reply_handler=on_reply,
+            result_handler=on_reply,
             error_handler=global_error_handler)
         

@@ -57,7 +57,7 @@ class ScheduleStore(Gtk.ListStore):
             current = self._client.next(current)
             
     def _fill_all(self):
-        def append_event(events):
+        def append_event(proxy, events, user_data):
             prev_date = (0,0,0,)
             for event in events:
                 new_iter = self._append_event(event)
@@ -72,7 +72,7 @@ class ScheduleStore(Gtk.ListStore):
                 prev_date = new_date
             self.emit("loading-finished")
         
-        self._client.get_all_event_infos(reply_handler=append_event, error_handler=global_error_handler)
+        self._client.get_all_event_infos(result_handler=append_event, error_handler=global_error_handler)
         
     def get_date(self, aiter):
         dt = self[aiter][self.COL_DATETIME]

@@ -121,7 +121,7 @@ class AdaptersPage(BasePage):
         self._progressbar.set_fraction(0.1)
         self._progressbar.show()
         self.pack_start(self._progressbar, False, True, 0)
-        self._progressbar_timer = gobject.timeout_add(100, self.progressbar_pulse)
+        self._progressbar_timer = gobject.timeout_add(100, self.progressbar_pulse, None)
         
     def destroy_progressbar(self):
         gobject.source_remove(self._progressbar_timer)
@@ -166,7 +166,7 @@ class AdaptersPage(BasePage):
                     dev.type_name = DVB_TYPE_TO_DESC[dev.type]
                     dev.registered = True
                     registered.add(dev)       
-            self.__model.get_all_devices(reply_handler=devices_handler)
+            self.__model.get_all_devices(result_handler=devices_handler)
         
         def devices_handler(devices):
             error = None
@@ -215,7 +215,7 @@ class AdaptersPage(BasePage):
         self.__adapter_info = None
         self.show_progressbar()
         
-        self.__model.get_registered_device_groups(reply_handler=registered_handler)
+        self.__model.get_registered_device_groups(result_handler=registered_handler)
     
     def on_device_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()

@@ -47,7 +47,7 @@ class RunningNextStore(Gtk.ListStore):
     def _fill(self):
         channellist = self._group.get_channel_list()
     
-        def add_channels(channels):
+        def add_channels(proxy, channels, user_data):
             for sid, name, is_radio in channels:
                 aiter = self.append()
                 self.set_value(aiter, self.COL_CHANNEL, name)
@@ -67,6 +67,6 @@ class RunningNextStore(Gtk.ListStore):
                         self.set_value(aiter, self.COL_NEXT, escape(name))
                         self.set_value(aiter, self.COL_NEXT_EVENT, next)
         
-        channellist.get_channel_infos(reply_handler=add_channels,
+        channellist.get_channel_infos(result_handler=add_channels,
             error_handler=global_error_handler)
         

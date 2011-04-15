@@ -100,7 +100,7 @@ class RecordingsDialog(Gtk.Dialog):
             if response == Gtk.ResponseType.YES:
                 client = self._model.get_recordings_store_client()
                 client.delete(model[aiter][RecordingsStore.COL_ID],
-                    reply_handler=self._delete_callback,
+                    result_handler=self._delete_callback,
                     error_handler=global_error_handler)
                         
     def _on_details_clicked(self, button):
@@ -115,7 +115,7 @@ class RecordingsDialog(Gtk.Dialog):
         if event.type == getattr(Gdk.EventType, "2BUTTON_PRESS"):
             self._on_details_clicked(treeview)
                     
-    def _delete_callback(self, success):
+    def _delete_callback(self, proxy, success, user_data):
         if not success:
             global_error_handler("Could not delete recording")
 

@@ -137,10 +137,10 @@ class EditTimersDialog(Gtk.Dialog):
         self.recorder.connect("recording-finished", self._set_recording_state, False)
             
     def get_timers(self):
-        def add_timer(timers):
+        def add_timer(proxy, timers, user_data):
             for timer_id in timers:
                 self._add_timer(timer_id)
-        self.recorder.get_timers(reply_handler=add_timer, error_handler=global_error_handler)
+        self.recorder.get_timers(result_handler=add_timer, error_handler=global_error_handler)
             
     def _add_timer(self, timer_id):
         start_list, success = self.recorder.get_start_time(timer_id)
@@ -156,7 +156,7 @@ class EditTimersDialog(Gtk.Dialog):
                 self.timerslist.remove(row.iter)
 
     def _on_button_delete_clicked(self, button):
-        def delete_timer_callback(success):
+        def delete_timer_callback(proxy, success, user_data):
             if not success:
                 error_dialog = Gtk.MessageDialog(parent=self,
                     flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
@@ -182,15 +182,16 @@ class EditTimersDialog(Gtk.Dialog):
                 dialog.destroy()
                 if response == Gtk.ResponseType.YES:
                     self.recorder.delete_timer(timer_id,
-                        reply_handler=delete_timer_callback,
+                        result_handler=delete_timer_callback,
                         error_handler=global_error_handler)
             else:
                 self.recorder.delete_timer(timer_id,
-                    reply_handler=delete_timer_callback,
+                    result_handler=delete_timer_callback,
                     error_handler=global_error_handler)
         
     def _on_button_add_clicked(self, button):
-        def add_timer_callback(rec_id, success):
+        def add_timer_callback(proxy, data, user_data):
+            rec_id, success = data
             if not success:
                 err_dialog = TimerFailureDialog(self)
                 err_dialog.run()
@@ -205,7 +206,7 @@ class EditTimersDialog(Gtk.Dialog):
             
             self.recorder.add_timer (channel, start[0],
                 start[1], start[2], start[3], start[4], duration,
-                reply_handler=add_timer_callback,
+                result_handler=add_timer_callback,
                 error_handler=global_error_handler)
             
         dialog.destroy()
