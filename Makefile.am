@@ -30,6 +30,7 @@ gnome_dvb_daemon_SOURCES = \
 	src/dbus/IDBusManager.vala \
 	src/dbus/IDBusRecorder.vala \
 	src/dbus/IDBusRecordingsStore.vala \
+	src/dbus/IDBusScanner.vala \
 	src/dbus/IDBusSchedule.vala \
 	src/io/ChannelListReader.vala \
 	src/io/ChannelListWriter.vala \

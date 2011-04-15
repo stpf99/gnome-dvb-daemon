@@ -20,44 +20,41 @@
 using GLib;
 
 namespace DVB {
-    
-    [DBus (name = "org.gnome.DVB.Scanner.Cable")]
-    public interface IDBusCableScanner : GLib.Object {
-    
-        public abstract signal void frequency_scanned (uint frequency, uint freq_left);
-        public abstract signal void finished ();
-        public abstract signal void channel_added (uint frequency, uint sid,
-            string name, string network, string type, bool scrambled);
-        public abstract signal void frontend_stats (double signal_strength,
-            double signal_noise_ratio);
-        
-        public abstract void Run () throws DBusError;
-        public abstract void Destroy () throws DBusError;
-        public abstract bool WriteAllChannelsToFile (string path) throws DBusError;
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBusError;
-        
-        public abstract void AddScanningData (uint frequency, string modulation,
-            uint symbol_rate, string code_rate) throws DBusError;
-        
-        /**
-         * @path: Path to file containing scanning data
-         * @returns: TRUE when the file has been parsed successfully
-         *
-         * Parses initial tuning data from a file as provided by dvb-apps
-         */    
-        public abstract bool AddScanningDataFromFile (string path) throws DBusError;
-    }
-    
-    public class CableScanner : Scanner, IDBusCableScanner {
-        
+
+    public class CableScanner : Scanner, IDBusScanner {
+
         public CableScanner (DVB.Device device) {
             Object (Device: device);
         }
-        
-        public void AddScanningData (uint frequency, string modulation,
-                uint symbol_rate, string code_rate) throws DBusError {
-            this.add_scanning_data (frequency, modulation,
-                symbol_rate, code_rate);
+
+        public bool AddScanningData (GLib.HashTable<string, Variant> data) throws DBusError {
+            uint frequency, symbol_rate;
+            string modulation, code_rate;
+
+            unowned Variant _var;
+
+            _var = data.lookup ("frequency");
+            if (_var == null)
+                return false;
+            frequency = _var.get_uint32 ();
+
+            _var = data.lookup ("symbol-rate");
+            if (_var == null)
+                return false;
+            symbol_rate = _var.get_uint32 ();
+
+            _var = data.lookup ("inner-fec");
+            if (_var == null)
+                return false;
+            code_rate = _var.get_string ();
+
+            _var = data.lookup ("modulation");
+            if (_var == null)
+                return false;
+            modulation = _var.get_string ();
+
+            this.add_scanning_data (frequency, modulation, symbol_rate, code_rate);
+            return true;
         }
                 
         private inline void add_scanning_data (uint frequency, string modulation,

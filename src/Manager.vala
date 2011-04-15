@@ -98,13 +98,14 @@ namespace DVB {
          * Get the object path of the channel scanner for this device.
          */
         public bool GetScannerForDevice (uint adapter, uint frontend,
-                out ObjectPath opath, out string dbusiface) throws DBusError {
+                out ObjectPath opath, out string dbusiface) throws DBusError
+        {
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             opath = new ObjectPath (path);
-            
+
             Device device;
             Device? reg_dev = this.get_registered_device (adapter, frontend);
-            
+
             if (reg_dev == null) {
                 // Create new device
                 device = Device.new_with_type (adapter, frontend);
@@ -116,17 +117,11 @@ namespace DVB {
                 device = reg_dev;
             }
 
-            switch (device.Type) {
-                case AdapterType.DVB_T:
-                dbusiface = "org.gnome.DVB.Scanner.Terrestrial";
-                break;
-                
-                case AdapterType.DVB_S:
-                dbusiface = "org.gnome.DVB.Scanner.Satellite";
-                break;
-                
+            switch (device.Type) {                
                 case AdapterType.DVB_C:
-                dbusiface = "org.gnome.DVB.Scanner.Cable";
+                case AdapterType.DVB_S:
+                case AdapterType.DVB_T:
+                    dbusiface = "org.gnome.DVB.Scanner";
                 break;
 
                 default:
@@ -146,31 +141,24 @@ namespace DVB {
                     switch (device.Type) {
                         case AdapterType.DVB_T:
                         scanner = new TerrestrialScanner (device);
-
-                        Utils.dbus_register_object<IDBusTerrestrialScanner> (Main.conn,
-                            path, (TerrestrialScanner)scanner);
                         break;
                         
                         case AdapterType.DVB_S:
                         scanner = new SatelliteScanner (device);
-
-                        Utils.dbus_register_object<IDBusSatelliteScanner> (Main.conn,
-                            path, (SatelliteScanner)scanner);
                         break;
                         
                         case AdapterType.DVB_C:
                         scanner = new CableScanner (device);
-
-                        Utils.dbus_register_object<IDBusCableScanner> (Main.conn,
-                            path, (CableScanner)scanner);
                         break;
                     }
-                    
+
                     if (scanner == null) {
                         critical ("Unknown adapter type");
                         return false;
                     }
-                    
+
+                    Utils.dbus_register_object (Main.conn, path, (IDBusScanner)scanner);
+
                     scanner.destroyed.connect (this.on_scanner_destroyed);
                     
                     this.scanners.set (path, scanner);

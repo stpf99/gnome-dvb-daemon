@@ -20,41 +20,8 @@
 using GLib;
 
 namespace DVB {
-    
-    [DBus (name = "org.gnome.DVB.Scanner.Terrestrial")]    
-    public interface IDBusTerrestrialScanner : GLib.Object {
-    
-        public abstract signal void frequency_scanned (uint frequency, uint freq_left);
-        public abstract signal void finished ();
-        public abstract signal void channel_added (uint frequency, uint sid,
-            string name, string network, string type, bool scrambled);
-        public abstract signal void frontend_stats (double signal_strength,
-            double signal_noise_ratio);
-        
-        public abstract void Run () throws DBusError;
-        public abstract void Destroy () throws DBusError;
-        public abstract bool WriteAllChannelsToFile (string path) throws DBusError;
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBusError;
-        
-        public abstract void AddScanningData (uint frequency,
-                                     uint hierarchy, // 0-3
-                                     uint bandwidth, // 0, 6, 7, 8
-                                     string transmode, // "2k", "8k"
-                                     string code_rate_hp, // "1/2", "2/3", "3/4", ..., "8/9"
-                                     string code_rate_lp,
-                                     string constellation, // QPSK, QAM16, QAM64
-                                     uint guard) throws DBusError;  // 4, 8, 16, 32
-        
-        /**
-         * @path: Path to file containing scanning data
-         * @returns: TRUE when the file has been parsed successfully
-         *
-         * Parses initial tuning data from a file as provided by dvb-apps
-         */                             
-        public abstract bool AddScanningDataFromFile (string path) throws DBusError;
-    }
-    
-    public class TerrestrialScanner : Scanner, IDBusTerrestrialScanner {
+
+    public class TerrestrialScanner : Scanner, IDBusScanner {
     
         public TerrestrialScanner (DVB.Device device) {
             Object (Device: device);
@@ -63,17 +30,60 @@ namespace DVB {
         /**
           * See enums in MpegTsEnums
           */
-        public void AddScanningData (uint frequency, uint hierarchy,
-                uint bandwidth, string transmode, string code_rate_hp,
-                string code_rate_lp, string constellation, uint guard)
+        public bool AddScanningData (GLib.HashTable<string, Variant> data)
                 throws DBusError
         {
-                
-                this.add_scanning_data (frequency, hierarchy,
-                    bandwidth, transmode, code_rate_hp,
-                    code_rate_lp, constellation, guard);
+            uint frequency, hierarchy, bandwidth, guard;
+            string transmode, code_rate_hp, code_rate_lp, constellation;
+
+            unowned Variant _var;
+
+            _var = data.lookup ("frequency");
+            if (_var == null)
+                return false;
+            frequency = _var.get_uint32 ();
+
+            _var = data.lookup ("hierarchy");
+            if (_var == null)
+                return false;
+            hierarchy = _var.get_uint32 ();
+
+            _var = data.lookup ("bandwidth");
+            if (_var == null)
+                return false;
+            bandwidth = _var.get_uint32 ();
+
+            _var = data.lookup ("transmission-mode");
+            if (_var == null)
+                return false;
+            transmode = _var.get_string ();
+
+            _var = data.lookup ("code-rate-hp");
+            if (_var == null)
+                return false;
+            code_rate_hp = _var.get_string ();
+
+            _var = data.lookup ("code-rate-lp");
+            if (_var == null)
+                return false;
+            code_rate_lp = _var.get_string ();
+
+            _var = data.lookup ("constellation");
+            if (_var == null)
+                return false;
+            constellation = _var.get_string ();
+
+            _var = data.lookup ("guard-interval");
+            if (_var == null)
+                return false;
+            guard = _var.get_uint32 ();
+
+            this.add_scanning_data (frequency, hierarchy,
+                bandwidth, transmode, code_rate_hp,
+                code_rate_lp, constellation, guard);
+            return true;
         }
-                
+
         private inline void add_scanning_data (uint frequency, uint hierarchy,
                 uint bandwidth, string transmode, string code_rate_hp,
                 string code_rate_lp, string constellation, uint guard) {

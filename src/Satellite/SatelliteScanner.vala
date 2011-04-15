@@ -49,15 +49,36 @@ namespace DVB {
         public abstract bool AddScanningDataFromFile (string path) throws DBusError;
     }
     
-    public class SatelliteScanner : Scanner, IDBusSatelliteScanner {
+    public class SatelliteScanner : Scanner, IDBusScanner {
     
         public SatelliteScanner (DVB.Device device) {
             Object (Device: device);
         }
      
-        public void AddScanningData (uint frequency,
-                string polarization, uint symbol_rate) throws DBusError {
+        public bool AddScanningData (GLib.HashTable<string, Variant> data) throws DBusError
+         {
+            uint frequency, symbol_rate;
+            string polarization;
+
+            unowned Variant _var;
+
+            _var = data.lookup ("frequency");
+            if (_var == null)
+                return false;
+            frequency = _var.get_uint32 ();
+
+            _var = data.lookup ("symbol-rate");
+            if (_var == null)
+                return false;
+            symbol_rate = _var.get_uint32 ();
+
+            _var = data.lookup ("polarization");
+            if (_var == null)
+                return false;
+            polarization = _var.get_string ();
+
             this.add_scanning_data (frequency, polarization, symbol_rate);
+            return true;
         }
                 
         private inline void add_scanning_data (uint frequency,
