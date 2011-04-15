@@ -126,35 +126,12 @@ if test "x$enable_totem" = "xyes"; then
 fi
 AC_SUBST(TOTEM_PLUGIN_DIR)
 
-dnl **************
-dnl * Expansions
-dnl **************
-SHAMROCK_EXPAND_DATADIR
-SHAMROCK_EXPAND_LIBDIR
-
-dnl *************************************
-dnl * Check for DBUS Services directory
-dnl *************************************
-DBUS_REQUIRED_VERSION=1.1
-PKG_CHECK_MODULES(DBUS, dbus-1 >= $DBUS_REQUIRED_VERSION)
-DBUS_SERVICES_DIR="$expanded_datadir/dbus-1/services"
-AC_SUBST(DBUS_SERVICES_DIR)
-AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR", [DBus services directory])
-
 dnl **********
 dnl * Python
 dnl **********
 PYTHON_REQUIRED=2.5
 AM_PATH_PYTHON($PYTHON_REQUIRED)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
-
-AS_AC_EXPAND(DATADIR, $datarootdir)
-AC_SUBST(DATADIR)
-
-AS_AC_EXPAND(LIBDIR, $libdir)
-AC_SUBST(LIBDIR)
-
-AS_AC_EXPAND(PYTHONDIR, $pythondir)
 AC_SUBST(PYTHONDIR)
 
 PYGOBJECT_REQUIRED=2.28.3
@@ -186,7 +163,6 @@ $PACKAGE_NAME $PACKAGE_VERSION
     Install Prefix:               ${prefix}
     Datadir:                      ${expanded_datadir}
     Libdir:                       ${expanded_libdir}
-    D-Bus dir:                    ${DBUS_SERVICES_DIR}
     Python dir:                   ${pythondir}
     Build Totem plugin            ${enable_totem}
 "

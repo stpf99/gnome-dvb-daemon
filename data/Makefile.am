@@ -9,7 +9,7 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
 # Dbus service file
-dbusservicedir = $(DBUS_SERVICES_DIR)
+dbusservicedir = $(datadir)/dbus-1/services
 dbusservice_in_files = \
 	org.gnome.DVB.service.in \
 	org.gnome.UPnP.MediaServer1.DVBDaemon.service.in \
