@@ -59,8 +59,7 @@ fi
 dnl ******************
 dnl * Check for libs
 dnl ******************
-GLIB_REQUIRED=2.26.0
-GIO_REQUIRED=2.26.0
+GLIB_REQUIRED=2.28.6
 GST_REQUIRED=0.10.29
 GEE_REQUIRED=0.5.0
 SQLITE_REQUIRED=3.4
@@ -72,7 +71,7 @@ AC_SUBST(GST_CFLAGS)
 AC_SUBST(GST_LIBS)
 
 PKG_CHECK_MODULES(GNOME_DVB_DAEMON, glib-2.0 >= $GLIB_REQUIRED
-                            gio-2.0 >= $GIO_REQUIRED
+                            gio-2.0 >= $GLIB_REQUIRED
                             gobject-2.0 >= $GLIB_REQUIRED
                             gee-1.0 >= $GEE_REQUIRED
                             sqlite3 >= $SQLITE_REQUIRED
