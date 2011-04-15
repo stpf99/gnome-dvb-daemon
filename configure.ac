@@ -161,8 +161,6 @@ echo "
 $PACKAGE_NAME $PACKAGE_VERSION
 
     Install Prefix:               ${prefix}
-    Datadir:                      ${expanded_datadir}
-    Libdir:                       ${expanded_libdir}
     Python dir:                   ${pythondir}
     Build Totem plugin            ${enable_totem}
 "
