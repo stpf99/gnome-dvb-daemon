@@ -158,14 +158,13 @@ AC_SUBST(LIBDIR)
 AS_AC_EXPAND(PYTHONDIR, $pythondir)
 AC_SUBST(PYTHONDIR)
 
+PYGOBJECT_REQUIRED=2.28.3
+PKG_CHECK_MODULES(PYGOBJECT, pygobject-2.0 >= $PYGOBJECT_REQUIRED)
+
 dnl ******************
 dnl * Python modules
 dnl *****************
-AM_CHECK_PYMOD(glib)
 AM_CHECK_PYMOD(gobject)
-AM_CHECK_PYMOD(gtk)
-AM_CHECK_PYMOD(dbus)
-AM_CHECK_PYMOD(gio)
 AM_CHECK_PYMOD(gst)
 
 AC_CONFIG_FILES([
