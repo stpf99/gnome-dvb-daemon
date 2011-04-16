@@ -11,7 +11,7 @@ setup your DVB devices, record and watch TV shows and browse EPG.
 It can be controlled by any application via its D-Bus interface.</description>
   <homepage rdf:resource="http://live.gnome.org/DVBDaemon" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/dvb-daemon-list" />
-  <download-page rdf:resource="http://download.gnome.org/sources/dvb-daemon/" />
+  <download-page rdf:resource="http://download.gnome.org/sources/gnome-dvb-daemon/" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=dvb-daemon" />
 
   <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
