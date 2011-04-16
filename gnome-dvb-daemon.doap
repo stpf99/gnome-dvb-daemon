@@ -1,0 +1,26 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">GNOME DVB Daemon</name>
+  <shortdesc xml:lang="en">Daemon to watch and record TV, and browse EPG</shortdesc>
+  <description>GNOME DVB Daemon is a daemon written in Vala based on GStreamer to
+setup your DVB devices, record and watch TV shows and browse EPG.
+It can be controlled by any application via its D-Bus interface.</description>
+  <homepage rdf:resource="http://live.gnome.org/DVBDaemon" />
+  <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/dvb-daemon-list" />
+  <download-page rdf:resource="http://download.gnome.org/sources/dvb-daemon/" />
+  <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=dvb-daemon" />
+
+  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Sebastian Pölsterl</foaf:name>
+      <foaf:mbox rdf:resource="mailto:sebp@k-d-w.org" />
+      <gnome:userid>sebp</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
