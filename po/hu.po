@@ -7,24 +7,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 14:08+0000\n"
-"PO-Revision-Date: 2010-12-18 17:41+0000\n"
-"Last-Translator: Papp Bence <papp.bence89@gmail.com>\n"
+"POT-Creation-Date: 2011-01-15 17:40+0100\n"
+"PO-Revision-Date: 2011-01-27 01:48+0000\n"
+"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-01-15 16:56+0000\n"
-"X-Generator: Launchpad (build 12200)\n"
+"X-Launchpad-Export-Date: 2011-04-16 19:16+0000\n"
+"X-Generator: Launchpad (build 12821)\n"
 
 #: ../client/gnomedvb/__init__.py:34
 msgid "GNOME DVB Daemon"
-msgstr "GNOME DVB Daemon"
+msgstr "GNOME DVB démon"
 
 #: ../client/gnomedvb/__init__.py:37
 msgid "GNOME DVB Daemon Website"
-msgstr "GNOME DVB Daemon Honlapja"
+msgstr "A GNOME DVB démon honlapja"
 
 #: ../client/gnomedvb/__init__.py:86
 #, python-format
@@ -49,11 +49,11 @@ msgstr[1] "%d másodperc"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:33
 msgid "Edit Channel Lists"
-msgstr "Csatorna lista szerkesztése"
+msgstr "Csatornalisták szerkesztése"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:56
 msgid "Channel groups"
-msgstr "Csatorna csoportok"
+msgstr "Csatornacsoportok"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:97
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:54
@@ -62,7 +62,7 @@ msgstr "_Csoport:"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:104
 msgid "Device groups"
-msgstr "Eszköz csoportok"
+msgstr "Eszközcsoportok"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:126
 msgid "All channels"
@@ -79,7 +79,7 @@ msgstr "Csatorna"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:154
 msgid "Choose a channel group"
-msgstr "Válasszon egy csatorna csoportot"
+msgstr "Válasszon egy csatornacsoportot"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:155
 msgid "Channels of group"
@@ -87,38 +87,37 @@ msgstr "Csoport csatornái"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
 msgid "An error occured while adding the group"
-msgstr "Hiba lépett fel a csoporthoz adás közben"
+msgstr "Hiba történt a csoport felvétele közben"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
 #, python-format
 msgid "Are you sure you want to delete the group '%s'?"
-msgstr "Biztos benne, hogy törli a ''%s csoportot?"
+msgstr "Biztos benne, hogy törli a(z) „%s” csoportot?"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
 msgid "All assignments to this group will be lost."
-msgstr "Az összes feladat ehez a csoporthot el fog veszni."
+msgstr "Az összes feladat ehhez a csoporthoz el fog veszni."
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
 msgid "An error occured while removing the group"
-msgstr "Hiba lépet fel a csoport törlése során"
+msgstr "Hiba történt a csoport törlése közben"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:53
 msgid "DVB Control Center"
-msgstr "DVB Kezelőpult"
+msgstr "DVB vezérlőpult"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:102
 msgid ""
 "Choose a device group and channel on the left to view the program guide"
 msgstr ""
-"Válasszon egy eszköz csoportot és egy csatornát a baloldalról, hogy "
-"megnézhesse a műsorfüzetet"
+"A műsorfüzet megjelenítéséhez válasszon egy eszközcsoportot és egy csatornát "
+"a bal oldalról"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:103
 msgid ""
 "No devices are configured. Please go to preferences to configure them."
 msgstr ""
-"Egyetlen eszköz sincs beállítva. Kérem menjen a Beállítások menübe, hogy "
-"beállíthassa."
+"Egyetlen eszköz sincs beállítva. A Beállítások menüben állítsa be azokat."
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
 msgid "There is currently no schedule available for this channel"
@@ -127,7 +126,7 @@ msgstr "Jelenleg nincs ütemezés ehhez a csatornához"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:157
 #: ../client/totem-plugin/dvb-daemon.py:349
 msgid "_Recording schedule"
-msgstr "_Felvétel ütemező"
+msgstr "_Felvételütemező"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
 msgid "_Edit"
@@ -143,12 +142,12 @@ msgstr "Súgó"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:167
 msgid "_Manage"
-msgstr "_Kezel"
+msgstr "_Kezelés"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:269
 msgid "Manage recording schedule"
-msgstr "Felvétel ütemező kezelése"
+msgstr "Felvételütemező kezelése"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
 msgid "_Recordings"
@@ -168,11 +167,11 @@ msgstr "Kilépés az alkalmazásból"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:177
 msgid "_Channel Lists"
-msgstr "_Csatorna listák"
+msgstr "_Csatornalisták"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
 msgid "Edit channel lists"
-msgstr "Csatorna listák szerkesztése"
+msgstr "Csatornalisták szerkesztése"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
 msgid "_Preferences"
@@ -180,7 +179,7 @@ msgstr "_Beállítások"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
 msgid "Display preferences"
-msgstr "Beállítások mutatása"
+msgstr "Beállítások megjelenítése"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:186
 msgid "_What's on now"
@@ -188,7 +187,7 @@ msgstr "_Mi megy most"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
 msgid "See what's currently on and is coming next"
-msgstr "Láthatja mi megy éppen és mi fog következni"
+msgstr "Láthatja, mi megy éppen, és mi fog következni"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
 msgid "_Refresh"
@@ -197,7 +196,7 @@ msgstr "_Frissítés"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:297
 msgid "Refresh program guide"
-msgstr "Programfüzet frissítése"
+msgstr "Műsorfüzet frissítése"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
 msgid "_Previous Day"
@@ -206,7 +205,7 @@ msgstr "E_lőző nap"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:305
 msgid "Go to previous day"
-msgstr "Előző naphoz ugrik"
+msgstr "Ugrás az előző napra"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
 msgid "_Next Day"
@@ -215,7 +214,7 @@ msgstr "Kö_vetkező nap"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:314
 msgid "Go to next day"
-msgstr "Következő naphoz ugrik"
+msgstr "Ugrás a következő napra"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:196
 msgid "_Channels"
@@ -223,7 +222,7 @@ msgstr "_Csatornák"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
 msgid "View/Hide channels"
-msgstr "Mutassa/Rejtse el a csatornákat"
+msgstr "Csatornák megjelenítése/elrejtése"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
 msgid "_Toolbar"
@@ -231,7 +230,7 @@ msgstr "_Eszköztár"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
 msgid "View/Hide toolbar"
-msgstr "Mutassa/Rejtse el az eszköztárat"
+msgstr "Eszköztár megjelenítése/elrejtése"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:209
 msgid "_About"
@@ -239,12 +238,12 @@ msgstr "_Névjegy"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
 msgid "Display informations about the program"
-msgstr "Információkat jelenít meg az alkalmazásról"
+msgstr "Információk megjelenítése a programról"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:265
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
 msgid "Recording schedule"
-msgstr "Felvétel ütemező"
+msgstr "Felvételütemező"
 
 #. Add recordings
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:276
@@ -271,13 +270,14 @@ msgstr "Következő nap"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
 #: ../client/totem-plugin/dvb-daemon.py:179
 msgid "Schedule recording for the selected event?"
-msgstr "A kiválasztott eseményt hozzáadja az ütemezett felvételekhez?"
+msgstr "Beütemezi a kiválasztott esemény felvételét?"
 
 #. translators: These appear in the About dialog, usual format applies.
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:588
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
+"  Gabor Kelemen https://launchpad.net/~kelemeng\n"
 "  Papp Bence https://launchpad.net/~sclegnrbs"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:57
@@ -299,11 +299,11 @@ msgstr "Adapter: %d, Frontend: %d"
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:72
 #, python-format
 msgid "Group %d"
-msgstr "Csoport %d"
+msgstr "%d. csoport"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:29
 msgid "Add to Group"
-msgstr "Csoprthoz adás"
+msgstr "Csoporthoz adás"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:47
 msgid "Add Device to Group"
@@ -311,7 +311,7 @@ msgstr "Eszköz csoporthoz adása"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:92
 msgid "Create new Group"
-msgstr "Új csoport készítése"
+msgstr "Új csoport létrehozása"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:112
 msgid "General"
@@ -323,7 +323,7 @@ msgstr "_Név:"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:130
 msgid "Channels _file:"
-msgstr "Csatornák _fájl:"
+msgstr "Csatorna_fájl:"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:159
 msgid "_Directory:"
@@ -344,7 +344,7 @@ msgstr "Csoport szerkesztése"
 #: ../client/gnomedvb/ui/preferences/Preferences.py:38
 #: ../client/totem-plugin/dvb-daemon.py:352
 msgid "Digital TV Preferences"
-msgstr "Digitális TV Beállításai"
+msgstr "Digitális TV beállításai"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:88
 msgid "Edit selected group"
@@ -360,15 +360,15 @@ msgstr "Beállítás"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:106
 msgid "Setup devices"
-msgstr "Eszközök beállításafájlt"
+msgstr "Eszközök beállítása"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:113
 msgid "Create new group"
-msgstr "Új csoport készítése"
+msgstr "Új csoport létrehozása"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:117
 msgid "Create new group for selected device"
-msgstr "Új csoport készítése a kiválasztott eszköznek"
+msgstr "Új csoport létrehozása a kiválasztott eszközhöz"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:123
 msgid "Add to group"
@@ -380,7 +380,7 @@ msgstr "Kiválasztott eszköz már létező csoporthoz adása"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:143
 msgid "Configured devices"
-msgstr "Eszközök konfigurálása"
+msgstr "Beállított eszközök"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:154
 msgid "Unconfigured devices"
@@ -393,19 +393,19 @@ msgstr "Az eszközt nem lehet eltávolítani a csoportból"
 #: ../client/gnomedvb/ui/preferences/Preferences.py:233
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr "Biztos benne, hogy eltávolítja a <b>%s</b> eszközt innen <b>%s</b>"
+msgstr "Biztos, hogy eltávolítja a(z) <b>%s</b> eszközt innen: <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:255
 msgid "Group could not be created"
-msgstr "Csoport nem hozható létre"
+msgstr "A csoport nem hozható létre"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:257
 msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
-"Győződjön meg róla, hogy a helyes csatornák fájlt és könyvárat választotta "
-"ki, illetve mindkettő olvasható-e?"
+"Győződjön meg róla, hogy a megfelelő csatornafájlt és könyvtárat választotta "
+"ki, illetve mindkettő olvasható."
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:286
 msgid "Device could not be added to group"
@@ -417,7 +417,7 @@ msgid ""
 "that all devices in the group are of the same type."
 msgstr ""
 "Győződjön meg róla, hogy a kiválasztott eszköz nincs-e más csoporthoz is "
-"hozzáadva, és a csoportban levő eszközök azonos típusúak-e?"
+"hozzáadva, és a csoportban levő eszközök azonos típusúak."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:95
 msgid "Delete selected recordings?"
@@ -439,11 +439,11 @@ msgstr "Kezdési idő"
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
 #: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
 msgid "Duration"
-msgstr "Időtartam"
+msgstr "Hossz"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:165
 msgid "Timer could not be deleted"
-msgstr "Időzítő nem törölhető"
+msgstr "Az időzítő nem törölhető"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:177
 msgid "Abort active recording?"
@@ -451,15 +451,15 @@ msgstr "Megszakítja az aktív felvételt?"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
 msgid "The timer you selected belongs to a currently active recording."
-msgstr "Az időzítő amit kiválasztott az előbb éppen felvételt készít."
+msgstr "A kiválasztott időzítő éppen felvételt készít."
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:180
 msgid "Deleting this timer will abort the recording."
-msgstr "Ha törli ezt az időzítőt a felvétel meg lesz szakítva."
+msgstr "Az időzítő törlése megszakítja a felvételt."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
 msgid "Timer could not be created"
-msgstr "Időzítő nem hozható létre"
+msgstr "Az időzítő nem hozható létre"
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
 msgid ""
@@ -471,7 +471,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
-msgstr "Felvétel sikeresen ütemezve lett"
+msgstr "A felvétel sikeresen ütemezve"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:64
 msgid "Add Timer"
@@ -496,7 +496,7 @@ msgstr "_Kezdés időpontja:"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:111
 msgid "_Duration:"
-msgstr "_Időtartam:"
+msgstr "_Hossz:"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:125
 msgid "minutes"
@@ -516,7 +516,7 @@ msgstr "digitális szárazföldi"
 
 #: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
 msgid "Channel group"
-msgstr "Csatorna csoport"
+msgstr "Csatornacsoport"
 
 #: ../client/gnomedvb/ui/widgets/DateTime.py:50
 msgid "_Time:"
@@ -536,7 +536,7 @@ msgstr "Dátum:"
 
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:68
 msgid "Duration:"
-msgstr "Időtartam:"
+msgstr "Hossz:"
 
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:72
 msgid "Description:"
@@ -568,9 +568,8 @@ msgid ""
 "make sure you close all programs such as video players that access your DVB "
 "card."
 msgstr ""
-"DVB kártya nincs telepítve vagy az összes használatban van. Az utóbbi "
-"esetben kérem zárja be az összes programot, például videó lejátszókat, hogy "
-"hozzáférjen a DVB kártyához."
+"Nincsenek DVB kártyák, vagy az összes használatban van. Utóbbi esetben zárja "
+"be az összes, a DVB kártyákat használó programot, például a videolejátszókat."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
 msgid "Name"
@@ -582,19 +581,18 @@ msgstr "Típus"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
 msgid "Select the device you want to configure."
-msgstr "Válasszon egy eszközt, amit konfigurálni szeretne."
+msgstr "Válassza ki a konfigurálandó eszközt."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:98
 msgid "All devices are already configured."
-msgstr "Az összes eszköz már be van konfigurálva."
+msgstr "Már az összes eszköz be van konfigurálva."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
 msgid ""
 "Go to the control center if you want to alter the settings of already "
 "configured devices."
 msgstr ""
-"Menjen a kezelőpultba, ha meg akarja változtatni a már bekonfigurált "
-"eszközök beállításait."
+"A vezérlőpultban megváltoztathatja a már bekonfigurált eszközök beállításait."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
 msgid "An error occured while retrieving devices."
@@ -605,12 +603,12 @@ msgid ""
 "Make sure other applications don't access DVB devices and you have "
 "permissions to access them."
 msgstr ""
-"Győződjön meg róla, hogy más alkalmazás nem fér hozzá a DVB eszközökhöz, és "
-"önnek van-e jogosultsága a hozzáférésükhöz."
+"Győződjön meg róla, hogy nem használja más alkalmazás a DVB-eszközöket, és "
+"van jogosultsága az elérésükhöz."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
 msgid "The detailed error message is:"
-msgstr "A részletes hiba üzenet:"
+msgstr "A részletes hibaüzenet:"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
 msgid "Searching for devices"
@@ -632,16 +630,15 @@ msgstr "Ez a folyamat eltarthat egy ideig."
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:61
 msgid ""
 "You can select the channels you want to have in your list of channels."
-msgstr ""
-"Kiválaszthatja a csatornákat, amiket a csatornák listájához szeretne adni."
+msgstr "Kiválaszthatja a csatornalistájához adandó csatornákat."
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:67
 msgid "Select all"
-msgstr "Mindet kijelöl"
+msgstr "Összes kijelölése"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:69
 msgid "Deselect all"
-msgstr "Kijelölés megszüntetése"
+msgstr "Kijelölés törlése"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:84
 msgid "_Channels:"
@@ -653,7 +650,7 @@ msgstr "_Kevert csatorna kiválasztása"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:135
 msgid "Signal quality:"
-msgstr "A jel minősége:"
+msgstr "Jelminőség:"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:146
 msgid "Signal strength:"
@@ -687,40 +684,38 @@ msgstr "Nem támogatott adapter"
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
-msgstr "Sajnálom, de a '%s' kártyák nem támogatottak."
+msgstr "Elnézést, a(z) „%s” kártyák nem támogatottak."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
 msgid "Could not find initial tuning data."
-msgstr "Nem található kezdő hangolási adat."
+msgstr "Nem találhatók kiinduló hangolási adatok."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
 msgid "Please make sure that the dvb-apps package is installed."
-msgstr "Kérem győződjön meg róla, hogy a dvb-apps csomag telepítve van."
+msgstr "Győződjön meg róla, hogy a dvb-apps csomag telepítve van."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr ""
-"Kérem válassza ki az országot és az antennát ami legközelebb van az ön "
-"helyzetéhez."
+"Válasszon egy országot, és a tartózkodási helyéhez legközelebbi antennát."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
-"Ha nem tudja melyik antennát válassza, válassza a 'Nem tudom' opciót a "
+"Ha nem tudja, melyik antennát válassza, válassza a „Nem tudom” opciót a "
 "szolgáltatók listáról."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
 msgid ""
 "However, searching for channels will take considerably longer this way."
-msgstr ""
-"Habár, a csatornák keresése meglehetősen több időt igényel ezen az úton."
+msgstr "A csatornák keresése azonban így sokkal tovább tart."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
 msgid "Not listed"
-msgstr "Nincs a listán"
+msgstr "Nincs felsorolva"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:154
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:228
@@ -737,7 +732,7 @@ msgstr "Antenna"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "_Satellite:"
-msgstr "_Műhold"
+msgstr "_Műhold:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:209
 msgid "Satellite"
@@ -745,7 +740,7 @@ msgstr "Műhold"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:251
 msgid "_Providers:"
-msgstr "_Szolgáltatók"
+msgstr "_Szolgáltatók:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:259
 msgid "Provider"
@@ -757,19 +752,19 @@ msgstr "Nem tudom"
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:29
 msgid "Welcome to the digital television Assistant."
-msgstr "Üdvözlöm a digitális televízió Varázslóban."
+msgstr "Üdvözöljük a Digitális televízió varázslóban."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
 msgid ""
 "It will automatically configure your devices and search for channels, if "
 "necessary."
 msgstr ""
-"Ez automatikus bekonfigurálja az eszközeit és megkeresi az összes csatornát, "
-"ha szükséges."
+"Ez automatikusan beállítja az eszközeit, és megkeresi a csatornákat, ha "
+"szükséges."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:38
 msgid "Click \"Forward\" to begin."
-msgstr "Kattintson a 'Következő'-re a kezdéshez."
+msgstr "Kattintson a „Tovább” gombra a kezdéshez."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:42
 msgid "_Expert mode"
@@ -781,7 +776,7 @@ msgstr "Digitális TV beállítása"
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
 msgid "Choose a location where you want to save the list of channels."
-msgstr "Válasszon helyet, ahová menteni szeretné a csatornák listáját."
+msgstr "Válassza ki, hová szeretné menteni a csatornák listáját."
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
 msgid "Save channels"
@@ -805,17 +800,17 @@ msgid ""
 "Make sure that the antenna is connected and you have selected the correct "
 "tuning data."
 msgstr ""
-"Győződjön meg róla, hogy az antenna csatlakoztatva van-e és helyesen "
-"választotta ki a behangolási adatokat."
+"Győződjön meg róla, hogy az antenna csatlakoztatva van, és helyes hangolási "
+"adatokat választott ki."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
 #, python-format
 msgid "The device has been added to the group %s."
-msgstr "Az eszköz hozzá lett adva %s csoporthoz."
+msgstr "Az eszköz hozzáadva a(z) %s csoporthoz."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
 msgid "An error occured while trying to setup the device."
-msgstr "Hiba lépett fel az eszköz beállítása során."
+msgstr "Hiba történt az eszköz beállítása során."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
 msgid "Configure Another Device"
@@ -828,12 +823,12 @@ msgstr "Konfiguráció kész"
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:48
 #, python-format
 msgid "The device %s has been configured sucessfully."
-msgstr "A %s eszköz sikeresen be lett konfigurálva."
+msgstr "A(z) %s eszköz sikeresen konfigurálva."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:50
 #, python-format
 msgid "Failed configuring device %s."
-msgstr "Nem lehet a %s eszközt bekonfigurálni."
+msgstr "A(z) %s eszköz konfigurálása meghiúsult."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:44
 msgid "Cleaning up. This may take a while."
@@ -849,16 +844,16 @@ msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
 msgstr ""
-"A generált csatornák fájl használható az eszközök konfigurálására a "
-"kezelőpultban."
+"A generált csatornafájl használható az eszközök konfigurálására a "
+"vezérlőpultban."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:203
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
 msgstr ""
-"Biztos benne, hogy megszakítja?\n"
-"Az összes folyamat el fog veszni."
+"Biztos, hogy megszakítja?\n"
+"A megadott adatok el fognak veszni."
 
 #: ../client/totem-plugin/dvb-daemon.py:151
 #: ../client/totem-plugin/dvb-daemon.py:195
@@ -892,7 +887,7 @@ msgstr "_Részletek"
 
 #: ../client/totem-plugin/dvb-daemon.py:355
 msgid "_Order channels"
-msgstr "Csa_tornák szerint"
+msgstr "Csa_tornák rendezése"
 
 #: ../client/totem-plugin/dvb-daemon.py:358
 msgid "By _name"
@@ -900,7 +895,7 @@ msgstr "N_év szerint"
 
 #: ../client/totem-plugin/dvb-daemon.py:359
 msgid "By _group"
-msgstr "Cso_portok szerint"
+msgstr "Cso_port szerint"
 
 #: ../client/totem-plugin/dvb-daemon.py:362
 msgid "_Reverse order"
@@ -913,20 +908,20 @@ msgstr "Törli a kiválasztott felvételt?"
 #: ../client/totem-plugin/dvb-daemon.py:588
 #, python-format
 msgid "Recording %d"
-msgstr "Felvétel %d"
+msgstr "%d. felvétel"
 
 #: ../client/totem-plugin/dvb-daemon.py:648
 msgid "GNOME DVB Daemon is not installed"
-msgstr "GNOME DVB Daemon nincs telepítve"
+msgstr "A GNOME DVB démon nincs telepítve"
 
 #. www.k-d-w.org/
 #: ../data/gnome-dvb-control.desktop.in.in.h:1
 msgid "Digital TV Control Center"
-msgstr "Digitális TV beállításkezelő"
+msgstr "Digitális TV vezérlőpult"
 
 #: ../data/gnome-dvb-control.desktop.in.in.h:2
 msgid "Schedule recordings and browse program guide"
-msgstr "Felvételütemező és műsorfüzet böngésző"
+msgstr "Felvételek ütemezése és a műsorfüzet böngészése"
 
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"

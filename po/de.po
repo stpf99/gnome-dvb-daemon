@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-12-05 14:08+0000\n"
-"PO-Revision-Date: 2010-08-23 16:06+0000\n"
-"Last-Translator: Jan-Christoph Borchardt <JanCBorchardt@fsfe.org>\n"
+"POT-Creation-Date: 2011-01-15 17:40+0100\n"
+"PO-Revision-Date: 2011-03-27 19:02+0000\n"
+"Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-01-15 16:56+0000\n"
-"X-Generator: Launchpad (build 12200)\n"
+"X-Launchpad-Export-Date: 2011-04-16 19:16+0000\n"
+"X-Generator: Launchpad (build 12821)\n"
 
 #: ../client/gnomedvb/__init__.py:34
 msgid "GNOME DVB Daemon"
@@ -92,7 +92,7 @@ msgstr "Es trat ein Fehler beim Hinzufügen der Gruppe auf."
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
 #, python-format
 msgid "Are you sure you want to delete the group '%s'?"
-msgstr "Sind Sie sicher das Sie die Gruppe '%s' löschen wollen?"
+msgstr "Sind Sie sicher, dass Sie die Gruppe'%s' löschen wollen?"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
 msgid "All assignments to this group will be lost."
@@ -131,7 +131,7 @@ msgstr "Geplante Au_fzeichnungen"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
 msgid "_Edit"
-msgstr "B_earbeiten"
+msgstr "_Bearbeiten"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
 msgid "_View"
@@ -152,7 +152,7 @@ msgstr "Geplante Aufzeichnungen verwalten"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
 msgid "_Recordings"
-msgstr "A_ufzeichnungen"
+msgstr "_Aufzeichnungen"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
 msgid "Manage recordings"
@@ -160,7 +160,7 @@ msgstr "Aufzeichnungen verwalten"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
 msgid "_Quit"
-msgstr "Beenden"
+msgstr "_Beenden"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
 msgid "Quit the Program"
@@ -172,11 +172,11 @@ msgstr "_Kanalliste"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
 msgid "Edit channel lists"
-msgstr "Kannaliste bearbeiten"
+msgstr "Kanallisten bearbeiten"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
 msgid "_Preferences"
-msgstr "Einstellungen"
+msgstr "_Eigenschaften"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
 msgid "Display preferences"
@@ -201,7 +201,7 @@ msgstr "Programmführer aktualisieren"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
 msgid "_Previous Day"
-msgstr "_Letzter Tag"
+msgstr "_Vorheriger Tag"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:305
@@ -280,7 +280,9 @@ msgstr ""
 "Launchpad Contributions:\n"
 "  Florian Steinel https://launchpad.net/~florian-steinel\n"
 "  Jan-Christoph Borchardt https://launchpad.net/~jancborchardt\n"
+"  Mario Blättermann https://launchpad.net/~mario.blaettermann\n"
 "  Mario Rometsch https://launchpad.net/~roman-rometsch\n"
+"  Maximilian Schaar https://launchpad.net/~u-admin-maxi-schaar-com\n"
 "  Nils Naumann https://launchpad.net/~nau\n"
 "  Sebastian Pölsterl https://launchpad.net/~sebp\n"
 "  SpaceCafé https://launchpad.net/~spacecafe\n"
@@ -631,7 +633,7 @@ msgstr "Geräteauswahl"
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
 #, python-format
 msgid "<b>%s</b>\n"
-msgstr ""
+msgstr "<b>%s</b>\n"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "This process can take some time."
