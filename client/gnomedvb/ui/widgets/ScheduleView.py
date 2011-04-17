@@ -33,6 +33,8 @@ class ScheduleView(Gtk.TreeView):
         
         self.prev_selection = None
         self.set_property("headers-visible", False)
+        self.date_color = None
+        self.entry_color = None
 
         col_time = Gtk.TreeViewColumn("Time")
 
@@ -55,15 +57,10 @@ class ScheduleView(Gtk.TreeView):
         col.set_cell_data_func(cell_description, self._get_description_data, None)
         self.append_column(col)
 
-        self._set_colors()
-
     def _set_colors(self):
-        # FIXME workaround to retrieve button bg color
-        style = Gtk.Button().get_style_context()
-        self.date_color = style.get_background_color(Gtk.StateFlags.NORMAL)
-
         style = self.get_style_context()
         self.entry_color = style.get_background_color(Gtk.StateFlags.NORMAL)
+        self.date_color = style.get_background_color(Gtk.StateFlags.INSENSITIVE)
 
     def set_model(self, model):
         Gtk.TreeView.set_model(self, model)
@@ -80,6 +77,7 @@ class ScheduleView(Gtk.TreeView):
         return True
     
     def _get_description_data(self, column, cell, model, aiter, user_data=None):
+        self._set_colors()
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
 
         if event_id == ScheduleStore.NEW_DAY:
