@@ -404,9 +404,9 @@ class DVBRecorderClient(gobject.GObject):
         if signal_name == "Changed":
             self.emit("changed", *params)
         elif signal_name == "RecordingStarted":
-            self.emit("recording-started", params)
+            self.emit("recording-started", params[0])
         elif signal_name == "RecordingFinished":
-            self.emit("recording-finished", params)
+            self.emit("recording-finished", params[0])
            
 class DVBChannelListClient:
 
