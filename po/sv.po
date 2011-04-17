@@ -1,46 +1,45 @@
 # Swedish translation for DVB Daemon.
-# Copyright (C) 2008 Free Software Foundation, Inc.
+# Copyright (C) 2008, 2011 Free Software Foundation, Inc.
 # This file is distributed under the same license as the dvb-daemon package.
-# Daniel Nylander <po@danielnylander.se>, 2008.
+# Daniel Nylander <po@danielnylander.se>, 2008, 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: dvb-daemon\n"
+"Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-15 17:40+0100\n"
-"PO-Revision-Date: 2010-08-23 16:13+0000\n"
-"Last-Translator: Daniel Nylander <yeager@ubuntu.com>\n"
+"POT-Creation-Date: 2011-04-17 21:06+0200\n"
+"PO-Revision-Date: 2011-04-17 21:07+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-04-16 19:16+0000\n"
-"X-Generator: Launchpad (build 12821)\n"
 
-#: ../client/gnomedvb/__init__.py:34
+#: ../client/gnomedvb/__init__.py:33
 msgid "GNOME DVB Daemon"
 msgstr "GNOME DVB Daemon"
 
-#: ../client/gnomedvb/__init__.py:37
+#: ../client/gnomedvb/__init__.py:36
 msgid "GNOME DVB Daemon Website"
 msgstr "Webbplats för GNOME DVB Daemon"
 
-#: ../client/gnomedvb/__init__.py:86
+#: ../client/gnomedvb/__init__.py:73
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d timme"
 msgstr[1] "%d timmar"
 
-#: ../client/gnomedvb/__init__.py:88
+#: ../client/gnomedvb/__init__.py:75
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minut"
 msgstr[1] "%d minuter"
 
-#: ../client/gnomedvb/__init__.py:90
+#: ../client/gnomedvb/__init__.py:77
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -51,37 +50,37 @@ msgstr[1] "%d sekunder"
 msgid "Edit Channel Lists"
 msgstr "Redigera kanallistor"
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:56
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:54
 msgid "Channel groups"
 msgstr "Kanalgrupper"
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:97
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:54
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:95
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:51
 msgid "_Group:"
 msgstr "_Grupp:"
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:104
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:102
 msgid "Device groups"
 msgstr "Enhetsgrupper"
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:126
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:124
 msgid "All channels"
 msgstr "Alla kanaler"
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:140
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:72
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:33
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:96
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:95
 msgid "Channel"
 msgstr "Kanal"
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:154
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:152
 msgid "Choose a channel group"
 msgstr "Välj en kanalgrupp"
 
-#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:155
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:153
 msgid "Channels of group"
 msgstr "Kanaler i grupp"
 
@@ -102,176 +101,172 @@ msgstr "Alla tilldelningar till denna grupp kommer att gå förlorade."
 msgid "An error occured while removing the group"
 msgstr "Ett fel inträffade när gruppen togs bort"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:53
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:54
 msgid "DVB Control Center"
 msgstr "DVB-kontrollpanel"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:102
-msgid ""
-"Choose a device group and channel on the left to view the program guide"
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:103
+msgid "Choose a device group and channel on the left to view the program guide"
 msgstr "Välj en enhetsgrupp och kanal i det vänstra fältet av programguiden"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:103
-msgid ""
-"No devices are configured. Please go to preferences to configure them."
-msgstr ""
-"Inga enheter är konfigurerade. Gå till inställningar för att konfigurera dem."
-
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
+msgid "No devices are configured. Please go to preferences to configure them."
+msgstr "Inga enheter är konfigurerade. Gå till inställningar för att konfigurera dem."
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
 msgid "There is currently no schedule available for this channel"
 msgstr "Det finns inget schema tillgängligt för denna kanal"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:157
-#: ../client/totem-plugin/dvb-daemon.py:349
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
+#: ../client/totem-plugin/dvb-daemon.py:354
 msgid "_Recording schedule"
 msgstr "_Inspelningsschema"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
-msgid "_Edit"
-msgstr "_Redigera"
-
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
+msgid "_Edit"
+msgstr "R_edigera"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
 msgid "_View"
 msgstr "_Visa"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:161
 msgid "Help"
 msgstr "Hjälp"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:167
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
 msgid "_Manage"
 msgstr "_Hantera"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:269
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:271
 msgid "Manage recording schedule"
 msgstr "Hantera inspelningsschemat"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
 msgid "_Recordings"
 msgstr "_Inspelningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
 msgid "Manage recordings"
 msgstr "Hantera inspelningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
 msgid "_Quit"
 msgstr "A_vsluta"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:173
 msgid "Quit the Program"
 msgstr "Avsluta programmet"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:177
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
 msgid "_Channel Lists"
 msgstr "_Kanallistor"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
 msgid "Edit channel lists"
 msgstr "Redigera kanallistor"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
 msgid "_Preferences"
 msgstr "_Inställningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:181
 msgid "Display preferences"
 msgstr "Visningsinställningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:186
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
 msgid "_What's on now"
 msgstr "_Vad går på tv nu"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
 msgid "See what's currently on and is coming next"
 msgstr "Se vad som visas nu och vad som kommer senare"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
 msgid "_Refresh"
 msgstr "_Uppdatera"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:297
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:300
 msgid "Refresh program guide"
 msgstr "Uppdatera programguide"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
 msgid "_Previous Day"
 msgstr "_Föregående dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:305
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:308
 msgid "Go to previous day"
 msgstr "Gå till föregående dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
 msgid "_Next Day"
 msgstr "_Nästa dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:314
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:317
 msgid "Go to next day"
 msgstr "Gå till nästa dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:196
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
 msgid "_Channels"
 msgstr "_Kanaler"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
 msgid "View/Hide channels"
 msgstr "Visa/Dölj kanaler"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
 msgid "_Toolbar"
 msgstr "Ver_ktygsrad"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:200
 msgid "View/Hide toolbar"
 msgstr "Visa/Göm verktygsfält"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:209
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
 msgid "_About"
 msgstr "_Om"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
 msgid "Display informations about the program"
 msgstr "Visa information om programmet"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:265
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:267
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
 msgid "Recording schedule"
 msgstr "Inspelningsschema"
 
-#. Add recordings
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:276
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:153
-#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:30
-#: ../client/totem-plugin/dvb-daemon.py:301
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:148
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:32
+#: ../client/totem-plugin/dvb-daemon.py:308
 msgid "Recordings"
 msgstr "Inspelningar"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:285
-#: ../client/totem-plugin/dvb-daemon.py:330
-#: ../client/totem-plugin/dvb-daemon.py:351
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:287
+#: ../client/totem-plugin/dvb-daemon.py:335
+#: ../client/totem-plugin/dvb-daemon.py:356
 msgid "What's on now"
 msgstr "Vad visas nu"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:303
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:306
 msgid "Previous Day"
 msgstr "Föregående dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:312
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:315
 msgid "Next Day"
 msgstr "Nästa dag"
 
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:500
-#: ../client/totem-plugin/dvb-daemon.py:179
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
+#: ../client/totem-plugin/dvb-daemon.py:180
 msgid "Schedule recording for the selected event?"
 msgstr "Schemalägg inspelning för den markerade händelsen?"
 
 #. translators: These appear in the About dialog, usual format applies.
-#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:588
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:596
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
@@ -279,23 +274,23 @@ msgstr ""
 "  Daniel Nylander https://launchpad.net/~yeager\n"
 "  faultygearbox https://launchpad.net/~faultygearbox"
 
-#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:57
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:58
 msgid "Devices"
 msgstr "Enheter"
 
 #. translators: first is device's name, second its type
-#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:66
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
 #, python-format
 msgid "<b>%s (%s)</b>\n"
 msgstr "<b>%s (%s)</b>\n"
 
-#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:68
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr "Adapter: %d, Framände: %d"
 
-#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:72
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:73
 #, python-format
 msgid "Group %d"
 msgstr "Grupp %d"
@@ -304,125 +299,117 @@ msgstr "Grupp %d"
 msgid "Add to Group"
 msgstr "Lägg till i grupp"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:47
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:45
 msgid "Add Device to Group"
 msgstr "Lägg till enhet till grupp"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:92
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:89
 msgid "Create new Group"
 msgstr "Skapa ny grupp"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:112
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:109
 msgid "General"
 msgstr "Allmänt"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:118
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:114
 msgid "_Name:"
 msgstr "_Namn:"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:130
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:125
 msgid "Channels _file:"
 msgstr "Fil med kana_ler:"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:159
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:153
 msgid "_Directory:"
 msgstr "_Katalog:"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:187
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:181
 msgid "Select File"
 msgstr "Välj fil"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:196
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:190
 msgid "Select Directory"
 msgstr "Välj katalog"
 
-#: ../client/gnomedvb/ui/preferences/Dialogs.py:209
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:203
 msgid "Edit group"
 msgstr "Redigera grupp"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:38
-#: ../client/totem-plugin/dvb-daemon.py:352
+#: ../client/gnomedvb/ui/preferences/Preferences.py:39
+#: ../client/totem-plugin/dvb-daemon.py:357
 msgid "Digital TV Preferences"
 msgstr "Inställningar för digital-tv"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:88
+#: ../client/gnomedvb/ui/preferences/Preferences.py:89
 msgid "Edit selected group"
 msgstr "Redigera markerad grupp"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:95
+#: ../client/gnomedvb/ui/preferences/Preferences.py:96
 msgid "Remove selected device"
 msgstr "Ta bort markerad enhet"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:104
+#: ../client/gnomedvb/ui/preferences/Preferences.py:105
 msgid "Setup"
 msgstr "Konfigurera"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:106
+#: ../client/gnomedvb/ui/preferences/Preferences.py:107
 msgid "Setup devices"
 msgstr "Konfigurera enheter"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:113
+#: ../client/gnomedvb/ui/preferences/Preferences.py:114
 msgid "Create new group"
 msgstr "Skapa ny grupp"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:117
+#: ../client/gnomedvb/ui/preferences/Preferences.py:118
 msgid "Create new group for selected device"
 msgstr "Skapa ny grupp för markerad enhet"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:123
+#: ../client/gnomedvb/ui/preferences/Preferences.py:124
 msgid "Add to group"
 msgstr "Lägg till i grupp"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:127
+#: ../client/gnomedvb/ui/preferences/Preferences.py:128
 msgid "Add selected device to existing group"
 msgstr "Lägg till markerad enhet till befintlig grupp"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:143
+#: ../client/gnomedvb/ui/preferences/Preferences.py:144
 msgid "Configured devices"
 msgstr "Konfigurerade enheter"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:154
+#: ../client/gnomedvb/ui/preferences/Preferences.py:155
 msgid "Unconfigured devices"
 msgstr "Icke-konfigurerade enheter"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:219
+#: ../client/gnomedvb/ui/preferences/Preferences.py:220
 msgid "Device could not be removed from group"
 msgstr "Enheten kunde inte tas bort från gruppen"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:233
+#: ../client/gnomedvb/ui/preferences/Preferences.py:234
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
 msgstr "Är du säker att du vill ta bort enheten <b>%s</b> från <b>%s</b>"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:255
+#: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
 msgstr "Gruppen kunde inte skapas"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:257
-msgid ""
-"Make sure that you selected the correct channels file and directory where "
-"recordings are stored and that both are readable."
-msgstr ""
-"Försäkra dig om att du valde den korrekta kanalfilen och katalog där "
-"inspelningarna ska lagras samt att båda är läsbara."
+#: ../client/gnomedvb/ui/preferences/Preferences.py:260
+msgid "Make sure that you selected the correct channels file and directory where recordings are stored and that both are readable."
+msgstr "Försäkra dig om att du valde den korrekta kanalfilen och katalog där inspelningarna ska lagras samt att båda är läsbara."
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:286
+#: ../client/gnomedvb/ui/preferences/Preferences.py:289
 msgid "Device could not be added to group"
 msgstr "Enheten kunde inte läggas till gruppen"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:288
-msgid ""
-"Make sure that the device isn't already assigned to a different group and "
-"that all devices in the group are of the same type."
-msgstr ""
-"Försäkra dig om att enheten inte redan är tilldelad till en annan grupp och "
-"att alla enheter i gruppen är av samma typ."
+#: ../client/gnomedvb/ui/preferences/Preferences.py:291
+msgid "Make sure that the device isn't already assigned to a different group and that all devices in the group are of the same type."
+msgstr "Försäkra dig om att enheten inte redan är tilldelad till en annan grupp och att alla enheter i gruppen är av samma typ."
 
-#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:95
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:97
 msgid "Delete selected recordings?"
 msgstr "Ta bort markerade inspelningar?"
 
-#: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
+#: ../client/gnomedvb/ui/timers/CalendarDialog.py:26
 msgid "Pick a date"
 msgstr "Välj ett datum"
 
@@ -436,7 +423,7 @@ msgid "Start time"
 msgstr "Starttid"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
-#: ../client/gnomedvb/ui/widgets/ScheduleView.py:91
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:99
 msgid "Duration"
 msgstr "Speltid"
 
@@ -456,19 +443,15 @@ msgstr "Tidsinspelningen som du markerade tillhör en annan aktiv inspelning."
 msgid "Deleting this timer will abort the recording."
 msgstr "Borttagning av denna tidsinspelning kommer att avbryta inspelningen."
 
-#: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:29
 msgid "Timer could not be created"
 msgstr "Tidsinspelning kunde inte skapas"
 
-#: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
-msgid ""
-"Make sure that the timer doesn't conflict with another one and doesn't start "
-"in the past."
-msgstr ""
-"Försäkra dig om att tidsinspelningen inte är i konflikt med någon annan och "
-"inte startar före aktuell tidpunkt."
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:31
+msgid "Make sure that the timer doesn't conflict with another one and doesn't start in the past."
+msgstr "Försäkra dig om att tidsinspelningen inte är i konflikt med någon annan och inte startar före aktuell tidpunkt."
 
-#: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:41
 msgid "Recording has been scheduled successfully"
 msgstr "Inspelningen har schemalagts"
 
@@ -485,19 +468,19 @@ msgid "Edit Timer"
 msgstr "Redigera tidsinspelning"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:87
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:60
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
 msgid "Channel:"
 msgstr "Kanal:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:95
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:94
 msgid "_Start time:"
 msgstr "_Starttid:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:111
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:109
 msgid "_Duration:"
 msgstr "_Längd:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:125
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:123
 msgid "minutes"
 msgstr "minuter"
 
@@ -521,23 +504,19 @@ msgstr "Kanalgrupp"
 msgid "_Time:"
 msgstr "_Tid:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:28
-msgid "Details"
-msgstr "Detaljer"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:56
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:55
 msgid "Title:"
 msgstr "Titel:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:64
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:63
 msgid "Date:"
 msgstr "Datum:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:68
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:67
 msgid "Duration:"
 msgstr "Längd:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:72
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:71
 msgid "Description:"
 msgstr "Beskrivning:"
 
@@ -549,88 +528,73 @@ msgstr "Starta"
 msgid "Length"
 msgstr "Längd"
 
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:41
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
 msgid "Now"
 msgstr "Nu"
 
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:53
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
 msgid "Next"
 msgstr "Nästa"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:51
 msgid "No devices have been found."
 msgstr "Ingen enhet har hittats."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
-msgid ""
-"Either no DVB cards are installed or all cards are busy. In the latter case "
-"make sure you close all programs such as video players that access your DVB "
-"card."
-msgstr ""
-"Antingen finns inget DVB-kort installerade eller så är alla kort upptagna. I "
-"det senare fallet bör du försäkra dig om att stänga alla program såsom "
-"videouppspelare som använder ditt DVB-kort."
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:53
+msgid "Either no DVB cards are installed or all cards are busy. In the latter case make sure you close all programs such as video players that access your DVB card."
+msgstr "Antingen finns inget DVB-kort installerade eller så är alla kort upptagna. I det senare fallet bör du försäkra dig om att stänga alla program såsom videouppspelare som använder ditt DVB-kort."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:66
 msgid "Name"
 msgstr "Namn"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:72
 msgid "Type"
 msgstr "Typ"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:83
 msgid "Select the device you want to configure."
 msgstr "Välj enheten du vill konfigurera."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:98
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:97
 msgid "All devices are already configured."
 msgstr "Alla enheter är redan konfigurerade."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
-msgid ""
-"Go to the control center if you want to alter the settings of already "
-"configured devices."
-msgstr ""
-"Gå till kontrollpanelen om du vill ändra inställningarna för redan "
-"konfigurerade enheter."
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:99
+msgid "Go to the control center if you want to alter the settings of already configured devices."
+msgstr "Gå till kontrollpanelen om du vill ändra inställningarna för redan konfigurerade enheter."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:107
 msgid "An error occured while retrieving devices."
 msgstr "Ett fel inträffade under hämtandet av enheter."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
-msgid ""
-"Make sure other applications don't access DVB devices and you have "
-"permissions to access them."
-msgstr ""
-"Försäkra dig om att andra applikationer inte kommer åt DVB-enheterna samt "
-"att du själv har behörighet att komma åt dem."
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:109
+msgid "Make sure other applications don't access DVB devices and you have permissions to access them."
+msgstr "Försäkra dig om att andra applikationer inte kommer åt DVB-enheterna samt att du själv har behörighet att komma åt dem."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:111
 msgid "The detailed error message is:"
 msgstr "Detaljerade felmeddelandet är:"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:120
 msgid "Searching for devices"
 msgstr "Söker efter enheter"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:136
 msgid "Device selection"
 msgstr "Enhetsval"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:237
 #, python-format
 msgid "<b>%s</b>\n"
-msgstr ""
+msgstr "<b>%s</b>\n"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "This process can take some time."
 msgstr "Denna process kan ta lite tid."
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:61
-msgid ""
-"You can select the channels you want to have in your list of channels."
+msgid "You can select the channels you want to have in your list of channels."
 msgstr "Du kan välja de kanaler som du vill ha i din kanallista."
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:67
@@ -641,23 +605,23 @@ msgstr "Markera alla"
 msgid "Deselect all"
 msgstr "Avmarkera alla"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:84
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:83
 msgid "_Channels:"
 msgstr "_Kanaler:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:119
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:118
 msgid "Select _scrambled channels"
 msgstr "Välj k_odade kanaler"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:135
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:134
 msgid "Signal quality:"
 msgstr "Signalkvalitet:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:146
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:145
 msgid "Signal strength:"
 msgstr "Signalstyrka:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:161
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:160
 msgid "Scanning for channels"
 msgstr "Söker efter kanaler"
 
@@ -696,82 +660,71 @@ msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Försäkra dig om att paketet dvb-apps är installerat."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
-msgid ""
-"Please choose a country and the antenna that is closest to your location."
+msgid "Please choose a country and the antenna that is closest to your location."
 msgstr "Välj ett land och den antenn som finns närmast dig."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
-msgid ""
-"If you don't know which antenna to choose select \"Don't know\" from the "
-"list of providers."
-msgstr ""
-"Om du inte vet vilken antenn du ska välja så välj \"Vet inte\" från "
-"leverantörslistan."
+msgid "If you don't know which antenna to choose select \"Don't know\" from the list of providers."
+msgstr "Om du inte vet vilken antenn du ska välja så välj \"Vet inte\" från leverantörslistan."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
-msgid ""
-"However, searching for channels will take considerably longer this way."
-msgstr ""
-"Dock kommer sökning efter kanaler att ta mycket längre tid med detta sätt."
+msgid "However, searching for channels will take considerably longer this way."
+msgstr "Dock kommer sökning efter kanaler att ta mycket längre tid med detta sätt."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
 msgid "Not listed"
 msgstr "Ej listad"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:154
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:228
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:153
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:224
 msgid "_Country:"
 msgstr "_Land:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:179
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:177
 msgid "_Antenna:"
 msgstr "_Antenn:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:188
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:186
 msgid "Antenna"
 msgstr "Antenn"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
 msgid "_Satellite:"
 msgstr "_Satellit:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:209
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
 msgid "Satellite"
 msgstr "Satellit"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:251
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
 msgid "_Providers:"
 msgstr "_Leverantörer:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:259
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:254
 msgid "Provider"
 msgstr "Leverantör"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:308
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:303
 msgid "Don't know"
 msgstr "Vet ej"
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:29
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
 msgid "Welcome to the digital television Assistant."
 msgstr "Välkommen till den digitala televisionsguiden."
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
-msgid ""
-"It will automatically configure your devices and search for channels, if "
-"necessary."
-msgstr ""
-"Den kommer automatiskt att konfigurera dina enheter och även söka efter "
-"kanaler om det behövs."
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
+msgid "It will automatically configure your devices and search for channels, if necessary."
+msgstr "Den kommer automatiskt att konfigurera dina enheter och även söka efter kanaler om det behövs."
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:38
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
 msgid "Click \"Forward\" to begin."
 msgstr "Klicka på \"Framåt\" för att starta."
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:42
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:40
 msgid "_Expert mode"
 msgstr "_Expertläge"
 
-#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:46
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:44
 msgid "Digital TV configuration"
 msgstr "Konfiguration av digital-tv"
 
@@ -783,72 +736,64 @@ msgstr "Välj en plats där du vill spara listan över kanaler."
 msgid "Save channels"
 msgstr "Spara kanaler"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:45
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
 msgid "Configuring device"
 msgstr "Konfigurerar enhet"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:119
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
 msgid "TV"
 msgstr "TV"
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
 msgid "No channels were found."
 msgstr "Inga kanaler hittades."
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:129
-msgid ""
-"Make sure that the antenna is connected and you have selected the correct "
-"tuning data."
-msgstr ""
-"Försäkra dig om att antennen är ansluten och att du har valt de korrekta "
-"inställningarna."
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
+msgid "Make sure that the antenna is connected and you have selected the correct tuning data."
+msgstr "Försäkra dig om att antennen är ansluten och att du har valt de korrekta inställningarna."
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:139
 #, python-format
 msgid "The device has been added to the group %s."
 msgstr "Enheten har lagts till i gruppen %s."
 
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:148
 msgid "An error occured while trying to setup the device."
 msgstr "Ett fel inträffade vid försök att konfigurera enheten."
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
 msgid "Configure Another Device"
 msgstr "Konfigurera en annan enhet"
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:41
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
 msgid "Configuration finished"
 msgstr "Konfigurationen är färdig"
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:48
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
 #, python-format
 msgid "The device %s has been configured sucessfully."
 msgstr "Enheten %s har nu konfigurerats."
 
-#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:50
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
 #, python-format
 msgid "Failed configuring device %s."
 msgstr "Misslyckades med att konfigurera enheten %s."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:44
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:45
 msgid "Cleaning up. This may take a while."
 msgstr "Städar upp. Detta kan ta lite tid."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:82
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:83
 #: ../data/gnome-dvb-setup.desktop.in.in.h:2
 msgid "Setup digital TV"
 msgstr "Konfigurera digital-tv"
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:156
-msgid ""
-"The generated channels file can be used to configure your devices in the "
-"control center."
-msgstr ""
-"Den genererade kanalfilen kan användas för att konfigurera dina enheter i "
-"kontrollpanelen."
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:168
+msgid "The generated channels file can be used to configure your devices in the control center."
+msgstr "Den genererade kanalfilen kan användas för att konfigurera dina enheter i kontrollpanelen."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:203
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:215
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
@@ -857,61 +802,65 @@ msgstr ""
 "Alla ändringar kommer att gå förlorade."
 
 #: ../client/totem-plugin/dvb-daemon.py:151
-#: ../client/totem-plugin/dvb-daemon.py:195
-#: ../client/totem-plugin/dvb-daemon.py:336
+#: ../client/totem-plugin/dvb-daemon.py:196
+#: ../client/totem-plugin/dvb-daemon.py:341
 msgid "Program Guide"
 msgstr "Programguide"
 
-#: ../client/totem-plugin/dvb-daemon.py:307
+#: ../client/totem-plugin/dvb-daemon.py:301
 msgid "Digital TV"
 msgstr "Digital-tv"
 
-#: ../client/totem-plugin/dvb-daemon.py:347
+#: ../client/totem-plugin/dvb-daemon.py:352
 msgid "Watch TV"
 msgstr "Se på tv"
 
-#: ../client/totem-plugin/dvb-daemon.py:348
+#: ../client/totem-plugin/dvb-daemon.py:353
 msgid "Digital _TV"
 msgstr "Digital-_tv"
 
-#: ../client/totem-plugin/dvb-daemon.py:350
+#: ../client/totem-plugin/dvb-daemon.py:355
 msgid "_Program Guide"
 msgstr "_Programguide"
 
-#: ../client/totem-plugin/dvb-daemon.py:353
+#: ../client/totem-plugin/dvb-daemon.py:358
 msgid "_Delete"
 msgstr "_Ta bort"
 
-#: ../client/totem-plugin/dvb-daemon.py:354
+#: ../client/totem-plugin/dvb-daemon.py:359
 msgid "D_etails"
 msgstr "D_etaljer"
 
-#: ../client/totem-plugin/dvb-daemon.py:355
+#: ../client/totem-plugin/dvb-daemon.py:360
 msgid "_Order channels"
 msgstr "_Ordna kanaler"
 
-#: ../client/totem-plugin/dvb-daemon.py:358
+#: ../client/totem-plugin/dvb-daemon.py:363
 msgid "By _name"
 msgstr "Efter _namn"
 
-#: ../client/totem-plugin/dvb-daemon.py:359
+#: ../client/totem-plugin/dvb-daemon.py:364
 msgid "By _group"
 msgstr "Efter _grupp"
 
-#: ../client/totem-plugin/dvb-daemon.py:362
+#: ../client/totem-plugin/dvb-daemon.py:367
 msgid "_Reverse order"
 msgstr "_Baklänges"
 
-#: ../client/totem-plugin/dvb-daemon.py:514
+#: ../client/totem-plugin/dvb-daemon.py:519
 msgid "Delete selected recording?"
 msgstr "Ta bort markerad inspelning?"
 
-#: ../client/totem-plugin/dvb-daemon.py:588
+#: ../client/totem-plugin/dvb-daemon.py:597
 #, python-format
 msgid "Recording %d"
 msgstr "Inspelning %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:648
+#: ../client/totem-plugin/dvb-daemon.py:657
+msgid "Setup Failed"
+msgstr "Konfigurationen misslyckades"
+
+#: ../client/totem-plugin/dvb-daemon.py:658
 msgid "GNOME DVB Daemon is not installed"
 msgstr "GNOME DVB Daemon är inte installerat"
 
@@ -928,316 +877,224 @@ msgstr "Schemalägg inspelningar och bläddra i tv-tablån"
 msgid "Digital TV Setup"
 msgstr "Konfigurera digital-tv"
 
-#, python-format
+#~ msgid "Details"
+#~ msgstr "Detaljer"
 #~ msgid "<small>Adapter: %d, Frontend: %d</small>"
 #~ msgstr "<small>Adapter: %d, Frontend: %d</small>"
-
 #~ msgid "Add To Group"
 #~ msgstr "Lägg till i grupp"
-
 #~ msgid "<b>Select a group:</b>"
 #~ msgstr "<b>Välj en grupp:</b>"
-
 #~ msgid "Create Group"
 #~ msgstr "Skapa grupp"
-
 #~ msgid "<b>Channels File</b>"
 #~ msgstr "<b>Kanalfil</b>"
-
 #~ msgid "<b>Recordings' Directory</b>"
 #~ msgstr "<b>Inspelningskatalog</b>"
-
 #~ msgid "Configure DVB"
 #~ msgstr "Konfigurera DVB"
-
 #~ msgid "<b>Registered groups</b>"
 #~ msgstr "<b>Registrerade grupper</b>"
-
 #~ msgid "<b>Unassigned devices</b>"
 #~ msgstr "<b>Ej tilldelade enheter</b>"
-
-#~ msgid "Are you sure you want to remove device <b>%s</b> from <b>group %s</b>"
-#~ msgstr ""
-#~ "Är du säker på att du vill ta bort enheten <b>%s</b> från <b>gruppen %s</b>"
-
 #~ msgid ""
-#~ "<big><span weight=\"bold\">Device could not be removed from "
-#~ "group</big></span>"
+#~ "Are you sure you want to remove device <b>%s</b> from <b>group %s</b>"
 #~ msgstr ""
-#~ "<big><span weight=\"bold\">Enheten kunde inte tas bort från "
-#~ "gruppen</big></span>"
-
+#~ "Är du säker på att du vill ta bort enheten <b>%s</b> från <b>gruppen %s</"
+#~ "b>"
+#~ msgid ""
+#~ "<big><span weight=\"bold\">Device could not be removed from group</big></"
+#~ "span>"
+#~ msgstr ""
+#~ "<big><span weight=\"bold\">Enheten kunde inte tas bort från gruppen</"
+#~ "big></span>"
 #~ msgid "<big><span weight=\"bold\">Group could not be created</big></span>"
 #~ msgstr "<big><span weight=\"bold\">Gruppen kunde inte skapas</big></span>"
-
 #~ msgid ""
 #~ "<big><span weight=\"bold\">Device could not be added to group</big></span>"
 #~ msgstr ""
-#~ "<big><span weight=\"bold\">Enheten kunde inte läggas till i "
-#~ "gruppen</big></span>"
-
+#~ "<big><span weight=\"bold\">Enheten kunde inte läggas till i gruppen</"
+#~ "big></span>"
 #~ msgid "Schedule Recordings"
 #~ msgstr "Schemalägg inspelningar"
-
 #~ msgid "<b>Choose device group:</b>"
 #~ msgstr "<b>Välj enhetsgrupp:</b>"
-
 #~ msgid "<b>Scheduled recordings:</b>"
 #~ msgstr "<b>Schemalagda inspelningar:</b>"
-
 #~ msgid "ID"
 #~ msgstr "ID"
-
 #~ msgid "Duration in minutes"
 #~ msgstr "Speltid i minuter"
-
 #~ msgid "<big><span weight=\"bold\">Abort active recording?</span></big>"
 #~ msgstr "<big><span weight=\"bold\">Avbryt aktiv inspelning?</span></big>"
-
 #~ msgid "<b>Channel:</b>"
 #~ msgstr "<b>Kanal:</b>"
-
 #~ msgid "<b>Start time:</b>"
 #~ msgstr "<b>Starttid:</b>"
-
 #~ msgid "Pick date"
 #~ msgstr "Välj datum"
-
 #~ msgid "<b>Duration:</b>"
 #~ msgstr "<b>Speltid:</b>"
-
 #~ msgid "<big><span weight=\"bold\">No devices have been found.</span></big>"
 #~ msgstr "<big><span weight=\"bold\">Inga enheter hittades.</span></big>"
-
 #~ msgid "Select device you want to scan channels."
 #~ msgstr "Välj enheten som du vill söka efter kanaler på."
-
 #~ msgid "Setup adapter"
 #~ msgstr "Konfigurera adapter"
-
 #~ msgid "Frequency"
 #~ msgstr "Frekvens"
-
 #~ msgid "TV channels"
 #~ msgstr "TV-kanaler"
-
 #~ msgid "Radio channels"
 #~ msgstr "Radiokanaler"
-
 #~ msgid "Austria"
 #~ msgstr "Österrike"
-
 #~ msgid "Australia"
 #~ msgstr "Australien"
-
 #~ msgid "Belgium"
 #~ msgstr "Belgien"
-
 #~ msgid "Switzerland"
 #~ msgstr "Schweiz"
-
 #~ msgid "Czech Republic"
 #~ msgstr "Tjeckien"
-
 #~ msgid "Germany"
 #~ msgstr "Tyskland"
-
 #~ msgid "Denmark"
 #~ msgstr "Danmark"
-
 #~ msgid "Spain"
 #~ msgstr "Spanien"
-
 #~ msgid "Finland"
 #~ msgstr "Finland"
-
 #~ msgid "France"
 #~ msgstr "Frankrike"
-
 #~ msgid "Greece"
 #~ msgstr "Grekland"
-
 #~ msgid "Hungary"
 #~ msgstr "Ungern"
-
 #~ msgid "Iceland"
 #~ msgstr "Island"
-
 #~ msgid "Italy"
 #~ msgstr "Italien"
-
 #~ msgid "Luxemburg"
 #~ msgstr "Luxemburg"
-
 #~ msgid "Netherlands"
 #~ msgstr "Nederländerna"
-
 #~ msgid "Poland"
 #~ msgstr "Polen"
-
 #~ msgid "Sweden"
 #~ msgstr "Sverige"
-
 #~ msgid "Slovakia"
 #~ msgstr "Slovakien"
-
 #~ msgid "Taiwan"
 #~ msgstr "Taiwan"
-
 #~ msgid "United Kingdom"
 #~ msgstr "Storbritannien"
-
 #~ msgid "<b>Country:</b>"
 #~ msgstr "<b>Land:</b>"
-
 #~ msgid "<b>Antenna:</b>"
 #~ msgstr "<b>Antenn:</b>"
-
 #~ msgid "Scan all frequencies"
 #~ msgstr "Sök igenom alla frekvenser"
-
 #~ msgid "<b>Satellite:</b>"
 #~ msgstr "<b>Satellit:</b>"
-
 #~ msgid "Norway"
 #~ msgstr "Norge"
-
 #~ msgid "<b>Providers:</b>"
 #~ msgstr "<b>Leverantörer:</b>"
-
 #~ msgid ""
-#~ "This wizard will guide you through the process of setting up your DVB cards."
+#~ "This wizard will guide you through the process of setting up your DVB "
+#~ "cards."
 #~ msgstr ""
 #~ "Denna guide kommer att hjälpa dig genom konfigurationen av dina DVB-kort."
-
 #~ msgid "Welcome"
 #~ msgstr "Välkommen"
-
 #~ msgid "Your DVB cards are now setup."
 #~ msgstr "Dina DVB-kort är nu konfigurerade."
-
-#~ msgid "Setup finished"
-#~ msgstr "Konfiguration färdig"
-
 #~ msgid "Setup DVB"
 #~ msgstr "Konfigurera DVB"
-
 #~ msgid "Description"
 #~ msgstr "Beskrivning"
-
 #~ msgid "Program guide"
 #~ msgstr "Programguide"
-
 #~ msgid "DVB Radio"
 #~ msgstr "DVB-radio"
-
 #~ msgid "Device groups:"
 #~ msgstr "Enhetsgrupper:"
-
 #~ msgid "Refresh"
 #~ msgstr "Uppdatera"
-
 #~ msgid "Channels"
 #~ msgstr "Kanaler"
-
 #~ msgid "<b>Name</b>"
 #~ msgstr "<b>Namn</b>"
-
 #~ msgid "<b>Configured devices</b>"
 #~ msgstr "<b>Konfigurerade enheter</b>"
-
 #~ msgid "<b>Unconfigured devices</b>"
 #~ msgstr "<b>Okonfigurerade enheter</b>"
-
 #~ msgid "<b>Title:</b>"
 #~ msgstr "<b>Titel:</b>"
-
 #~ msgid "<b>Date:</b>"
 #~ msgstr "<b>Datum:</b>"
-
 #~ msgid "<b>Description:</b>"
 #~ msgstr "<b>Beskrivning:</b>"
-
 #~ msgid "Select device you want to configure."
 #~ msgstr "Välj enhet du vill konfigurera."
-
-#, python-format
 #~ msgid "Scanning for channels on device %s"
 #~ msgstr "Söker efter kanaler på enhet %s"
-
 #~ msgid "New Zealand"
 #~ msgstr "Nya Zeeland"
-
 #~ msgid "Hong Kong"
 #~ msgstr "Hong Kong"
-
 #~ msgid "Expert mode"
 #~ msgstr "Expertläge"
-
 #~ msgid ""
 #~ "No devices are configured. Please go to preferences and to configure them."
 #~ msgstr ""
 #~ "Inga enheter konfigurerade.Gå till inställningarna och konfigurera dem."
-
 #~ msgid "Toolbar"
 #~ msgstr "Verktygsrad"
-
 #~ msgid "<big><span weight=\"bold\">Delete selected recordings?</span></big>"
-#~ msgstr "<big><span weight=\"bold\">Ta bort markerad inspelning?</span></big>"
-
+#~ msgstr ""
+#~ "<big><span weight=\"bold\">Ta bort markerad inspelning?</span></big>"
 #~ msgid "Channel List Editor"
 #~ msgstr "Redigera kanallista"
-
 #~ msgid "Channel lists"
 #~ msgstr "Kanallistor"
-
 #~ msgid "Timer"
 #~ msgstr "Tidsinspelning"
-
 #~ msgid "Select scrambled channels"
 #~ msgstr "Välj kodade kanaler"
-
 #~ msgid "DVB card is not configured"
 #~ msgstr "DVB-kortet är inte konfigurerat"
-
 #~ msgid "Do you want to search for channels now?"
 #~ msgstr "Vill du söka efter kanaler nu?"
-
 #~ msgid "Totem Movie Player"
 #~ msgstr "Filmspelaren Totem"
-
 #~ msgid "<big><span weight=\"bold\">Timer could not be deleted</big></span>"
 #~ msgstr ""
-#~ "<big><span weight=\"bold\">Tidsinspelningen kunde inte tas bort</big></span>"
-
+#~ "<big><span weight=\"bold\">Tidsinspelningen kunde inte tas bort</big></"
+#~ "span>"
 #~ msgid ""
-#~ "<big><span weight=\"bold\">Schedule recording for the selected "
-#~ "event?</span></big>"
+#~ "<big><span weight=\"bold\">Schedule recording for the selected event?</"
+#~ "span></big>"
 #~ msgstr ""
 #~ "<big><span weight=\"bold\">Schemalägg inspelning för den markerade "
 #~ "händelsen?</span></big>"
-
 #~ msgid ""
 #~ "Choose the channels you want to have in your list of channels. You can "
 #~ "reorder the channels, too."
 #~ msgstr ""
 #~ "Markera de kanaler som du vill ha i din kanallista. Du kan även sortera "
 #~ "kanalerna som du önskar."
-
 #~ msgid "Select a group:"
 #~ msgstr "Välj en grupp:"
-
 #~ msgid "Start time:"
 #~ msgstr "Starttid:"
-
 #~ msgid "Providers:"
 #~ msgstr "Leverantörer:"
-
 #~ msgid "Country:"
 #~ msgstr "Land:"
-
 #~ msgid "Satellite:"
 #~ msgstr "Satellit:"
-
 #~ msgid "Antenna:"
 #~ msgstr "Antenn:"
+
