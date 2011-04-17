@@ -72,7 +72,7 @@ class DeviceGroupsView (Gtk.TreeView):
                 group = model[aiter][model.COL_GROUP]
                 text = _("Group %d") % group["id"]
             else:
-                text = device
+                text = device[0]
             
         cell.set_property("markup", text)
 

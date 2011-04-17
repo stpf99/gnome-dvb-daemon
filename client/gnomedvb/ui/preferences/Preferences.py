@@ -174,7 +174,7 @@ class Preferences(Gtk.Window):
         
         group_iter = self.devicegroups.append(None)
         self.devicegroups[group_iter][self.devicegroups.COL_GROUP] = group
-        self.devicegroups[group_iter][self.devicegroups.COL_DEVICE] = group["name"]
+        self.devicegroups[group_iter][self.devicegroups.COL_DEVICE] = (group["name"],)
         
         for device in group["devices"]:
             dev_iter = self.devicegroups.append(group_iter)
