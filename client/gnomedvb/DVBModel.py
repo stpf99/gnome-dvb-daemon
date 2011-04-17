@@ -26,7 +26,7 @@ class DVBModel (gnomedvb.DVBManagerClient):
         gnomedvb.DVBManagerClient.__init__(self)
         
     def get_device_group(self, group_id):
-        path, success = self.manager.GetDeviceGroup(group_id)
+        path, success = self.manager.GetDeviceGroup('(u)', group_id)
         if success:
             return DeviceGroup(path)
         else:
