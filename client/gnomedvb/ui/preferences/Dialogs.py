@@ -26,7 +26,7 @@ __all__ = ["AddToGroupDialog", "NewGroupDialog", "EditGroupDialog"]
 class AddToGroupDialog (Gtk.Dialog):
 
     def __init__(self, parent, model, device_type):
-        Gtk.Dialog.__init__(self, title=_("Add to Group"),
+        Gtk.Dialog.__init__(self, title=_("Add to Group"), parent=parent,
             buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
                       Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
         self.set_modal(True)
@@ -59,7 +59,7 @@ class AddToGroupDialog (Gtk.Dialog):
         combo.pack_start(cell, True)
         combo.add_attribute(cell, "text", 0)
         combo.show()
-        label.set_mnemonic_widget(combo)
+        group_label.set_mnemonic_widget(combo)
         groupbox.pack_start(combo, True, True, 0)
                      
         def append_groups(groups):
