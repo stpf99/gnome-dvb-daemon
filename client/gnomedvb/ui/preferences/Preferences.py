@@ -224,7 +224,7 @@ class Preferences(Gtk.Window):
         model, aiter = self.devicegroupsview.get_selection().get_selected()
         
         if aiter != None:
-            group = device = model[aiter][model.COL_GROUP]
+            group = model[aiter][model.COL_GROUP]
             device = model[aiter][model.COL_DEVICE]
         
             dialog = Gtk.MessageDialog(parent=self,
@@ -348,7 +348,8 @@ class Preferences(Gtk.Window):
                 device = Device (group["id"], devname, adapter, frontend, devtype)
                 device.group_name = group["name"]
                 dev_iter = self.devicegroups.append(aiter)
-                self.devicegroups.set(dev_iter, self.devicegroups.COL_DEVICE, device)
+                self.devicegroups[dev_iter][self.devicegroups.COL_GROUP] = group
+                self.devicegroups[dev_iter][self.devicegroups.COL_DEVICE] = device
                 break
                     
     def _on_group_device_removed(self, group, adapter, frontend):
