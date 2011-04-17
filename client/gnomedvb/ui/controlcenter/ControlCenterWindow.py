@@ -261,7 +261,7 @@ class ControlCenterWindow(Gtk.Window):
         self.toolbar.show()
         self.vbox_outer.pack_start(self.toolbar, False, True, 0)
 
-        timers_image = Gtk.Image.new_from_icon_name("stock_timer", Gtk.IconSize.MENU)
+        timers_image = Gtk.Image.new_from_icon_name("appointment-soon", Gtk.IconSize.MENU)
         timers_image.show()
         
         self.button_display_timers = Gtk.ToolButton(icon_widget=timers_image, label=_("Recording schedule"))
