@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import dbus
-import dbus.glib
 import gettext
 import gnomedvb
 import gobject
@@ -26,6 +24,7 @@ import os.path
 import sys
 
 from gi.repository import Gdk
+from gi.repository import Gio
 from gi.repository import Gtk
 from gi.repository import Peas
 from gi.repository import Totem
@@ -59,6 +58,13 @@ def spawn_on_screen(argv, screen, flags=0):
 		      flags=flags,
 		      child_setup=set_environment,
 		      user_data=screen.make_display_name())
+
+def _get_dbus_proxy():
+    return Gio.DBusProxy.new_for_bus_sync(Gio.BusType.SESSION,
+            Gio.DBusProxyFlags.NONE, None,
+            "org.freedesktop.DBus",
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus", None)
 
 class DvbSetup:
 
@@ -126,12 +132,7 @@ class DvbSetup:
         return None
 
     def _dbus_service_available(self, name):
-        bus = dbus.SessionBus()
-        # Get proxy object
-        proxy = bus.get_object("org.freedesktop.DBus",
-            "/org/freedesktop/DBus")
-        # Apply the correct interace to the proxy object
-        dbusobj = dbus.Interface(proxy, "org.freedesktop.DBus")
+	dbusobj = _get_dbus_proxy()
 
         for iname in dbusobj.ListNames():
             if iname == name:
@@ -263,26 +264,22 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
 
         try:
             self.construct()
-        except dbus.DBusException:
-            print >> sys.stderr, "Failed activating DVB DBus service"
+        except Exception, e:
+            print >> sys.stderr, "Failed activating DVB DBus service", str(e)
             return
 
     def monitor_bus(self):
-        bus = dbus.SessionBus()
-        # Get proxy object
-        proxy = bus.get_object("org.freedesktop.DBus",
-            "/org/freedesktop/DBus")
-        # Apply the correct interace to the proxy object
-        dbusobj = dbus.Interface(proxy, "org.freedesktop.DBus")
+        dbusobj = _get_dbus_proxy()
+        dbusobj.connect("g-signal", self.on_dbus_signal)
 
-        dbusobj.connect_to_signal("NameOwnerChanged", self.on_dbus_owner_changed)
-
-    def on_dbus_owner_changed(self, name, old_owner, new_owner):
-        if name == DBUS_DVB_SERVICE:
-            if old_owner == "":
-                self.construct()
-            elif new_owner == "":
-                self.deactivate()
+    def on_dbus_signal(self, proxy, sender_name, signal_name, params):
+        if signal_name == "NameOwnerChanged":
+            name, old_owner, new_owner = params.unpack()
+            if name == DBUS_DVB_SERVICE:
+                if old_owner == "":
+                    self.construct()
+                elif new_owner == "":
+                    self.deactivate()
 
     def construct(self):
         self.totem_object = self.object
@@ -312,8 +309,8 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
 
         self.recstore = gnomedvb.DVBRecordingsStoreClient()
         self.recstore.connect("changed", self._on_recstore_changed)
-        add_rec = lambda recs: [self._add_recording(rid) for rid in recs]
-        self.recstore.get_recordings(reply_handler=add_rec, error_handler=global_error_handler)
+        add_rec = lambda p,recs,u: [self._add_recording(rid) for rid in recs]
+        self.recstore.get_recordings(result_handler=add_rec, error_handler=global_error_handler)
 
     def _setup_sidebar(self):
         self.sidebar = Gtk.VBox(spacing=6)
@@ -524,7 +521,7 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
             dialog.destroy()
             if response == Gtk.ResponseType.YES:
                 self.recstore.delete(model[aiter][model.COL_SID],
-                    reply_handler=self._delete_callback,
+                    result_handler=self._delete_callback,
                     error_handler=global_error_handler)
         
     def _on_action_details(self, action, user_date=None):
@@ -546,6 +543,10 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
             if aiter != None:
                 group_id = model[aiter][model.COL_GROUP_ID]
                 sid = model[aiter][model.COL_SID]
+                # Skip section headers
+                if sid == 0L:
+                    return
+
                 if group_id == self.REC_GROUP_ID:
                     url, success = self.recstore.get_location(sid)
                 else:
@@ -626,7 +627,7 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
         if self._loaded_groups == self._size:
             self._configure_mode()
                         
-    def _delete_callback(self, success):
+    def _delete_callback(self, proxy, success, user_data):
         if not success:
             global_error_handler("Could not delete recording")
             
