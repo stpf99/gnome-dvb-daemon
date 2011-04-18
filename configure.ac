@@ -59,7 +59,7 @@ fi
 dnl ******************
 dnl * Check for libs
 dnl ******************
-GLIB_REQUIRED=2.28.6
+GLIB_REQUIRED=2.28.5
 GST_REQUIRED=0.10.29
 GEE_REQUIRED=0.5.0
 SQLITE_REQUIRED=3.4
