@@ -20,10 +20,13 @@
 using GLib;
 using Gee;
 using Sqlite;
+using DVB.Logging;
 
 namespace DVB.database.sqlite {
 
     public class SqliteConfigTimersStore : SqliteDatabase, ConfigStore, TimersStore {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         private static const int VERSION = 1;
 
@@ -35,14 +38,14 @@ namespace DVB.database.sqlite {
         recordings_dir VARCHAR(255),
         name VARCHAR(255),
         PRIMARY KEY(group_id))""";
-    
+
         private static const string CREATE_DEVICES =
         """CREATE TABLE devices (
         group_id INTEGER,
         adapter INTEGER,
         frontend INTEGER,
         PRIMARY KEY(adapter, frontend))""";
-        
+
         private static const string CREATE_TIMERS =
         """CREATE TABLE timers (
         timer_id INTEGER,
@@ -61,56 +64,56 @@ namespace DVB.database.sqlite {
         """CREATE TABLE channel_groups (
         channel_group_id INTEGER PRIMARY KEY AUTOINCREMENT,
         name VARCHAR(255))""";
-        
+
         private static const string CREATE_CHANNELS =
         """CREATE TABLE channels (
         sid INTEGER,
         group_id INTEGER,
         channel_group_id INTEGER,
         PRIMARY KEY(sid, group_id, channel_group_id))""";
-        
+
         private static const string SELECT_ALL_GROUPS =
         "SELECT * FROM device_groups";
-        
+
         private static const string SELECT_DEVICES =
         "SELECT * FROM devices WHERE group_id=?";
-        
+
         private static const string DELETE_GROUP =
         "DELETE FROM device_groups WHERE group_id=?";
-        
+
         private static const string INSERT_GROUP =
         "INSERT INTO device_groups VALUES (?, ?, ?, ?, ?)";
-        
+
         private static const string CONTAINS_GROUP =
         "SELECT 1 FROM device_groups WHERE group_id=?";
-        
+
         private static const string UPDATE_GROUP =
         "UPDATE device_groups SET adapter_type=?, channels_file=?, recordings_dir=?, name=? WHERE group_id=?";
-        
+
         private static const string DELETE_DEVICE =
         "DELETE FROM devices WHERE adapter=? AND frontend=?";
-        
+
         private static const string DELETE_GROUP_DEVICES =
         "DELETE FROM devices WHERE group_id=?";
-        
+
         private static const string INSERT_DEVICE =
         "INSERT INTO devices VALUES (?, ?, ?)";
 
         private static const string SELECT_GROUP_OF_DEVICE =
         "SELECT group_id FROM devices WHERE adapter=? AND frontend=?";
-        
+
         private static const string SELECT_TIMERS =
         "SELECT * FROM timers WHERE group_id=?";
-        
+
         private static const string DELETE_TIMER =
         "DELETE FROM timers WHERE timer_id=?";
-        
+
         private static const string DELETE_GROUP_TIMERS =
         "DELETE FROM timers WHERE group_id=?";
-        
+
         private static const string INSERT_TIMER =
         "INSERT INTO timers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         private static const string CONTAINS_TIMER =
         "SELECT 1 FROM timers WHERE timer_id=?";
 
@@ -134,7 +137,7 @@ namespace DVB.database.sqlite {
 
         private static const string SELECT_CHANNELS =
         "SELECT sid FROM channels WHERE group_id=? AND channel_group_id=?";
-        
+
         private Statement select_devices_statement;
         private Statement delete_group_statement;
         private Statement insert_group_statement;
@@ -174,7 +177,7 @@ namespace DVB.database.sqlite {
             this.exec_sql (CREATE_CHANNELS);
         }
 
-        public override void upgrade (int old_version, int new_version) 
+        public override void upgrade (int old_version, int new_version)
                 throws SqlError
         {
 
@@ -227,13 +230,13 @@ namespace DVB.database.sqlite {
 
         public Gee.List<DeviceGroup> get_all_device_groups () throws SqlError {
             Gee.List<DeviceGroup> groups = new ArrayList<DeviceGroup> ();
-        
+
             Statement statement;
             if (this.db.prepare (SELECT_ALL_GROUPS, -1, out statement) != Sqlite.OK) {
                 this.throw_last_error ();
                 return groups;
             }
-            
+
             while (statement.step () == Sqlite.ROW) {
                 int group_id = statement.column_int (0);
 
@@ -262,7 +265,7 @@ namespace DVB.database.sqlite {
                             ref_dev = Device.new_full (adapter, frontend,
                                 channels_file, rec_dir, group_id);
                         } catch (DeviceError e) {
-                        	critical ("Could not create device: %s", e.message);
+                        	log.error ("Could not create device: %s", e.message);
                         }
                     } else {
                         devs.add (Device.new_with_type (adapter, frontend));
@@ -272,7 +275,7 @@ namespace DVB.database.sqlite {
 
                 // No devices for this group
                 if (ref_dev == null) {
-                    debug ("Group %d has no devices", group_id);
+                    log.debug ("Group %d has no devices", group_id);
                     continue;
                 }
 
@@ -280,19 +283,19 @@ namespace DVB.database.sqlite {
                 DeviceGroup group = new DeviceGroup ((uint)group_id, ref_dev,
                     !Main.get_disable_epg_scanner());
                 group.Name = statement.column_text (4);
-                
+
                 for (int i=0; i<devs.size; i++)
                     group.add (devs.get (i));
-                
+
                 groups.add (group);
             }
-            
+
             return groups;
         }
-        
+
         public bool add_device_group (DeviceGroup dev_group) throws SqlError {
             if (this.contains_group (dev_group.Id)) return false;
-        
+
             string channels = dev_group.Channels.channels_file.get_path ();
             string recdir = dev_group.RecordingsDirectory.get_path ();
 
@@ -304,14 +307,14 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             this.begin_transaction ();
             if (this.insert_group_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.insert_group_statement);
                 return false;
-            }        
+            }
             this.insert_group_statement.reset ();
-            
+
             foreach (Device dev in dev_group)
                 this.add_device_to_group (dev, dev_group);
 
@@ -319,7 +322,7 @@ namespace DVB.database.sqlite {
 
             return true;
         }
-        
+
         public bool remove_device_group (DeviceGroup devgroup) throws SqlError {
             if (this.delete_group_statement.bind_int (1, (int)devgroup.Id) != Sqlite.OK) {
                 this.throw_last_error ();
@@ -341,11 +344,11 @@ namespace DVB.database.sqlite {
             if (this.delete_group_devices_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.delete_group_devices_statement);
                 return false;
-            }            
+            }
             this.delete_group_devices_statement.reset ();
 
             this.end_transaction ();
-            
+
             return true;
         }
 
@@ -366,14 +369,14 @@ namespace DVB.database.sqlite {
 
             return ret;
         }
-        
+
         public bool contains_group (uint group_id) throws SqlError {
             if (this.contains_group_statement.bind_int (1, (int)group_id) != Sqlite.OK)
             {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             int c = 0;
             while (this.contains_group_statement.step () == Sqlite.ROW) {
                 c = this.contains_group_statement.column_int (0);
@@ -382,7 +385,7 @@ namespace DVB.database.sqlite {
 
             return (c > 0);
         }
-        
+
         public bool add_device_to_group (Device dev, DeviceGroup devgroup)
                throws SqlError
         {
@@ -393,7 +396,7 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.insert_device_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.insert_device_statement);
                 return false;
@@ -402,7 +405,7 @@ namespace DVB.database.sqlite {
 
             return true;
         }
-        
+
         public bool remove_device_from_group (Device dev, DeviceGroup devgroup)
                 throws SqlError
         {
@@ -412,7 +415,7 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.delete_device_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.delete_device_statement);
                 return false;
@@ -421,7 +424,7 @@ namespace DVB.database.sqlite {
 
             return true;
         }
-        
+
         public Gee.List<Timer> get_all_timers_of_device_group (DeviceGroup dev)
                 throws SqlError
         {
@@ -431,11 +434,11 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return timers;
             }
-            
+
             while (this.select_timers_statement.step () == Sqlite.ROW) {
                 uint tid, sid, duration, event_id;
                 int year, month, day, hour, minute;
-                
+
                 tid = (uint)this.select_timers_statement.column_int (0);
                 sid = (uint)this.select_timers_statement.column_int (2);
                 year = this.select_timers_statement.column_int (3);
@@ -445,18 +448,18 @@ namespace DVB.database.sqlite {
                 minute = this.select_timers_statement.column_int (7);
                 duration = (uint)this.select_timers_statement.column_int (8);
                 event_id = (uint)this.select_timers_statement.column_int (9);
-                
+
                 Channel channel = dev.Channels.get_channel (sid);
                 Timer timer = new Timer (tid, channel, year, month, day, hour,
                     minute, duration);
                 timer.EventID = event_id;
                 timers.add (timer);
-            }            
+            }
             this.select_timers_statement.reset ();
 
             return timers;
         }
-        
+
         public bool add_timer_to_device_group (Timer timer, DeviceGroup dev)
                 throws SqlError
         {
@@ -477,16 +480,16 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.insert_timer_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.insert_timer_statement);
                 return false;
-            }            
+            }
             this.insert_timer_statement.reset ();
 
             return true;
         }
-        
+
         public bool remove_timer_from_device_group (uint timer_id,
                 DeviceGroup dev) throws SqlError
         {
@@ -495,7 +498,7 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.delete_timer_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.delete_timer_statement);
                 return false;
@@ -504,16 +507,16 @@ namespace DVB.database.sqlite {
 
             return true;
         }
-        
+
         public bool remove_all_timers_from_device_group (uint group_id)
-                throws SqlError 
+                throws SqlError
         {
             if (this.delete_group_timers_statement.bind_int (1, (int)group_id) != Sqlite.OK)
             {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.delete_group_timers_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.delete_group_timers_statement);
                 return false;
@@ -522,23 +525,23 @@ namespace DVB.database.sqlite {
 
             return true;
         }
-        
+
         public bool contains_timer (uint timer_id) throws SqlError {
             if (this.contains_timer_statement.bind_int (1, (int)timer_id) != Sqlite.OK)
             {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             int c = 0;
             while (this.contains_timer_statement.step () == Sqlite.ROW) {
                 c = this.contains_timer_statement.column_int (0);
             }
             this.contains_timer_statement.reset ();
-            
+
             return (c > 0);
         }
-        
+
         public bool update_from_group (DeviceGroup devgroup) throws SqlError {
             if (this.update_group_statement.bind_int (1, (int)devgroup.Type) != Sqlite.OK
                 || this.update_group_statement.bind_text (2, devgroup.Channels.channels_file.get_path ()) != Sqlite.OK
@@ -549,7 +552,7 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.update_group_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.update_group_statement);
                 return false;
@@ -603,7 +606,7 @@ namespace DVB.database.sqlite {
 
             return true;
         }
-        
+
         public Gee.List<ChannelGroup> get_channel_groups ()
                 throws SqlError
         {

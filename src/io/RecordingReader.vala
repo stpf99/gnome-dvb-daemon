@@ -18,10 +18,13 @@
  */
 
 using GLib;
+using DVB.Logging;
 
 namespace DVB.io {
 
     public class RecordingReader : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public File directory {get; construct;}
         public RecordingsStore store {get; construct;}
@@ -42,7 +45,7 @@ namespace DVB.io {
          */
         public bool load_into () {
             if (!this.directory.query_exists (null)) {
-                debug ("Directory %s does not exist", this.directory.get_path ());
+                log.debug ("Directory %s does not exist", this.directory.get_path ());
                 return false;
             }
 
@@ -54,17 +57,17 @@ namespace DVB.io {
             try {
                 info = directory.query_info (ATTRS, 0, null);
             } catch (Error e) {
-                critical ("Could not retrieve attributes: %s", e.message);
+                log.error ("Could not retrieve attributes: %s", e.message);
                 return false;
             }
 
             if (info.get_file_type () != FileType.DIRECTORY) {
-                critical ("%s is not a directory", directory.get_path ());
+                log.error ("%s is not a directory", directory.get_path ());
                 return false;
             }
 
             if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
-                critical ("Cannot read %s", directory.get_path ());
+                log.error ("Cannot read %s", directory.get_path ());
                 return false;
             }
 
@@ -80,7 +83,7 @@ namespace DVB.io {
                 files = recordingsbasedir.enumerate_children (
                     ATTRS, 0, null);
             } catch (Error e) {
-                critical ("Could not read directory: %s", e.message);
+                log.error ("Could not read directory: %s", e.message);
                 return false;
             }
 
@@ -105,12 +108,12 @@ namespace DVB.io {
                                 try {
                                     rec = this.deserialize (child);
                                 } catch (Error e) {
-                                    critical (
+                                    log.error (
                                         "Could not deserialize recording: %s",
                                         e.message);
                                 }
                                 if (rec != null) {
-                                    debug ("Restored recording from %s",
+                                    log.debug ("Restored recording from %s",
                                         child.get_path ());
                                     this.store.add_and_monitor (rec);
                                     
@@ -121,13 +124,13 @@ namespace DVB.io {
                     }
                 }
             } catch (Error e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 success = false;
             } finally {
                 try {
                     files.close (null);
                 } catch (Error e) {
-                    critical ("Could not close file: %s", e.message);
+                    log.error ("Could not close file: %s", e.message);
                     success = false;
                 }
             }

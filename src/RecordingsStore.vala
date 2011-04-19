@@ -19,6 +19,7 @@
 
 using GLib;
 using Gee;
+using DVB.Logging;
 
 namespace DVB {
 
@@ -26,6 +27,8 @@ namespace DVB {
      * This class manages the recordings off all devices
      */
     public class RecordingsStore : GLib.Object, IDBusRecordingsStore {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
     
         private HashMap<uint32, Recording> recordings;
         private uint32 last_id;
@@ -67,7 +70,7 @@ namespace DVB {
             uint32 id = rec.Id;
             lock (this.recordings) {
                 if (this.recordings.has_key (id)) {
-                    critical ("Recording with id %u already available", id);
+                    log.error ("Recording with id %u already available", id);
                     return false;
                 }
 
@@ -242,13 +245,13 @@ namespace DVB {
             lock (this.recordings) {
                 if (!this.recordings.has_key (rec_id)) val = false;
                 else {
-                    debug ("Deleting recording %u", rec_id);
+                    log.debug ("Deleting recording %u", rec_id);
                     var rec = this.recordings.get (rec_id);
                     try {
                         Utils.delete_dir_recursively (rec.Location.get_parent ());
                         val = true;
                     } catch (Error e) {
-                        critical ("Could not delete recording: %s", e.message);
+                        log.error ("Could not delete recording: %s", e.message);
                         val = false;
                     }
                     this.remove (rec);

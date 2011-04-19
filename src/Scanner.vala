@@ -19,6 +19,7 @@
 
 using GLib;
 using Gee;
+using DVB.Logging;
 
 namespace DVB {
 
@@ -26,6 +27,8 @@ namespace DVB {
      * An abstract class responsible for scanning for new channels
      */
     public abstract class Scanner : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         /**
          * Emitted when the Destroy () method is called
@@ -157,7 +160,7 @@ namespace DVB {
             try {
                 this.worker_thread = Thread.create<bool> (this.worker, true);
             } catch (ThreadError e) {
-                critical ("Could not create thread: %s", e.message);
+                log.error ("Could not create thread: %s", e.message);
                 return;
             }
 
@@ -168,7 +171,7 @@ namespace DVB {
                     PIPELINE_TEMPLATE.printf (this.Device.Adapter,
                         this.Device.Frontend, BASE_PIDS));
             } catch (Error e) {
-                critical ("Could not create pipeline: %s", e.message);
+                log.error ("Could not create pipeline: %s", e.message);
                 return;
             }
             
@@ -217,7 +220,7 @@ namespace DVB {
                 try {
                     writer.write (c);
                 } catch (Error e) {
-                    critical ("Could not write to file: %s", e.message);
+                    log.error ("Could not write to file: %s", e.message);
                     success = false;
                 }
             }
@@ -225,7 +228,7 @@ namespace DVB {
             try {
                 writer.close ();
             } catch (Error e) {
-                critical ("Could not close file handle: %s", e.message);
+                log.error ("Could not close file handle: %s", e.message);
                 success = false;
             }
             
@@ -252,7 +255,7 @@ namespace DVB {
                 try {
                     writer.write (c);
                 } catch (Error e) {
-                    critical ("Could not write to file: %s", e.message);
+                    log.error ("Could not write to file: %s", e.message);
                     success = false;
                 }
             }
@@ -260,7 +263,7 @@ namespace DVB {
             try {
                 writer.close ();
             } catch (Error e) {
-                critical ("Could not close file handle: %s", e.message);
+                log.error ("Could not close file handle: %s", e.message);
                 success = false;
             }
             
@@ -270,7 +273,7 @@ namespace DVB {
         public bool AddScanningDataFromFile (string path) throws DBusError {
             File datafile = File.new_for_path(path);
             
-            debug ("Reading scanning data from %s", path);
+            log.debug ("Reading scanning data from %s", path);
 
             if (!Utils.is_readable_file (datafile)) return false;
             
@@ -278,7 +281,7 @@ namespace DVB {
             try {
                 reader = new DataInputStream (datafile.read (null));
             } catch (Error e) {
-                critical ("Could not open %s: %s", path, e.message);
+                log.error ("Could not open %s: %s", path, e.message);
                 return false;
             }
 
@@ -294,14 +297,14 @@ namespace DVB {
                     this.add_scanning_data_from_string (line);
                 }
             } catch (Error e) {
-                critical ("Could not read %s: %s", path, e.message);
+                log.error ("Could not read %s: %s", path, e.message);
                 return false;
             }
 
             try {
                 reader.close (null);
             } catch (Error e) {
-                critical ("Could not close file handle: %s", e.message);
+                log.error ("Could not close file handle: %s", e.message);
                 return false;
             }
 
@@ -323,7 +326,7 @@ namespace DVB {
                     bus_watch_source.destroy ();
                     this.bus_watch_id = 0;
                 }
-                debug ("Disposing pipeline");
+                log.debug ("Disposing pipeline");
                 this.pipeline.set_state (Gst.State.NULL);
                 // Free pipeline
                 this.pipeline = null;
@@ -351,7 +354,7 @@ namespace DVB {
             ScannedItem item = this.get_scanned_item (structure);
             
             if (!this.scanned_frequencies.contains (item)) {
-                debug ("Queueing new frequency %u", item.Frequency);
+                log.debug ("Queueing new frequency %u", item.Frequency);
                 this.frequencies.push_tail (structure);
                 this.scanned_frequencies.add (item);
             }
@@ -364,7 +367,7 @@ namespace DVB {
         protected bool start_scan () {
             bool all_tables = (this.sdt_arrived && this.nit_arrived
                 && this.pat_arrived && this.pmt_arrived);
-            debug ("Received all tables: %s (pat: %s, sdt: %s, nit: %s, pmt: %s)",
+            log.debug ("Received all tables: %s (pat: %s, sdt: %s, nit: %s, pmt: %s)",
                 all_tables.to_string (), this.pat_arrived.to_string (),
                 this.sdt_arrived.to_string (), this.nit_arrived.to_string (),
                 this.pmt_arrived.to_string ());
@@ -386,7 +389,7 @@ namespace DVB {
                 // We don't have all the information for those channels
                 // remove them
                 lock (this.new_channels) {
-                    debug ("%u channels still have missing or invalid information",
+                    log.debug ("%u channels still have missing or invalid information",
                         this.new_channels.size);
                     foreach (uint sid in this.new_channels) {
                         this.channels.remove (sid);
@@ -473,7 +476,7 @@ namespace DVB {
             /* Avoid creating source multiple times */
             if (this.start_scan_source == null ||
                     this.start_scan_source.is_destroyed ()) {
-                debug ("Queueing start_scan");
+                log.debug ("Queueing start_scan");
                 this.start_scan_source = new IdleSource ();
                 this.start_scan_source.set_callback (this.start_scan);
                 this.start_scan_source.attach (this.context);
@@ -549,7 +552,7 @@ namespace DVB {
                 i++;
             }
             
-            debug ("Setting %d pids: %s", pid_set.size, new_pids.str);
+            log.debug ("Setting %d pids: %s", pid_set.size, new_pids.str);
             // We want to parse the pmt as well
             Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
             dvbsrc.set ("pids", new_pids.str);
@@ -607,7 +610,7 @@ namespace DVB {
                     channel.Network = "";
                 }
 
-                debug ("Found service 0x%x, %s, scrambled: %s", sid,
+                log.debug ("Found service 0x%x, %s, scrambled: %s", sid,
                     channel.Name, channel.Scrambled.to_string ());
             }
         
@@ -630,7 +633,7 @@ namespace DVB {
                 structure.get_uint ("network-id", out nid);
                 name = "%u".printf (nid);
             }
-            debug ("Network name '%s'", name);
+            log.debug ("Network name '%s'", name);
                         
             Gst.Value transports = structure.get_value ("transports");
             uint size = transports.list_get_size ();
@@ -649,7 +652,7 @@ namespace DVB {
                     weak Gst.Structure delivery =
                         delivery_val.get_structure ();
                  
-                    debug ("Received TS 0x%x", tsid);
+                    log.debug ("Received TS 0x%x", tsid);
                     
                     uint freq;
                     delivery.get_uint ("frequency", out freq);
@@ -694,7 +697,7 @@ namespace DVB {
         }
         
         protected void on_pmt_structure (Gst.Structure structure) {
-            debug ("Received PMT");
+            log.debug ("Received PMT");
             
             uint program_number;
             structure.get_uint ("program-number", out program_number);
@@ -726,7 +729,7 @@ namespace DVB {
                     case 0x01:
                     case 0x02:
                     case 0x1b: /* H.264 video stream */
-                        debug ("Found video PID 0x%x for channel 0x%x",
+                        log.debug ("Found video PID 0x%x for channel 0x%x",
                             pid, program_number);
                         dvb_channel.VideoPID = pid;
                     break;
@@ -734,12 +737,12 @@ namespace DVB {
                     case 0x04:
                     case 0x0f:
                     case 0x11:
-                        debug ("Found audio PID 0x%x for channel 0x%x",
+                        log.debug ("Found audio PID 0x%x for channel 0x%x",
                             pid, program_number);
                         dvb_channel.AudioPIDs.add (pid);
                     break;
                     default:
-                        debug ("Other stream type: 0x%02x", stream_type);
+                        log.debug ("Other stream type: 0x%02x", stream_type);
                     break;
                 }
             }
@@ -791,14 +794,14 @@ namespace DVB {
                         // because we didn't came across the sdt or pmt, yet   
                         if (channel.is_valid ()) {
                             string type = (channel.is_radio ()) ? "Radio" : "TV";
-                            debug ("Channel added: %s", channel.to_string ());
+                            log.debug ("Channel added: %s", channel.to_string ());
                             this.channel_added (channel.Frequency, sid,
                                 channel.Name, channel.Network, type,
                                 channel.Scrambled);
                             // Mark channel for deletion of this.new_channels
                             del_channels.add (sid);
                         } else {
-                            debug ("Channel 0x%x is not valid: %s", sid,
+                            log.debug ("Channel 0x%x is not valid: %s", sid,
                                 channel.to_string ());
                             this.pmt_arrived = false;
                         }
@@ -824,7 +827,7 @@ namespace DVB {
         }
         
         protected void add_new_channel (uint sid) {
-            debug ("Adding new channel with SID 0x%x", sid);
+            log.debug ("Adding new channel with SID 0x%x", sid);
             Channel new_channel = this.get_new_channel ();
             new_channel.Sid = sid;
             // add values from Gst.Structure to Channel

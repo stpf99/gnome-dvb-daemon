@@ -20,6 +20,7 @@
 using GLib;
 using Gee;
 using DVB.database;
+using DVB.Logging;
 
 namespace DVB {
 
@@ -28,7 +29,9 @@ namespace DVB {
      * (list of channels, recordings dir)
      */
     public class DeviceGroup : GLib.Object, IDBusDeviceGroup, Iterable<Device> {
-    
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
+
         public int size {
             get { return this.devices.size; }
         }
@@ -56,21 +59,21 @@ namespace DVB {
             get { return this._channelfactory; }
         }
         public string Name {get; set;}
-                
+
         // All settings are copied from this one
         public Device reference_device {
             get;
             construct set;
         }
-        
+
         private Set<Device> devices;
         private Recorder _recorder;
         private EPGScanner? _epgscanner;
         private ChannelFactory _channelfactory;
-        
-        // Containss object paths to Schedule 
+
+        // Containss object paths to Schedule
         private HashSet<string> schedules;
-        
+
         construct {
             this.devices = new HashSet<Device> (Device.hash, Device.equal);
             this.schedules = new HashSet<string> (GLib.str_hash,
@@ -79,7 +82,7 @@ namespace DVB {
             this._channelfactory = new ChannelFactory (this);
             this._recorder = new Recorder (this);
         }
-        
+
         /**
          * @id: ID of group
          * @reference_device: All devices of this group will inherit
@@ -101,7 +104,7 @@ namespace DVB {
         }
 
         public void destroy () {
-            debug ("Destroying group %u", this.Id);
+            log.debug ("Destroying group %u", this.Id);
             this.stop_epg_scanner ();
             this._recorder.stop ();
             this._channelfactory.destroy ();
@@ -120,7 +123,7 @@ namespace DVB {
             if (this._epgscanner != null)
                 this._epgscanner.stop ();
         }
-        
+
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
@@ -133,7 +136,7 @@ namespace DVB {
             Device new_dev = Device.new_with_type (adapter, frontend);
             this.add (new_dev);
         }
-        
+
         /**
          * Add device to group. The device's settings will be overridden
          * with those of the reference device.
@@ -143,13 +146,13 @@ namespace DVB {
                 warning ("Cannot add device, because it is not of same type");
                 return false;
             }
-        
+
             bool result;
             lock (this.devices) {
                 // Set settings from reference device
                 device.Channels = this.reference_device.Channels;
                 device.RecordingsDirectory = this.reference_device.RecordingsDirectory;
-                
+
                 result = this.devices.add (device);
             }
             return result;
@@ -162,7 +165,7 @@ namespace DVB {
             }
             return false;
         }
-        
+
         public bool contains (Device device) {
             bool result;
             lock (this.devices) {
@@ -170,14 +173,14 @@ namespace DVB {
             }
             return result;
         }
-        
+
         public bool remove (Device device) {
             bool result;
             lock (this.devices) {
                 result = this.devices.remove (device);
                 if (Device.equal (device, this.reference_device)) {
                     foreach (Device dev in this.devices) {
-                        debug ("Assigning new reference device");
+                        log.debug ("Assigning new reference device");
                         this.reference_device = dev;
                         break;
                     }
@@ -193,7 +196,7 @@ namespace DVB {
             }
             return false;
         }
-        
+
         /**
          * Get first device that isn't busy.
          * If all devices are busy NULL is returned.
@@ -208,10 +211,10 @@ namespace DVB {
                     }
                 }
             }
-            
+
             return result;
         }
-        
+
         /**
          * @returns: Name of adapter type the group holds
          * or an empty string when group with given id doesn't exist.
@@ -226,7 +229,7 @@ namespace DVB {
             }
             return type_str;
         }
-        
+
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
@@ -241,18 +244,18 @@ namespace DVB {
             // might see some errors if the device is
             // currently in use
             Device device = Device.new_with_type (adapter, frontend);
-                
+
             if (device == null) return false;
-            
+
             Manager manager = Manager.get_instance ();
             if (manager.device_is_in_any_group (device)) {
-                debug ("Device with adapter %u, frontend %u is" + 
+                log.debug ("Device with adapter %u, frontend %u is" +
                     "already part of a group", adapter, frontend);
                 return false;
             }
-                
+
             uint group_id = this.Id;
-            debug ("Adding device with adapter %u, frontend %u to group %u",
+            log.debug ("Adding device with adapter %u, frontend %u to group %u",
                 adapter, frontend, group_id);
 
             if (this.add (device)) {
@@ -260,32 +263,32 @@ namespace DVB {
                     Factory.get_config_store ().add_device_to_group (device,
                         this);
                 } catch (SqlError e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                     return false;
                 }
-                
+
                 this.device_added (adapter, frontend);
-            
+
                 return true;
             }
-            
+
             return false;
         }
-        
+
         /**
          * @returns: Object path of the device's recorder
-         * 
+         *
          * Returns the object path to the device's recorder.
          */
         public ObjectPath GetRecorder () throws DBusError {
             return new ObjectPath (
                 Constants.DBUS_RECORDER_PATH.printf (this.Id));
-        }   
-            
+        }
+
         protected bool register_recorder () {
-            debug ("Creating new Recorder D-Bus service for group %u",
+            log.debug ("Creating new Recorder D-Bus service for group %u",
                 this.Id);
-            
+
             Recorder recorder = this.recorder;
 
             string path = Constants.DBUS_RECORDER_PATH.printf (this.Id);
@@ -294,7 +297,7 @@ namespace DVB {
 
             return true;
         }
-        
+
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
@@ -305,7 +308,7 @@ namespace DVB {
          */
         public bool RemoveDevice (uint adapter, uint frontend) throws DBusError {
             Device dev = new Device (adapter, frontend);
-            
+
             if (this.contains (dev)) {
                 if (this.remove (dev)) {
                     // Stop epgscanner, because it might use the
@@ -316,7 +319,7 @@ namespace DVB {
                         Factory.get_config_store ().remove_device_from_group (
                             dev, this);
                     } catch (SqlError e) {
-                        critical ("%s", e.message);
+                        log.error ("%s", e.message);
                         return false;
                     }
                     // Group has no devices anymore, delete it
@@ -326,21 +329,21 @@ namespace DVB {
                     }
 
                     this.device_removed (adapter, frontend);
-                    
+
                     return true;
                 }
             }
-            
+
             return false;
         }
-        
+
         /**
          * @returns: Name of the device group
          */
         public string GetName () throws DBusError {
             return this.Name;
         }
-        
+
         /**
          * @name: Name of the group
          * @returns: TRUE on success
@@ -351,12 +354,12 @@ namespace DVB {
                 ConfigStore config = Factory.get_config_store();
                 config.update_from_group (this);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 return false;
             }
             return true;
         }
-        
+
         /**
          * @returns: Object path to the ChannelList service for this device
          */
@@ -364,27 +367,27 @@ namespace DVB {
             return new ObjectPath (
                 Constants.DBUS_CHANNEL_LIST_PATH.printf (this.Id));
         }
-        
+
         protected bool register_channel_list () {
-            debug ("Creating new ChannelList D-Bus service for group %u",
+            log.debug ("Creating new ChannelList D-Bus service for group %u",
                 this.Id);
-            
+
             ChannelList channels = this.Channels;
 
             string path = Constants.DBUS_CHANNEL_LIST_PATH.printf (this.Id);
             Utils.dbus_register_object<IDBusChannelList> (Main.conn,
                 path, channels);
-            
+
             return true;
         }
-        
+
         /**
          * @returns: List of paths to the devices that are part of
          * the group (e.g. /dev/dvb/adapter0/frontend0)
          */
         public string[] GetMembers () throws DBusError {
             string[] groupdevs = new string[this.size];
-            
+
             int i=0;
             lock (this.devices) {
                 foreach (Device dev in this.devices) {
@@ -393,7 +396,7 @@ namespace DVB {
                     i++;
                 }
             }
-            
+
             return groupdevs;
         }
         /**
@@ -404,21 +407,21 @@ namespace DVB {
         public bool GetSchedule (uint channel_sid, out ObjectPath opath) throws DBusError {
             if (this.Channels.contains (channel_sid)) {
                 string path = Constants.DBUS_SCHEDULE_PATH.printf (this.Id, channel_sid);
-                
+
                 if (!this.schedules.contains (path)) {
                     Schedule schedule = this.Channels.get_channel (
                         channel_sid).Schedule;
-                    
+
                     Utils.dbus_register_object<IDBusSchedule> (Main.conn,
                         path, schedule);
-                        
+
                     this.schedules.add (path);
                 }
-                
+
                 opath = new ObjectPath (path);
                 return true;
             }
-        
+
             opath = new ObjectPath ("");
             return false;
         }
@@ -429,7 +432,7 @@ namespace DVB {
         public string GetRecordingsDirectory () throws DBusError {
             return this.RecordingsDirectory.get_path ();
         }
-        
+
         /**
          * @location: Location of the recordings directory
          * @returns: TRUE on success
@@ -440,18 +443,18 @@ namespace DVB {
                 ConfigStore config = Factory.get_config_store();
                 config.update_from_group (this);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 return false;
             }
             return true;
         }
-        
+
         public Type element_type { get { return typeof (Device); } }
-        
+
         public Iterator<Device> iterator () {
             return this.devices.iterator();
         }
-        
+
         /**
          * Set RecordingsDirectory property of all
          * devices to the values of the reference device
@@ -465,7 +468,7 @@ namespace DVB {
                 }
             }
         }
-        
+
     }
-    
+
 }

@@ -17,7 +17,11 @@
  * along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using DVB.Logging;
+
 namespace DVB.RTSPServer {
+
+    private static Logger log;
 
     private static Gst.RTSPServer server;
     private static uint timeout_id;
@@ -44,7 +48,8 @@ namespace DVB.RTSPServer {
     }
 
     public static bool start () {
-        message ("Starting RTSP server");
+        log = LogManager.getLogManager().getDefaultLogger();
+        log.info ("Starting RTSP server");
         server = new Gst.RTSPServer ();
         server.set_media_mapping (new MediaMapping ());
         server.set_address (get_address ());
@@ -59,7 +64,7 @@ namespace DVB.RTSPServer {
     }
     
     public static void stop_streaming (Channel channel) {
-        debug ("Stop streaming channel %s", channel.Name);
+        log.debug ("Stop streaming channel %s", channel.Name);
         
         var helper = new StopChannelHelper (channel.URL);
         server.session_pool.filter (helper.session_filter_func);

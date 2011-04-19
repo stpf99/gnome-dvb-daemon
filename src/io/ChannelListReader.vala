@@ -18,10 +18,13 @@
  */
 
 using GLib;
+using DVB.Logging;
 
 namespace DVB.io {
 
     public class ChannelListReader : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public ChannelList channels {get; construct;}
         public AdapterType Type {get; construct;}
@@ -66,7 +69,7 @@ namespace DVB.io {
                 break;
                 
                 default:
-                critical ("Unknown adapter type");
+                log.error ("Unknown adapter type");
                 break;
             }
             

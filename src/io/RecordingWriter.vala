@@ -18,10 +18,13 @@
  */
 
 using GLib;
+using DVB.Logging;
 
 namespace DVB.io {
 
     public class RecordingWriter : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public Recording rec {get; construct;}
 
@@ -38,10 +41,10 @@ namespace DVB.io {
         
             File recfile = parentdir.get_child ("info.rec");
             
-            debug ("Saving recording to %s", recfile.get_path() );
+            log.debug ("Saving recording to %s", recfile.get_path() );
             
             if (recfile.query_exists (null)) {
-                debug ("Deleting old info.rec");
+                log.debug ("Deleting old info.rec");
                 recfile.delete (null);
             }
             

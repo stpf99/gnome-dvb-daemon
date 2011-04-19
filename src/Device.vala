@@ -19,6 +19,8 @@
 
 using GLib;
 using Gst;
+using DVB.Logging;
+
 namespace DVB {
 
     public errordomain DeviceError {
@@ -33,6 +35,8 @@ namespace DVB {
     }
     
     public class Device : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
     
         private static const int PRIME = 31;
 
@@ -103,7 +107,7 @@ namespace DVB {
         public bool is_busy () {
             Element dvbsrc = ElementFactory.make ("dvbsrc", "text_dvbsrc");
             if (dvbsrc == null) {
-                critical ("Could not create dvbsrc element");
+                log.error ("Could not create dvbsrc element");
                 return true;
             }
             dvbsrc.set ("adapter", this.Adapter);
@@ -125,7 +129,7 @@ namespace DVB {
                     string debug_text;
                     msg.parse_error (out gerror, out debug_text);
                     
-                    debug ("Error tuning: %s; %s", gerror.message, debug_text);
+                    log.debug ("Error tuning: %s; %s", gerror.message, debug_text);
                     
                     busy_val = true;
                 }
@@ -139,7 +143,7 @@ namespace DVB {
         private bool setAdapterTypeAndName (uint adapter, uint frontend) {
             Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
             if (dvbsrc == null) {
-                critical ("Could not create dvbsrc element");
+                log.error ("Could not create dvbsrc element");
                 return false;
             }
             dvbsrc.set ("adapter", adapter);

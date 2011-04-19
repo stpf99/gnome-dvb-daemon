@@ -21,10 +21,13 @@ using GLib;
 using Gee;
 using DVB.database;
 using DVB.database.sqlite;
+using DVB.Logging;
 
 namespace DVB {
 
     public class ChannelList : GLib.Object, Iterable<Channel>, IDBusChannelList {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
         
         public File? channels_file {get; construct;}
         public uint GroupId {get; set;}
@@ -273,7 +276,7 @@ namespace DVB {
                 channels = config.get_channels_of_group (this.GroupId,
                     channel_group_id);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 return false;
             }
 
@@ -302,7 +305,7 @@ namespace DVB {
             try {
                 ret = config.add_channel_to_group (chan, channel_group_id);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 ret = false;
             }
             return ret;
@@ -325,7 +328,7 @@ namespace DVB {
             try {
                 ret = config.remove_channel_from_group (chan, channel_group_id);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 ret = false;
             }
             return ret;

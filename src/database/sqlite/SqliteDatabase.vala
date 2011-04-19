@@ -19,10 +19,13 @@
 
 using GLib;
 using Sqlite;
+using DVB.Logging;
 
 namespace DVB.database.sqlite {
 
     public abstract class SqliteDatabase : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public File database_file {get; construct;}
         
@@ -48,7 +51,7 @@ namespace DVB.database.sqlite {
                 try {
                     Utils.mkdirs (dbfile_dir);
                 } catch (Error e) {
-                    critical ("Could not create directory: %s", e.message);
+                    log.error ("Could not create directory: %s", e.message);
                     return;
                 }
             }                
@@ -60,10 +63,10 @@ namespace DVB.database.sqlite {
             int version = this.get_version ();
             
             if (create_tables) {
-                debug ("Creating tables");
+                log.debug ("Creating tables");
                 this.create ();
             } else if (this.new_version > version) {
-                debug ("Updating tables");
+                log.debug ("Updating tables");
                 this.upgrade (version, this.new_version);
             }
             this.set_version (this.new_version);
@@ -79,7 +82,7 @@ namespace DVB.database.sqlite {
             try {
                 this.exec_sql ("PRAGMA user_version = %d".printf (version));
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
             }
         }
 
@@ -87,7 +90,7 @@ namespace DVB.database.sqlite {
             try {
                 this.exec_sql ("PRAGMA journal_mode = TRUNCATE");
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
             }
         }
 
@@ -99,7 +102,7 @@ namespace DVB.database.sqlite {
             try {
                 version = this.simple_query_int ("PRAGMA user_version");
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
             }
             return version;
         }

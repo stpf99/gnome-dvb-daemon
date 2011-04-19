@@ -18,6 +18,7 @@
  */
 
 using GLib;
+using DVB.Logging;
 
 namespace DVB {
 
@@ -25,6 +26,8 @@ namespace DVB {
      * This class represents a finished recording
      */
     public class Recording : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
     
         public uint32 Id {get; set;}
         public uint ChannelSid {get; set;}
@@ -60,7 +63,7 @@ namespace DVB {
             try {
                 writer.write ();
             } catch (Error e) {
-                critical ("Could not save recording: %s", e.message);
+                log.error ("Could not save recording: %s", e.message);
             }
         }
  
@@ -68,7 +71,7 @@ namespace DVB {
                 File file, File? other_file, FileMonitorEvent event) {
             if (event == FileMonitorEvent.DELETED) {
                 string location = file.get_path ();
-                debug ("%s has been deleted", location);
+                log.debug ("%s has been deleted", location);
                 
                 monitor.cancel ();
 

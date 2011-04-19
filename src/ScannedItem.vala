@@ -18,6 +18,7 @@
  */
 
 using GLib;
+using DVB.Logging;
 
 namespace DVB {
 
@@ -26,6 +27,8 @@ namespace DVB {
      * that are necessary to mark a frequency as scanned
      */
     public class ScannedItem : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public uint Frequency {get; construct;}
         private static const int PRIME = 31;
@@ -65,7 +68,7 @@ namespace DVB {
                 
                 return (item1.Frequency == item2.Frequency);
             } else {
-                critical ("Don't comparing ScannedItem instances");
+                log.error ("Don't comparing ScannedItem instances");
                 return false;
             }
         }

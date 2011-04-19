@@ -20,30 +20,33 @@
 using GLib;
 using Gee;
 using DVB.database;
+using DVB.Logging;
 
 namespace DVB {
-    
+
     public class Manager : Object, IDBusManager {
-        
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
+
         public Gee.Collection<DeviceGroup> device_groups {
             owned get {
                 return this.devices.values;
             }
         }
-        
+
         // Map object path to Scanner
         private HashMap<string, Scanner> scanners;
-        
+
         // Maps device group id to Device
         private HashMap<uint, DeviceGroup> devices;
-        
+
         private uint device_group_counter;
         private GUdev.Client udev_client;
-        
+
         private static Manager instance;
         private static StaticRecMutex instance_mutex = StaticRecMutex ();
         private static const string[] UDEV_SUBSYSTEMS = {"dvb", null};
-        
+
         construct {
             this.scanners = new HashMap<string, Scanner> (GLib.str_hash,
                 GLib.str_equal, GLib.direct_equal);
@@ -52,7 +55,7 @@ namespace DVB {
             this.udev_client = new GUdev.Client (UDEV_SUBSYSTEMS);
             this.udev_client.uevent.connect (this.on_udev_event);
         }
-        
+
         public static unowned Manager get_instance () {
             instance_mutex.lock ();
             if (instance == null) {
@@ -61,33 +64,33 @@ namespace DVB {
             instance_mutex.unlock ();
             return instance;
         }
-        
+
         public static void shutdown () {
             instance_mutex.lock ();
             Manager m = instance;
-            
+
             if (instance != null) {
                 m.udev_client = null;
                 lock (m.scanners) {
                     foreach (Scanner scanner in m.scanners.values) {
-                        debug ("Stopping scanner");
+                        log.debug ("Stopping scanner");
                         scanner.do_destroy ();
                     }
                     m.scanners.clear ();
                 }
-                
+
                 lock (m.devices) {
                     foreach (DeviceGroup devgrp in m.devices.values) {
                         devgrp.destroy ();
                     }
                     m.devices.clear ();
                 }
-                
+
                 instance = null;
             }
             instance_mutex.unlock ();
         }
-        
+
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
@@ -112,12 +115,12 @@ namespace DVB {
             } else {
                 // Stop epgscanner for device if there's any
                 this.get_device_group_of_device (reg_dev).stop_epg_scanner ();
-                
+
                 // Assign existing device
                 device = reg_dev;
             }
 
-            switch (device.Type) {                
+            switch (device.Type) {
                 case AdapterType.DVB_C:
                 case AdapterType.DVB_S:
                 case AdapterType.DVB_T:
@@ -128,13 +131,13 @@ namespace DVB {
                 dbusiface = null;
                 break;
             }
-            
+
             if (dbusiface == null) {
-                critical ("Unknown adapter type");
+                log.error ("Unknown adapter type");
                 dbusiface = "";
                 return false;
             }
-            
+
             lock (this.scanners) {
                 if (!this.scanners.has_key (path)) {
                     Scanner scanner = null;
@@ -142,35 +145,30 @@ namespace DVB {
                         case AdapterType.DVB_T:
                         scanner = new TerrestrialScanner (device);
                         break;
-                        
+
                         case AdapterType.DVB_S:
                         scanner = new SatelliteScanner (device);
                         break;
-                        
+
                         case AdapterType.DVB_C:
                         scanner = new CableScanner (device);
                         break;
                     }
 
-                    if (scanner == null) {
-                        critical ("Unknown adapter type");
-                        return false;
-                    }
-
                     Utils.dbus_register_object (Main.conn, path, (IDBusScanner)scanner);
 
                     scanner.destroyed.connect (this.on_scanner_destroyed);
-                    
+
                     this.scanners.set (path, scanner);
-                    
-                    debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
+
+                    log.debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
                           adapter, frontend, dbusiface);
                 }
             }
-            
+
             return true;
         }
-        
+
         /**
          * @group_id: A group ID
          * @path: Device group's DBus path
@@ -191,7 +189,7 @@ namespace DVB {
             }
             return ret;
         }
-        
+
         /**
          * @returns: Device groups' DBus path
          */
@@ -207,7 +205,7 @@ namespace DVB {
             }
             return devs;
         }
-        
+
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
@@ -224,34 +222,34 @@ namespace DVB {
         public bool AddDeviceToNewGroup (uint adapter, uint frontend,
                 string channels_conf, string recordings_dir, string name)
                 throws DBusError
-        {   
+        {
             File chan_file = File.new_for_path (channels_conf);
             File rec_dir = File.new_for_path (recordings_dir);
-            
+
             Device device;
             try {
                 device = Device.new_full (adapter, frontend, chan_file,
                     rec_dir, device_group_counter + 1);
             } catch (DeviceError e) {
-            	critical ("Could not create device: %s", e.message);
+            	log.error ("Could not create device: %s", e.message);
             	return false;
             }
-            
+
             // Check if device is already assigned to other group
             if (this.device_is_in_any_group (device)) return false;
-            
+
             device_group_counter++;
-            
+
             DeviceGroup devgroup = new DeviceGroup (device_group_counter, device);
             devgroup.Name = name;
-            
+
             this.restore_device_group (devgroup);
-            
+
             this.group_added (device_group_counter);
-            
+
             return true;
         }
-        
+
         /**
          * @adapter: Adapter of device
          * @frontend: Frontend of device
@@ -265,7 +263,7 @@ namespace DVB {
                 out string name) throws DBusError
         {
             Device? dev = this.get_registered_device (adapter, frontend);
-            
+
             if (dev == null) {
                 name = "";
                 return false;
@@ -274,14 +272,14 @@ namespace DVB {
                 return true;
             }
         }
-        
+
         /**
          * @returns: the numner of configured device groups
          */
         public int GetDeviceGroupSize () throws DBusError {
             return this.devices.size;
         }
-        
+
         /**
          * @returns: ID and name of each channel group
          */
@@ -291,7 +289,7 @@ namespace DVB {
             try {
                 groups = config.get_channel_groups ();
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 return new ChannelGroupInfo[] {};
             }
             ChannelGroupInfo[] arr = new ChannelGroupInfo[groups.size];
@@ -314,7 +312,7 @@ namespace DVB {
             try {
                 ret = config.add_channel_group (name, out channel_group_id);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 ret = false;
             }
             return ret;
@@ -330,7 +328,7 @@ namespace DVB {
             try {
                 ret = config.remove_channel_group (channel_group_id);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 ret = false;
             }
             return ret;
@@ -341,7 +339,7 @@ namespace DVB {
          * devices retrieved via udev
          */
         public GLib.HashTable<string, string>[] GetDevices () throws DBusError {
-            GLib.List<GUdev.Device> devices = 
+            GLib.List<GUdev.Device> devices =
                 this.udev_client.query_by_subsystem ("dvb");
             var devices_list = new GLib.List<HashTable<string, string>> ();
 
@@ -384,22 +382,22 @@ namespace DVB {
          */
         public bool add_device_group (DeviceGroup devgroup) {
             uint group_id = devgroup.Id;
-            debug ("Adding device group %u with %d devices", group_id,
+            log.debug ("Adding device group %u with %d devices", group_id,
                 devgroup.size);
-            
+
             if (devgroup.Type == AdapterType.UNKNOWN) {
-                warning ("Not adding device group %u of unknown type",
+                log.warning ("Not adding device group %u of unknown type",
                     devgroup.Id);
                 return false;
             }
-            
+
             lock (this.devices) {
                 this.devices.set (group_id, devgroup);
             }
             try {
                 Factory.get_config_store ().add_device_group (devgroup);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 return false;
             }
             devgroup.device_removed.connect (this.on_device_removed_from_group);
@@ -407,30 +405,30 @@ namespace DVB {
             string path = Constants.DBUS_DEVICE_GROUP_PATH.printf (group_id);
             Utils.dbus_register_object<IDBusDeviceGroup> (Main.conn,
                 path, devgroup);
-            
+
             if (group_id > device_group_counter)
                 device_group_counter = group_id;
 
             devgroup.start_epg_scanner ();
-            
+
             return true;
         }
 
         public bool restore_device_group (DeviceGroup device_group) {
-            debug ("Restoring group %u", device_group.Id);
+            log.debug ("Restoring group %u", device_group.Id);
 
-            try {    
+            try {
                 device_group.Channels.load (device_group.Type);
             } catch (Error e) {
-            	critical ("Error reading channels from file: %s", e.message);
+            	log.error ("Error reading channels from file: %s", e.message);
             	return false;
             }
-            
+
             return this.add_device_group (device_group);
         }
-    
+
         public void restore_timers (DeviceGroup device_group) {
-            message ("Restoring timers of device group %u", device_group.Id);
+            log.info ("Restoring timers of device group %u", device_group.Id);
             TimersStore timers_store = Factory.get_timers_store ();
 
             Gee.List<Timer> timers;
@@ -438,7 +436,7 @@ namespace DVB {
                 timers = timers_store.get_all_timers_of_device_group (
                     device_group);
             } catch (SqlError e) {
-                critical ("Failed retrieving timers of group %u: %s",
+                log.error ("Failed retrieving timers of group %u: %s",
                     device_group.Id, e.message);
                 return;
             }
@@ -452,7 +450,7 @@ namespace DVB {
                     try {
                         timers_store.remove_timer_from_device_group (t.Id, device_group);
                     } catch (SqlError e) {
-                        critical ("Failed removing timer: %s", e.message);
+                        log.error ("Failed removing timer: %s", e.message);
                     }
                 }
             }
@@ -467,7 +465,7 @@ namespace DVB {
                 this.restore_timers (device_group);
             }
         }
-        
+
         public DeviceGroup? get_device_group_if_exists (uint group_id) {
             DeviceGroup? result = null;
             lock (this.devices) {
@@ -476,7 +474,7 @@ namespace DVB {
             }
             return result;
         }
-        
+
         public bool device_is_in_any_group (Device device) {
             bool result = false;
             lock (this.devices) {
@@ -490,26 +488,26 @@ namespace DVB {
             }
             return result;
         }
-        
+
         private void on_scanner_destroyed (Scanner scanner) {
             uint adapter = scanner.Device.Adapter;
             uint frontend = scanner.Device.Frontend;
-            
+
             string path = Constants.DBUS_SCANNER_PATH.printf (adapter, frontend);
             lock (this.scanners) {
                 this.scanners.unset (path);
             }
-            
-            debug ("Destroying scanner for adapter %u, frontend %u (%s)", adapter,
+
+            log.debug ("Destroying scanner for adapter %u, frontend %u (%s)", adapter,
                 frontend, path);
-            
+
             // Start epgscanner for device again if there was one
             DeviceGroup? devgroup = this.get_device_group_of_device (scanner.Device);
             if (devgroup != null) {
                 devgroup.start_epg_scanner ();
             }
         }
-        
+
         private Device? get_registered_device (uint adapter, uint frontend) {
             Device? result = null;
             Device fake_device = new Device (adapter, frontend);
@@ -526,10 +524,10 @@ namespace DVB {
                     }
                 }
             }
-            
+
             return result;
         }
-        
+
         private DeviceGroup? get_device_group_of_device (Device device) {
             DeviceGroup? result = null;
             lock (this.devices) {
@@ -545,10 +543,10 @@ namespace DVB {
                     }
                 }
             }
-            
+
             return result;
         }
-        
+
         private void on_device_removed_from_group (IDBusDeviceGroup idevgroup,
                 uint adapter, uint frontend) {
             DeviceGroup devgroup = (DeviceGroup)idevgroup;
@@ -560,7 +558,7 @@ namespace DVB {
                 }
                 if (success) {
                     devgroup.destroy ();
-                    
+
                     try {
                         Factory.get_config_store ().remove_device_group (
                             devgroup);
@@ -572,7 +570,7 @@ namespace DVB {
                         );
                         this.group_removed (group_id);
                     } catch (SqlError e) {
-                        critical ("%s", e.message);
+                        log.error ("%s", e.message);
                     }
                 }
            }
@@ -585,11 +583,11 @@ namespace DVB {
             try {
                 groups = config_store.get_all_device_groups ();
             } catch (SqlError e) {
-                critical ("Error restoring group %u: %s", group_id,
+                log.error ("Error restoring group %u: %s", group_id,
                     e.message);
                 return;
             }
-            
+
             foreach (DeviceGroup group in groups) {
                 if (group.Id == group_id) {
                     this.restore_device_group_and_timers (group);
@@ -618,7 +616,7 @@ namespace DVB {
                 if (!found)
                     return;
 
-                debug ("%s device %s, part of group %u", action, dev_file,
+                log.debug ("%s device %s, part of group %u", action, dev_file,
                     group_id);
 
                 DeviceGroup? group = this.get_device_group_if_exists (group_id);
@@ -650,7 +648,7 @@ namespace DVB {
                     group.start_epg_scanner ();
             }
         }
-        
+
     }
 
 }

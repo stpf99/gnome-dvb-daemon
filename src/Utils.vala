@@ -29,7 +29,7 @@ namespace DVB.Utils {
         unowned EnumValue? eval = eclass.get_value (val);
         
         if (eval == null) {
-            critical ("Enum has no value %d", val);
+            Main.log.error ("Enum has no value %d", val);
             return null;
         } else {
             return eval.value_nick;
@@ -41,7 +41,7 @@ namespace DVB.Utils {
         unowned EnumValue? eval = enumclass.get_value_by_name (name);
         
         if (eval == null) {
-            critical ("Enum has no member named %s", name);
+            Main.log.error ("Enum has no member named %s", name);
             return false;
         } else {
             evalue = eval.value;
@@ -54,7 +54,7 @@ namespace DVB.Utils {
         unowned EnumValue? eval = enumclass.get_value (val);
         
         if (eval == null) {
-            critical ("Enum has no value %d", val);
+            Main.log.error ("Enum has no value %d", val);
             return null;
         } else {
             return eval.value_name;
@@ -72,7 +72,7 @@ namespace DVB.Utils {
         }
         
         foreach (File dir in create_dirs) {
-            debug ("Creating %s", dir.get_path ());
+            Main.log.debug ("Creating %s", dir.get_path ());
             dir.make_directory (null);
         }
     }
@@ -82,7 +82,7 @@ namespace DVB.Utils {
         try {
             regex = new Regex ("[^-_\\.a-zA-Z0-9]", 0, 0);
         } catch (RegexError e) {
-            critical ("RegexError: %s", e.message);
+            Main.log.error ("RegexError: %s", e.message);
             return text;
         }
         
@@ -90,7 +90,7 @@ namespace DVB.Utils {
         try {
             new_text = regex.replace_literal (text, -1, 0, "_", 0);
         } catch (RegexError e) {
-            critical ("RegexError: %s", e.message);
+            Main.log.error ("RegexError: %s", e.message);
             return text;
         }
         
@@ -159,17 +159,17 @@ namespace DVB.Utils {
         try {
             info = file.query_info (READ_ATTRS, 0, null);
         } catch (Error e) {
-            critical ("Could not retrieve attributes: %s", e.message);
+            Main.log.error ("Could not retrieve attributes: %s", e.message);
             return false;
         }
         
         if (info.get_file_type () != FileType.REGULAR) {
-            critical ("%s is not a regular file", file.get_path ());
+            Main.log.error ("%s is not a regular file", file.get_path ());
             return false;
         }
         
         if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
-            critical ("Cannot read %s", file.get_path ());
+            Main.log.error ("Cannot read %s", file.get_path ());
             return false;
         }
 
@@ -194,13 +194,13 @@ namespace DVB.Utils {
                 break;
                 
                 case FileType.REGULAR:
-                debug ("Deleting file %s", child.get_path ());
+                Main.log.debug ("Deleting file %s", child.get_path ());
                 child.delete (null);
                 break;
             }
         }
         
-        debug ("Deleting directory %s", dir.get_path ());
+        Main.log.debug ("Deleting directory %s", dir.get_path ());
         dir.delete (null);
     }
 
@@ -236,7 +236,7 @@ namespace DVB.Utils {
     }
 
     public static void dbus_own_name (string service_name, BusAcquiredCallback cb) {
-        message ("Creating D-Bus service %s", service_name);
+        Main.log.info ("Creating D-Bus service %s", service_name);
         Bus.own_name (BusType.SESSION, service_name, BusNameOwnerFlags.NONE,
             cb,
             () => {},
@@ -247,7 +247,7 @@ namespace DVB.Utils {
         try {
             conn.register_object (object_path, obj);
         } catch (IOError e) {
-            critical ("Could not register object '%s': %s", object_path, e.message);
+            Main.log.error ("Could not register object '%s': %s", object_path, e.message);
         }
     }
 

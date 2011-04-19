@@ -20,11 +20,14 @@
 using GLib;
 using DVB.database;
 using DVB.database.sqlite;
+using DVB.Logging;
 
 namespace DVB {
 
     [Compact]
     public class Factory {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         private static SqliteConfigTimersStore store;
         private static StaticRecMutex store_mutex = StaticRecMutex ();
@@ -40,7 +43,7 @@ namespace DVB {
                 try {
                     store.open ();
                 } catch (SqlError e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                     store = null;
                 }
         	}
@@ -55,7 +58,7 @@ namespace DVB {
                 try {
                     store.open ();
                 } catch (SqlError e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                     store = null;
                 }
         	}
@@ -70,7 +73,7 @@ namespace DVB {
                 try {
                     epgstore.open ();
                 } catch (SqlError e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                     epgstore = null;
                 }
         	}

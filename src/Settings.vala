@@ -18,10 +18,13 @@
  */
 
 using GLib;
+using DVB.Logging;
 
 namespace DVB {
     
     public class Settings : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
     
         private static const string TIMERS_SECTION = "timers";
         private static const string MARGIN_START = "margin_start";
@@ -114,7 +117,7 @@ namespace DVB {
                 try {
                     stream = settings_file.create (0, null);
                 } catch (Error e) {
-                    critical ("Could not create file %s: %s",
+                    log.error ("Could not create file %s: %s",
                         settings_file.get_path (), e.message);
                     return false;
                 }
@@ -122,7 +125,7 @@ namespace DVB {
                 try {
                     stream.write (DEFAULT_SETTINGS.data);
                 } catch (Error e) {
-                    critical ("Could not write to file %s: %s",
+                    log.error ("Could not write to file %s: %s",
                         settings_file.get_path (), e.message);
                     success = false;
                 }
@@ -130,7 +133,7 @@ namespace DVB {
                 try {
                     stream.close (null);
                 } catch (Error e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                     success = false;
                 }
             }
@@ -139,10 +142,10 @@ namespace DVB {
                 try {
                     keyfile.load_from_file (settings_file.get_path (), 0);
                 } catch (KeyFileError e) {
-                    critical ("Could not load settings: %s", e.message);
+                    log.error ("Could not load settings: %s", e.message);
                     success = false;
                 } catch (FileError e) {
-                    critical ("Could not load settings: %s", e.message);
+                    log.error ("Could not load settings: %s", e.message);
                     success = false;
                 }
             }
@@ -157,7 +160,7 @@ namespace DVB {
             try {
                 stream = settings_file.replace (null, true, 0, null);
             } catch (Error e) {
-                critical ("Could not replace file %s: %s",
+                log.error ("Could not replace file %s: %s",
                     settings_file.get_path (), e.message);
                 return false;
             }
@@ -169,7 +172,7 @@ namespace DVB {
             try {
                 stream.write_all (data.data, null);
             } catch (Error e) {
-                critical ("Could not write to file %s: %s",
+                log.error ("Could not write to file %s: %s",
                     settings_file.get_path (), e.message);
                 return false;
             }
@@ -178,7 +181,7 @@ namespace DVB {
             try {
                 stream.close (null);
             } catch (Error e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
             }
         
             return false;

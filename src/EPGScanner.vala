@@ -19,10 +19,13 @@
 
 using GLib;
 using Gee;
+using DVB.Logging;
 
 namespace DVB {
 
     public class EPGScanner : GLib.Object {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
     
         // how long to wait after all channels have been scanned
         // before the next iteration is started
@@ -69,7 +72,7 @@ namespace DVB {
          * Stop collecting EPG data
          */
         public void stop () {
-            debug ("Stopping EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
+            log.debug ("Stopping EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
         
             if (this.stop_counter == 0) {
                 this.remove_timeouts ();
@@ -131,13 +134,13 @@ namespace DVB {
          * Start collection EPG data for all channels
          */
         public bool start () {
-            debug ("Starting EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
+            log.debug ("Starting EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
 
             this.loop = new MainLoop (this.context, false);
             try {
                 this.worker_thread = Thread.create<bool> (this.worker, true);
             } catch (ThreadError e) {
-                critical ("Could not create thread: %s", e.message);
+                log.error ("Could not create thread: %s", e.message);
                 return false;
             }
             
@@ -157,7 +160,7 @@ namespace DVB {
                     this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
                         device.Adapter, device.Frontend));
                 } catch (Error e) {
-                    critical ("Could not create pipeline: %s", e.message);
+                    log.error ("Could not create pipeline: %s", e.message);
                     return false;
                 }
                 
@@ -186,7 +189,7 @@ namespace DVB {
                     }
                     HashSet<Event> list = this.channel_events.get (sid);
 
-                    debug ("Adding %d events of channel %s (%u)",
+                    log.debug ("Adding %d events of channel %s (%u)",
                         list.size, channel.Name, sid);
                     channel.Schedule.add_all (list);
                 }
@@ -194,7 +197,7 @@ namespace DVB {
             }
 
             if (this.channels.is_empty ()) {
-                debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
+                log.debug ("Finished EPG scan for group %u", this.DeviceGroup.Id);
 
                 this.reset ();
                 // Time the next iteration
@@ -207,7 +210,7 @@ namespace DVB {
             Channel channel = this.channels.pop_head ();
             channel.Schedule.remove_expired_events ();
 /*            
-            debug ("Scanning channel %s (%u left)",
+            log.debug ("Scanning channel %s (%u left)",
                 channel.Name, this.channels.get_length ());
 */          
             lock (this.pipeline) {
@@ -226,7 +229,7 @@ namespace DVB {
                 case Gst.MessageType.ELEMENT:
                     Gst.Structure structure = message.get_structure ();
                     if (structure.get_name() == "dvb-read-failure") {
-                        critical ("Could not read from DVB device");
+                        log.error ("Could not read from DVB device");
                         this.stop ();
                     } else if (structure.get_name() == "eit") {
                         this.on_eit_structure (structure);
@@ -237,7 +240,7 @@ namespace DVB {
                     Error gerror;
                     string debug;
                     message.parse_error (out gerror, out debug);
-                    critical ("%s %s", gerror.message, debug);
+                    log.error ("%s %s", gerror.message, debug);
                     this.stop ();
                     return false;
                 
@@ -292,7 +295,7 @@ namespace DVB {
                     Gst.Value components = event.get_value ("components");
                     add_components (components, event_class);
 */  
-                    //debug ("Adding new event: %s", event_class.to_string ());
+                    //log.debug ("Adding new event: %s", event_class.to_string ());
 
                     uint sid = get_uint_val (structure, "service-id");
                     if (!this.channel_events.has_key (sid)) {

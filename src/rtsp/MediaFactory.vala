@@ -18,10 +18,13 @@
  */
 
 using GLib;
+using DVB.Logging;
 
 namespace DVB {
 
     public class MediaFactory : Gst.RTSPMediaFactory {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         construct {
             this.set_shared (true);
@@ -30,7 +33,7 @@ namespace DVB {
         public override Gst.RTSPMedia? @construct (Gst.RTSPUrl url) {
             uint sidnr = 0;
           	uint grpnr = 0;
-          	
+
           	string[] path_elements = url.abspath.split ("/");
           	int i = 0;
           	string elem;
@@ -39,41 +42,41 @@ namespace DVB {
           	        grpnr = (uint)int.parse (elem);
           	    else if (i == 2)
           	        sidnr = (uint)int.parse (elem);
-          	    
+
           	    i++;
           	}
-          	
+
           	Manager manager = Manager.get_instance();
-          	
-          	DeviceGroup? devgrp = 
+
+          	DeviceGroup? devgrp =
           	    manager.get_device_group_if_exists (grpnr);
           	if (devgrp == null) {
           	    warning ("Unknown group %u", grpnr);
           	    return null;
           	}
-          	
+
           	Gst.Element payload = Gst.ElementFactory.make ("rtpmp2tpay",
                 "pay0");
             if (payload == null) {
-                critical ("Could not create rtpmp2tpay element");
-                return null;   
+                log.error ("Could not create rtpmp2tpay element");
+                return null;
             }
             payload.set ("pt", 96);
-          	
+
           	Channel? channel = devgrp.Channels.get_channel (sidnr);
           	if (channel == null) {
-          	    critical ("No channel with SID %u", sidnr);
+          	    log.error ("No channel with SID %u", sidnr);
           	    return null;
           	}
           	ChannelFactory channels_factory = devgrp.channel_factory;
-          	
+
           	PlayerThread? player = channels_factory.watch_channel (channel,
           	    payload, false, DVB.RTSPServer.stop_streaming);
           	if (player == null) {
-          	    debug ("Could not create player");
+          	    log.debug ("Could not create player");
           	    return null;
           	}
-          	debug ("Retrieving sink bin with payloader");
+          	log.debug ("Retrieving sink bin with payloader");
           	Gst.Element? bin = player.get_sink_bin (sidnr, payload);
 
             // Construct media
@@ -81,7 +84,7 @@ namespace DVB {
             media.element = bin;
             // Set pipeline
             media.pipeline = player.get_pipeline ();
-            
+
             this.collect_streams (url, media);
 
             return media;

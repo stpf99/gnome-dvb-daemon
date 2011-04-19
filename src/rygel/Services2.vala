@@ -18,9 +18,12 @@
  */
 using GLib;
 using Gee;
+using DVB.Logging;
 
 namespace DVB.MediaServer2 {
-    
+
+    private static Logger log;
+
     private static const string SERVICE_NAME = "org.gnome.UPnP.MediaServer2.DVBDaemon";
     private static const string ROOT_PATH = "/org/gnome/UPnP/MediaServer2/DVBDaemon";
     
@@ -56,7 +59,7 @@ namespace DVB.MediaServer2 {
         }
         
         private void create_service (DeviceGroup devgroup) {
-            debug ("Creating container for device group %u", devgroup.Id);
+            log.debug ("Creating container for device group %u", devgroup.Id);
 
             var devgroup_container = new ChannelsMediaContainer2 (
                     devgroup, this.path);
@@ -199,7 +202,7 @@ namespace DVB.MediaServer2 {
         }
         
         public void create_service (Channel channel) {
-            debug ("Creating container for channel %u", channel.Sid);
+            log.debug ("Creating container for channel %u", channel.Sid);
 
             var channel_item = new ChannelMediaItem2 (
                     channel, new ObjectPath (this.Path));
@@ -380,6 +383,7 @@ namespace DVB.MediaServer2 {
     }
 
     public static bool start_rygel_services () {
+        log = LogManager.getLogManager().getDefaultLogger();
         Utils.dbus_own_name (SERVICE_NAME, on_bus_acquired);
         return false;
     }

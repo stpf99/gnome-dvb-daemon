@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008,2009 Sebastian Pölsterl
+ * Copyright (C) 2008-2011 Sebastian Pölsterl
  *
  * This file is part of GNOME DVB Daemon.
  *
@@ -28,6 +28,7 @@ namespace Main {
     private static bool disable_epg_scanner;
     private static bool disable_mediaserver;
     private static MainLoop mainloop;
+    public static DVB.Logging.Logger log;
     public static DBusConnection conn;
 
     const OptionEntry[] options =  {
@@ -59,7 +60,7 @@ namespace Main {
     }
 
     private static void start_recordings_store () {
-        message ("Creating new RecordingsStore D-Bus service");
+        log.info ("Creating new RecordingsStore D-Bus service");
 
         recstore = DVB.RecordingsStore.get_instance ();
         DVB.Utils.dbus_register_object<DVB.IDBusRecordingsStore> (conn,
@@ -67,25 +68,20 @@ namespace Main {
     }
 
     private static void on_exit (int signum) {
-        message ("Exiting");
-        
+        log.info ("Exiting");
+
         DVB.RTSPServer.shutdown ();
         DVB.Manager.shutdown ();
         DVB.Factory.shutdown ();
         DVB.RecordingsStore.shutdown ();
-        
+        DVB.Logging.LogManager.getLogManager().cleanup ();
+
         recstore = null;
         manager = null;
-        
+
         mainloop.quit ();
     }
-    
-    private static void log_func (string? log_domain, LogLevelFlags log_levels,
-            string message) {
-        if (has_debug)
-            cUtils.log_default_handler (log_domain, log_levels, message, null);
-    }
-    
+
     public static bool get_disable_epg_scanner () {
         return Main.disable_epg_scanner;
     }
@@ -99,7 +95,7 @@ namespace Main {
             ret = false;
         else
             ret = feature.check_version (major, minor, micro);
-        debug ("Has %s >= %u.%u.%u: %s", name, major, minor, micro, ret.to_string ());
+        log.debug ("Has %s >= %u.%u.%u: %s", name, major, minor, micro, ret.to_string ());
         return ret;
     }
 
@@ -120,7 +116,7 @@ namespace Main {
 
     private static void restore_device_groups () {
         DVB.database.ConfigStore config_store = DVB.Factory.get_config_store ();
-        
+
         Gee.List<DVB.DeviceGroup> device_groups;
         try {
             device_groups = config_store.get_all_device_groups ();
@@ -129,23 +125,54 @@ namespace Main {
             return;
         }
 
-        message ("Restoring %d device groups", device_groups.size);
+        log.info ("Restoring %d device groups", device_groups.size);
         foreach (DVB.DeviceGroup device_group in device_groups) {
             manager.restore_device_group_and_timers (device_group);
         }
     }
-    
+
+    private static void configure_logging () {
+        DVB.Logging.LogManager manager = DVB.Logging.LogManager.getLogManager ();
+        log = manager.getDefaultLogger ();
+
+        File cache_dir = File.new_for_path (Environment.get_user_cache_dir ());
+        File our_cache = cache_dir.get_child ("gnome-dvb-daemon");
+        File log_file = our_cache.get_child ("debug%d.log");
+
+        try {
+            DVB.Logging.FileHandler fhandler = new DVB.Logging.FileHandler (
+                log_file.get_path ());
+            fhandler.limit = 1024 * 1024; /* 1 MB */
+            if (has_debug) {
+                fhandler.limit = fhandler.limit * 5;
+            } else {
+                fhandler.threshold = DVB.Logging.LogLevel.WARNING;
+            }
+
+            log.addHandler (fhandler);
+        } catch (Error e) {
+            stderr.printf ("*** Failed creating DVB.Logging.FileHandler: %s\n", e.message);
+        }
+
+        DVB.Logging.ConsoleHandler chandler = new DVB.Logging.ConsoleHandler();
+        chandler.formatter = new DVB.Logging.ColorFormatter ();
+        if (!has_debug) {
+            chandler.threshold = DVB.Logging.LogLevel.ERROR;
+        }
+        log.addHandler (chandler);
+    }
+
     public static int main (string[] args) {
         // set timezone to avoid that strftime stats /etc/localtime on every call
         Environment.set_variable ("TZ", "/etc/localtime", false);
 
         cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
         cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
-    
+
         OptionContext context = new OptionContext ("- record and watch TV shows using one or more DVB adapters");
         context.add_main_entries (options, null);
         context.add_group (Gst.init_get_option_group ());
-        
+
         try {
             context.parse (ref args);
         } catch (OptionError e) {
@@ -153,22 +180,20 @@ namespace Main {
             stderr.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
             return 1;
         }
-        
+
         if (has_version) {
             stdout.printf (Config.PACKAGE_NAME);
             stdout.printf (" %s\n", Config.PACKAGE_VERSION);
             return 0;
         }
-        
-        Log.set_handler (null, LogLevelFlags.LEVEL_DEBUG |
-            LogLevelFlags.FLAG_FATAL | LogLevelFlags.FLAG_RECURSION,
-            log_func);
-        
+
         // Creating a GLib main loop with a default context
         mainloop = new MainLoop (null, false);
 
         // Initializing GStreamer
         Gst.init (ref args);
+
+        configure_logging ();
 
         if (!check_requirements ()) {
             stderr.printf ("You don't have all of the necessary requirements to run %s.\n",
@@ -176,7 +201,7 @@ namespace Main {
             stderr.printf ("Start the daemon with the --debug flag for more details.\n");
             return -1;
         }
-        
+
         start_manager ();
 
         Idle.add (DVB.RTSPServer.start);
@@ -187,7 +212,7 @@ namespace Main {
 
         // Start GLib mainloop
         mainloop.run ();
-        
+
         return 0;
     }
 

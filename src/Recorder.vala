@@ -20,6 +20,7 @@
 using GLib;
 using Gee;
 using DVB.database;
+using DVB.Logging;
 
 namespace DVB {
 
@@ -28,6 +29,8 @@ namespace DVB {
      * already recorded items for a single group of devices
      */
     public class Recorder : GLib.Object, IDBusRecorder, Iterable<Timer> {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public unowned DVB.DeviceGroup DeviceGroup { get; construct; }
         
@@ -150,7 +153,7 @@ namespace DVB {
                         conflict_count++;
                         
                         if (conflict_count >= this.DeviceGroup.size) {
-                            debug ("Timer is conflicting with another timer: %s",
+                            log.debug ("Timer is conflicting with another timer: %s",
                                 this.timers.get(key).to_string ());
                             has_conflict = true;
                             break;
@@ -164,12 +167,12 @@ namespace DVB {
                         Factory.get_timers_store ().add_timer_to_device_group (new_timer,
                             this.DeviceGroup);
                     } catch (SqlError e) {
-                        critical ("%s", e.message);
+                        log.error ("%s", e.message);
                     }
                     this.changed (new_timer.Id, ChangeType.ADDED);
                                    
                     if (this.timers.size == 1 && !this.have_check_timers_timeout) {
-                        debug ("Creating new check timers");
+                        log.debug ("Creating new check timers");
                         this. check_timers_event_id = Timeout.add_seconds (
                             CHECK_TIMERS_INTERVAL, this.check_timers
                         );
@@ -198,10 +201,10 @@ namespace DVB {
             try {
                 event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
             }
             if (event == null) {
-                debug ("Could not find event with id %u", event_id);
+                log.debug ("Could not find event with id %u", event_id);
                 timer_id = 0;
                 return false;
             }
@@ -238,7 +241,7 @@ namespace DVB {
                         Factory.get_timers_store ().remove_timer_from_device_group (
                             timer_id, this.DeviceGroup);
                     } catch (SqlError e) {
-                        critical ("%s", e.message);
+                        log.error ("%s", e.message);
                     }
                     this.changed (timer_id, ChangeType.DELETED);
                     val = true;
@@ -531,10 +534,10 @@ namespace DVB {
                 event = epgstore.get_event (event_id, channel_sid,
                     this.DeviceGroup.Id);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
             }
             if (event == null) {
-                debug ("Could not find event with id %u", event_id);
+                log.debug ("Could not find event with id %u", event_id);
                 return OverlapType.UNKNOWN;
             }
             
@@ -574,7 +577,7 @@ namespace DVB {
         protected Timer? create_timer (uint channel,
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration) {
-            debug ("Creating new timer: channel: %u, start: %04d-%02d-%02d %02d:%02d, duration: %u",
+            log.debug ("Creating new timer: channel: %u, start: %04d-%02d-%02d %02d:%02d, duration: %u",
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
     
@@ -606,7 +609,7 @@ namespace DVB {
 
             Gst.Element filesink = Gst.ElementFactory.make ("filesink", null);
             if (filesink == null) {
-                critical ("Could not create filesink element");
+                log.error ("Could not create filesink element");
                 return;
             }
             filesink.set ("location", location.get_path ());
@@ -616,11 +619,11 @@ namespace DVB {
             PlayerThread? player = channel_factory.watch_channel (channel,
                 filesink, true);
             if (player != null) {
-                debug ("Setting pipeline to playing");
+                log.debug ("Setting pipeline to playing");
                 Gst.StateChangeReturn ret = player.get_pipeline().set_state (
                     Gst.State.PLAYING);
                 if (ret == Gst.StateChangeReturn.FAILURE) {
-                    critical ("Failed setting pipeline to playing");
+                    log.error ("Failed setting pipeline to playing");
                     channel_factory.stop_channel (channel, filesink);
                     return;
                 }
@@ -641,7 +644,7 @@ namespace DVB {
                      * transfer informations */
                     Event? event = channel.Schedule.get_event (timer.EventID);
                     if (event != null) {
-                        debug ("Transfering event information from timer");
+                        log.debug ("Transfering event information from timer");
                         recording.Name = event.name;
                         recording.Description = "%s\n%s".printf (
                             event.description,
@@ -671,7 +674,7 @@ namespace DVB {
                 rec.Length = Utils.difftime (Time.local (time_t ()),
                     rec.StartTime);
 
-                debug ("Recording of channel %s stopped after %"
+                log.debug ("Recording of channel %s stopped after %"
                     + int64.FORMAT +" seconds",
                     rec.ChannelName, rec.Length);
                 
@@ -711,7 +714,7 @@ namespace DVB {
                 try {
                     Utils.mkdirs (dir);
                 } catch (Error e) {
-                    critical ("Could not create directory %s: %s",
+                    log.error ("Could not create directory %s: %s",
                         dir.get_path (), e.message);
                     return null;
                 }
@@ -721,18 +724,18 @@ namespace DVB {
             try {
                 info = dir.query_info (ATTRIBUTES, 0, null);
             } catch (Error e) {
-                critical ("Could not retrieve attributes: %s", e.message);
+                log.error ("Could not retrieve attributes: %s", e.message);
                 return null;
             }
             
             if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
                 != FileType.DIRECTORY) {
-                critical ("%s is not a directory", dir.get_path ());
+                log.error ("%s is not a directory", dir.get_path ());
                 return null;
             }
             
             if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
-                critical ("Cannot write to %s", dir.get_path ());
+                log.error ("Cannot write to %s", dir.get_path ());
                 return null;
             }
             
@@ -745,7 +748,7 @@ namespace DVB {
         }
         
         private bool check_timers () {
-            debug ("Checking timers");
+            log.debug ("Checking timers");
             
             bool val;
             SList<Timer> ended_recordings =
@@ -771,7 +774,7 @@ namespace DVB {
                 foreach (uint32 key in this.timers.keys) {
                     Timer timer = this.timers.get (key);
 
-                    debug ("Checking timer: %s", timer.to_string());
+                    log.debug ("Checking timer: %s", timer.to_string());
 
                     // Check if we should start new recording and if we didn't
                     // start it before
@@ -779,7 +782,7 @@ namespace DVB {
                             && !this.active_timers.contains (timer.Id)) {
                         this.start_recording (timer);
                     } else if (timer.has_expired()) {
-                        debug ("Removing expired timer: %s", timer.to_string());
+                        log.debug ("Removing expired timer: %s", timer.to_string());
                         deleteable_items.prepend (key);
                     }
                 }
@@ -791,13 +794,13 @@ namespace DVB {
 
                 if (this.timers.size == 0 && this.active_timers.size == 0) {
                     // We don't have any timers and no recording is in progress
-                    debug ("No timers left and no recording in progress");
+                    log.debug ("No timers left and no recording in progress");
                     this.have_check_timers_timeout = false;
                     this.check_timers_event_id = 0;
                     val = false;
                 } else {
                     // We still have timers
-                    debug ("%d timers and %d active recordings left",
+                    log.debug ("%d timers and %d active recordings left",
                         this.timers.size,
                         this.active_timers.size);
                     val = true;
@@ -819,7 +822,7 @@ namespace DVB {
                         
                         Event? event = sched.get_running_event ();
                         if (event != null) {
-                            debug ("Found running event for active recording");
+                            log.debug ("Found running event for active recording");
                             rec.Name = event.name;
                             rec.Description = "%s\n%s".printf (event.description,
                                 event.extended_description);

@@ -20,6 +20,7 @@
 using GLib;
 using Gee;
 using DVB.database;
+using DVB.Logging;
 
 namespace DVB {
 
@@ -27,6 +28,8 @@ namespace DVB {
      * Represents a series of events of a channel
      */
     public class Schedule : GLib.Object, IDBusSchedule {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         private static const int MATCH_THRESHOLD = 100;
         private static const double MIN_EVENT_OVERLAP = 0.5;
@@ -52,7 +55,7 @@ namespace DVB {
                 levents = this.epgstore.get_events (
                     this.channel.Sid, this.channel.GroupId);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 return false;
             }
 
@@ -73,12 +76,12 @@ namespace DVB {
                     this.epgstore.remove_events_older_than (event,
                         this.channel.Sid, this.channel.GroupId);
                 } catch (SqlError e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                     return false;
                 }
             }
 
-            debug ("Finished restoring EPG events for channel %u",
+            log.debug ("Finished restoring EPG events for channel %u",
                 this.channel.Sid);
             return false;
         }
@@ -102,7 +105,7 @@ namespace DVB {
                     }
                 }
 
-                debug ("Removing expired events of channel %s (%u)",
+                log.debug ("Removing expired events of channel %s (%u)",
                     channel.Name, channel.Sid);
 
                 for (int i=0; i<=last_expired; i++) {
@@ -112,7 +115,7 @@ namespace DVB {
                         this.epgstore.remove_events_older_than (event,
                             this.channel.Sid, this.channel.GroupId);
                     } catch (SqlError e) {
-                        critical ("%s", e.message);
+                        log.error ("%s", e.message);
                     }
                 }
 
@@ -127,7 +130,7 @@ namespace DVB {
                 return this.epgstore.get_event (event_id,
                     this.channel.Sid, this.channel.GroupId);
             } catch (SqlError e) {
-                critical ("%s", e.message);
+                log.error ("%s", e.message);
                 return null;
             }
         }
@@ -142,7 +145,7 @@ namespace DVB {
                 try {
                     this.store_event (event);
                 } catch (SqlError e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                 }
             }
         }
@@ -160,7 +163,7 @@ namespace DVB {
 
                     ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();                    
                 } catch (SqlError e) {
-                    critical ("%s", e.message);
+                    log.error ("%s", e.message);
                 } finally {
                     mutex.unlock ();
                 }
@@ -386,7 +389,7 @@ namespace DVB {
                         next_event = next.id;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                 }
             }
             
@@ -404,7 +407,7 @@ namespace DVB {
                         ret = true;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                 }
             }
             if (!ret) name = "";
@@ -424,7 +427,7 @@ namespace DVB {
                         ret = true;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                 }
             }
             if (!ret) description = "";
@@ -444,7 +447,7 @@ namespace DVB {
                         ret = true;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                 }
             }
             if (!ret) description = "";
@@ -464,7 +467,7 @@ namespace DVB {
                         ret = true;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                 }
             }
             
@@ -485,7 +488,7 @@ namespace DVB {
                         ret = true;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                     start_time = new uint[] {};
                 }
             }
@@ -525,7 +528,7 @@ namespace DVB {
                         ret = true;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                 }
             }
             
@@ -545,7 +548,7 @@ namespace DVB {
                         ret = true;
                     }
                 } else {
-                    debug ("No event with id %u", event_id);
+                    log.debug ("No event with id %u", event_id);
                 }
             }
             
