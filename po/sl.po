@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daemon&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-04-19 07:10+0000\n"
-"PO-Revision-Date: 2011-04-19 21:18+0100\n"
+"PO-Revision-Date: 2011-04-20 17:34+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -21,14 +21,12 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: ../client/gnomedvb/__init__.py:33
-#, fuzzy
 msgid "GNOME DVB Daemon"
-msgstr "Ozadnji program GNOME nastavitev"
+msgstr "Ozadnji program GNOME DVB"
 
 #: ../client/gnomedvb/__init__.py:36
-#, fuzzy
 msgid "GNOME DVB Daemon Website"
-msgstr "Spletna stran spletnega brskalnika za GNOME"
+msgstr "Spletna stran ozadnjega programa GNOME DVB"
 
 #: ../client/gnomedvb/__init__.py:73
 #, python-format
@@ -40,48 +38,43 @@ msgstr[2] "%d uri"
 msgstr[3] "%d ure"
 
 #: ../client/gnomedvb/__init__.py:75
-#, fuzzy, python-format
+#, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minut"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "%d minuta"
+msgstr[2] "%d minuti"
+msgstr[3] "%d minute"
 
 #: ../client/gnomedvb/__init__.py:77
-#, fuzzy, python-format
+#, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekund"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "%d sekunda"
+msgstr[2] "%d sekundi"
+msgstr[3] "%d sekunde"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:33
-#, fuzzy
 msgid "Edit Channel Lists"
-msgstr "Nov/uredi kanal"
+msgstr "Uredi seznam kanalov"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:54
-#, fuzzy
 msgid "Channel groups"
-msgstr "Spremeni skupine"
+msgstr "Skupine kanalov"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:95
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:51
-#, fuzzy
 msgid "_Group:"
 msgstr "_Skupina:"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:102
-#, fuzzy
 msgid "Device groups"
-msgstr "Spremeni skupine"
+msgstr "Skupine naprav"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:124
-#, fuzzy
 msgid "All channels"
-msgstr "Zvočni kanali:"
+msgstr "Vsi kanali"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:72
@@ -89,19 +82,16 @@ msgstr "Zvočni kanali:"
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:95
-#, fuzzy
 msgid "Channel"
-msgstr "Kanaliziraj"
+msgstr "Kanal"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:152
-#, fuzzy
 msgid "Choose a channel group"
-msgstr "Izberite drugo ime skupine."
+msgstr "Izbor skupine kanalov"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:153
-#, fuzzy
 msgid "Channels of group"
-msgstr "Ime skupine:"
+msgstr "Kanali skupine"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
 #, fuzzy
@@ -141,178 +131,146 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
 #: ../client/totem-plugin/dvb-daemon.py:354
-#, fuzzy
 msgid "_Recording schedule"
-msgstr "_Načrtovanje srečanja ..."
+msgstr "_Načrtovanje snemanja ..."
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
-#, fuzzy
 msgid "_Edit"
 msgstr "_Uredi"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
-#, fuzzy
 msgid "_View"
 msgstr "_Pogled"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:161
-#, fuzzy
 msgid "Help"
 msgstr "Pomoč"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
-#, fuzzy
 msgid "_Manage"
 msgstr "_Upravljanje"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:271
-#, fuzzy
 msgid "Manage recording schedule"
-msgstr "Lahko določi urnik srečanj"
+msgstr "Upravljanje z načrtovanjem snemanja"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
-#, fuzzy
 msgid "_Recordings"
-msgstr "Posnetki"
+msgstr "_Posnetki"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
-#, fuzzy
 msgid "Manage recordings"
-msgstr "MythTV posnetki"
+msgstr "Upravljanje s posnetki"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
-#, fuzzy
 msgid "_Quit"
 msgstr "_Končaj"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:173
-#, fuzzy
 msgid "Quit the Program"
 msgstr "Končaj program"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
-#, fuzzy
 msgid "_Channel Lists"
-msgstr "Uredi kanal"
+msgstr "_Seznam kanalov"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
-#, fuzzy
 msgid "Edit channel lists"
-msgstr "Nov/uredi kanal"
+msgstr "Uredi seznam kanalov"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
-#, fuzzy
 msgid "_Preferences"
 msgstr "_Možnosti"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:181
-#, fuzzy
 msgid "Display preferences"
 msgstr "Možnosti prikaza"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
-#, fuzzy
 msgid "_What's on now"
-msgstr "%s ni povezan."
+msgstr "_Kaj je trenutno na sporedu"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
 msgid "See what's currently on and is coming next"
 msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
-#, fuzzy
 msgid "_Refresh"
 msgstr "_Osveži"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:300
-#, fuzzy
 msgid "Refresh program guide"
-msgstr "Priročnik sistemskega skrbništva"
+msgstr "Osveži programski spored"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
-#, fuzzy
 msgid "_Previous Day"
-msgstr "Vsak dan"
+msgstr "_Predhodni dan"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:308
-#, fuzzy
 msgid "Go to previous day"
-msgstr "Skoči na predhodno zgodovino"
+msgstr "Skoči na predhodni dan"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
-#, fuzzy
 msgid "_Next Day"
-msgstr "^(?<task>.+) naslednji/o (?<day>\\w+)$"
+msgstr "_Naslednji dan"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:317
-#, fuzzy
 msgid "Go to next day"
-msgstr "Skoči na naslednjo zgodovino"
+msgstr "Skoči na naslednji dan"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
-#, fuzzy
 msgid "_Channels"
-msgstr "Kanali"
+msgstr "_Kanali"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
-#, fuzzy
 msgid "View/Hide channels"
-msgstr "Samodejno osveži kanale"
+msgstr "Prikazovanje in skrivanje kanalov"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
-#, fuzzy
 msgid "_Toolbar"
 msgstr "_Orodna vrstica"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:200
-#, fuzzy
 msgid "View/Hide toolbar"
-msgstr "Pokaži glavno orodno vrstico"
+msgstr "Prikaz in skrivanje orodne vrstice"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
-#, fuzzy
 msgid "_About"
 msgstr "_O programu"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
-#, fuzzy
 msgid "Display informations about the program"
-msgstr "Prikaz podrobnosti o tem programu"
+msgstr "Prikaz podrobnosti o programu"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:267
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
-#, fuzzy
 msgid "Recording schedule"
-msgstr "_Načrtovanje srečanja ..."
+msgstr "Načrtovanje snemanja"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:148
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:32
 #: ../client/totem-plugin/dvb-daemon.py:308
-#, fuzzy
 msgid "Recordings"
 msgstr "Posnetki"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:287
 #: ../client/totem-plugin/dvb-daemon.py:335
 #: ../client/totem-plugin/dvb-daemon.py:356
-#, fuzzy
 msgid "What's on now"
-msgstr "%s ni povezan."
+msgstr "Kaj je trenutno na sporedu"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:306
-#, fuzzy
 msgid "Previous Day"
-msgstr "Vsak dan"
+msgstr "Predhodni dan"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:315
-#, fuzzy
 msgid "Next Day"
-msgstr "^(?<task>.+) naslednji/o (?<day>\\w+)$"
+msgstr "Naslednji dan"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
 #: ../client/totem-plugin/dvb-daemon.py:180
@@ -321,12 +279,10 @@ msgstr ""
 
 #. translators: These appear in the About dialog, usual format applies.
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:596
-#, fuzzy
 msgid "translator-credits"
-msgstr "Matej Urbančič"
+msgstr "Matej Urbančič <mateju@svn.gnome.org>"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:58
-#, fuzzy
 msgid "Devices"
 msgstr "Naprave"
 
@@ -334,7 +290,7 @@ msgstr "Naprave"
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
 #, python-format
 msgid "<b>%s (%s)</b>\n"
-msgstr ""
+msgstr "<b>%s (%s)</b>\n"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:68
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
@@ -343,32 +299,27 @@ msgid "Adapter: %d, Frontend: %d"
 msgstr "Vmesnik"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:73
-#, fuzzy, python-format
+#, python-format
 msgid "Group %d"
-msgstr "Skupina:"
+msgstr "Skupina %d"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:29
-#, fuzzy
 msgid "Add to Group"
-msgstr "Dodajanje v skupino"
+msgstr "Dodaj v skupino"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:45
-#, fuzzy
 msgid "Add Device to Group"
-msgstr "Dodaj skupino k projektu"
+msgstr "Dodaj napravo k skupini"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:89
-#, fuzzy
 msgid "Create new Group"
 msgstr "Ustvari novo skupino"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:109
-#, fuzzy
 msgid "General"
 msgstr "Splošno"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:114
-#, fuzzy
 msgid "_Name:"
 msgstr "_Ime:"
 
@@ -378,24 +329,20 @@ msgid "Channels _file:"
 msgstr "Datoteka preprečevanja:"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:153
-#, fuzzy
 msgid "_Directory:"
-msgstr "Mapa:"
+msgstr "_Mapa:"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:181
-#, fuzzy
 msgid "Select File"
 msgstr "Izbor datoteke"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:190
-#, fuzzy
 msgid "Select Directory"
 msgstr "Izbor mape"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:203
-#, fuzzy
 msgid "Edit group"
-msgstr "Uredi lastnosti skupine"
+msgstr "Uredi skupino"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:39
 #: ../client/totem-plugin/dvb-daemon.py:357
@@ -440,7 +387,7 @@ msgstr "Dodajanje v skupino"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:128
 msgid "Add selected device to existing group"
-msgstr ""
+msgstr "Dodaj izbrano  napravo v obstoječo skupino"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:144
 #, fuzzy
@@ -454,7 +401,7 @@ msgstr "Zvočne naprave"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:220
 msgid "Device could not be removed from group"
-msgstr ""
+msgstr "Naprave iz skupine ni mogoče odstraniti"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:234
 #, fuzzy, python-format
@@ -543,7 +490,6 @@ msgid "Add Timer"
 msgstr "ustavi časomer"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:67
-#, fuzzy
 msgid "_Channel:"
 msgstr "_Kanal:"
 
@@ -554,7 +500,6 @@ msgstr "ustavi časomer"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:87
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
-#, fuzzy
 msgid "Channel:"
 msgstr "Kanal:"
 
@@ -760,7 +705,7 @@ msgstr "Vmesnik"
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
-msgstr ""
+msgstr "Kartice '%s' niso podprte."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
 msgid "Could not find initial tuning data."
@@ -793,12 +738,10 @@ msgid "_Country:"
 msgstr "Držav_a:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:177
-#, fuzzy
 msgid "_Antenna:"
-msgstr "Antena"
+msgstr "_Antena:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:186
-#, fuzzy
 msgid "Antenna"
 msgstr "Antena"
 
@@ -886,7 +829,7 @@ msgstr "Datoteka \"%s\" je bila dodana v vrsto prejemanja."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:148
 msgid "An error occured while trying to setup the device."
-msgstr ""
+msgstr "Prišlo je do napake med poskusom nastavljanja naprave."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
 #, fuzzy
