@@ -1,4 +1,54 @@
 ==============
+Version 0.1.90
+==============
+
+This is the first release towards a GNOME3-compatible version.
+The GUI has been ported from PyGTK using GTK+2 to PyGObject
+and GObject-Introspection using GTK+3. In addition, the Totem
+plugin has been ported to libpeas and works with Totem 3.
+Both the daemon and the GUI use GDBus instead of dbus-glib to
+communicate over DBus now.
+This version does not support GNOME2, i.e. it won't work with
+GTK+2 and Totem 2.
+
+Minimum dependencies:
+    - glib 2.28.5
+    - gobject-introspection 0.10.8
+    - pygobject 2.28.4
+    - Vala 0.12.0
+
+- Ported GUI to PyGI and GTK+3
+- Use appointment-soon icon instead of stock_timer
+- Do not use Gtk.Alignment anymore
+- Mark what's on buttons insensitive if no device has been setup
+- Retrieve totem plugin dir from pkg-config variable
+- Avoid NULL pointer dereference in get_adapters()
+- Totem: Ported plugin to PyGI, GTK+3 and libpeas
+- Totem: Display recordings when changing 'group by' type.
+- Fixed --{enable,disable}-totem-plugin option
+- Ported the daemon to use gdbus instead of libdbus.
+- Removed support for Rygel's MediaServer1 interface.
+- Don't use deprecated functions anymore. Requires Vala >= 0.12.0
+- Use a single Scanner DBus interface for all adapter types
+- Ported GUI to use GDBus. Require pygobject >= 2.28.4 and glib >= 2.28.5
+- Totem: Ported plugin to GDBus
+- Use new logging facility
+
+Updated Translations:
+---------------------
+- ar (Khaled Hosny)
+- da (Ask Hjorth Larsen)
+- de (Mario Blättermann)
+- fi (Timo Jyrinki)
+- fr (Claude Paroz)
+- hu (Gabor Kelemen)
+- lt (Mantas Kriaučiūnas)
+- pl (Piotr Drąg)
+- pt_BR (Edvaldo de Souza Cruz)
+- sl (Matej Urbančič)
+- sv (Daniel Nylander)
+
+==============
 Version 0.1.23
 ==============
 
