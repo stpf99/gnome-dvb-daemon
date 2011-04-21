@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daemon&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-04-19 07:10+0000\n"
-"PO-Revision-Date: 2011-04-20 17:34+0100\n"
+"PO-Revision-Date: 2011-04-21 20:27+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -687,14 +687,12 @@ msgid "Country and antenna selection"
 msgstr "Pogoji izbire in razvrščanja:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:96
-#, fuzzy
 msgid "Satellite selection"
-msgstr "_Počisti izbor"
+msgstr "Izbor satelita"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:99
-#, fuzzy
 msgid "Country and provider selection"
-msgstr "Izbor države in ponudnika storitev"
+msgstr "Izbor države in ponudnika"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:101
 #, fuzzy
@@ -728,9 +726,8 @@ msgid "However, searching for channels will take considerably longer this way."
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
-#, fuzzy
 msgid "Not listed"
-msgstr "%d izpisanih datotek"
+msgstr "Ni na seznamu"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:153
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:224
@@ -746,29 +743,24 @@ msgid "Antenna"
 msgstr "Antena"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
-#, fuzzy
 msgid "_Satellite:"
-msgstr "Satelit"
+msgstr "_Satelit:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
-#, fuzzy
 msgid "Satellite"
 msgstr "Satelit"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
-#, fuzzy
 msgid "_Providers:"
-msgstr "Ponudniki"
+msgstr "_Ponudniki:"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:254
-#, fuzzy
 msgid "Provider"
 msgstr "Ponudnik"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:303
-#, fuzzy
 msgid "Don't know"
-msgstr "_Ne razdeli"
+msgstr "Ni znano"
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
 msgid "Welcome to the digital television Assistant."
@@ -789,24 +781,21 @@ msgid "_Expert mode"
 msgstr "Način uvoza: "
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:44
-#, fuzzy
 msgid "Digital TV configuration"
-msgstr "Določi trenutne nastavitve"
+msgstr "Nastavitev digitalne TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
 msgid "Choose a location where you want to save the list of channels."
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
-#, fuzzy
 msgid "Save channels"
-msgstr "Zvočni kanali:"
+msgstr "Shrani kanale"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:45
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
-#, fuzzy
 msgid "Configuring device"
-msgstr "Podpora naprav"
+msgstr "Nastavljanje naprave"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
 #, fuzzy
@@ -852,15 +841,13 @@ msgid "Failed configuring device %s."
 msgstr "Neuspešna namestitev naprave"
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:45
-#, fuzzy
 msgid "Cleaning up. This may take a while."
-msgstr "Uveljavljanje označenih sprememb. Dejanje je lahko dolgotrajno ..."
+msgstr "Prilagajanje in čiščenje. Dejanje je lahko dolgotrajno ..."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:83
 #: ../data/gnome-dvb-setup.desktop.in.in.h:2
-#, fuzzy
 msgid "Setup digital TV"
-msgstr "Nadziranje TV programov"
+msgstr "Nastavitev digitalne TV"
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:168
 msgid "The generated channels file can be used to configure your devices in the control center."
@@ -875,14 +862,12 @@ msgstr ""
 #: ../client/totem-plugin/dvb-daemon.py:151
 #: ../client/totem-plugin/dvb-daemon.py:196
 #: ../client/totem-plugin/dvb-daemon.py:341
-#, fuzzy
 msgid "Program Guide"
-msgstr "Uporabniški priročnik"
+msgstr "Programski spored"
 
 #: ../client/totem-plugin/dvb-daemon.py:301
-#, fuzzy
 msgid "Digital TV"
-msgstr "TV oddaja"
+msgstr "Digitalna TV"
 
 #: ../client/totem-plugin/dvb-daemon.py:352
 #, fuzzy
@@ -890,14 +875,12 @@ msgid "Watch TV"
 msgstr "Gledanje TV na '%s'"
 
 #: ../client/totem-plugin/dvb-daemon.py:353
-#, fuzzy
 msgid "Digital _TV"
-msgstr "TV oddaja"
+msgstr "Digitalna _TV"
 
 #: ../client/totem-plugin/dvb-daemon.py:355
-#, fuzzy
 msgid "_Program Guide"
-msgstr "Uporabniški priročnik"
+msgstr "_Programski spored"
 
 #: ../client/totem-plugin/dvb-daemon.py:358
 #, fuzzy
@@ -930,19 +913,17 @@ msgid "_Reverse order"
 msgstr "_Obrnjen vrstni red"
 
 #: ../client/totem-plugin/dvb-daemon.py:519
-#, fuzzy
 msgid "Delete selected recording?"
-msgstr "Izbriši izbrani račun"
+msgstr "Ali naj se izbriše izbrani posnetek?"
 
 #: ../client/totem-plugin/dvb-daemon.py:597
-#, fuzzy, python-format
+#, python-format
 msgid "Recording %d"
-msgstr "_Snemanje"
+msgstr "Posnetek %d"
 
 #: ../client/totem-plugin/dvb-daemon.py:657
-#, fuzzy
 msgid "Setup Failed"
-msgstr "Neuspešna namestitev naprave"
+msgstr "Namestitev je spodletela"
 
 #: ../client/totem-plugin/dvb-daemon.py:658
 #, fuzzy
