@@ -45,6 +45,8 @@ class EditTimersDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self, title=_("Recording schedule"),
             parent=parent)
 
+        self.recorder = None
+
         self.set_modal(True)
         self.set_destroy_with_parent(True)
         self.device_group = device_group
@@ -269,7 +271,7 @@ class EditTimersDialog(Gtk.Dialog):
         duration_str = gnomedvb.seconds_to_time_duration_string(duration)
         cell.set_property("text", duration_str)
 
-    def _datetime_sort_func(treemodel, iter1, iter2):
+    def _datetime_sort_func(self, treemodel, iter1, iter2):
         d1 = treemodel[iter1][self.COL_START]
         d2 = treemodel[iter2][self.COL_START]
         return cmp(d1, d2)

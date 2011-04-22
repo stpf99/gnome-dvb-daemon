@@ -506,7 +506,7 @@ class ControlCenterWindow(Gtk.Window):
                     type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO)
                 dialog.set_markup (
                     "<big><span weight=\"bold\">%s</span></big>" % _("Schedule recording for the selected event?"))
-                rec_id = -1
+
                 success = True
                 if dialog.run() == Gtk.ResponseType.YES:
                     event_id = model[aiter][model.COL_EVENT_ID]

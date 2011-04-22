@@ -17,10 +17,8 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import gobject
 from gi.repository import Gtk
 from gettext import gettext as _
-from gnomedvb.ui.timers.CalendarDialog import CalendarDialog
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView
 from gnomedvb.ui.widgets.Frame import TextFieldLabel

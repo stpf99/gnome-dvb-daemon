@@ -81,7 +81,7 @@ class RunningNextView(Gtk.TreeView):
             data, success = result
             if not success:
                 return
-            event_id, next, name, duration, desc = data
+            event_id, next_id, name, duration, desc = data
             
             ext_desc, success = schedule.get_extended_description(event_id)
             if success:

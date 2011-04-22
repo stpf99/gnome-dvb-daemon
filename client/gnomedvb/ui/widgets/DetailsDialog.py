@@ -17,7 +17,6 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import gobject
 from gi.repository import Gtk
 import gnomedvb
 from gettext import gettext as _

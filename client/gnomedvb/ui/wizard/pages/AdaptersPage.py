@@ -38,6 +38,7 @@ class AdaptersPage(BasePage):
         self.__use_configured = True
         self.__model = model
         self._progressbar = None
+        self._progressbar_timer = None
         self.devicesview = None
         self.frame = None
         

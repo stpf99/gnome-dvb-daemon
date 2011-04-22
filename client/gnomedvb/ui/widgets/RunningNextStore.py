@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
 from gi.repository import Gtk
 from gnomedvb import global_error_handler
 from cgi import escape
@@ -56,16 +55,16 @@ class RunningNextStore(Gtk.ListStore):
                 sched = self._group.get_schedule(sid)
                 now = sched.now_playing()
                 if now != 0:
-                    next, name, duration, short_desc = sched.get_informations(now)[0][1:]
+                    next_id, name, duration, short_desc = sched.get_informations(now)[0][1:]
                     
                     self.set_value(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now)[0])
                     self.set_value(aiter, self.COL_RUNNING, escape(name))
                     self.set_value(aiter, self.COL_RUNNING_EVENT, now)
-                    if next != 0:
-                        name, duration, short_desc = sched.get_informations(next)[0][2:]
-                        self.set_value(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next)[0])
+                    if next_id != 0:
+                        name, duration, short_desc = sched.get_informations(next_id)[0][2:]
+                        self.set_value(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next_id)[0])
                         self.set_value(aiter, self.COL_NEXT, escape(name))
-                        self.set_value(aiter, self.COL_NEXT_EVENT, next)
+                        self.set_value(aiter, self.COL_NEXT_EVENT, next_id)
         
         channellist.get_channel_infos(result_handler=add_channels,
             error_handler=global_error_handler)

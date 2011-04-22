@@ -159,6 +159,9 @@ class DateTimeBox(Gtk.Bin):
     def __init__(self, dt=None):
         gobject.GObject.__init__(self)
 
+        self.valid_color = None
+        self.invalid_color = None
+
         self.hbox = Gtk.HBox()
 
         self.entry = Gtk.Entry()

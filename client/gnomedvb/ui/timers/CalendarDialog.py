@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
 from gi.repository import Gtk
 from gettext import gettext as _
         

@@ -83,7 +83,7 @@ class ScheduleStore(Gtk.ListStore):
         return (dt.hour, dt.minute,)
         
     def _append_event(self, event):
-        event_id, next, name, duration, short_desc = event
+        event_id, next_id, name, duration, short_desc = event
         name = escape(name)
         short_desc = escape(short_desc)
         

@@ -21,7 +21,6 @@ import gobject
 from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.DVBModel import DVBModel
-from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
 from gnomedvb.ui.wizard.pages.IntroPage import IntroPage
 from gnomedvb.ui.wizard.pages.AdaptersPage import AdaptersPage
 from gnomedvb.ui.wizard.pages.InitialTuningDataPage import InitialTuningDataPage
@@ -171,7 +170,7 @@ class SetupWizard(Gtk.Assistant):
                 success, summary = self.setup_page.get_summary()
             page.set_device_name_and_details(self.__adapter_info["name"],
                 summary, success)
-            self.__apdater_info = None
+            self.__adapter_info = None
 
         self.set_page_title(page, page.get_page_title())
         

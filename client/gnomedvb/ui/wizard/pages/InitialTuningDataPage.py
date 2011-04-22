@@ -25,7 +25,6 @@ import gettext
 import locale
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
-from gnomedvb.ui.widgets.Frame import TextFieldLabel
 
 DVB_APPS_DIRS = ("/usr/share/dvb",
                  "/usr/share/dvb-apps",
