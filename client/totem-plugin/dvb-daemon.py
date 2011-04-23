@@ -119,19 +119,19 @@ class DvbSetup:
 
         if func:
             if user_data:
-	            func (ret, user_data)
+                func (ret, user_data)
             else:
                 func (ret)
 
         self._in_progress = False
         GLib.spawn_close_pid(pid)
 
-    def _find_program_in_path(self, file):
+    def _find_program_in_path(self, afile):
         path = os.environ.get("PATH", os.defpath)
         mode=os.F_OK | os.X_OK
 
-        for dir in path.split(os.pathsep):
-            full_path = os.path.join(dir, file)
+        for adir in path.split(os.pathsep):
+            full_path = os.path.join(adir, afile)
             if os.path.exists(full_path) and os.access(full_path, mode):
                 return full_path
         return None
