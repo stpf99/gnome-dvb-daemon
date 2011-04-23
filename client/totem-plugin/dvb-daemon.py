@@ -25,11 +25,11 @@ import sys
 
 from gi.repository import Gdk
 from gi.repository import Gio
+from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import Peas
 from gi.repository import Totem
 from cgi import escape
-from gobject import GError
 
 from gnomedvb import global_error_handler
 from gnomedvb.DVBModel import DVBModel
@@ -54,10 +54,11 @@ def spawn_on_screen(argv, screen, flags=0):
     def set_environment (display):
         os.environ["DISPLAY"] = display
 
-    return gobject.spawn_async(argv,
-		      flags=flags,
-		      child_setup=set_environment,
-		      user_data=screen.make_display_name())
+    return GLib.spawn_async(None,
+        argv, None,
+        flags,
+        set_environment,
+        screen.make_display_name())
 
 def _get_dbus_proxy():
     return Gio.DBusProxy.new_for_bus_sync(Gio.BusType.SESSION,
@@ -92,16 +93,19 @@ class DvbSetup:
             return self.MISSING
 
         screen = parent_window.get_screen()
-        xid = parent_window.window.xid
-        argv = [setup_cmd, "--transient-for=%d" % xid]
+#        xid = parent_window.window.xid
+#        argv = [setup_cmd, "--transient-for=%d" % xid]
+        argv = [setup_cmd, ]
 
-        pid = spawn_on_screen (argv, screen,
-            flags=gobject.SpawnFlags.FILE_AND_ARGV_ZERO | gobject.SpawnFlags.DO_NOT_REAP_CHILD)[0]
+        success, pid = spawn_on_screen (argv, screen,
+            flags=GLib.SpawnFlags.FILE_AND_ARGV_ZERO | GLib.SpawnFlags.DO_NOT_REAP_CHILD)
+        if not success:
+            return self.FAILURE
 
         self._in_progress = True
 
-        gobject.child_watch_add (pid, self._child_watch_func,
-            (callback, user_data))
+        GLib.child_watch_add (GLib.PRIORITY_DEFAULT, pid,
+            self._child_watch_func, (callback, user_data))
 
         return self.STARTED_OK
 
@@ -120,6 +124,7 @@ class DvbSetup:
                 func (ret)
 
         self._in_progress = False
+        GLib.spawn_close_pid(pid)
 
     def _find_program_in_path(self, file):
         path = os.environ.get("PATH", os.defpath)
@@ -132,7 +137,7 @@ class DvbSetup:
         return None
 
     def _dbus_service_available(self, name):
-	dbusobj = _get_dbus_proxy()
+        dbusobj = _get_dbus_proxy()
 
         for iname in dbusobj.ListNames():
             if iname == name:
@@ -656,6 +661,9 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
             if status == DvbSetup.MISSING:
                 self.totem_object.action_error(_("Setup Failed"),
                     _("GNOME DVB Daemon is not installed"))
+            elif status == DvbSetup.FAILURE:
+                self.totem_object.action_error(_("Setup Failed"),
+                    _("Could not start GNOME DVB Daemon setup"))
 
             print "DVB SETUP STARTED", status
 
