@@ -1,7 +1,6 @@
 # Czech translation for gnome-dvb-daemon
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-dvb-daemon package.
-# 
 # Marek Černocký <marek@manet.cz>, 2011.
 #
 msgid ""
@@ -9,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
 "daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-17 18:22+0000\n"
-"PO-Revision-Date: 2011-04-21 22:14+0200\n"
+"POT-Creation-Date: 2011-04-23 12:06+0000\n"
+"PO-Revision-Date: 2011-04-24 11:55+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: cs <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Language: cs\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../client/gnomedvb/__init__.py:33
@@ -73,11 +72,11 @@ msgid "All channels"
 msgstr "Všechny kanály"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:72
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:74
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:95
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:94
 msgid "Channel"
 msgstr "Kanál"
 
@@ -124,7 +123,7 @@ msgid "There is currently no schedule available for this channel"
 msgstr "Pro tento kanál není nic naplánováno"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
-#: ../client/totem-plugin/dvb-daemon.py:354
+#: ../client/totem-plugin/dvb-daemon.py:359
 msgid "_Recording schedule"
 msgstr "Plán nah_rávání"
 
@@ -247,14 +246,14 @@ msgstr "Plán nahrávání"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:148
-#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:32
-#: ../client/totem-plugin/dvb-daemon.py:308
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:31
+#: ../client/totem-plugin/dvb-daemon.py:313
 msgid "Recordings"
 msgstr "Nahrávky"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:287
-#: ../client/totem-plugin/dvb-daemon.py:335
-#: ../client/totem-plugin/dvb-daemon.py:356
+#: ../client/totem-plugin/dvb-daemon.py:340
+#: ../client/totem-plugin/dvb-daemon.py:361
 msgid "What's on now"
 msgstr "Právě se vysílá"
 
@@ -267,7 +266,7 @@ msgid "Next Day"
 msgstr "Následující den"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
-#: ../client/totem-plugin/dvb-daemon.py:180
+#: ../client/totem-plugin/dvb-daemon.py:185
 msgid "Schedule recording for the selected event?"
 msgstr "Naplánovat nahrávání vybraného pořadu?"
 
@@ -296,7 +295,7 @@ msgid "<b>%s (%s)</b>\n"
 msgstr "<b>%s (%s)</b>\n"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:68
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
 #, python-format
 msgid "Adapter: %d, Frontend: %d"
 msgstr "Adaptér: %d, Frontend: %d"
@@ -347,7 +346,7 @@ msgid "Edit group"
 msgstr "Úprava skupiny"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:39
-#: ../client/totem-plugin/dvb-daemon.py:357
+#: ../client/totem-plugin/dvb-daemon.py:362
 msgid "Digital TV Preferences"
 msgstr "Předvolby Digitální TV"
 
@@ -424,85 +423,85 @@ msgstr ""
 "Ujistěte se, že zařízení již není přiděleno do jiné skupiny, a že jsou "
 "všechna zařízení ve skupině stejného typu."
 
-#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:97
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
 msgstr "Odstranit vybrané nahrávky?"
 
-#: ../client/gnomedvb/ui/timers/CalendarDialog.py:26
+#: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
 msgid "Pick a date"
 msgstr "Výběr data"
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:83
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:85
 #: ../client/gnomedvb/ui/widgets/RecordingsView.py:39
 msgid "Title"
 msgstr "Název"
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:91
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:93
 msgid "Start time"
 msgstr "Čas začátku"
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:98
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:100
 #: ../client/gnomedvb/ui/widgets/ScheduleView.py:99
 msgid "Duration"
 msgstr "Délka"
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:165
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
 msgid "Timer could not be deleted"
 msgstr "Časovač nemohl být smazán"
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:177
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
 msgid "Abort active recording?"
 msgstr "Zrušit probíhající nahrávání?"
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:181
 msgid "The timer you selected belongs to a currently active recording."
 msgstr "Časovač, který byl vybrán, náleží k právě probíhajícímu nahrávání."
 
-#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:180
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:182
 msgid "Deleting this timer will abort the recording."
 msgstr "Odstraněním tohoto časovače zruší nahrávání."
 
-#: ../client/gnomedvb/ui/timers/MessageDialogs.py:29
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
 msgid "Timer could not be created"
 msgstr "Časovač nemohl být vytvořen"
 
-#: ../client/gnomedvb/ui/timers/MessageDialogs.py:31
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
 msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
 msgstr ""
 "Ujistěte se, že časovač není v konfliktu s jiným a že nezačíná v minulosti."
 
-#: ../client/gnomedvb/ui/timers/MessageDialogs.py:41
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
 msgstr "Nahrávání bylo úspěšně naplánováno"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:64
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:62
 msgid "Add Timer"
 msgstr "Přidat časovač"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:67
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:65
 msgid "_Channel:"
 msgstr "_Kanál:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:84
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:82
 msgid "Edit Timer"
 msgstr "Úprava časovače"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:87
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:85
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:58
 msgid "Channel:"
 msgstr "Kanál"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:94
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:92
 msgid "_Start time:"
 msgstr "_Čas začátku"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:109
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:107
 msgid "_Duration:"
 msgstr "_Délka:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:123
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:121
 msgid "minutes"
 msgstr "minut"
 
@@ -526,19 +525,19 @@ msgstr "Skupina kanálů"
 msgid "_Time:"
 msgstr "_Čas:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:55
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
 msgid "Title:"
 msgstr "Název:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:63
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:62
 msgid "Date:"
 msgstr "Datum:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:67
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:66
 msgid "Duration:"
 msgstr "Délka:"
 
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:71
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:70
 msgid "Description:"
 msgstr "Popis:"
 
@@ -558,11 +557,11 @@ msgstr "Nyní"
 msgid "Next"
 msgstr "Další"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:51
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
 msgstr "Žádná zařízení nebyla nalezena."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:53
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
 msgid ""
 "Either no DVB cards are installed or all cards are busy. In the latter case "
 "make sure you close all programs such as video players that access your DVB "
@@ -572,23 +571,23 @@ msgstr ""
 "druhém případě zavřete všechny programy, jako videopřehrávače, které mají "
 "přístup k vaší kartě DVB."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:66
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
 msgid "Name"
 msgstr "Název"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:72
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
 msgid "Type"
 msgstr "Typ"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:83
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
 msgid "Select the device you want to configure."
 msgstr "Vyberte zařízení, které chcete nastavit."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:97
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:98
 msgid "All devices are already configured."
 msgstr "Všechna zařízení jsou již nastavena."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:99
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
 msgid ""
 "Go to the control center if you want to alter the settings of already "
 "configured devices."
@@ -596,11 +595,11 @@ msgstr ""
 "Jestliže chcete změnit nastavení již nastavených zařízení, spusťte ovládací "
 "centrum."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:107
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
 msgid "An error occured while retrieving devices."
 msgstr "Nastala chyba při zjišťování zařízení."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:109
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
 msgid ""
 "Make sure other applications don't access DVB devices and you have "
 "permissions to access them."
@@ -608,143 +607,143 @@ msgstr ""
 "Ujistěte se, že jiné aplikace nepřistupují k zařízením DVB a vy k nim máte "
 "povolen přístup."
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:111
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
 msgid "The detailed error message is:"
 msgstr "Upřesnění chybového hlášení:"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:120
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
 msgid "Searching for devices"
 msgstr "Hledání zařízení"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:136
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
 msgstr "Výběr zařízení"
 
-#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:237
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
 #, python-format
 msgid "<b>%s</b>\n"
 msgstr "<b>%s</b>\n"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:59
 msgid "This process can take some time."
 msgstr "Tato operace může zabrat nějaký čas."
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:61
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "You can select the channels you want to have in your list of channels."
 msgstr "Můžete vybrat ty kanály, které budete chtít ve svém seznamu kanálů."
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:67
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:66
 msgid "Select all"
 msgstr "Vybrat vše"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:69
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:68
 msgid "Deselect all"
 msgstr "Zrušit výběr"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:83
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:82
 msgid "_Channels:"
 msgstr "_Kanály:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:118
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:117
 msgid "Select _scrambled channels"
 msgstr "Vybrat i _zakódované kanály"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:134
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:133
 msgid "Signal quality:"
 msgstr "Kvalita signálu:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:145
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:144
 msgid "Signal strength:"
 msgstr "Síla signálu:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:160
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:159
 msgid "Scanning for channels"
 msgstr "Hledání kanálů"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:87
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:86
 msgid "Missing requirements"
 msgstr "Chybějící požadavky"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:93
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:92
 msgid "Country and antenna selection"
 msgstr "Výběr země a vysílače"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:96
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:95
 msgid "Satellite selection"
 msgstr "Výběr satelitu"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:99
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:98
 msgid "Country and provider selection"
 msgstr "Výběr země a poskytovatele"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:101
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:100
 msgid "Unsupported adapter"
 msgstr "Nepodporovaný adaptér"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:125
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Litujeme, ale karty „%s“ nejsou podporovány."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:129
 msgid "Could not find initial tuning data."
 msgstr "Nelze najít výchozí údaje pro ladění."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Ujistěte se prosím, že je balíček dvb-apps nainstalován."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:134
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr "Vyberte prosím zemi a vysílač nejbližší k místu, kde se nacházíte."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
 "Pokud nevíte, který vysílač zvolit, vyberte ze seznamu poskytovatelů „Nevím“."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
 msgid "However, searching for channels will take considerably longer this way."
 msgstr "Hledání kanálu však bude trvat mnohem déle."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:141
 msgid "Not listed"
 msgstr "Není na seznamu"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:153
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:224
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:152
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:223
 msgid "_Country:"
 msgstr "_Země:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:177
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:176
 msgid "_Antenna:"
 msgstr "Vysíl_ač:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:186
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:185
 msgid "Antenna"
 msgstr "Vysílač"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
 msgid "_Satellite:"
 msgstr "_Satelit:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
 msgid "Satellite"
 msgstr "Satelit"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:245
 msgid "_Providers:"
 msgstr "_Poskytovatelé:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:254
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:253
 msgid "Provider"
 msgstr "Poskytovatel"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:303
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:302
 msgid "Don't know"
 msgstr "Nevím"
 
@@ -827,16 +826,16 @@ msgstr "Zařízení %s bylo úspěšně nastaveno."
 msgid "Failed configuring device %s."
 msgstr "Selhalo nastavování zařízení %s."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:45
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:44
 msgid "Cleaning up. This may take a while."
 msgstr "Probíhá úklid. Může to chvíli trvat."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:83
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:82
 #: ../data/gnome-dvb-setup.desktop.in.in.h:2
 msgid "Setup digital TV"
 msgstr "Nastavení digitální TV"
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:168
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:167
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
@@ -844,7 +843,7 @@ msgstr ""
 "Vytvořený soubor s kanály může být použit pro nastavení zařízení v ovládacím "
 "centru."
 
-#: ../client/gnomedvb/ui/wizard/SetupWizard.py:215
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:214
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
@@ -852,69 +851,74 @@ msgstr ""
 "Opravdu chcete operaci zrušit?\n"
 "Celý dosavadní průběh bude ztracen."
 
-#: ../client/totem-plugin/dvb-daemon.py:151
-#: ../client/totem-plugin/dvb-daemon.py:196
-#: ../client/totem-plugin/dvb-daemon.py:341
+#: ../client/totem-plugin/dvb-daemon.py:156
+#: ../client/totem-plugin/dvb-daemon.py:201
+#: ../client/totem-plugin/dvb-daemon.py:346
 msgid "Program Guide"
 msgstr "Programový průvodce"
 
-#: ../client/totem-plugin/dvb-daemon.py:301
+#: ../client/totem-plugin/dvb-daemon.py:306
 msgid "Digital TV"
 msgstr "Digitální TV"
 
-#: ../client/totem-plugin/dvb-daemon.py:352
+#: ../client/totem-plugin/dvb-daemon.py:357
 msgid "Watch TV"
 msgstr "Sledovat TV"
 
-#: ../client/totem-plugin/dvb-daemon.py:353
+#: ../client/totem-plugin/dvb-daemon.py:358
 msgid "Digital _TV"
 msgstr "Digitální _TV"
 
-#: ../client/totem-plugin/dvb-daemon.py:355
+#: ../client/totem-plugin/dvb-daemon.py:360
 msgid "_Program Guide"
 msgstr "_Program pořadů"
 
-#: ../client/totem-plugin/dvb-daemon.py:358
+#: ../client/totem-plugin/dvb-daemon.py:363
 msgid "_Delete"
 msgstr "_Smazat"
 
-#: ../client/totem-plugin/dvb-daemon.py:359
+#: ../client/totem-plugin/dvb-daemon.py:364
 msgid "D_etails"
 msgstr "Po_drobnosti"
 
-#: ../client/totem-plugin/dvb-daemon.py:360
+#: ../client/totem-plugin/dvb-daemon.py:365
 msgid "_Order channels"
 msgstr "_Seřadit kanály"
 
-#: ../client/totem-plugin/dvb-daemon.py:363
+#: ../client/totem-plugin/dvb-daemon.py:368
 msgid "By _name"
 msgstr "Podle _názvu"
 
-#: ../client/totem-plugin/dvb-daemon.py:364
+#: ../client/totem-plugin/dvb-daemon.py:369
 msgid "By _group"
 msgstr "Podle _skupiny"
 
-#: ../client/totem-plugin/dvb-daemon.py:367
+#: ../client/totem-plugin/dvb-daemon.py:372
 msgid "_Reverse order"
 msgstr "_Obrácené pořadí"
 
-#: ../client/totem-plugin/dvb-daemon.py:519
+#: ../client/totem-plugin/dvb-daemon.py:524
 msgid "Delete selected recording?"
 msgstr "Odstranit vybranou nahrávku?"
 
-#: ../client/totem-plugin/dvb-daemon.py:597
+#: ../client/totem-plugin/dvb-daemon.py:602
 #, python-format
 msgid "Recording %d"
 msgstr "Nahrávka %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:657
-#| msgid "Select File"
+#: ../client/totem-plugin/dvb-daemon.py:662
+#: ../client/totem-plugin/dvb-daemon.py:665
 msgid "Setup Failed"
 msgstr "Nastavení selhalo"
 
-#: ../client/totem-plugin/dvb-daemon.py:658
+#: ../client/totem-plugin/dvb-daemon.py:663
 msgid "GNOME DVB Daemon is not installed"
 msgstr "Démon GNOME DVB není nainstalován"
+
+#: ../client/totem-plugin/dvb-daemon.py:666
+#| msgid "GNOME DVB Daemon Website"
+msgid "Could not start GNOME DVB Daemon setup"
+msgstr "Nelze spustit nastavení démona GNOME DVB"
 
 #. www.k-d-w.org/
 #: ../data/gnome-dvb-control.desktop.in.in.h:1
@@ -928,4 +932,3 @@ msgstr "Plánování nahrávání a prohlížení programu pořadů"
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
 msgstr "Nastavení digitální TV"
-
