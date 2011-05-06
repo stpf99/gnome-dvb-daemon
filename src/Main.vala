@@ -204,10 +204,10 @@ namespace Main {
 
         start_manager ();
 
-        Idle.add (DVB.RTSPServer.start);
+        DVB.RTSPServer.start.begin ();
 
         if (!disable_mediaserver) {
-            Idle.add (DVB.MediaServer2.start_rygel_services);
+            DVB.MediaServer2.start_rygel_services.begin ();
         }
 
         // Start GLib mainloop

@@ -27,8 +27,10 @@ namespace DVB {
             get { return this.sid; }
             set {
                 this.sid = value;
-                if (this.has_schedule)
+                if (this.has_schedule) {
                     this.schedule = new DVB.Schedule (this);
+                    this.schedule.restore.begin ();
+                }
             }
         }
         public uint GroupId {get; set;}

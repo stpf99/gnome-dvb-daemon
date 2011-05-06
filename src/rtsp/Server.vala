@@ -47,7 +47,7 @@ namespace DVB.RTSPServer {
         return address;
     }
 
-    public static bool start () {
+    public async static void start () {
         log = LogManager.getLogManager().getDefaultLogger();
         log.info ("Starting RTSP server");
         server = new Gst.RTSPServer ();
@@ -55,7 +55,6 @@ namespace DVB.RTSPServer {
         server.set_address (get_address ());
         server.attach (null);
         timeout_id = GLib.Timeout.add_seconds (2, (GLib.SourceFunc)timeout);
-        return false;
     }
     
     public static void shutdown () {

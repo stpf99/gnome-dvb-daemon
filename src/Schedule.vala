@@ -45,23 +45,22 @@ namespace DVB {
         construct {
             this.events = new EventStorage ();
             this.epgstore = Factory.get_epg_store ();
-
-            Idle.add (this.restore);
         }
 
-        private bool restore () {
+        public async void restore () {
             Gee.List<Event> levents;
             try {                        
                 levents = this.epgstore.get_events (
                     this.channel.Sid, this.channel.GroupId);
-            } catch (SqlError e) {
-                log.error ("%s", e.message);
-                return false;
+            } catch (SqlError e1) {
+                log.error ("%s", e1.message);
+                return;
             }
 
             int newest_expired = -1;
+            Event event;
             for (int i=0; i<levents.size; i++) {
-                Event event = levents.get (i);
+                event = levents.get (i);
                 if (event.has_expired ()) {
                     /* events are sorted by starttime */
                     newest_expired = i;
@@ -71,19 +70,18 @@ namespace DVB {
             }
 
             if (newest_expired != -1) {
-                Event event = levents.get (newest_expired);
+                event = levents.get (newest_expired);
                 try {
                     this.epgstore.remove_events_older_than (event,
                         this.channel.Sid, this.channel.GroupId);
-                } catch (SqlError e) {
-                    log.error ("%s", e.message);
-                    return false;
+                } catch (SqlError e2) {
+                    log.error ("%s", e2.message);
+                    return;
                 }
             }
 
             log.debug ("Finished restoring EPG events for channel %u",
                 this.channel.Sid);
-            return false;
         }
         
         public Schedule (Channel channel) {

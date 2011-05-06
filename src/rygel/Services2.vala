@@ -382,10 +382,9 @@ namespace DVB.MediaServer2 {
         root_container.create_container_services ();
     }
 
-    public static bool start_rygel_services () {
+    public static async void start_rygel_services () {
         log = LogManager.getLogManager().getDefaultLogger();
         Utils.dbus_own_name (SERVICE_NAME, on_bus_acquired);
-        return false;
     }
 
 }
