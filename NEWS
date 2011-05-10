@@ -1,3 +1,20 @@
+=============
+Version 0.2.0
+=============
+
+- Fixed a couple of issues revealed by pylint
+- Totem: Fixed spawning of gnome-dvb-setup
+- Use void* instead of bool as return value in GThread function
+- Use async methods instead of calling the methods with Idle.add
+
+Updated Translations:
+---------------------
+- cs: Marek Černocký
+- de: Mario Blättermann
+- es: Jorge González
+- pl: Piotr Drąg
+- sl: Matej Urbančič
+
 ==============
 Version 0.1.90
 ==============
