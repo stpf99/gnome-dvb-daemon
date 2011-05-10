@@ -22,7 +22,6 @@ import gnomedvb.defs
 import gnomedvb.userdirs
 import gettext
 from gi.repository import Gtk
-import locale
 import os
 from gettext import gettext as _
 from os.path import abspath, join, expanduser
@@ -42,18 +41,11 @@ XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', join(_home, '.config'))
 
 def setup_i18n():
     # Setup i18n
-    gettext.bindtextdomain(gnomedvb.defs.PACKAGE,
-        abspath(join(gnomedvb.defs.DATA_DIR, 'locale')))
+    gettext.bindtextdomain(gnomedvb.defs.PACKAGE)
     if hasattr(gettext, 'bind_textdomain_codeset'):
         gettext.bind_textdomain_codeset(gnomedvb.defs.PACKAGE, 'UTF-8')
     gettext.textdomain(gnomedvb.defs.PACKAGE)
 
-    locale.bindtextdomain(gnomedvb.defs.PACKAGE,
-        abspath(join(gnomedvb.defs.DATA_DIR, 'locale')))
-    if hasattr(locale, 'bind_textdomain_codeset'):
-        locale.bind_textdomain_codeset(gnomedvb.defs.PACKAGE, 'UTF-8')
-    locale.textdomain(gnomedvb.defs.PACKAGE)
-    
 def get_config_dir():
     return join(XDG_CONFIG_HOME, gnomedvb.defs.PACKAGE)
 
