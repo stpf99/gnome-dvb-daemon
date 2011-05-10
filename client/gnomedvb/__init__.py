@@ -28,7 +28,7 @@ from os.path import abspath, join, expanduser
 
 INFOS = {
     "authors": ["Sebastian Pölsterl <sebp@k-d-w.org>"],
-    "copyright" : "Copyright © 2008-2009\nSebastian Pölsterl.",
+    "copyright" : "Copyright © 2008-2011\nSebastian Pölsterl.",
     "name" : _("GNOME DVB Daemon"),
     "version" : gnomedvb.defs.VERSION,
     "website" : "http://live.gnome.org/DVBDaemon",
