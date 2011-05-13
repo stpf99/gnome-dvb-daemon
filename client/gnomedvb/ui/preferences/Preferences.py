@@ -243,9 +243,8 @@ class Preferences(Gtk.Window):
                         error_handler=global_error_handler)
                         
     def _on_button_setup_clicked(self, button):
-        pass        
+        subprocess.Popen(["gnome-dvb-setup"])
         # XXX XID
-        #subprocess.Popen(["gnome-dvb-setup",
         #    "--transient-for=%d" % self.get_window().xid])
 
     def _on_button_new_clicked(self, button):
