@@ -43,6 +43,7 @@ class Preferences(Gtk.Window):
         self.set_modal(True)
         self.set_destroy_with_parent(True)
         self.set_default_size(600, 450)
+        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         
         self.vbox = Gtk.VBox()
         self.add(self.vbox)
