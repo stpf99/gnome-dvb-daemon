@@ -26,6 +26,11 @@ namespace DVB {
 
     public class Manager : Object, IDBusManager {
 
+        class ScannerData : Object {
+            public Scanner scanner;
+            public ulong signal_id;
+        }
+
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public Gee.Collection<DeviceGroup> device_groups {
@@ -33,9 +38,8 @@ namespace DVB {
                 return this.devices.values;
             }
         }
-
         // Map object path to Scanner
-        private HashMap<string, Scanner> scanners;
+        private HashMap<string, ScannerData> scanners;
 
         // Maps device group id to Device
         private HashMap<uint, DeviceGroup> devices;
@@ -48,7 +52,7 @@ namespace DVB {
         private static const string[] UDEV_SUBSYSTEMS = {"dvb", null};
 
         construct {
-            this.scanners = new HashMap<string, Scanner> (GLib.str_hash,
+            this.scanners = new HashMap<string, ScannerData> (GLib.str_hash,
                 GLib.str_equal, GLib.direct_equal);
             this.devices = new HashMap<uint, DeviceGroup> ();
             this.device_group_counter = 0;
@@ -72,9 +76,10 @@ namespace DVB {
             if (instance != null) {
                 m.udev_client = null;
                 lock (m.scanners) {
-                    foreach (Scanner scanner in m.scanners.values) {
+                    foreach (ScannerData data in m.scanners.values) {
                         log.debug ("Stopping scanner");
-                        scanner.do_destroy ();
+                        data.scanner.disconnect (data.signal_id);
+                        data.scanner.do_destroy ();
                     }
                     m.scanners.clear ();
                 }
@@ -140,26 +145,26 @@ namespace DVB {
 
             lock (this.scanners) {
                 if (!this.scanners.has_key (path)) {
-                    Scanner scanner = null;
+                    ScannerData data = new ScannerData ();
                     switch (device.Type) {
                         case AdapterType.DVB_T:
-                        scanner = new TerrestrialScanner (device);
+                        data.scanner = new TerrestrialScanner (device);
                         break;
 
                         case AdapterType.DVB_S:
-                        scanner = new SatelliteScanner (device);
+                        data.scanner = new SatelliteScanner (device);
                         break;
 
                         case AdapterType.DVB_C:
-                        scanner = new CableScanner (device);
+                        data.scanner = new CableScanner (device);
                         break;
                     }
 
-                    Utils.dbus_register_object (Main.conn, path, (IDBusScanner)scanner);
+                    Utils.dbus_register_object (Main.conn, path, (IDBusScanner)data.scanner);
 
-                    scanner.destroyed.connect (this.on_scanner_destroyed);
+                    data.signal_id = data.scanner.destroyed.connect (this.on_scanner_destroyed);
 
-                    this.scanners.set (path, scanner);
+                    this.scanners.set (path, data);
 
                     log.debug ("Created new Scanner D-Bus service for adapter %u, frontend %u (%s)",
                           adapter, frontend, dbusiface);
