@@ -324,7 +324,7 @@ class Preferences(Gtk.Window):
 
     def _on_manager_group_added(self, manager, group_id):
         group = manager.get_device_group(group_id)
-        if group:
+        if group != None:
             self._append_group(group, remove_unassigned=True)
     
     def _on_manager_group_removed(self, manager, group_id):        

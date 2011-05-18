@@ -556,6 +556,8 @@ class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
                     url, success = self.recstore.get_location(sid)
                 else:
                     group = gnomedvb.DVBManagerClient().get_device_group(group_id)
+                    if group == None:
+                        return
                     channellist = group.get_channel_list()
                     url, success = channellist.get_channel_url(sid)
                 self.totem_object.action_remote(Totem.RemoteCommand.REPLACE, url)

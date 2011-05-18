@@ -375,7 +375,7 @@ class ControlCenterWindow(Gtk.Window):
 
     def _on_manager_group_added(self, manager, group_id):
         group = self.manager.get_device_group(group_id)
-        if group:
+        if group != None:
             self._append_group(group)
             self.check_single_group_mode()
         
