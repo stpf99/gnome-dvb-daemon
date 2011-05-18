@@ -42,8 +42,9 @@ class ScheduleStore(Gtk.ListStore):
     def __init__(self, dev_group, sid):
         Gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT, str, long, str, str, str, int, long)
         self._client = dev_group.get_schedule(sid)
-        self._recorder = dev_group.get_recorder()
-        self._fill_all()
+        if self._client != None:
+            self._recorder = dev_group.get_recorder()
+            self._fill_all()
         
     def reload_all(self):
         self.clear()

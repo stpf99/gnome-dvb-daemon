@@ -120,9 +120,10 @@ class RunningNextView(Gtk.TreeView):
                     devgroup = model.get_device_group()
                     sid = model[aiter][RunningNextStore.COL_SID]
                     schedule = devgroup.get_schedule(sid)
-                    schedule.get_informations(event_id,
-                        result_handler=show_details,
-                        error_handler=global_error_handler)
+                    if schedule != None:
+                        schedule.get_informations(event_id,
+                            result_handler=show_details,
+                            error_handler=global_error_handler)
 
     def _on_record_clicked(self, button, data):
         def on_reply(proxy, data, user_data):
