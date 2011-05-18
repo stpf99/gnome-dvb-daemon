@@ -169,6 +169,8 @@ class ChannelScanPage(BasePage):
                 self._scanner.destroy()
         
         self._scanner = self._model.get_scanner_for_device(adapter, frontend)
+        if self._scanner == None:
+            return
         
         self._scanner.connect ("frequency-scanned", self.__on_freq_scanned)
         self._scanner.connect ("channel-added", self.__on_channel_added)
