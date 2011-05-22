@@ -20,6 +20,7 @@ import os
 import os.path
 from gi.repository import Gdk
 from gi.repository import Gtk
+from gi.repository import GLib
 import gobject
 import gettext
 import locale
@@ -356,30 +357,24 @@ class InitialTuningDataPage(BasePage):
             for transmode in ["2k", "8k"]:
                 for guard in [0, 32, 16, 8, 4]:
                     self.__tuning_data.append(
-                        [freq,
-                         4, # hierarchy: AUTO
-                         7, # bandwidth
-                         transmode,
-                         "NONE", # code-rate-hp
-                         "AUTO", # code-rate-lp
-                         "QAM64", # constellation
-                         guard, # guard interval
-                        ])
+                        self.create_parameters_dict(freq, 7, transmode, guard))
 
         for chan in range(21, 70):
             freq = 306000000 + chan* 8000000
             for transmode in ["2k", "8k"]:
                 for guard in [32, 16, 8, 4]:
                     self.__tuning_data.append(
-                        [freq,
-                         4, # hierarchy: AUTO
-                         8, # bandwidth
-                         transmode,
-                         "NONE", # code-rate-hp
-                         "AUTO", # code-rate-lp
-                         "QAM64", # constellation
-                         guard, # guard interval
-                        ])
+                        self.create_parameters_dict(freq, 8, transmode, guard))
+
+    def create_parameters_dict(self, freq, bandwidth, transmode, guard):
+        return {"frequency": GLib.Variant('u', freq),
+            "hierarchy": GLib.Variant('u', 4), # AUTO
+            "bandwidth": GLib.Variant('u', bandwidth),
+            "transmission-mode": GLib.Variant('s', transmode),
+            "code-rate-hp": GLib.Variant('s', "NONE"),
+            "code-rate-lp": GLib.Variant('s', "AUTO"),
+            "constellation": GLib.Variant('s', "QAM64"),
+            "guard-interval": GLib.Variant('u', guard)}
 
     def combobox_sort_func(self, model, iter1, iter2, user_data):
         name1, code1 = model[iter1]
