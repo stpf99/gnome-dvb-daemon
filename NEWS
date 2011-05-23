@@ -1,4 +1,22 @@
 =============
+Version 0.2.1
+=============
+
+This release fixes a bug that localization in the GUI
+did not work correctly. In addition, DVB-T brute-force
+scan works correctly, again.
+
+- Fixed binding gettext domain
+- gnomedvb: Set window position of preferences window
+- gnomedvb: Launch gnome-dvb-setup when pressing on preferences button
+- Manager: disconnect from destroyed signal before destroying Scanners in shutdown
+- Adjusted DVB-T brute-force scan to new signature of AddScanningData method
+
+Updated Translations:
+---------------------
+- Updated el: Giannis Katsampirhs
+
+=============
 Version 0.2.0
 =============
 
