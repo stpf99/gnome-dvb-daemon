@@ -27,6 +27,10 @@ namespace DVB {
         public DvbSrcCodeRate CodeRate {get; set;}
         public DvbSrcModulation Modulation {get; set;}
 
+        public CableChannel (uint group_id) {
+            base (group_id);
+        }
+
         public CableChannel.without_schedule () {
             Channel.without_schedule ();
         }

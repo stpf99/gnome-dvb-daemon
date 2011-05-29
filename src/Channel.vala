@@ -33,7 +33,7 @@ namespace DVB {
                 }
             }
         }
-        public uint GroupId {get; set;}
+        public uint GroupId {get; construct;}
         public string Name {get; set;}
         public uint TransportStreamId {get; set;}
         public string Network {get; set;}
@@ -61,7 +61,8 @@ namespace DVB {
             this.AudioPIDs = new Gee.ArrayList<uint> ();
         }
 
-        public Channel () {
+        public Channel (uint group_id) {
+            Object (GroupId: group_id);
             this.has_schedule = true;
         }
 

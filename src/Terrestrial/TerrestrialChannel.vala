@@ -32,6 +32,10 @@ namespace DVB {
         public DvbSrcGuard GuardInterval {get; set;}
         public DvbSrcHierarchy Hierarchy {get; set;}
 
+        public TerrestrialChannel (uint group_id) {
+            base (group_id);
+        }
+
         public TerrestrialChannel.without_schedule () {
             Channel.without_schedule ();
         }

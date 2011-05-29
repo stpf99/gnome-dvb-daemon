@@ -26,6 +26,10 @@ namespace DVB {
         public uint SymbolRate {get; set;}
         public int DiseqcSource {get; set;}
 
+        public SatelliteChannel (uint group_id) {
+            base (group_id);
+        }
+
         public SatelliteChannel.without_schedule () {
             Channel.without_schedule ();
         }
