@@ -20,10 +20,13 @@
 using GLib;
 using Gee;
 using Sqlite;
+using DVB.Logging;
 
 namespace DVB.database.sqlite {
 
     public class SqliteEPGStore : SqliteDatabase, EPGStore {
+
+        private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         private static const int VERSION = 2;
 
@@ -143,7 +146,10 @@ namespace DVB.database.sqlite {
                 event.day, event.hour, event.minute, event.second);
             
             // Check if start time got converted correctly
-            if (julian_start <= 0) return false;
+            if (julian_start <= 0) {
+                log.warning ("Failed to convert start time");
+                return false;
+            }
             
             if (this.contains_event (event, channel_sid, group_id)) {
                 if (this.update_event_statement.bind_double (1, julian_start) != Sqlite.OK
@@ -285,7 +291,10 @@ namespace DVB.database.sqlite {
         {
             Gee.List<Event> events = new ArrayList<Event> ();
             
-            if (this.db == null) return events;
+            if (this.db == null) {
+                log.warning ("DB not initialized");
+                return events;
+            }
             
             string statement_str = SELECT_MINIMAL_EVENTS_STATEMENT.printf (
                 group_id, channel_sid);

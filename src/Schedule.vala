@@ -80,8 +80,8 @@ namespace DVB {
                 }
             }
 
-            log.debug ("Finished restoring EPG events for channel %u",
-                this.channel.Sid);
+            log.debug ("Finished restoring %d EPG events for channel %u",
+                this.events.size, this.channel.Sid);
         }
         
         public Schedule (Channel channel) {
