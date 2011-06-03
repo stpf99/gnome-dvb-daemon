@@ -12,7 +12,6 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 dbusservicedir = $(datadir)/dbus-1/services
 dbusservice_in_files = \
 	org.gnome.DVB.service.in \
-	org.gnome.UPnP.MediaServer1.DVBDaemon.service.in \
 	org.gnome.UPnP.MediaServer2.DVBDaemon.service.in
 dbusservice_DATA = $(dbusservice_in_files:.service.in=.service)
 

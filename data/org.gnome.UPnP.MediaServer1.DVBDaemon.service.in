@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.gnome.UPnP.MediaServer1.DVBDaemon
-Exec=@bindir@/gnome-dvb-daemon
