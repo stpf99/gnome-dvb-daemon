@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daemon&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-04-27 10:42+0000\n"
-"PO-Revision-Date: 2011-04-28 20:52+0100\n"
+"PO-Revision-Date: 2011-06-20 12:43+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -95,23 +95,21 @@ msgid "Channels of group"
 msgstr "Kanali skupine"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
-#, fuzzy
 msgid "An error occured while adding the group"
-msgstr "Napaka med dodajanjem upravljalnika: %s"
+msgstr "Prišlo je do napake med dodajanjem skupine"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to delete the group '%s'?"
-msgstr "Ali ste prepričani, da želite izbrisati skupino \"%s\"?"
+msgstr "Ali ste prepričani, da želite izbrisati skupino '%s'?"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
 msgid "All assignments to this group will be lost."
 msgstr ""
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
-#, fuzzy
 msgid "An error occured while removing the group"
-msgstr "Prišlo je do napake med zapisovanjem na disk."
+msgstr "Prišlo je do napake med odstranjevanjem skupine"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:54
 msgid "DVB Control Center"
@@ -294,9 +292,9 @@ msgstr "<b>%s (%s)</b>\n"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:68
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
-#, fuzzy, python-format
+#, python-format
 msgid "Adapter: %d, Frontend: %d"
-msgstr "Vmesnik"
+msgstr "Vmesnik: %d, ospredje: %d"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:73
 #, python-format
@@ -345,9 +343,8 @@ msgstr "Uredi skupino"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:39
 #: ../client/totem-plugin/dvb-daemon.py:362
-#, fuzzy
 msgid "Digital TV Preferences"
-msgstr "<b>Splošne možnosti Valgrind</b>"
+msgstr "Možnosti digitalne TV"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:89
 msgid "Edit selected group"
@@ -415,9 +412,8 @@ msgid "Make sure that the device isn't already assigned to a different group and
 msgstr ""
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
-#, fuzzy
 msgid "Delete selected recordings?"
-msgstr "Izbrisanje izbranih posnetkov iger"
+msgstr "Ali naj se izbrišejo izbrani posnetki?"
 
 #: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
 msgid "Pick a date"
@@ -440,7 +436,7 @@ msgstr "Trajanje"
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
 #, fuzzy
 msgid "Timer could not be deleted"
-msgstr "Vzorca %s ni mogoče izbrisati."
+msgstr "Nekaterih predmetov ni bilo mogoče izbrisati"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
 #, fuzzy
@@ -458,7 +454,7 @@ msgstr ""
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
 #, fuzzy
 msgid "Timer could not be created"
-msgstr "%s predmeta ni mogoče ustvariti"
+msgstr "Sporočila ni mogoče ustvariti"
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
 msgid "Make sure that the timer doesn't conflict with another one and doesn't start in the past."
@@ -543,19 +539,16 @@ msgid "Length"
 msgstr "Dolžina"
 
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
-#, fuzzy
 msgid "Now"
-msgstr "Zdaj"
+msgstr "Takoj"
 
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
-#, fuzzy
 msgid "Next"
 msgstr "Naslednja"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
-#, fuzzy
 msgid "No devices have been found."
-msgstr "Ni mogoče najti mrežne naprave"
+msgstr "Ni najdenih novih naprav."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
 msgid "Either no DVB cards are installed or all cards are busy. In the latter case make sure you close all programs such as video players that access your DVB card."
@@ -570,37 +563,32 @@ msgid "Type"
 msgstr "Vrsta"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
-#, fuzzy
 msgid "Select the device you want to configure."
-msgstr "Izbor naprave za nastavitev"
+msgstr "Izbor naprave za nastavljanje."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:98
-#, fuzzy
 msgid "All devices are already configured."
-msgstr "Vsi paketi so že nameščeni"
+msgstr "Vse naprave so že nastavljene."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
 msgid "Go to the control center if you want to alter the settings of already configured devices."
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
-#, fuzzy
 msgid "An error occured while retrieving devices."
-msgstr "Prišlo je do napake med zapisovanjem na disk."
+msgstr "Prišlo je do napake med pridobivanjem naprav."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
 msgid "Make sure other applications don't access DVB devices and you have permissions to access them."
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
-#, fuzzy
 msgid "The detailed error message is:"
-msgstr "V sporočilu je napaka:"
+msgstr "Podrobno sporočilo o napaki:"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
-#, fuzzy
 msgid "Searching for devices"
-msgstr "Iskanje naprav ..."
+msgstr "Iskanje naprav"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
@@ -740,9 +728,8 @@ msgid "It will automatically configure your devices and search for channels, if 
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
-#, fuzzy
 msgid "Click \"Forward\" to begin."
-msgstr "Posreduj klice gostitelju"
+msgstr "Kliknite na gumb \"Naprej\" za nadaljevanje."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:40
 msgid "_Expert mode"
@@ -778,28 +765,26 @@ msgid "Make sure that the antenna is connected and you have selected the correct
 msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "The device has been added to the group %s."
-msgstr "Datoteka \"%s\" je bila dodana v vrsto prejemanja."
+msgstr "Naprava je dodana skupini %s."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:148
 msgid "An error occured while trying to setup the device."
 msgstr "Prišlo je do napake med poskusom nastavljanja naprave."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
-#, fuzzy
 msgid "Configure Another Device"
-msgstr "Pripravljanje naprava je časovno poteklo"
+msgstr "Nastavi drugo napravo"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
-#, fuzzy
 msgid "Configuration finished"
-msgstr "Funkcija končana\n"
+msgstr "Nastavitev je končana"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
-#, fuzzy, python-format
+#, python-format
 msgid "The device %s has been configured sucessfully."
-msgstr "Dosežen je bil nastavljen limit prilagodljivih strežnikov."
+msgstr "Nastavitev naprave %s je uspešno končana."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
 #, python-format
@@ -892,9 +877,8 @@ msgid "GNOME DVB Daemon is not installed"
 msgstr "Ozadnji program GNOME DVB ni nameščen"
 
 #: ../client/totem-plugin/dvb-daemon.py:666
-#, fuzzy
 msgid "Could not start GNOME DVB Daemon setup"
-msgstr "Spletna stran ozadnjega programa GNOME DVB"
+msgstr "Ni mogoče začeti nastavitev ozadnjega programa GNOME DVB"
 
 #. www.k-d-w.org/
 #: ../data/gnome-dvb-control.desktop.in.in.h:1
