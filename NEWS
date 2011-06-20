@@ -1,4 +1,18 @@
 =============
+Version 0.2.2
+=============
+
+This release fixes a bug where the EPG was not restored on startup.
+
+- Make sure that Channel's GroupId is set in the constructor.
+- Removed shebang from DBusWrapper.py
+- Removed MediaServer1 D-Bus service file
+
+Translations:
+-------------
+- Updated ru: Yuri Myasoedov
+
+=============
 Version 0.2.1
 =============
 
