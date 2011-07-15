@@ -8,28 +8,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-27 10:42+0000\n"
-"PO-Revision-Date: 2011-06-20 12:43+0100\n"
+"POT-Creation-Date: 2011-06-20 18:23+0000\n"
+"PO-Revision-Date: 2011-07-15 08:55+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../client/gnomedvb/__init__.py:33
+#: ../client/gnomedvb/__init__.py:32
 msgid "GNOME DVB Daemon"
 msgstr "Ozadnji program GNOME DVB"
 
-#: ../client/gnomedvb/__init__.py:36
+#: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon Website"
 msgstr "Spletna stran ozadnjega programa GNOME DVB"
 
-#: ../client/gnomedvb/__init__.py:73
+#: ../client/gnomedvb/__init__.py:65
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -38,7 +38,7 @@ msgstr[1] "%d ura"
 msgstr[2] "%d uri"
 msgstr[3] "%d ure"
 
-#: ../client/gnomedvb/__init__.py:75
+#: ../client/gnomedvb/__init__.py:67
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -47,7 +47,7 @@ msgstr[1] "%d minuta"
 msgstr[2] "%d minuti"
 msgstr[3] "%d minute"
 
-#: ../client/gnomedvb/__init__.py:77
+#: ../client/gnomedvb/__init__.py:69
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -346,51 +346,51 @@ msgstr "Uredi skupino"
 msgid "Digital TV Preferences"
 msgstr "Možnosti digitalne TV"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:89
+#: ../client/gnomedvb/ui/preferences/Preferences.py:90
 msgid "Edit selected group"
 msgstr "Uredi izbrano skupino"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:96
+#: ../client/gnomedvb/ui/preferences/Preferences.py:97
 msgid "Remove selected device"
 msgstr "Odstrani izbrano napravo"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:105
+#: ../client/gnomedvb/ui/preferences/Preferences.py:106
 msgid "Setup"
 msgstr "Nastavitve"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:107
+#: ../client/gnomedvb/ui/preferences/Preferences.py:108
 msgid "Setup devices"
 msgstr "Nastavitev naprave"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:114
+#: ../client/gnomedvb/ui/preferences/Preferences.py:115
 msgid "Create new group"
 msgstr "Ustvari novo skupino"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:118
+#: ../client/gnomedvb/ui/preferences/Preferences.py:119
 msgid "Create new group for selected device"
 msgstr "Ustvari novo skupino za izbrano napravo"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:124
+#: ../client/gnomedvb/ui/preferences/Preferences.py:125
 msgid "Add to group"
 msgstr "Dodaj v skupino"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:128
+#: ../client/gnomedvb/ui/preferences/Preferences.py:129
 msgid "Add selected device to existing group"
 msgstr "Dodaj izbrano  napravo v obstoječo skupino"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:144
+#: ../client/gnomedvb/ui/preferences/Preferences.py:145
 msgid "Configured devices"
 msgstr "Nastavljene naprave"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:155
+#: ../client/gnomedvb/ui/preferences/Preferences.py:156
 msgid "Unconfigured devices"
 msgstr "Nenastavljene naprave"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:220
+#: ../client/gnomedvb/ui/preferences/Preferences.py:221
 msgid "Device could not be removed from group"
 msgstr "Naprave iz skupine ni mogoče odstraniti"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:234
+#: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
 msgstr "Ali zares želite odstraniti napravo <b>%s</b> iz <b>%s</b>?"
@@ -434,9 +434,8 @@ msgid "Duration"
 msgstr "Trajanje"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
-#, fuzzy
 msgid "Timer could not be deleted"
-msgstr "Nekaterih predmetov ni bilo mogoče izbrisati"
+msgstr "Časovnika ni mogoče izbrisati"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
 #, fuzzy
@@ -452,9 +451,8 @@ msgid "Deleting this timer will abort the recording."
 msgstr ""
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
-#, fuzzy
 msgid "Timer could not be created"
-msgstr "Sporočila ni mogoče ustvariti"
+msgstr "Časovnika ni mogoče ustvariti"
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
 msgid "Make sure that the timer doesn't conflict with another one and doesn't start in the past."
@@ -467,7 +465,7 @@ msgstr "Kopija #%i je bila uspešno zapisana."
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:62
 msgid "Add Timer"
-msgstr "Dodaj časomer"
+msgstr "Dodaj časovnik"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:65
 msgid "_Channel:"
@@ -475,7 +473,7 @@ msgstr "_Kanal:"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:82
 msgid "Edit Timer"
-msgstr "Uredi časomer"
+msgstr "Uredi časovnik"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:85
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:58
@@ -636,86 +634,86 @@ msgstr "Moč signala:"
 msgid "Scanning for channels"
 msgstr "Preiskovanje kanalov"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:86
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:87
 msgid "Missing requirements"
 msgstr "Manjkajoče zahteve"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:92
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:93
 msgid "Country and antenna selection"
 msgstr "Izbor države in antene"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:95
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:96
 msgid "Satellite selection"
 msgstr "Izbor satelita"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:98
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:99
 msgid "Country and provider selection"
 msgstr "Izbor države in ponudnika"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:100
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:101
 msgid "Unsupported adapter"
 msgstr "Nepodprt prilagodilnik"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:125
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Kartice '%s' niso podprte."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:129
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
 msgid "Could not find initial tuning data."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:134
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
 msgid "Please choose a country and the antenna that is closest to your location."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
 msgid "If you don't know which antenna to choose select \"Don't know\" from the list of providers."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
 msgid "However, searching for channels will take considerably longer this way."
 msgstr ""
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:141
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
 msgid "Not listed"
 msgstr "Ni na seznamu"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:152
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:223
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:153
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:224
 msgid "_Country:"
 msgstr "Držav_a:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:176
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:177
 msgid "_Antenna:"
 msgstr "_Antena:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:185
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:186
 msgid "Antenna"
 msgstr "Antena"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
 msgid "_Satellite:"
 msgstr "_Satelit:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
 msgid "Satellite"
 msgstr "Satelit"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:245
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
 msgid "_Providers:"
 msgstr "_Ponudniki:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:253
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:254
 msgid "Provider"
 msgstr "Ponudnik"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:302
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:303
 msgid "Don't know"
 msgstr "Ni znano"
 
@@ -862,21 +860,21 @@ msgstr "_Obrnjen vrstni red"
 msgid "Delete selected recording?"
 msgstr "Ali naj se izbriše izbrani posnetek?"
 
-#: ../client/totem-plugin/dvb-daemon.py:602
+#: ../client/totem-plugin/dvb-daemon.py:604
 #, python-format
 msgid "Recording %d"
 msgstr "Posnetek %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:662
-#: ../client/totem-plugin/dvb-daemon.py:665
+#: ../client/totem-plugin/dvb-daemon.py:664
+#: ../client/totem-plugin/dvb-daemon.py:667
 msgid "Setup Failed"
 msgstr "Namestitev je spodletela"
 
-#: ../client/totem-plugin/dvb-daemon.py:663
+#: ../client/totem-plugin/dvb-daemon.py:665
 msgid "GNOME DVB Daemon is not installed"
 msgstr "Ozadnji program GNOME DVB ni nameščen"
 
-#: ../client/totem-plugin/dvb-daemon.py:666
+#: ../client/totem-plugin/dvb-daemon.py:668
 msgid "Could not start GNOME DVB Daemon setup"
 msgstr "Ni mogoče začeti nastavitev ozadnjega programa GNOME DVB"
 
