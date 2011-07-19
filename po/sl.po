@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-06-20 18:23+0000\n"
-"PO-Revision-Date: 2011-07-15 08:55+0100\n"
+"POT-Creation-Date: 2011-07-15 14:30+0000\n"
+"PO-Revision-Date: 2011-07-19 22:24+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
@@ -125,7 +125,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
 msgid "There is currently no schedule available for this channel"
-msgstr ""
+msgstr "Za ta program ni določenega urnika snemanja."
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
 #: ../client/totem-plugin/dvb-daemon.py:359
@@ -191,7 +191,7 @@ msgstr "_Kaj je trenutno na sporedu"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
 msgid "See what's currently on and is coming next"
-msgstr ""
+msgstr "Ogled trenutnega programa in prihajajočih oddaj"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
 msgid "_Refresh"
@@ -273,7 +273,7 @@ msgstr "Naslednji dan"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
 #: ../client/totem-plugin/dvb-daemon.py:185
 msgid "Schedule recording for the selected event?"
-msgstr ""
+msgstr "Ali naj se izbrani dogodek vpiše v urnik snemanja?"
 
 #. translators: These appear in the About dialog, usual format applies.
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:596
@@ -438,17 +438,16 @@ msgid "Timer could not be deleted"
 msgstr "Časovnika ni mogoče izbrisati"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
-#, fuzzy
 msgid "Abort active recording?"
-msgstr "Preklic kodiranja snemanja"
+msgstr "Ali naj se prekine dejavno snemanje?"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:181
 msgid "The timer you selected belongs to a currently active recording."
-msgstr ""
+msgstr "Izbrani časovnik pripada trenutno dejavnemu snemanju."
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:182
 msgid "Deleting this timer will abort the recording."
-msgstr ""
+msgstr "Z izbrisom časovnika se izbriše tudi urnik snemanja."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
 msgid "Timer could not be created"
@@ -459,9 +458,8 @@ msgid "Make sure that the timer doesn't conflict with another one and doesn't st
 msgstr ""
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
-#, fuzzy
 msgid "Recording has been scheduled successfully"
-msgstr "Kopija #%i je bila uspešno zapisana."
+msgstr "Urnik snemanja programa je uspešno zapisan."
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:62
 msgid "Add Timer"
@@ -618,9 +616,8 @@ msgid "_Channels:"
 msgstr "_Kanali:"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:117
-#, fuzzy
 msgid "Select _scrambled channels"
-msgstr "Samodejno osveži kanale"
+msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:133
 msgid "Signal quality:"
@@ -662,11 +659,11 @@ msgstr "Kartice '%s' niso podprte."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
 msgid "Could not find initial tuning data."
-msgstr ""
+msgstr "Ni mogoče najti začetnih podatkov za naravnanje."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
 msgid "Please make sure that the dvb-apps package is installed."
-msgstr ""
+msgstr "Prepričajte se, da je nameščen paket dvb-apps."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
 msgid "Please choose a country and the antenna that is closest to your location."
@@ -739,7 +736,7 @@ msgstr "Nastavitev digitalne TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
 msgid "Choose a location where you want to save the list of channels."
-msgstr ""
+msgstr "Izbor mesta za shranjevanje seznama kanalov."
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
 msgid "Save channels"
@@ -760,7 +757,7 @@ msgstr "Ni najdenih kanalov."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
 msgid "Make sure that the antenna is connected and you have selected the correct tuning data."
-msgstr ""
+msgstr "Prepričajte se, da je antena povezana in da je izbran ustrezen program za uravnavanje."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:139
 #, python-format
@@ -800,7 +797,7 @@ msgstr "Nastavitev digitalne TV"
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:167
 msgid "The generated channels file can be used to configure your devices in the control center."
-msgstr ""
+msgstr "Ustvarjeno datoteko kanalov je mogoče uporabiti za nastavljanje naprav v nadzornem središču."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:214
 msgid ""
@@ -885,7 +882,7 @@ msgstr "Nadzorno središče digitalne TV"
 
 #: ../data/gnome-dvb-control.desktop.in.in.h:2
 msgid "Schedule recordings and browse program guide"
-msgstr ""
+msgstr "Določanje urnika snemanja in brskanje med programskim sporedom"
 
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
