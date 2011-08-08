@@ -95,7 +95,7 @@ class ScheduleStore(Gtk.ListStore):
         
         # %X -> display locale's time representation
         return self.append([datetime.datetime(*start_arr), "%X",            
-            duration, name, short_desc, "",
+            duration, name, short_desc, None,
             rec, event_id])
             
     def get_extended_description(self, aiter):
