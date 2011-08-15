@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 import gnomedvb
 from gi.repository import Gtk
 import os.path
@@ -27,7 +27,7 @@ from gnomedvb.ui.wizard.pages.BasePage import BasePage
 class SetupDevicePage(BasePage):
     
     __gsignals__ = {
-        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
+        "finished": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [bool]),
     }
 
     def __init__(self, model):
@@ -90,10 +90,10 @@ class SetupDevicePage(BasePage):
         self._progressbar.set_fraction(0.1)
         self._progressbar.show()
         self.pack_start(self._progressbar, False, True, 0)
-        self._progressbar_timer = gobject.timeout_add(100, self.progressbar_pulse)
+        self._progressbar_timer = GObject.timeout_add(100, self.progressbar_pulse)
         
     def destroy_progressbar(self):
-        gobject.source_remove(self._progressbar_timer)
+        GObject.source_remove(self._progressbar_timer)
         self._progressbar_timer = None
         self._progressbar.destroy()
 

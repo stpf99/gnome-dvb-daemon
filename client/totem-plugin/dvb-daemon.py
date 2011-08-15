@@ -18,7 +18,7 @@
 
 import gettext
 import gnomedvb
-import gobject
+from gi.repository import GObject
 import os
 import os.path
 import sys
@@ -221,11 +221,11 @@ class RunningNextDialog(Gtk.Dialog):
         self.scrolledschedule.show()
 
 
-class DVBDaemonPlugin(gobject.GObject, Peas.Activatable):
+class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
 
     __gtype_name__ = 'DVBDaemonPlugin'
 
-    object = gobject.property(type = gobject.GObject)
+    object = GObject.property(type = GObject.GObject)
 
     REC_GROUP_ID = -1
     

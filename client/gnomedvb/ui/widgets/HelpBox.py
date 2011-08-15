@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Pango
 
 class HelpBox(Gtk.EventBox):
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         frame = Gtk.Frame()
         frame.set_shadow_type(Gtk.ShadowType.IN)

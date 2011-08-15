@@ -16,23 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk 
 
 class CellRendererDatetime(Gtk.CellRendererText):
 
     __gproperties__ = {
-        'datetime' : (gobject.TYPE_PYOBJECT, 'datetime to display',
+        'datetime' : (GObject.TYPE_PYOBJECT, 'datetime to display',
             'Must be a Python datetime.datetime object',
-            gobject.PARAM_READWRITE),
-        'format' : (gobject.TYPE_STRING,
+            GObject.PARAM_READWRITE),
+        'format' : (GObject.TYPE_STRING,
             'Specifies in which format the datetime should be displayed.',
             'Accepts any strftime format string.',
-            "%c", gobject.PARAM_READWRITE),
+            "%c", GObject.PARAM_READWRITE),
     }
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self._datetime = None
         self._format = "%c"
         self.set_property("text", "")

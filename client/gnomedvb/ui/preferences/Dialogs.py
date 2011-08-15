@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
-import gobject
+from gi.repository import GObject
 from gettext import gettext as _
 from gnomedvb.ui.widgets.Frame import BaseFrame, TextFieldLabel
 
@@ -51,7 +51,7 @@ class AddToGroupDialog (Gtk.Dialog):
         group_label.set_markup_with_mnemonic(_("_Group:"))
         groupbox.pack_start(group_label, False, False, 0)
         
-        self.groups = Gtk.ListStore(str, gobject.TYPE_PYOBJECT)
+        self.groups = Gtk.ListStore(str, GObject.TYPE_PYOBJECT)
         
         combo = Gtk.ComboBox.new_with_model(self.groups)
         combo.connect("changed", self.on_combo_changed)

@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gnomedvb
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.DVBModel import DVBModel
@@ -47,7 +47,7 @@ class CloseDialog(Gtk.Dialog):
 
         self.progressbar = Gtk.ProgressBar()
         self.progressbar.set_pulse_step(0.1)
-        self._progressbar_timer = gobject.timeout_add(100, self._progressbar_pulse)
+        self._progressbar_timer = GObject.timeout_add(100, self._progressbar_pulse)
         self.progressbar.show()
         vbox.pack_start(self.progressbar, False, True, 0)
             
@@ -66,7 +66,7 @@ class SetupWizard(Gtk.Assistant):
      SUMMARY_PAGE) = range(7)
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.__ask_on_exit = False
         self.__adapter_info = None
         self.__model = DVBModel()

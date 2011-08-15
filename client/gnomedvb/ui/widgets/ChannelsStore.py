@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
-import gobject
+from gi.repository import GObject
 import gnomedvb
 from gnomedvb import global_error_handler
 from gnomedvb.Callback import Callback
@@ -30,7 +30,7 @@ class ChannelsStore(Gtk.ListStore):
      COL_SID,) = range(2)
     
     __gsignals__ = {
-        "loading-finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        "loading-finished":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
     }
 
     def __init__(self, device_group):
@@ -66,11 +66,11 @@ class ChannelsTreeStore(Gtk.TreeStore):
      COL_GROUP,) = range(4)
     
     __gsignals__ = {
-        "loading-finished":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "loading-finished":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int]),
     }
     
     def __init__(self, use_channel_groups=False):
-        Gtk.TreeStore.__init__(self, int, str, long, gobject.GObject)
+        Gtk.TreeStore.__init__(self, int, str, long, GObject.GObject)
         
         self.set_sort_order(Gtk.SortType.ASCENDING)
         

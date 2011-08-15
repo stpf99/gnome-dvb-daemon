@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gnomedvb
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gettext import gettext as _
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
@@ -83,7 +83,7 @@ class ChannelListEditorDialog(Gtk.Dialog):
         groups_buttonbox.pack_start(self.del_group_button, True, True, 0)
    
         # device groups
-        self.devgroupslist = Gtk.ListStore(str, int, gobject.GObject)
+        self.devgroupslist = Gtk.ListStore(str, int, GObject.GObject)
         
         self.devgroupscombo = Gtk.ComboBox.new_with_model_and_entry(self.devgroupslist)
         self.devgroupscombo.connect("changed", self.on_devgroupscombo_changed)

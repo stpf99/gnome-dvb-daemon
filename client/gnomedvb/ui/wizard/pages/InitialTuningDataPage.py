@@ -21,7 +21,7 @@ import os.path
 from gi.repository import Gdk
 from gi.repository import Gtk
 from gi.repository import GLib
-import gobject
+from gi.repository import GObject
 import gettext
 import locale
 from gettext import gettext as _
@@ -62,7 +62,7 @@ COUNTRIES = {
 class InitialTuningDataPage(BasePage):
     
     __gsignals__ = {
-            "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
+            "finished": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [bool]),
     }
     NOT_LISTED = "00"
 
@@ -295,7 +295,7 @@ class InitialTuningDataPage(BasePage):
                 toplevel_window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
                 
                 # Fill list async
-                gobject.idle_add(self._fill_providers, selected_country)            
+                GObject.idle_add(self._fill_providers, selected_country)
 
     def _fill_providers(self, selected_country):
         # Only DVB-T has bruteforce scan

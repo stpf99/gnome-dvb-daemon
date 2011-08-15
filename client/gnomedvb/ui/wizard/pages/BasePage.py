@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 
 class BasePage(Gtk.VBox):
 
     def __init__(self):
-        gobject.GObject.__init__(self, spacing=6)
+        GObject.GObject.__init__(self, spacing=6)
         self.set_border_width(24)
 
         self._label = Gtk.Label()

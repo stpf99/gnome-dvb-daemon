@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gnomedvb import DVBRecordingsStoreClient, global_error_handler
 from cgi import escape
@@ -32,7 +32,7 @@ class RecordingsStore(Gtk.ListStore):
     COL_ID,) = range(6)
 
     def __init__(self):
-        Gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT, str, str, long, str, long)
+        Gtk.ListStore.__init__(self, GObject.TYPE_PYOBJECT, str, str, long, str, long)
         
         self._recstore = DVBRecordingsStoreClient()
         self._recstore.connect("changed", self._on_changed)

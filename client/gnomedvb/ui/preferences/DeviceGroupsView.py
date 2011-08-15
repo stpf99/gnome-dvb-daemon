@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
-import gobject
+from gi.repository import GObject
 from gettext import gettext as _
 from gnomedvb.Device import Device
 
@@ -28,7 +28,7 @@ class UnassignedDevicesStore (Gtk.ListStore):
     (COL_DEVICE,) = range(1)
     
     def __init__(self):
-        Gtk.ListStore.__init__(self, gobject.TYPE_PYOBJECT)
+        Gtk.ListStore.__init__(self, GObject.TYPE_PYOBJECT)
 
 
 class DeviceGroupsStore (Gtk.TreeStore):
@@ -36,7 +36,7 @@ class DeviceGroupsStore (Gtk.TreeStore):
     (COL_GROUP, COL_DEVICE,) = range(2)
 
     def __init__(self):
-        Gtk.TreeStore.__init__(self, gobject.GObject, gobject.TYPE_PYOBJECT)
+        Gtk.TreeStore.__init__(self, GObject.GObject, GObject.TYPE_PYOBJECT)
         
     def get_groups(self):
         groups = []
@@ -49,7 +49,7 @@ class DeviceGroupsStore (Gtk.TreeStore):
 class DeviceGroupsView (Gtk.TreeView):
 
     def __init__(self, model):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.set_model(model)
         self.set_headers_visible(False)
         #self.set_reorderable(True)

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gettext import gettext as _
 
@@ -27,7 +27,7 @@ from gnomedvb.ui.widgets.CellRendererDatetime import CellRendererDatetime
 class RecordingsView(Gtk.TreeView):
 
     def __init__(self, model=None):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         if model != None:
             self.set_model(model)      
 

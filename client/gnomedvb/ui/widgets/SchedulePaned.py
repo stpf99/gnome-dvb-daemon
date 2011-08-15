@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.ScheduleView import ScheduleView
@@ -24,7 +24,7 @@ from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 class SchedulePaned (Gtk.VPaned):
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.scheduleview = ScheduleView()
         self.scheduleview.show()

@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
-import gobject
+from gi.repository import GObject
 from gi.repository import Gdk
 from gi.repository import Gtk
 import datetime
@@ -25,12 +25,12 @@ import datetime
 class CalendarPopup(Gtk.Window):
 
     __gsignals__ = {
-        "closed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
-        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, int, int, int]),
+        "closed":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
+        "changed": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int, int, int, int]),
     }
 
     def __init__(self, dt=None):
-        gobject.GObject.__init__(self, type=Gtk.WindowType.POPUP)
+        GObject.GObject.__init__(self, type=Gtk.WindowType.POPUP)
         self.set_border_width(5)
         self.vbox = Gtk.VBox(spacing=12)
         self.add(self.vbox)
@@ -153,11 +153,11 @@ class CalendarPopup(Gtk.Window):
 class DateTimeBox(Gtk.Bin):
 
     __gsignals__ = {
-        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, int, int, int]),
+        "changed": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int, int, int, int]),
     }
 
     def __init__(self, dt=None):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.valid_color = None
         self.invalid_color = None

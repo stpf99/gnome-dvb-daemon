@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 
 __all__ = ["Frame", "BaseFrame", "TextFieldLabel"]
@@ -24,7 +24,7 @@ __all__ = ["Frame", "BaseFrame", "TextFieldLabel"]
 class BaseFrame(Gtk.VBox):
 
     def __init__(self, markup, child, expand=True, fill=True, padding=0):
-        gobject.GObject.__init__(self, spacing=6)
+        GObject.GObject.__init__(self, spacing=6)
     
         label = Gtk.Label()
         label.set_halign(Gtk.Align.START)
@@ -47,7 +47,7 @@ class BaseFrame(Gtk.VBox):
 class TextFieldLabel(Gtk.Label):
 
     def __init__(self, markup=None, **kwargs):
-        gobject.GObject.__init__(self, **kwargs)
+        GObject.GObject.__init__(self, **kwargs)
         
         if markup:
             self.set_markup(markup)

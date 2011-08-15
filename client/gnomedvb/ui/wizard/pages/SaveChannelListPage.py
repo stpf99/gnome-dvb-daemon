@@ -17,14 +17,14 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
-import gobject
+from gi.repository import GObject
 from gettext import gettext as _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 class SaveChannelListPage(BasePage):
 
     __gsignals__ = {
-        "finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [bool]),
+        "finished": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [bool]),
     }
 
     def __init__(self):

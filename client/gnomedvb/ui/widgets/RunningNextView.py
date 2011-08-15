@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
-import gobject
+from gi.repository import GObject
 from gi.repository import Gdk
 from gi.repository import Gtk
 from gettext import gettext as _
@@ -29,7 +29,7 @@ from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog, TimerSuccessDi
 class RunningNextView(Gtk.TreeView):
 
     def __init__(self, model):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.set_model(model)
         
         cell_channel = Gtk.CellRendererText()
@@ -103,7 +103,7 @@ class RunningNextView(Gtk.TreeView):
                 (devgroup.get_recorder(), event_id, sid,))
             dialog.show()
             dialog.connect("response", lambda d, resp: d.destroy())
-        
+
         if event.type == getattr(Gdk.EventType, "2BUTTON_PRESS"):
             model, aiter = treeview.get_selection().get_selected()
             if aiter != None:

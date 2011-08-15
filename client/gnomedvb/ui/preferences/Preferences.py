@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 import subprocess
 from gnomedvb import global_error_handler
@@ -34,7 +34,7 @@ class Preferences(Gtk.Window):
      BUTTON_PREFERENCES,) = range(4)
 
     def __init__(self, model, parent=None):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.set_title(_('Digital TV Preferences'))
         if parent:

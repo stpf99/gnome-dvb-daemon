@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 from gettext import gettext as _
 import datetime
@@ -63,7 +63,7 @@ class EditTimersDialog(Gtk.Dialog):
         self.main_box.show()
         self.get_content_area().pack_start(self.main_box, True, True, 0)
         
-        self.timerslist = Gtk.ListStore(long, str, str, gobject.TYPE_PYOBJECT, long, bool)
+        self.timerslist = Gtk.ListStore(long, str, str, GObject.TYPE_PYOBJECT, long, bool)
         self.timerslist.set_sort_func(self.COL_START,
             self._datetime_sort_func)
         

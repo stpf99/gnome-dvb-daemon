@@ -18,7 +18,7 @@
 
 from gi.repository import Gdk
 from gi.repository import Gtk
-import gobject
+from gi.repository import GObject
 from gettext import gettext as _
 import gnomedvb
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
@@ -37,7 +37,7 @@ from gnomedvb.ui.recordings.RecordingsDialog import RecordingsDialog
 class ControlCenterWindow(Gtk.Window):
 
     def __init__(self, model):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         self.runningnextstore = None
         self.scrolledrunningnext = None
@@ -74,7 +74,7 @@ class ControlCenterWindow(Gtk.Window):
         self.vbox_left = Gtk.VBox(spacing=6)
         self.hpaned.pack1(self.vbox_left)
 
-        self.devgroupslist = Gtk.ListStore(str, int, gobject.GObject)
+        self.devgroupslist = Gtk.ListStore(str, int, GObject.GObject)
         self.devgroupslist.connect("row-inserted", self._on_devgroupslist_inserted)
         
         self.devgroupscombo = Gtk.ComboBox.new_with_model_and_entry(self.devgroupslist)
@@ -417,7 +417,7 @@ class ControlCenterWindow(Gtk.Window):
     def _on_devgroupslist_inserted(self, model, path, aiter):
         if len(model) == 1:
             # Delay the call otherwise we get DBus errors
-            gobject.timeout_add(100, self._select_first_group)
+            GObject.timeout_add(100, self._select_first_group)
     
     def _on_channel_selected(self, treeselection):
         model, aiter = treeselection.get_selected()

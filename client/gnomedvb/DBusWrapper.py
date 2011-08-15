@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
+from gi.repository import GObject
 import gst
 import re
 import sys
@@ -99,15 +99,15 @@ def _get_proxy(object_path, iface_name):
         object_path,
         iface_name, None)
     
-class DVBManagerClient(gobject.GObject):
+class DVBManagerClient(GObject.GObject):
     
     __gsignals__ = {
-        "group-added":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
-        "group-removed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
+        "group-added":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int]),
+        "group-removed":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int]),
     }
     
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.manager = _get_proxy(MANAGER_PATH, MANAGER_IFACE)
         self.manager.connect("g-signal", self.on_g_signal)
@@ -169,15 +169,15 @@ class DVBManagerClient(gobject.GObject):
         elif signal_name == "GroupRemoved":
             self.emit("group-removed", params[0])
 
-class DVBDeviceGroupClient(gobject.GObject):
+class DVBDeviceGroupClient(GObject.GObject):
 
     __gsignals__ = {
-        "device-added":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
-        "device-removed":  (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
+        "device-added":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int]),
+        "device-removed":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int]),
     }
     
     def __init__(self, objpath):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         elements = objpath.split("/")
         
@@ -235,18 +235,18 @@ class DVBDeviceGroupClient(gobject.GObject):
         elif signal_name == "DeviceRemoved":
             self.emit("device-removed", *params)
 
-class DVBScannerClient(gobject.GObject):
+class DVBScannerClient(GObject.GObject):
 
     __gsignals__ = {
-        "finished":          (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
-        "frequency-scanned": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
-        "channel-added":     (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int, str, str, str, bool]),
-        "destroyed":         (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
-        "frontend-stats":    (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [float, float]),
+        "finished":          (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
+        "frequency-scanned": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int]),
+        "channel-added":     (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int, str, str, str, bool]),
+        "destroyed":         (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
+        "frontend-stats":    (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [float, float]),
     }
 
     def __init__(self, objpath, scanner_iface):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.scanner = _get_proxy(objpath, scanner_iface)
         self.scanner.connect("g-signal", self.on_g_signal)
@@ -282,14 +282,14 @@ class DVBScannerClient(gobject.GObject):
         elif signal_name == "FrontendStats":
             self.emit("frontend-stats", *params)
 
-class DVBRecordingsStoreClient(gobject.GObject):
+class DVBRecordingsStoreClient(GObject.GObject):
 
     __gsignals__ = {
-        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
+        "changed": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int]),
     }
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.recstore = _get_proxy(RECSTORE_PATH, RECSTORE_IFACE)
         self.recstore.connect("g-signal", self.on_g_signal)
@@ -329,16 +329,16 @@ class DVBRecordingsStoreClient(gobject.GObject):
         if signal_name == "Changed":
             self.emit("changed", *params)
 
-class DVBRecorderClient(gobject.GObject):
+class DVBRecorderClient(GObject.GObject):
 
     __gsignals__ = {
-        "recording-started": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
-        "recording-finished": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int]),
-        "changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [int, int]),
+        "recording-started": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int]),
+        "recording-finished": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int]),
+        "changed": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int, int]),
     }
 
     def __init__(self, object_path):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.recorder = _get_proxy(object_path, RECORDER_IFACE)
         self.recorder.connect("g-signal", self.on_g_signal)
@@ -449,10 +449,10 @@ class DVBChannelListClient:
     def remove_channel_from_group(self, cid, group_id, **kwargs):
         return self.channels.RemoveChannelFromGroup('(ui)', cid, group_id, **kwargs)
         
-class DVBScheduleClient(gobject.GObject):
+class DVBScheduleClient(GObject.GObject):
 
     def __init__(self, object_path):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         
         # "/org/gnome/DVB/DeviceGroup/%u/Schedule/%u";
         elements = object_path.split("/")
