@@ -146,7 +146,6 @@ class ScheduleStore(Gtk.ListStore):
         day_seen = 0
         
         root = Gtk.TreePath("0")
-        
         while path0 != root:
             aiter = self.get_iter(path0)
             row = self[aiter]
@@ -154,7 +153,7 @@ class ScheduleStore(Gtk.ListStore):
                 day_seen += 1
                 if day_seen == 2:
                     return row.iter
-            path0 = path0.prev()
+            path0.prev()
         
         return None
 
