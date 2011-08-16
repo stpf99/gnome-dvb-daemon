@@ -1,0 +1,905 @@
+# Chinese (China) translation for gnome-dvb-daemon.
+# Copyright (C) 2011 gnome-dvb-daemon's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-dvb-daemon package.
+# Yinghua_Wang <wantinghard@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-dvb-daemon master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
+"daemon&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-07-19 20:27+0000\n"
+"PO-Revision-Date: 2011-08-16 15:12+0000\n"
+"Last-Translator: Yinghua Wang <wantinghard@gmail.com>\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../client/gnomedvb/__init__.py:32
+msgid "GNOME DVB Daemon"
+msgstr "GNOME DVB 守护程序"
+
+#: ../client/gnomedvb/__init__.py:35
+msgid "GNOME DVB Daemon Website"
+msgstr "GNOME DVB 守护程序网站"
+
+#: ../client/gnomedvb/__init__.py:65
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d 小时"
+
+#: ../client/gnomedvb/__init__.py:67
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d 分钟"
+
+#: ../client/gnomedvb/__init__.py:69
+#, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d 秒"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:33
+msgid "Edit Channel Lists"
+msgstr "编辑频道列表"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:54
+msgid "Channel groups"
+msgstr "频道组"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:95
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:51
+msgid "_Group:"
+msgstr "组(_G)："
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:102
+msgid "Device groups"
+msgstr "设备组"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:124
+msgid "All channels"
+msgstr "所有频道"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:74
+#: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:94
+msgid "Channel"
+msgstr "频道"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:152
+msgid "Choose a channel group"
+msgstr "选择一个频道组"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:153
+msgid "Channels of group"
+msgstr "组中的频道"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
+msgid "An error occured while adding the group"
+msgstr "添加组时出现了一个错误"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
+#, python-format
+msgid "Are you sure you want to delete the group '%s'?"
+msgstr "您确定要删除“%s”这个组吗？"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
+#, fuzzy
+msgid "All assignments to this group will be lost."
+msgstr "对该组所做的所有安排均会丢失。"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
+msgid "An error occured while removing the group"
+msgstr "删除组时出现了一个错误"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:54
+msgid "DVB Control Center"
+msgstr "DVB 控制中心"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:103
+msgid "Choose a device group and channel on the left to view the program guide"
+msgstr "从左侧选择一个设备组和频道来查看节目指南"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
+msgid "No devices are configured. Please go to preferences to configure them."
+msgstr "没有已配置的设备。请转到首选项对它们进行配置。"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
+msgid "There is currently no schedule available for this channel"
+msgstr "当前没有该频道的录制计划"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
+#: ../client/totem-plugin/dvb-daemon.py:359
+msgid "_Recording schedule"
+msgstr "录制计划"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
+msgid "_Edit"
+msgstr "编辑(_E)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
+msgid "_View"
+msgstr "查看(_V)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:161
+msgid "Help"
+msgstr "帮助"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
+msgid "_Manage"
+msgstr "管理(_M)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:271
+msgid "Manage recording schedule"
+msgstr "管理录制计划"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
+msgid "_Recordings"
+msgstr "录制(_R)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
+msgid "Manage recordings"
+msgstr "管理录制"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
+msgid "_Quit"
+msgstr "退出(_Q)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:173
+msgid "Quit the Program"
+msgstr "退出程序"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
+msgid "_Channel Lists"
+msgstr "频道列表(_C)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
+msgid "Edit channel lists"
+msgstr "编辑频道列表"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
+msgid "_Preferences"
+msgstr "首选项(_P)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:181
+msgid "Display preferences"
+msgstr "显示首选项"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
+msgid "_What's on now"
+msgstr "正在播出(_W)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
+msgid "See what's currently on and is coming next"
+msgstr "查看正在播出和即将播出的节目"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
+msgid "_Refresh"
+msgstr "刷新(_R)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:300
+msgid "Refresh program guide"
+msgstr "刷新节目指南"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
+msgid "_Previous Day"
+msgstr "前一天(_P)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:308
+msgid "Go to previous day"
+msgstr "转到前一天"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
+msgid "_Next Day"
+msgstr "下一天(_N)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:317
+msgid "Go to next day"
+msgstr "转到下一天"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
+msgid "_Channels"
+msgstr "频道(_C)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
+msgid "View/Hide channels"
+msgstr "查看/隐藏频道"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
+msgid "_Toolbar"
+msgstr "工具栏(_T)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:200
+msgid "View/Hide toolbar"
+msgstr "查看/隐藏工具栏"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
+msgid "_About"
+msgstr "关于(_A)"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
+msgid "Display informations about the program"
+msgstr "显示节目的有关信息"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:267
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
+msgid "Recording schedule"
+msgstr "录制计划"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:148
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:31
+#: ../client/totem-plugin/dvb-daemon.py:313
+msgid "Recordings"
+msgstr "录制"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:287
+#: ../client/totem-plugin/dvb-daemon.py:340
+#: ../client/totem-plugin/dvb-daemon.py:361
+msgid "What's on now"
+msgstr "正在播出"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:306
+msgid "Previous Day"
+msgstr "前一天"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:315
+msgid "Next Day"
+msgstr "下一天"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
+#: ../client/totem-plugin/dvb-daemon.py:185
+msgid "Schedule recording for the selected event?"
+msgstr "计划录制所选的事件？"
+
+#. translators: These appear in the About dialog, usual format applies.
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:596
+msgid "translator-credits"
+msgstr "Yinghua Wang <wantinghard@gmail.com>, 2011"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:58
+msgid "Devices"
+msgstr "设备"
+
+#. translators: first is device's name, second its type
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#, python-format
+msgid "<b>%s (%s)</b>\n"
+msgstr "<b>%s (%s)</b>\n"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:68
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
+#, python-format
+msgid "Adapter: %d, Frontend: %d"
+msgstr "适配器：%d，前端：%d"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:73
+#, python-format
+msgid "Group %d"
+msgstr "组 %d"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:29
+msgid "Add to Group"
+msgstr "添加到组"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:45
+msgid "Add Device to Group"
+msgstr "将设备添加到组"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:89
+msgid "Create new Group"
+msgstr "创建新组"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:109
+msgid "General"
+msgstr "常规"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:114
+msgid "_Name:"
+msgstr "名称(_N)："
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:125
+msgid "Channels _file:"
+msgstr "频道文件(_F)："
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:153
+msgid "_Directory:"
+msgstr "目录(_D)："
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:181
+msgid "Select File"
+msgstr "选择文件"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:190
+msgid "Select Directory"
+msgstr "选择目录"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:203
+msgid "Edit group"
+msgstr "编辑组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:39
+#: ../client/totem-plugin/dvb-daemon.py:362
+msgid "Digital TV Preferences"
+msgstr "数字电视首选项"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:90
+msgid "Edit selected group"
+msgstr "编辑选择的组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:97
+msgid "Remove selected device"
+msgstr "移动选择的设备"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:106
+msgid "Setup"
+msgstr "设置"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:108
+msgid "Setup devices"
+msgstr "设置设备"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:115
+msgid "Create new group"
+msgstr "创建新组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:119
+msgid "Create new group for selected device"
+msgstr "为选择的设备创建新组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:125
+msgid "Add to group"
+msgstr "添加到组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:129
+msgid "Add selected device to existing group"
+msgstr "将选择的设备添加到现有组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:145
+msgid "Configured devices"
+msgstr "已配置的设备"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:156
+msgid "Unconfigured devices"
+msgstr "未配置的设备"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:221
+msgid "Device could not be removed from group"
+msgstr "无法将设备从组中移除"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:235
+#, python-format
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
+msgstr "您确定要将 <b>%s</b> 从 <b>%s</b> 中移除吗"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:258
+msgid "Group could not be created"
+msgstr "无法创建组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:260
+msgid ""
+"Make sure that you selected the correct channels file and directory where "
+"recordings are stored and that both are readable."
+msgstr ""
+"确保您选择的频道文件和目录保存了录制的节目，并且有读相应文件和位置的权限。"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:289
+msgid "Device could not be added to group"
+msgstr "无法将设备添加到组"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:291
+msgid ""
+"Make sure that the device isn't already assigned to a different group and "
+"that all devices in the group are of the same type."
+msgstr "确保该设备未分配给其他组，且所在组中的设备具有同样的类型。"
+
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
+msgid "Delete selected recordings?"
+msgstr "删除选择的录制？"
+
+#: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
+msgid "Pick a date"
+msgstr "选择一个日期"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:85
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:39
+msgid "Title"
+msgstr "标题"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:93
+msgid "Start time"
+msgstr "开始时间"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:100
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:99
+msgid "Duration"
+msgstr "持续时间"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
+msgid "Timer could not be deleted"
+msgstr "无法删除定时器"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
+msgid "Abort active recording?"
+msgstr "中止进行中的录制？"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:181
+msgid "The timer you selected belongs to a currently active recording."
+msgstr "您选择的定时器属于一个进行中的录制。"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:182
+msgid "Deleting this timer will abort the recording."
+msgstr "删除此定时器将中止录制。"
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
+msgid "Timer could not be created"
+msgstr "无法创建定时器"
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
+msgid ""
+"Make sure that the timer doesn't conflict with another one and doesn't start "
+"in the past."
+msgstr "确保定时器与其他定时器不冲突，且不是始于过去某个时刻。"
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
+msgid "Recording has been scheduled successfully"
+msgstr "成功安排了录制"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:62
+msgid "Add Timer"
+msgstr "添加定时器"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:65
+msgid "_Channel:"
+msgstr "频道(_C)："
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:82
+msgid "Edit Timer"
+msgstr "编辑定时器"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:85
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:58
+msgid "Channel:"
+msgstr "频道："
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:92
+msgid "_Start time:"
+msgstr "开始时间(_S)："
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:107
+msgid "_Duration:"
+msgstr "持续时间(_D)："
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:121
+msgid "minutes"
+msgstr "分钟"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:4
+msgid "digital cable"
+msgstr "数字线"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:5
+msgid "digital satellite"
+msgstr "数字卫星"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:6
+#, fuzzy
+msgid "digital terrestrial"
+msgstr "地面数字电视"
+
+#: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
+msgid "Channel group"
+msgstr "频道组"
+
+#: ../client/gnomedvb/ui/widgets/DateTime.py:50
+msgid "_Time:"
+msgstr "时间(_T)："
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
+msgid "Title:"
+msgstr "标题："
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:62
+msgid "Date:"
+msgstr "日期："
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:66
+msgid "Duration:"
+msgstr "持续时间："
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:70
+msgid "Description:"
+msgstr "描述："
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
+msgid "Start"
+msgstr "开始"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:41
+msgid "Length"
+msgstr "长度"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
+msgid "Now"
+msgstr "现在"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
+msgid "Next"
+msgstr "下个"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
+msgid "No devices have been found."
+msgstr "找不到设备。"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
+msgid ""
+"Either no DVB cards are installed or all cards are busy. In the latter case "
+"make sure you close all programs such as video players that access your DVB "
+"card."
+msgstr ""
+"没有安装 DVB 卡，或所有的卡都忙。如果是后者，请确保您关闭了所有访问 DVB 卡的"
+"程序，如视频播放器。"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
+msgid "Name"
+msgstr "名称"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
+msgid "Type"
+msgstr "类型"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
+msgid "Select the device you want to configure."
+msgstr "选择您想配置的设备。"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:98
+msgid "All devices are already configured."
+msgstr "所有设备均已配置。"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
+msgid ""
+"Go to the control center if you want to alter the settings of already "
+"configured devices."
+msgstr "如果您想调整已配置设备的设置，请转到控制中心。"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
+msgid "An error occured while retrieving devices."
+msgstr "在检索设备时出现了一个错误。"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
+msgid ""
+"Make sure other applications don't access DVB devices and you have "
+"permissions to access them."
+msgstr "确保没有其他应用程序访问 DVB 设备，且您有访问这些设备的权限。"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
+msgid "The detailed error message is:"
+msgstr "详细的错误信息为："
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
+msgid "Searching for devices"
+msgstr "搜索设备"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
+msgid "Device selection"
+msgstr "设备选择"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
+msgstr "<b>%s</b>\n"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:59
+msgid "This process can take some time."
+msgstr "这一过程可能需要一段时间。"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
+msgid "You can select the channels you want to have in your list of channels."
+msgstr "您可以选择想放进频道列表的那些频道。"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:66
+msgid "Select all"
+msgstr "选择全部"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:68
+msgid "Deselect all"
+msgstr "全部不选"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:82
+msgid "_Channels:"
+msgstr "频道(_C)："
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:117
+#, fuzzy
+msgid "Select _scrambled channels"
+msgstr "选择乱台的频道(_S)"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:133
+msgid "Signal quality:"
+msgstr "信号质量："
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:144
+msgid "Signal strength:"
+msgstr "信号强度："
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:159
+msgid "Scanning for channels"
+msgstr "正在扫描频道"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:87
+#, fuzzy
+msgid "Missing requirements"
+msgstr "缺少要求"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:93
+msgid "Country and antenna selection"
+msgstr "国家和天线选择"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:96
+msgid "Satellite selection"
+msgstr "卫星选择"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:99
+msgid "Country and provider selection"
+msgstr "国家和供应商选择"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:101
+msgid "Unsupported adapter"
+msgstr "不支持的适配器"
+
+#. translators: first %s is the DVB type, e.g. DVB-S
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
+#, python-format
+msgid "Sorry, but '%s' cards aren't supported."
+msgstr "抱歉，不支持“%s”卡。"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
+msgid "Could not find initial tuning data."
+msgstr "找不到初始调谐数据。"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
+msgid "Please make sure that the dvb-apps package is installed."
+msgstr "请确保安装了 dvb-apps 软件包。"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
+msgid ""
+"Please choose a country and the antenna that is closest to your location."
+msgstr "请选择离您最近的国家和天线。"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
+msgid ""
+"If you don't know which antenna to choose select \"Don't know\" from the "
+"list of providers."
+msgstr "如果您不知道用哪个天线，从供应商列表中选择“不知道”。"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
+msgid "However, searching for channels will take considerably longer this way."
+msgstr "但是，这样的话搜索频道会花相当长的时间。"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
+msgid "Not listed"
+msgstr "未列出"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:153
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:224
+msgid "_Country:"
+msgstr "国家(_C)："
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:177
+msgid "_Antenna:"
+msgstr "天线(_A)："
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:186
+msgid "Antenna"
+msgstr "天线"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
+msgid "_Satellite:"
+msgstr "卫星(_S)："
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+msgid "Satellite"
+msgstr "卫星"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
+msgid "_Providers:"
+msgstr "供应商(_P)："
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:254
+msgid "Provider"
+msgstr "供应商"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:303
+msgid "Don't know"
+msgstr "不知道"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
+msgid "Welcome to the digital television Assistant."
+msgstr "欢迎使用数字电视助手。"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
+msgid ""
+"It will automatically configure your devices and search for channels, if "
+"necessary."
+msgstr "它会自动配置您的设备并在需要的情况下搜索频道。"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
+msgid "Click \"Forward\" to begin."
+msgstr "点击“前进”开始。"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:40
+msgid "_Expert mode"
+msgstr "专家模式(_E)"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:44
+msgid "Digital TV configuration"
+msgstr "数字电视配置"
+
+#: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
+msgid "Choose a location where you want to save the list of channels."
+msgstr "选择一个您想保存频道列表的位置。"
+
+#: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
+msgid "Save channels"
+msgstr "保存频道"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:45
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
+msgid "Configuring device"
+msgstr "正在配置设备"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
+msgid "TV"
+msgstr "电视"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
+msgid "No channels were found."
+msgstr "未找到频道。"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
+msgid ""
+"Make sure that the antenna is connected and you have selected the correct "
+"tuning data."
+msgstr "确保天线已连接，且您选择了正确的调谐数据。"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:139
+#, python-format
+msgid "The device has been added to the group %s."
+msgstr "设备已添加到组 %s。"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:148
+msgid "An error occured while trying to setup the device."
+msgstr "在尝试配置设备时出现了一个错误。"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
+msgid "Configure Another Device"
+msgstr "配置另一个设备"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
+msgid "Configuration finished"
+msgstr "配置完成"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
+#, python-format
+msgid "The device %s has been configured sucessfully."
+msgstr "设备 %s 已成功配置。"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
+#, python-format
+msgid "Failed configuring device %s."
+msgstr "配置设备 %s 失败。"
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:44
+msgid "Cleaning up. This may take a while."
+msgstr "正在清理。这可能需要一段时间。"
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:82
+#: ../data/gnome-dvb-setup.desktop.in.in.h:2
+msgid "Setup digital TV"
+msgstr "设置数字电视"
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:167
+msgid ""
+"The generated channels file can be used to configure your devices in the "
+"control center."
+msgstr "生成的频道文件可以用于在控制中心中配置您的设备。"
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:214
+msgid ""
+"Are you sure you want to abort?\n"
+"All process will be lost."
+msgstr ""
+"您确定要中止吗？\n"
+"所有进度将丢失。"
+
+#: ../client/totem-plugin/dvb-daemon.py:156
+#: ../client/totem-plugin/dvb-daemon.py:201
+#: ../client/totem-plugin/dvb-daemon.py:346
+msgid "Program Guide"
+msgstr "节目指南"
+
+#: ../client/totem-plugin/dvb-daemon.py:306
+msgid "Digital TV"
+msgstr "数字电视"
+
+#: ../client/totem-plugin/dvb-daemon.py:357
+msgid "Watch TV"
+msgstr "看电视"
+
+#: ../client/totem-plugin/dvb-daemon.py:358
+msgid "Digital _TV"
+msgstr "数字电视(_T)"
+
+#: ../client/totem-plugin/dvb-daemon.py:360
+msgid "_Program Guide"
+msgstr "节目指南(_P)"
+
+#: ../client/totem-plugin/dvb-daemon.py:363
+msgid "_Delete"
+msgstr "删除(_D)"
+
+#: ../client/totem-plugin/dvb-daemon.py:364
+msgid "D_etails"
+msgstr "详情(_E)"
+
+#: ../client/totem-plugin/dvb-daemon.py:365
+msgid "_Order channels"
+msgstr "排序频道(_O)"
+
+#: ../client/totem-plugin/dvb-daemon.py:368
+msgid "By _name"
+msgstr "按名称(_N)"
+
+#: ../client/totem-plugin/dvb-daemon.py:369
+msgid "By _group"
+msgstr "按组(_G)"
+
+#: ../client/totem-plugin/dvb-daemon.py:372
+msgid "_Reverse order"
+msgstr "逆序(_R)"
+
+#: ../client/totem-plugin/dvb-daemon.py:524
+msgid "Delete selected recording?"
+msgstr "删除选择的录制？"
+
+#: ../client/totem-plugin/dvb-daemon.py:604
+#, python-format
+msgid "Recording %d"
+msgstr "正在录制 %d"
+
+#: ../client/totem-plugin/dvb-daemon.py:664
+#: ../client/totem-plugin/dvb-daemon.py:667
+msgid "Setup Failed"
+msgstr "设置失败"
+
+#: ../client/totem-plugin/dvb-daemon.py:665
+msgid "GNOME DVB Daemon is not installed"
+msgstr "GNOME DVB 守护进程未安装"
+
+#: ../client/totem-plugin/dvb-daemon.py:668
+msgid "Could not start GNOME DVB Daemon setup"
+msgstr "无法启动 GNOME DVB 守护进程"
+
+#. www.k-d-w.org/
+#: ../data/gnome-dvb-control.desktop.in.in.h:1
+msgid "Digital TV Control Center"
+msgstr "数字电视控制中心"
+
+#: ../data/gnome-dvb-control.desktop.in.in.h:2
+msgid "Schedule recordings and browse program guide"
+msgstr "计划录制和浏览节目指南"
+
+#: ../data/gnome-dvb-setup.desktop.in.in.h:1
+msgid "Digital TV Setup"
+msgstr "数字电视设置"
