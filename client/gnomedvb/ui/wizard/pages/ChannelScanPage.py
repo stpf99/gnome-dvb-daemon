@@ -19,7 +19,7 @@
 from gi.repository import GdkPixbuf
 from gi.repository import Gtk
 from gi.repository import GObject
-from gettext import gettext as _
+from gnomedvb import _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb.ui.widgets.Frame import TextFieldLabel
 from gnomedvb import global_error_handler

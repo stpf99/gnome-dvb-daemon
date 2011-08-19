@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
-from gettext import gettext as _
+from gnomedvb import _
         
 class CalendarDialog(Gtk.Dialog):
 

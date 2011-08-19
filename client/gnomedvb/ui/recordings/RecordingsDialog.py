@@ -18,7 +18,7 @@
 
 from gi.repository import Gdk
 from gi.repository import Gtk
-from gettext import gettext as _
+from gnomedvb import _
 
 from gnomedvb import global_error_handler
 from gnomedvb.ui.widgets.RecordingsStore import RecordingsStore

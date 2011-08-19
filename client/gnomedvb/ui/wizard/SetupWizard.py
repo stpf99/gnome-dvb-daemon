@@ -19,7 +19,7 @@
 import gnomedvb
 from gi.repository import GObject
 from gi.repository import Gtk
-from gettext import gettext as _
+from gnomedvb import _
 from gnomedvb.DVBModel import DVBModel
 from gnomedvb.ui.wizard.pages.IntroPage import IntroPage
 from gnomedvb.ui.wizard.pages.AdaptersPage import AdaptersPage

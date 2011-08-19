@@ -19,7 +19,7 @@
 import datetime
 from gi.repository import Gtk
 import gnomedvb
-from gettext import gettext as _
+from gnomedvb import _
 from gnomedvb.ui.widgets.Frame import TextFieldLabel
 
 class DetailsDialog(Gtk.Dialog):

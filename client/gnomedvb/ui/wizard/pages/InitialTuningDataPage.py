@@ -24,7 +24,7 @@ from gi.repository import GLib
 from gi.repository import GObject
 import gettext
 import locale
-from gettext import gettext as _
+from gnomedvb import _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 DVB_APPS_DIRS = ("/usr/share/dvb",

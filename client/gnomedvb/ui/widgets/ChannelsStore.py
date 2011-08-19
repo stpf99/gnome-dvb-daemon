@@ -22,7 +22,7 @@ import gnomedvb
 from gnomedvb import global_error_handler
 from gnomedvb.Callback import Callback
 from cgi import escape
-from gettext import gettext as _
+from gnomedvb import _
 
 class ChannelsStore(Gtk.ListStore):
 

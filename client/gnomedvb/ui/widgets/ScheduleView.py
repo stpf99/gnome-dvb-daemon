@@ -19,7 +19,7 @@
 from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Pango
-from gettext import gettext as _
+from gnomedvb import _
 from gnomedvb import seconds_to_time_duration_string
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.CellRendererDatetime import CellRendererDatetime

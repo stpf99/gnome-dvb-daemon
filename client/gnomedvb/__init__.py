@@ -23,8 +23,12 @@ import gnomedvb.userdirs
 import gettext
 from gi.repository import Gtk
 import os
-from gettext import gettext as _
+import gettext
 from os.path import abspath, join, expanduser
+
+# Setup i18n
+t = gettext.translation(gnomedvb.defs.PACKAGE, fallback=True)
+_ = t.gettext
 
 INFOS = {
     "authors": ["Sebastian Pölsterl <sebp@k-d-w.org>"],
@@ -38,13 +42,6 @@ INFOS = {
 # From pyxdg
 _home = os.environ.get('HOME', '/')
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', join(_home, '.config'))
-
-def setup_i18n():
-    # Setup i18n
-    gettext.bindtextdomain(gnomedvb.defs.PACKAGE)
-    if hasattr(gettext, 'bind_textdomain_codeset'):
-        gettext.bind_textdomain_codeset(gnomedvb.defs.PACKAGE, 'UTF-8')
-    gettext.textdomain(gnomedvb.defs.PACKAGE)
 
 def get_config_dir():
     return join(XDG_CONFIG_HOME, gnomedvb.defs.PACKAGE)
@@ -62,10 +59,10 @@ def seconds_to_time_duration_string(duration):
     seconds = duration % 60
     text = []
     if hours != 0:
-        text.append(gettext.ngettext("%d hour", "%d hours", hours) % hours)
+        text.append(t.ngettext("%d hour", "%d hours", hours) % hours)
     if minutes != 0:
-        text.append(gettext.ngettext("%d minute", "%d minutes", minutes) % minutes)
+        text.append(t.ngettext("%d minute", "%d minutes", minutes) % minutes)
     if seconds != 0:
-        text.append(gettext.ngettext("%d second", "%d seconds", seconds) % seconds)
+        text.append(t.ngettext("%d second", "%d seconds", seconds) % seconds)
     return " ".join(text)
 

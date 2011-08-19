@@ -1,4 +1,4 @@
-from gettext import gettext as _
+from gnomedvb import _
 
 DVB_TYPE_TO_DESC = {
     "DVB-C": _("digital cable"),

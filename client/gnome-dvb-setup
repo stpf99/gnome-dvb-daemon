@@ -22,8 +22,6 @@ from gi.repository import Gtk, Gdk
 from gnomedvb.ui.wizard.SetupWizard import SetupWizard
 from optparse import OptionParser
 
-gnomedvb.setup_i18n()
-
 parser = OptionParser()
 parser.add_option("--transient-for", dest="transient_for", type="long",
                   help="XID of parent window")

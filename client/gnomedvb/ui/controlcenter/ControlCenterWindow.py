@@ -19,7 +19,7 @@
 from gi.repository import Gdk
 from gi.repository import Gtk
 from gi.repository import GObject
-from gettext import gettext as _
+from gnomedvb import _
 import gnomedvb
 from gnomedvb.ui.widgets.ChannelsStore import ChannelsStore
 from gnomedvb.ui.widgets.ChannelsView import ChannelsView

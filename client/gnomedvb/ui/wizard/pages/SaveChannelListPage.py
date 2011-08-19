@@ -18,7 +18,7 @@
 
 from gi.repository import Gtk
 from gi.repository import GObject
-from gettext import gettext as _
+from gnomedvb import _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 class SaveChannelListPage(BasePage):

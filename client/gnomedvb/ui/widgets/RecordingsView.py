@@ -18,7 +18,7 @@
 
 from gi.repository import GObject
 from gi.repository import Gtk
-from gettext import gettext as _
+from gnomedvb import _
 
 from gnomedvb import seconds_to_time_duration_string
 from gnomedvb.ui.widgets.RecordingsStore import RecordingsStore

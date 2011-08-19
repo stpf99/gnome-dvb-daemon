@@ -22,8 +22,6 @@ import gnomedvb
 from gnomedvb.ui.controlcenter.ControlCenterWindow import ControlCenterWindow
 from gnomedvb.DVBModel import DVBModel
 
-gnomedvb.setup_i18n()
-
 model = DVBModel()
 w = ControlCenterWindow(model)
 w.show_all()

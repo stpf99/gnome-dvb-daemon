@@ -19,7 +19,7 @@
 from gi.repository import GObject
 import gnomedvb
 from gi.repository import Gtk
-from gettext import gettext as _
+from gnomedvb import _
 from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb.ui.widgets.Frame import BaseFrame
