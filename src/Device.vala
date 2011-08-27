@@ -58,6 +58,17 @@ namespace DVB {
             base (Adapter: adapter, Frontend: frontend);
         }
 
+        public static Device new_set_type (uint adapter, uint frontend,
+            File channels_conf, File recordings_dir, string name, AdapterType type) {
+            Device dev = new Device (adapter, frontend);
+            dev.adapter_name = name;
+            dev.adapter_type = type;
+            dev.RecordingsDirectory = recordings_dir;
+            dev.Channels = new ChannelList (channels_conf);
+
+            return dev;
+        }
+
         public static Device new_with_type (uint adapter, uint frontend) {
         	var device = new Device (adapter, frontend);
             
@@ -180,13 +191,22 @@ namespace DVB {
                
             pipeline.set_state(State.NULL);
 
-            if (adapter_type == "DVB-T") this.adapter_type = AdapterType.DVB_T;
-            else if (adapter_type == "DVB-S") this.adapter_type = AdapterType.DVB_S;
-            else if (adapter_type == "DVB-C") this.adapter_type = AdapterType.DVB_C;
-            else this.adapter_type = AdapterType.UNKNOWN;
-            
+            this.adapter_type = get_type_from_string (adapter_type);
+
             return success;
         }
+
+        public static AdapterType get_type_from_string (string? adapter_type) {
+            if (adapter_type == null)
+                return AdapterType.UNKNOWN;
+
+            AdapterType type;
+            if (adapter_type == "DVB-T") type = AdapterType.DVB_T;
+            else if (adapter_type == "DVB-S") type = AdapterType.DVB_S;
+            else if (adapter_type == "DVB-C") type = AdapterType.DVB_C;
+            else type = AdapterType.UNKNOWN;
+            return type;
+        }
     }
-    
+
 }

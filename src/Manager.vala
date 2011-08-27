@@ -385,7 +385,7 @@ namespace DVB {
          *
          * Register device, create Recorder and ChannelList D-Bus service
          */
-        public bool add_device_group (DeviceGroup devgroup) {
+        public bool add_device_group (DeviceGroup devgroup, bool store) {
             uint group_id = devgroup.Id;
             log.debug ("Adding device group %u with %d devices", group_id,
                 devgroup.size);
@@ -399,11 +399,13 @@ namespace DVB {
             lock (this.devices) {
                 this.devices.set (group_id, devgroup);
             }
-            try {
-                Factory.get_config_store ().add_device_group (devgroup);
-            } catch (SqlError e) {
-                log.error ("%s", e.message);
-                return false;
+            if (store) {
+                try {
+                    Factory.get_config_store ().add_device_group (devgroup);
+                } catch (SqlError e) {
+                    log.error ("%s", e.message);
+                    return false;
+                }
             }
             devgroup.device_removed.connect (this.on_device_removed_from_group);
 
@@ -419,7 +421,7 @@ namespace DVB {
             return true;
         }
 
-        public bool restore_device_group (DeviceGroup device_group) {
+        public bool restore_device_group (DeviceGroup device_group, bool store = true) {
             log.debug ("Restoring group %u", device_group.Id);
 
             try {
@@ -429,7 +431,7 @@ namespace DVB {
             	return false;
             }
 
-            return this.add_device_group (device_group);
+            return this.add_device_group (device_group, store);
         }
 
         public void restore_timers (DeviceGroup device_group) {

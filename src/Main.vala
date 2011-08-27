@@ -125,9 +125,30 @@ namespace Main {
             return;
         }
 
+        uint max_group_id = 0;
         log.info ("Restoring %d device groups", device_groups.size);
         foreach (DVB.DeviceGroup device_group in device_groups) {
             manager.restore_device_group_and_timers (device_group);
+            if (device_group.Id > max_group_id)
+                max_group_id = device_group.Id;
+        }
+
+        restore_fake_devices (max_group_id);
+    }
+
+    private static void restore_fake_devices (uint max_group_id) {
+        DVB.Settings settings = DVB.Factory.get_settings ();
+        Gee.List<DVB.Device> devices = settings.get_fake_devices ();
+        if (devices.size > 0) {
+            DVB.Device ref_dev = devices.get (0);
+            DVB.DeviceGroup group = new DVB.DeviceGroup (max_group_id + 1,
+                ref_dev, false);
+            group.Name = "Fake Devices";
+            for (int i=1; i<devices.size; i++) {
+                group.add (devices.get (i));
+            }
+
+            manager.restore_device_group (group, false);
         }
     }
 
