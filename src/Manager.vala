@@ -234,7 +234,7 @@ namespace DVB {
             Device device;
             try {
                 device = Device.new_full (adapter, frontend, chan_file,
-                    rec_dir, device_group_counter + 1);
+                    rec_dir);
             } catch (DeviceError e) {
             	log.error ("Could not create device: %s", e.message);
             	return false;

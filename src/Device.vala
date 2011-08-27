@@ -57,7 +57,7 @@ namespace DVB {
         public Device (uint adapter, uint frontend) {
             base (Adapter: adapter, Frontend: frontend);
         }
-        
+
         public static Device new_with_type (uint adapter, uint frontend) {
         	var device = new Device (adapter, frontend);
             
@@ -67,7 +67,7 @@ namespace DVB {
         }
 
         public static Device? new_full (uint adapter, uint frontend,
-                File channels_conf, File recordings_dir, uint group_id)
+                File channels_conf, File recordings_dir)
                 throws DeviceError
         {
             Device device = Device.new_with_type (adapter, frontend);

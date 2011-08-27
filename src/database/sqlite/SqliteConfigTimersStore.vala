@@ -263,7 +263,7 @@ namespace DVB.database.sqlite {
                     if (ref_dev == null) {
                         try {
                             ref_dev = Device.new_full (adapter, frontend,
-                                channels_file, rec_dir, group_id);
+                                channels_file, rec_dir);
                         } catch (DeviceError e) {
                         	log.error ("Could not create device: %s", e.message);
                         }
