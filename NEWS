@@ -1,4 +1,27 @@
 =============
+Version 0.2.3
+=============
+
+This release fixes a couple of issue with pygobject-3.0.
+pygobject 2.90.1 or later is required. Furthermore, it is
+now possible to add fake devices for development purposes.
+
+- Fixed bug where extended event description was not displayed when selecting an event in SchedulePaned
+- Use GObject instead of gobject module
+- Fixed retrieving iter pointing to start of previous day in ScheduleStore
+- Don't bind gettext domain globally to avoid interfering with applications that import gnomedvb
+- Allow to add fake devices to settings.ini
+- Raised pygobject minimum version to 2.90.1
+- Changed order of columns in RecordingsView
+
+Translations:
+-------------
+- Updated gl: Fran Diéguez 
+- Updated nb: Kjartan Maraas 
+- Updated sl: Matej Urbančič 
+- Updated zh_CN: Yinghua Wang
+
+=============
 Version 0.2.2
 =============
 
