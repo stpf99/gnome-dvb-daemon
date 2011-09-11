@@ -135,7 +135,7 @@ AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 AC_SUBST(PYTHONDIR)
 
 PYGOBJECT_REQUIRED=2.90.1
-PKG_CHECK_MODULES(PYGOBJECT, pygobject-2.0 >= $PYGOBJECT_REQUIRED)
+PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0 >= $PYGOBJECT_REQUIRED)
 
 dnl ******************
 dnl * Python modules
