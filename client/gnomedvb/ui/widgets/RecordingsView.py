@@ -31,16 +31,17 @@ class RecordingsView(Gtk.TreeView):
         if model != None:
             self.set_model(model)      
 
-        cell = CellRendererDatetime()
-        col = Gtk.TreeViewColumn(_("Start"), cell,
-            datetime=RecordingsStore.COL_START)
-        self.append_column(col)
-        self._append_text_column(_("Channel"), RecordingsStore.COL_CHANNEL)
         self._append_text_column(_("Title"), RecordingsStore.COL_NAME)
+        self._append_text_column(_("Channel"), RecordingsStore.COL_CHANNEL)
         
         col_length, cell_length = self._append_text_column(_("Length"),
             RecordingsStore.COL_DURATION)
         col_length.set_cell_data_func(cell_length, self._get_length_data, None)
+
+        cell = CellRendererDatetime()
+        col = Gtk.TreeViewColumn(_("Start"), cell,
+            datetime=RecordingsStore.COL_START)
+        self.append_column(col)
             
     def _append_text_column(self, title, col_index):
         cell = Gtk.CellRendererText()
