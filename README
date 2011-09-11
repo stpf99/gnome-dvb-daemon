@@ -6,22 +6,19 @@ Requirements
 ============
 
 Daemon:
-    - GStreamer >= 0.10.25
+    - GStreamer >= 0.10.29
     - gst-plugins-good >= 0.10.14
     - gst-plugins-bad >= 0.10.13 
-    - glib >= 2.16
-    - dbus-glib >= 0.74
+    - glib >= 2.28.5
     - libgee >= 0.5.0
     - sqlite >= 3.4
-    - gst-rtsp-server 0.10.5 (http://people.freedesktop.org/~wtay/)
+    - gst-rtsp-server 0.10.7 (http://people.freedesktop.org/~wtay/)
     - gudev
 
 UI:
     - Python >= 2.5
-    - python-gstramer
-    - pygobject >= 2.15.3
-    - python-gtk >= 2.10
-    - python-dbus
+    - python-gstreamer
+    - pygobject >= 2.90.1
     - (Recommended) dvb-apps for initial tuning data
     
 Configuration options
