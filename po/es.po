@@ -2,17 +2,17 @@
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the gnome-dvb-daemon package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
 "daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-23 12:06+0000\n"
-"PO-Revision-Date: 2011-04-24 11:15+0200\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"POT-Creation-Date: 2011-04-24 09:16+0000\n"
+"PO-Revision-Date: 2011-09-15 16:26+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -340,7 +340,7 @@ msgstr "_Archivo de canales:"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:153
 msgid "_Directory:"
-msgstr "_Directorio:"
+msgstr "_Carpeta:"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:181
 msgid "Select File"
@@ -348,7 +348,7 @@ msgstr "Seleccionar archivo"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:190
 msgid "Select Directory"
-msgstr "Seleccionar directorio"
+msgstr "Seleccionar carpeta"
 
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:203
 msgid "Edit group"
@@ -418,9 +418,8 @@ msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
-"Asegúrese de que ha seleccionado el archivo de canales correcto y el "
-"directorio donde las grabaciones están almacenadas y que ambos se pueden "
-"leer."
+"Asegúrese de que ha seleccionado el archivo de canales correcto y la carpeta "
+"donde las grabaciones están almacenadas y que ambos se pueden leer."
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:289
 msgid "Device could not be added to group"
@@ -932,7 +931,6 @@ msgid "GNOME DVB Daemon is not installed"
 msgstr "El demonio GNOME DVB no esta instalado"
 
 #: ../client/totem-plugin/dvb-daemon.py:666
-#| msgid "GNOME DVB Daemon Website"
 msgid "Could not start GNOME DVB Daemon setup"
 msgstr "No se pudo iniciar la configuración del demonio de GNOME DVB"
 
