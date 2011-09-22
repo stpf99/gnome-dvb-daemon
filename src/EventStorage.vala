@@ -42,11 +42,6 @@ namespace DVB {
             else if (event1.starttime > event2.starttime) return +1;
             else return 0;
         }
-        
-        public static void destroy (void* data) {
-            EventElement e = (EventElement) data;
-            g_object_unref (e);
-        }
 
         public static EventElement new_from_event (Event event) {
             EventElement element = new EventElement ();
