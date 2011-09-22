@@ -138,11 +138,14 @@ namespace DVB {
             }
             return ret;
         }
-        
-        public bool add_timer (Timer new_timer, out uint32 timer_id) {
-            if (new_timer.has_expired()) return false;
 
+        public bool add_timer (Timer new_timer, out uint32 timer_id) {
             bool ret = false;
+            timer_id = 0;
+
+            if (new_timer.has_expired())
+                return ret;
+
             lock (this.timers) {
                 bool has_conflict = false;
                 int conflict_count = 0;
@@ -363,6 +366,8 @@ namespace DVB {
                 if (this.timers.has_key (timer_id)) {
                     duration = this.timers.get(timer_id).Duration;
                     ret = true;
+                } else {
+                    duration = 0;
                 }
             }
             return ret;
@@ -431,9 +436,11 @@ namespace DVB {
                     Event? event = t.Channel.Schedule.get_event (t.EventID);
                     title = (event == null) ? "" : event.name;
                     ret = true;
+                } else {
+                    title = "";
                 }
             }
-            if (!ret) title = "";
+
             return ret;
         }
 

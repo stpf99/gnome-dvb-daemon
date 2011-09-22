@@ -42,6 +42,7 @@ namespace DVB.Utils {
         
         if (eval == null) {
             Main.log.error ("Enum has no member named %s", name);
+            evalue = 0;
             return false;
         } else {
             evalue = eval.value;

@@ -353,6 +353,8 @@ namespace DVB.database.sqlite {
         }
 
         public bool get_parent_group (uint adapter, uint frontend, out uint group_id) throws SqlError {
+            group_id = 0;
+
             if (this.select_group_of_device_statement.bind_int (1, (int)adapter) != Sqlite.OK
                 || this.select_group_of_device_statement.bind_int (2, (int)frontend) != Sqlite.OK)
             {
@@ -563,6 +565,8 @@ namespace DVB.database.sqlite {
         }
 
         public bool add_channel_group (string name, out int channel_group_id) throws SqlError {
+            channel_group_id = -1;
+
             if (this.insert_channel_group_statement.bind_text (1, name) != Sqlite.OK)
             {
                 this.throw_last_error ();

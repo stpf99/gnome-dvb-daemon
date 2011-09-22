@@ -135,9 +135,11 @@ namespace DVB {
                 if (this.recordings.has_key (rec_id)) {
                     location = this.recordings.get(rec_id).Location.get_uri ();
                     ret = true;
+                } else {
+                    location = "";
                 }
             }
-            if (!ret) location = "";
+
             return ret;
         }
         
@@ -154,9 +156,11 @@ namespace DVB {
                     string val = this.recordings.get(rec_id).Name;
                     name = (val == null) ? "" : val;
                     ret = true;
+                } else {
+                    name = "";
                 }
             }
-            if (!ret) name = "";
+
             return ret;
         }
         
@@ -173,9 +177,11 @@ namespace DVB {
                     string val = this.recordings.get(rec_id).Description;
                     description = (val == null) ? "" : val;
                     ret = true;
+                } else {
+                    description = "";
                 }
             }
-            if (!ret) description = "";
+
             return ret;
         }
         
@@ -210,6 +216,8 @@ namespace DVB {
                 if (this.recordings.has_key (rec_id)) {
                     timestamp = (int64)this.recordings.get(rec_id).StartTime.mktime ();
                     ret = true;
+                } else {
+                    timestamp = 0;
                 }
             }
             
@@ -227,6 +235,8 @@ namespace DVB {
                 if (this.recordings.has_key (rec_id)) {
                     length = this.recordings.get(rec_id).Length;
                     ret = true;
+                } else {
+                    length = 0;
                 }
             }
            
@@ -274,9 +284,11 @@ namespace DVB {
                     Recording rec = this.recordings.get (rec_id);
                     name = rec.ChannelName;
                     ret = true;
+                } else {
+                    name = "";
                 }
             }
-            if (!ret) name = "";
+
             return ret;
         }
         

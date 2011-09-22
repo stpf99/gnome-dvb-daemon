@@ -341,6 +341,7 @@ namespace DVB {
                 throws DBusError
         {
             bool ret;
+            event_info = EventInfo();
             
             lock (this.events) {        
                 if (this.events.contains_event_with_id (event_id)) {
@@ -396,6 +397,7 @@ namespace DVB {
         
         public bool GetName (uint32 event_id, out string name) throws DBusError {
             bool ret = false;
+            name = "";
 
             lock (this.events) {        
                 if (this.events.contains_event_with_id (event_id)) {
@@ -408,7 +410,7 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            if (!ret) name = "";
+
             return ret;
         }
         
@@ -416,6 +418,7 @@ namespace DVB {
                 out string description) throws DBusError
         {
             bool ret = false;
+            description = "";
             
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
@@ -428,7 +431,7 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            if (!ret) description = "";
+
             return ret;
         }
         
@@ -436,6 +439,7 @@ namespace DVB {
                 out string description) throws DBusError
         {
             bool ret = false;
+            description = "";
             
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
@@ -448,7 +452,7 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            if (!ret) description = "";
+
             return ret;
         }
         
@@ -456,6 +460,7 @@ namespace DVB {
                 throws DBusError
         {
             bool ret = false;
+            duration = 0;
         
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
@@ -468,7 +473,7 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            
+
             return ret;
         }
         
@@ -476,6 +481,7 @@ namespace DVB {
                 throws DBusError
         {
             bool ret = false;
+            start_time = new uint[0];
         
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
@@ -487,11 +493,8 @@ namespace DVB {
                     }
                 } else {
                     log.debug ("No event with id %u", event_id);
-                    start_time = new uint[] {};
                 }
             }
-
-            if (!ret) start_time = new uint[0];
             
             return ret;
         }
@@ -500,6 +503,8 @@ namespace DVB {
                 throws DBusError
         {
             bool ret = false;
+            timestamp = 0;
+
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);
@@ -510,6 +515,7 @@ namespace DVB {
                     }
                 }
             }
+
             return ret;
         }
         
@@ -517,6 +523,7 @@ namespace DVB {
                 throws DBusError
         {
             bool ret = false;
+            running = false;
         
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
@@ -537,6 +544,7 @@ namespace DVB {
                 throws DBusError
         {
             bool ret = false;
+            scrambled = false;
         
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
@@ -549,7 +557,7 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            
+
             return ret;
         }
 

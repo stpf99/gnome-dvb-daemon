@@ -277,6 +277,7 @@ namespace DVB {
                     channel_group_id);
             } catch (SqlError e) {
                 log.error ("%s", e.message);
+                channel_ids = new uint[0];
                 return false;
             }
 

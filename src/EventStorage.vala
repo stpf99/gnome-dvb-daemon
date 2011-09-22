@@ -77,7 +77,7 @@ namespace DVB {
         }
 
         public EventStorage () {
-            this.events = new Sequence<EventElement> (EventElement.destroy);
+            this.events = new Sequence<EventElement> ();
             this.event_id_map = new HashMap<uint, unowned SequenceIter<EventElement>> ();
         }
 
