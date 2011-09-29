@@ -260,7 +260,7 @@ namespace DVB {
 
             if (this.add (device)) {
                 try {
-                    Factory.get_config_store ().add_device_to_group (device,
+                    new Factory().get_config_store ().add_device_to_group (device,
                         this);
                 } catch (SqlError e) {
                     log.error ("%s", e.message);
@@ -316,7 +316,7 @@ namespace DVB {
                     this.stop_epg_scanner ();
 
                     try {
-                        Factory.get_config_store ().remove_device_from_group (
+                        new Factory().get_config_store ().remove_device_from_group (
                             dev, this);
                     } catch (SqlError e) {
                         log.error ("%s", e.message);
@@ -351,7 +351,7 @@ namespace DVB {
         public bool SetName (string name) throws DBusError {
             this.Name = name;
             try {
-                ConfigStore config = Factory.get_config_store();
+                ConfigStore config = new Factory().get_config_store();
                 config.update_from_group (this);
             } catch (SqlError e) {
                 log.error ("%s", e.message);
@@ -440,7 +440,7 @@ namespace DVB {
         public bool SetRecordingsDirectory (string location) throws DBusError {
             this.RecordingsDirectory = File.new_for_path (location);
             try {
-                ConfigStore config = Factory.get_config_store();
+                ConfigStore config = new Factory().get_config_store();
                 config.update_from_group (this);
             } catch (SqlError e) {
                 log.error ("%s", e.message);

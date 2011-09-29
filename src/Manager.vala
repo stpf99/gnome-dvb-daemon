@@ -289,7 +289,7 @@ namespace DVB {
          * @returns: ID and name of each channel group
          */
 		public ChannelGroupInfo[] GetChannelGroups () throws DBusError {
-            ConfigStore config = Factory.get_config_store ();
+            ConfigStore config = new Factory().get_config_store ();
             Gee.List<ChannelGroup> groups;
             try {
                 groups = config.get_channel_groups ();
@@ -312,7 +312,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
 		public bool AddChannelGroup (string name, out int channel_group_id) throws DBusError {
-            ConfigStore config = Factory.get_config_store ();
+            ConfigStore config = new Factory().get_config_store ();
             bool ret;
             try {
                 ret = config.add_channel_group (name, out channel_group_id);
@@ -328,7 +328,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
 		public bool RemoveChannelGroup (int channel_group_id) throws DBusError {
-            ConfigStore config = Factory.get_config_store ();
+            ConfigStore config = new Factory().get_config_store ();
             bool ret;
             try {
                 ret = config.remove_channel_group (channel_group_id);
@@ -401,7 +401,7 @@ namespace DVB {
             }
             if (store) {
                 try {
-                    Factory.get_config_store ().add_device_group (devgroup);
+                    new Factory().get_config_store ().add_device_group (devgroup);
                 } catch (SqlError e) {
                     log.error ("%s", e.message);
                     return false;
@@ -436,7 +436,7 @@ namespace DVB {
 
         public void restore_timers (DeviceGroup device_group) {
             log.info ("Restoring timers of device group %u", device_group.Id);
-            TimersStore timers_store = Factory.get_timers_store ();
+            TimersStore timers_store = new Factory().get_timers_store ();
 
             Gee.List<Timer> timers;
             try {
@@ -567,12 +567,12 @@ namespace DVB {
                     devgroup.destroy ();
 
                     try {
-                        Factory.get_config_store ().remove_device_group (
+                        new Factory().get_config_store ().remove_device_group (
                             devgroup);
-                        Factory.get_epg_store ().remove_events_of_group (
+                        new Factory().get_epg_store ().remove_events_of_group (
                             devgroup.Id
                         );
-                        Factory.get_timers_store ().remove_all_timers_from_device_group (
+                        new Factory().get_timers_store ().remove_all_timers_from_device_group (
                             devgroup.Id
                         );
                         this.group_removed (group_id);
@@ -584,7 +584,7 @@ namespace DVB {
         }
 
         private void create_device_group_by_id (uint group_id) {
-            ConfigStore config_store = Factory.get_config_store ();
+            ConfigStore config_store = new Factory().get_config_store ();
 
             Gee.List<DeviceGroup> groups;
             try {
@@ -613,7 +613,7 @@ namespace DVB {
 
                 uint group_id;
                 bool found = false;
-                ConfigStore config_store = Factory.get_config_store ();
+                ConfigStore config_store = new Factory().get_config_store ();
                 try {
                     found = config_store.get_parent_group (adapter,
                             frontend, out group_id);

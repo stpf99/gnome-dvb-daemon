@@ -24,20 +24,16 @@ using DVB.Logging;
 
 namespace DVB {
 
-    [Compact]
-    public class Factory {
+    public class Factory : GLib.Object {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         private static SqliteConfigTimersStore store;
-        private static StaticRecMutex store_mutex = StaticRecMutex ();
         private static SqliteEPGStore epgstore;
-        private static StaticRecMutex epgstore_mutex = StaticRecMutex ();
         private static DVB.Settings settings;
-        private static StaticRecMutex settings_mutex = StaticRecMutex ();
-        
-        public static TimersStore get_timers_store () {
-        	store_mutex.lock ();
+
+        public TimersStore get_timers_store () {
+            lock(store) {
         	if (store == null) {
         		store = new SqliteConfigTimersStore ();
                 try {
@@ -47,12 +43,12 @@ namespace DVB {
                     store = null;
                 }
         	}
-        	store_mutex.unlock ();
+            }
         	return store;
         }
-        
-        public static ConfigStore get_config_store () {
-        	store_mutex.lock ();
+
+        public ConfigStore get_config_store () {
+            lock(store) {
         	if (store == null) {
         		store = new SqliteConfigTimersStore ();
                 try {
@@ -62,12 +58,12 @@ namespace DVB {
                     store = null;
                 }
         	}
-        	store_mutex.unlock ();
+            }
         	return store;
         }
-        
-        public static EPGStore get_epg_store () {
-        	epgstore_mutex.lock ();
+
+        public EPGStore get_epg_store () {
+            lock (epgstore) {
         	if (epgstore == null) {
         		epgstore = new SqliteEPGStore ();
                 try {
@@ -77,35 +73,26 @@ namespace DVB {
                     epgstore = null;
                 }
         	}
-        	epgstore_mutex.unlock ();
+            }
         	return epgstore;
         }
-        
-        public static DVB.Settings get_settings () {
-            settings_mutex.lock ();
+
+        public DVB.Settings get_settings () {
+            lock(settings) {
             if (settings == null) {
                 settings = new DVB.Settings ();
                 settings.load ();
             }
-            settings_mutex.unlock ();
+            }
             return settings;
         }
-        
-        public static void shutdown () {
-            store_mutex.lock ();
-            store = null;
-            store_mutex.unlock ();
-            
-            epgstore_mutex.lock ();
-            epgstore = null;
-            epgstore_mutex.unlock ();
-            
-            settings_mutex.lock ();
+
+        public void shutdown () {
+            lock(settings) {
             if (settings != null) settings.save ();
-            settings = null;
-            settings_mutex.unlock ();
+            }
         }
-        
+
     }
-    
+
 }

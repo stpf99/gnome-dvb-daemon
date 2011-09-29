@@ -44,7 +44,7 @@ namespace DVB {
         
         construct {
             this.events = new EventStorage ();
-            this.epgstore = Factory.get_epg_store ();
+            this.epgstore = new Factory().get_epg_store ();
         }
 
         public async void restore () {

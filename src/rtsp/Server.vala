@@ -27,7 +27,7 @@ namespace DVB.RTSPServer {
     private static uint timeout_id;
 
     public static string get_address () {
-        DVB.Settings settings = DVB.Factory.get_settings ();
+        DVB.Settings settings = new DVB.Factory().get_settings ();
         string iface = settings.get_streaming_interface ();
 
         string? address = null;

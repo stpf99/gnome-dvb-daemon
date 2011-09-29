@@ -72,7 +72,7 @@ namespace Main {
 
         DVB.RTSPServer.shutdown ();
         DVB.Manager.shutdown ();
-        DVB.Factory.shutdown ();
+        new DVB.Factory().shutdown ();
         DVB.RecordingsStore.shutdown ();
         DVB.Logging.LogManager.getLogManager().cleanup ();
 
@@ -115,7 +115,7 @@ namespace Main {
     }
 
     private static void restore_device_groups () {
-        DVB.database.ConfigStore config_store = DVB.Factory.get_config_store ();
+        DVB.database.ConfigStore config_store = new DVB.Factory().get_config_store ();
 
         Gee.List<DVB.DeviceGroup> device_groups;
         try {
@@ -137,7 +137,7 @@ namespace Main {
     }
 
     private static void restore_fake_devices (uint max_group_id) {
-        DVB.Settings settings = DVB.Factory.get_settings ();
+        DVB.Settings settings = new DVB.Factory().get_settings ();
         Gee.List<DVB.Device> devices = settings.get_fake_devices ();
         if (devices.size > 0) {
             DVB.Device ref_dev = devices.get (0);

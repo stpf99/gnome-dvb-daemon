@@ -63,7 +63,7 @@ namespace DVB {
             this.DeviceGroup = device;
             // check if interval is unset
             if (CHECK_EIT_INTERVAL == -1) {
-                Settings settings = Factory.get_settings ();
+                Settings settings = new Factory().get_settings ();
                 CHECK_EIT_INTERVAL = settings.get_epg_scan_interval ();
             }
         }

@@ -122,7 +122,7 @@ namespace DVB {
                 return false;
             }
 
-            Settings settings = Factory.get_settings ();
+            Settings settings = new Factory().get_settings ();
             int start_margin = -1 * settings.get_timers_margin_start ();
             uint end_margin = (uint)(2 * settings.get_timers_margin_end ());
     
@@ -167,7 +167,7 @@ namespace DVB {
                 if (!has_conflict) {
                     this.timers.set (new_timer.Id, new_timer);
                     try {
-                        Factory.get_timers_store ().add_timer_to_device_group (new_timer,
+                        new Factory().get_timers_store ().add_timer_to_device_group (new_timer,
                             this.DeviceGroup);
                     } catch (SqlError e) {
                         log.error ("%s", e.message);
@@ -199,7 +199,7 @@ namespace DVB {
          */
         public bool AddTimerForEPGEvent (uint event_id, uint channel_sid,
                 out uint32 timer_id) throws DBusError {
-            EPGStore epgstore = Factory.get_epg_store ();
+            EPGStore epgstore = new Factory().get_epg_store ();
             Event? event = null;
             try {
                 event = epgstore.get_event (event_id, channel_sid, this.DeviceGroup.Id);
@@ -241,7 +241,7 @@ namespace DVB {
                     }
                     this.timers.unset (timer_id);
                     try {
-                        Factory.get_timers_store ().remove_timer_from_device_group (
+                        new Factory().get_timers_store ().remove_timer_from_device_group (
                             timer_id, this.DeviceGroup);
                     } catch (SqlError e) {
                         log.error ("%s", e.message);
@@ -535,7 +535,7 @@ namespace DVB {
         public OverlapType HasTimerForEvent (uint event_id, uint channel_sid)
                 throws DBusError
         {
-            EPGStore epgstore = Factory.get_epg_store ();
+            EPGStore epgstore = new Factory().get_epg_store ();
             Event? event = null;
             try {
                 event = epgstore.get_event (event_id, channel_sid,

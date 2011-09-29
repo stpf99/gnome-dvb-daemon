@@ -270,7 +270,7 @@ namespace DVB {
 		public bool GetChannelsOfGroup (int channel_group_id,
                 out uint[] channel_ids) throws DBusError
         {
-            ConfigStore config = Factory.get_config_store ();
+            ConfigStore config = new Factory().get_config_store ();
             Gee.List<uint> channels;
             try {
                 channels = config.get_channels_of_group (this.GroupId,
@@ -297,7 +297,7 @@ namespace DVB {
 		public bool AddChannelToGroup (uint channel_id, int channel_group_id)
                 throws DBusError
         {
-            ConfigStore config = Factory.get_config_store ();
+            ConfigStore config = new Factory().get_config_store ();
             Channel? chan = this.get_channel (channel_id);
             if (chan == null)
                 return false;
@@ -320,7 +320,7 @@ namespace DVB {
 		public bool RemoveChannelFromGroup (uint channel_id,
                 int channel_group_id) throws DBusError
         {
-            ConfigStore config = Factory.get_config_store ();
+            ConfigStore config = new Factory().get_config_store ();
             Channel? chan = this.get_channel (channel_id);
             if (chan == null)
                 return false;
