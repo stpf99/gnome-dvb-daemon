@@ -43,7 +43,7 @@ namespace DVB {
             public ArrayList<Gst.Element> sinks;
             public Gst.Element tee;
             public bool forced;
-            public ForcedStopNotify notify_func;
+            public unowned ForcedStopNotify notify_func;
         }
 
         /**
