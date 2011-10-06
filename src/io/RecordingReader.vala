@@ -28,8 +28,12 @@ namespace DVB.io {
 
         public File directory {get; construct;}
         public RecordingsStore store {get; construct;}
+        public int max_recursion {get; set; default = 3;}
 
-        private static const string ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_ACCESS_CAN_READ + "," + FILE_ATTRIBUTE_STANDARD_NAME;
+        private static const string ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE
+            + "," + FILE_ATTRIBUTE_ACCESS_CAN_READ
+            + "," + FILE_ATTRIBUTE_STANDARD_NAME
+            + "," + FILE_ATTRIBUTE_STANDARD_IS_HIDDEN;
 
         /**
          * @recordingsbasedir: The directory to search
@@ -74,9 +78,11 @@ namespace DVB.io {
             return true;
         }
 
-         
-        private bool restore_from_dir (File recordingsbasedir) {
-            if (!is_readable_dir (recordingsbasedir)) return false;
+        private bool restore_from_dir (File recordingsbasedir, int depth = 0) {
+            if (depth >= max_recursion)
+                return true;
+            if (!is_readable_dir (recordingsbasedir))
+                return false;
 
             FileEnumerator files;
             try {
@@ -91,15 +97,18 @@ namespace DVB.io {
             try {
                 FileInfo childinfo;
                 while ((childinfo = files.next_file (null)) != null) {
+                    if (childinfo.get_is_hidden ())
+                        continue;
+
                     uint32 type = childinfo.get_attribute_uint32 (
                         FILE_ATTRIBUTE_STANDARD_TYPE);
-                    
+
                     File child = recordingsbasedir.get_child (
                         childinfo.get_name ());
                     
                     switch (type) {
                         case FileType.DIRECTORY:
-                            this.restore_from_dir (child);
+                            this.restore_from_dir (child, depth + 1);
                         break;
                         
                         case FileType.REGULAR:
