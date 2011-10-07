@@ -1,4 +1,20 @@
 =============
+Version 0.2.4
+=============
+
+This release fixes a couple of issues with vala 0.14.0,
+which is now the required mininum version.
+
+- Fixed various issues with vala 0.14.0
+- When searching for recordings, skip hidden directories and set maximum recursion depth to three.
+
+Translations:
+-------------
+- Updated es: Daniel Mustieles
+- Updated fr: Claude Paroz
+- Updated sl: Martin Srebotnjak
+
+=============
 Version 0.2.3
 =============
 
