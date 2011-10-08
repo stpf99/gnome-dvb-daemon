@@ -308,9 +308,8 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
 
     def _get_and_add_recordings(self):
         # Add recordings
-        self.rec_iter = self.channels.append(None)
-        self.channels[self.rec_iter][ChannelsTreeStore.COL_GROUP_ID] = self.REC_GROUP_ID
-        self.channels[self.rec_iter][ChannelsTreeStore.COL_NAME] = _("Recordings")
+        self.rec_iter = self.channels.append(None, [self.REC_GROUP_ID,
+            _("Recordings"), 0L, None])
 
         self.recstore = gnomedvb.DVBRecordingsStoreClient()
         self.recstore.connect("changed", self._on_recstore_changed)
@@ -604,10 +603,8 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
             name = _("Recording %d") % rid
         else:
             name = escape(name)
-        aiter = self.channels.append(self.rec_iter)
-        self.channels[aiter][ChannelsTreeStore.COL_GROUP_ID] = self.REC_GROUP_ID
-        self.channels[aiter][ChannelsTreeStore.COL_NAME] = name
-        self.channels[aiter][ChannelsTreeStore.COL_SID] = rid
+        self.channels.append(self.rec_iter, [self.REC_GROUP_ID,
+            name, rid, None])
 
     def _on_recstore_changed(self, recstore, rec_id, change_type):
         if change_type == 0:
