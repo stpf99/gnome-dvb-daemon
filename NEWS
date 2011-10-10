@@ -1,4 +1,14 @@
 =============
+Version 0.2.5
+=============
+
+This release updates the list of supported countries for DVB-C and DVB-T.
+
+- Append recordings to TreeStore with a single function call
+- Added dvb-t initial tuning data for Andorra, Azerbaijan, Croatia, Hungary, Israel, Iran, Lithuania, Latvia, Romania, Slovenia, Viet Nam
+- Added dvb-c initial tuning data for Czech Republic, Denmark, Spain, France, Hungary, Luxemburg
+
+=============
 Version 0.2.4
 =============
 
