@@ -33,7 +33,9 @@ DVB_APPS_DIRS = ("/usr/share/dvb",
                  "/usr/share/doc/dvb-utils/examples/scan")
                  
 COUNTRIES = {
+    "ad": "Andorra",
     "at": "Austria",
+    "az": "Azerbaijan",
     "au": "Australia",
     "be": "Belgium",
     "ch": "Switzerland",
@@ -45,19 +47,64 @@ COUNTRIES = {
     "fr": "France",
     "gr": "Greece",
     "hk": "Hong Kong",
-    "hr": "Hungary",
+    "hr": "Croatia",
+    "hu": "Hungary",
+    "il": "Israel",
+    "ir": "Iran, Islamic Republic of",
     "is": "Iceland",
     "it": "Italy",
+    "lt": "Lithuania",
     "lu": "Luxemburg",
+    "lv": "Latvia",
     "nl": "Netherlands",
     "no": "Norway",
     "nz": "New Zealand",
     "pl": "Poland",
+    "ro": "Romania",
     "se": "Sweden",
+    "si": "Slovenia",
     "sk": "Slovakia",
     "tw": "Taiwan",
     "uk": "United Kingdom",
+    "vn": "Viet Nam",
 }
+
+COUNTRIES_DVB_T = (
+    "ad",
+    "at",
+    "az",
+    "au",
+    "be",
+    "ch",
+    "cz",
+    "de",
+    "dk",
+    "es",
+    "fi",
+    "fr",
+    "gr",
+    "hk",
+    "hr",
+    "hu",
+    "il",
+    "ir",
+    "is",
+    "it",
+    "lt",
+    "lu",
+    "lv",
+    "nl",
+    "no",
+    "nz",
+    "pl",
+    "ro",
+    "se",
+    "si",
+    "sk",
+    "tw",
+    "uk",
+    "vn",
+)
 
 class InitialTuningDataPage(BasePage):
     
@@ -140,11 +187,8 @@ class InitialTuningDataPage(BasePage):
         self.providers_view = None
         
         countries = {self.NOT_LISTED: _("Not listed")}
-        country_codes = ("at", "au", "be", "ch", "cz", "de", "dk", "es", "fi", "fr",
-            "gr", "hr", "hk", "is", "it", "lu", "nl", "nz", "pl", "se", "sk",
-            "tw", "uk",)
         t = gettext.translation("iso_3166", fallback=True)
-        for lang in country_codes:
+        for lang in COUNTRIES_DVB_T:
             countries[lang] = t.ugettext(COUNTRIES[lang])
         
         self._create_table()
