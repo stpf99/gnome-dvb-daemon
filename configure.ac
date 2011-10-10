@@ -6,7 +6,7 @@ AC_INIT([gnome-dvb-daemon], [0.2.5],
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([1.11 subdir-objects dist-bzip2])
+AM_INIT_AUTOMAKE([1.11 subdir-objects dist-bzip2 no-dist-gzip])
 AM_MAINTAINER_MODE([enable])
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
