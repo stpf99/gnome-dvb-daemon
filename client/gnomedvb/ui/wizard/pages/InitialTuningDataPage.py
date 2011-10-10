@@ -106,6 +106,23 @@ COUNTRIES_DVB_T = (
     "vn",
 )
 
+COUNTRIES_DVB_C = (
+    "at",
+    "be",
+    "ch",
+    "cz",
+    "de",
+    "dk",
+    "es",
+    "fi",
+    "fr",
+    "hu",
+    "lu",
+    "nl",
+    "no",
+    "se",
+)
+
 class InitialTuningDataPage(BasePage):
     
     __gsignals__ = {
@@ -257,18 +274,17 @@ class InitialTuningDataPage(BasePage):
         
     def setup_dvb_c(self):
         countries = {}
-        country_codes = ("at", "be", "ch", "de", "fi", "lu", "nl", "se", "no",)
         t = gettext.translation("iso_3166", fallback=True)
-        for lang in country_codes:
+        for lang in COUNTRIES_DVB_C:
             countries[lang] = t.ugettext(COUNTRIES[lang])
-            
+
         self._create_table()
-            
+
         country = Gtk.Label()
         country.set_markup_with_mnemonic(_("_Country:"))
         country.show()
         self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
-    
+
         self.countries = Gtk.ListStore(str, str)
         self.countries.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.countries.set_sort_func(0, self.combobox_sort_func, None)
