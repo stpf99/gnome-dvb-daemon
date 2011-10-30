@@ -48,14 +48,14 @@ class TimerDialog(Gtk.Dialog):
 
         self.set_border_width(5)
         
-        table = Gtk.Table(rows=4, columns=2)
-        table.set_col_spacings(18)
-        table.set_row_spacings(6)
+        table = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
+        table.set_column_spacing(18)
+        table.set_row_spacing(6)
         table.set_border_width(5)
         self.get_content_area().pack_start(table, True, True, 0)
                          
         label_channel = TextFieldLabel()
-        table.attach(label_channel, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
+        table.add(label_channel)
         
         if channel == None:
             self.channel_selected = False
@@ -65,10 +65,11 @@ class TimerDialog(Gtk.Dialog):
             label_channel.set_markup_with_mnemonic(_("_Channel:"))
             self.channels = ChannelsStore(device_group)
         
-            scrolledchannels = Gtk.ScrolledWindow()
+            scrolledchannels = Gtk.ScrolledWindow(expand=True)
             scrolledchannels.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
             scrolledchannels.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
-            table.attach(scrolledchannels, 0, 2, 1, 2)
+            table.attach_next_to(scrolledchannels, label_channel,
+                Gtk.PositionType.BOTTOM, 2, 1)
             
             self.channelsview = ChannelsView(self.channels)
             self.channelsview.set_headers_visible(False)
@@ -86,14 +87,15 @@ class TimerDialog(Gtk.Dialog):
             self.channels = None
             self.channelsview = None
             channel_label = TextFieldLabel(channel)
-            table.attach(channel_label, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.FILL)
+            table.attach_next_to(channel_label, label_channel,
+                Gtk.PositionType.RIGHT, 1, 1)
         
         label_start = TextFieldLabel()
         label_start.set_markup_with_mnemonic(_("_Start time:"))
-        table.attach(label_start, 0, 1, 2, 3)
+        table.add(label_start)
         
-        hbox = Gtk.Box(spacing=6)
-        table.attach(hbox, 1, 2, 2, 3, yoptions=0)
+        hbox = Gtk.Box(spacing=6, hexpand=True)
+        table.attach_next_to(hbox, label_start, Gtk.PositionType.RIGHT, 1, 1)
 
         if starttime == None:
             starttime = datetime.datetime.now()
@@ -105,10 +107,11 @@ class TimerDialog(Gtk.Dialog):
         
         label_duration = TextFieldLabel()
         label_duration.set_markup_with_mnemonic(_("_Duration:"))
-        table.attach(label_duration, 0, 1, 3, 4, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
+        table.add(label_duration)
         
-        duration_hbox = Gtk.Box(spacing=6)
-        table.attach(duration_hbox, 1, 2, 3, 4)
+        duration_hbox = Gtk.Box(spacing=6, hexpand=True)
+        table.attach_next_to(duration_hbox, label_duration,
+            Gtk.PositionType.RIGHT, 1, 1)
         
         self.duration = Gtk.SpinButton()
         self.duration.set_range(1, 65535)

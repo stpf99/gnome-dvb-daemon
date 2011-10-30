@@ -125,28 +125,30 @@ class ChannelScanPage(BasePage):
         self.pack_start(self.progressbar, False, True, 0)
 
     def create_signal_box(self):
-        self.progress_table = Gtk.Table(rows=3, columns=2)
-        self.progress_table.set_row_spacings(6)
-        self.progress_table.set_col_spacings(12)
+        self.progress_table = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
+        self.progress_table.set_row_spacing(6)
+        self.progress_table.set_column_spacing(12)
         self.pack_start(self.progress_table, False, True, 0)
 
         label = TextFieldLabel(_("Signal quality:"))
-        self.progress_table.attach(label, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
+        self.progress_table.add(label)
 
-        frame = Gtk.Frame()
+        frame = Gtk.Frame(hexpand=True)
         frame.set_shadow_type(Gtk.ShadowType.NONE)
-        self.progress_table.attach(frame, 1, 2, 0, 1)
+        self.progress_table.attach_next_to(frame, label, Gtk.PositionType.RIGHT,
+            1, 1)
 
         self.signal_quality_bar = Gtk.ProgressBar()
         self.signal_quality_bar.set_size_request(-1, 10)
         frame.add(self.signal_quality_bar)
 
         label = TextFieldLabel(_("Signal strength:"))
-        self.progress_table.attach(label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
+        self.progress_table.add(label)
 
-        frame = Gtk.Frame()
+        frame = Gtk.Frame(hexpand=True)
         frame.set_shadow_type(Gtk.ShadowType.NONE)
-        self.progress_table.attach(frame, 1, 2, 1, 2)
+        self.progress_table.attach_next_to(frame, label, Gtk.PositionType.RIGHT,
+            1, 1)
 
         self.signal_strength_bar = Gtk.ProgressBar()
         self.signal_strength_bar.set_size_request(-1, 10)

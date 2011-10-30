@@ -101,9 +101,9 @@ class NewGroupDialog (Gtk.Dialog):
         self.vbox_main.show()
         self.get_content_area().pack_start(self.vbox_main, True, True, 0)
         
-        self.table = Gtk.Table(3, 2)
-        self.table.set_col_spacings(18)
-        self.table.set_row_spacings(6)
+        self.table = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
+        self.table.set_column_spacing(18)
+        self.table.set_row_spacing(6)
         self.table.show()
         
         general_frame = BaseFrame("<b>%s</b>" % _("General"), self.table)
@@ -114,18 +114,18 @@ class NewGroupDialog (Gtk.Dialog):
         name.set_markup_with_mnemonic(_("_Name:"))
         name.show()
         
-        self.name_entry = Gtk.Entry()
+        self.name_entry = Gtk.Entry(hexpand=True)
         self.name_entry.show()
         name.set_mnemonic_widget(self.name_entry)
         
-        self.table.attach(name, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
-        self.table.attach(self.name_entry, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.FILL)
+        self.table.add(name)
+        self.table.attach_next_to(self.name_entry, name, Gtk.PositionType.RIGHT, 1, 1)
         
         self.channels = TextFieldLabel()
         self.channels.set_markup_with_mnemonic(_("Channels _file:"))
         self.channels.show()
         
-        self.channelsbox = Gtk.Box(spacing=6)
+        self.channelsbox = Gtk.Box(spacing=6, hexpand=True)
         self.channelsbox.show()
 
         self.channels_entry = Gtk.Entry()
@@ -139,8 +139,8 @@ class NewGroupDialog (Gtk.Dialog):
         channels_open.show()
         self.channelsbox.pack_start(channels_open, False, False, 0)
         
-        self.table.attach(self.channels, 0, 1, 1, 2, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
-        self.table.attach(self.channelsbox, 1, 2, 1, 2, yoptions=Gtk.AttachOptions.FILL)
+        self.table.add(self.channels)
+        self.table.attach_next_to(self.channelsbox, self.channels, Gtk.PositionType.RIGHT, 1, 1)
         
         recbox = Gtk.Box(spacing=18)
         recbox.show()

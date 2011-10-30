@@ -40,49 +40,53 @@ class DetailsDialog(Gtk.Dialog):
         close_button = self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         close_button.grab_default()
         
-        self.table = Gtk.Table(6, 2)
-        self.table.set_col_spacings(18)
-        self.table.set_row_spacings(6)
+        self.table = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
+        self.table.set_column_spacing(18)
+        self.table.set_row_spacing(6)
         self.table.set_border_width(5)
         self.get_content_area().pack_start(self.table, True, True, 0)
         
-        self._title = TextFieldLabel()
-        self._channel = TextFieldLabel()
-        self._date = TextFieldLabel()
-        self._duration = TextFieldLabel()
+        self._title = TextFieldLabel(hexpand=True)
+        self._channel = TextFieldLabel(hexpand=True)
+        self._date = TextFieldLabel(hexpand=True)
+        self._duration = TextFieldLabel(hexpand=True)
         
         title_label = TextFieldLabel("<i>%s</i>" % _("Title:"))
-        self.table.attach(title_label, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
-        self.table.attach(self._title, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.FILL)
+        self.table.add(title_label)
+        self.table.attach_next_to(self._title, title_label,
+            Gtk.PositionType.RIGHT, 1, 1)
         
         channel_label = TextFieldLabel("<i>%s</i>" % _("Channel:"))
-        self.table.attach(channel_label, 0, 1, 1, 2, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
-        self.table.attach(self._channel, 1, 2, 1, 2, yoptions=Gtk.AttachOptions.FILL)
+        self.table.add(channel_label)
+        self.table.attach_next_to(self._channel, channel_label,
+            Gtk.PositionType.RIGHT, 1, 1)
         
         date_label = TextFieldLabel("<i>%s</i>" % _("Date:"))
-        self.table.attach(date_label, 0, 1, 2, 3, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
-        self.table.attach(self._date, 1, 2, 2, 3, yoptions=Gtk.AttachOptions.FILL)
+        self.table.add(date_label)
+        self.table.attach_next_to(self._date, date_label,
+            Gtk.PositionType.RIGHT, 1, 1)
         
         duration_label = TextFieldLabel("<i>%s</i>" % _("Duration:"))
-        self.table.attach(duration_label, 0, 1, 3, 4, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
-        self.table.attach(self._duration, 1, 2, 3, 4, yoptions=Gtk.AttachOptions.FILL)
+        self.table.add(duration_label)
+        self.table.attach_next_to(self._duration, duration_label,
+            Gtk.PositionType.RIGHT, 1, 1)
         
         description_label = TextFieldLabel("<i>%s</i>" % _("Description:"))
-        self.table.attach(description_label, 0, 1, 4, 5, Gtk.AttachOptions.FILL,
-            yoptions=Gtk.AttachOptions.FILL)
+        self.table.add(description_label)
             
         self.textview = Gtk.TextView()
         self.textview.set_editable(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.show()
 
-        scrolledwin = Gtk.ScrolledWindow()
+        scrolledwin = Gtk.ScrolledWindow(expand=True)
         scrolledwin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolledwin.set_shadow_type(Gtk.ShadowType.IN)
         scrolledwin.set_margin_left(12)
         scrolledwin.add(self.textview)
         scrolledwin.show()
-        self.table.attach(scrolledwin, 0, 2, 5, 6)
+        self.table.attach_next_to(scrolledwin, description_label,
+            Gtk.PositionType.BOTTOM, 2, 1)
         
         self.table.show_all()
         

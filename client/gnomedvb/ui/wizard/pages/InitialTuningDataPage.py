@@ -171,9 +171,9 @@ class InitialTuningDataPage(BasePage):
         return self.__tuning_data
         
     def _create_table(self):
-        self.table = Gtk.Table(rows=4, columns=2)
-        self.table.set_row_spacings(6)
-        self.table.set_col_spacings(18)
+        self.table = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
+        self.table.set_row_spacing(6)
+        self.table.set_column_spacing(18)
         self.table.show()
         self.pack_start(self.table, True, True, 0)
 
@@ -210,10 +210,10 @@ class InitialTuningDataPage(BasePage):
         
         self._create_table()
 
-        country = Gtk.Label()
+        country = Gtk.Label(halign=Gtk.Align.START)
         country.set_markup_with_mnemonic(_("_Country:"))
         country.show()
-        self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
+        self.table.add(country)
 
         # name, code    
         self.countries = Gtk.ListStore(str, str)
@@ -224,20 +224,22 @@ class InitialTuningDataPage(BasePage):
             self.countries.append([name, code])
     
         self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
+        self.country_combo.set_hexpand(True)
         self.country_combo.connect('changed', self.on_country_changed)
         self.__data_dir = "dvb-t"
         cell = Gtk.CellRendererText()
         self.country_combo.pack_start(cell, True)
         self.country_combo.set_entry_text_column(0)
         self.country_combo.show()
-        self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
+        self.table.attach_next_to(self.country_combo, country,
+            Gtk.PositionType.RIGHT, 1, 1)
         self.country_combo.set_active(0)
         country.set_mnemonic_widget(self.country_combo)
         
         providers = Gtk.Label()
         providers.set_markup_with_mnemonic(_("_Antenna:"))
         providers.show()
-        self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
+        self.table.add(providers)
         
         self.providers = Gtk.ListStore(str, str)
         self.providers.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -249,7 +251,9 @@ class InitialTuningDataPage(BasePage):
             self.on_providers_changed)
         providers.set_mnemonic_widget(self.providers_view)
         
-        self.table.attach(scrolledview, 0, 2, 2, 3)
+        scrolledview.set_property("expand", True)
+        self.table.attach_next_to(scrolledview, providers,
+            Gtk.PositionType.BOTTOM, 2, 1)
         
         self.providers_view.set_sensitive(False)
    
@@ -280,10 +284,10 @@ class InitialTuningDataPage(BasePage):
 
         self._create_table()
 
-        country = Gtk.Label()
+        country = Gtk.Label(halign=Gtk.Align.START)
         country.set_markup_with_mnemonic(_("_Country:"))
         country.show()
-        self.table.attach(country, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
+        self.table.add(country)
 
         self.countries = Gtk.ListStore(str, str)
         self.countries.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -293,19 +297,21 @@ class InitialTuningDataPage(BasePage):
             self.countries.append([name, code])
     
         self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
+        self.country_combo.set_hexpand(True)
         self.country_combo.connect('changed', self.on_country_changed)
         self.__data_dir = "dvb-c"
         cell = Gtk.CellRendererText()
         self.country_combo.pack_start(cell, True)
         self.country_combo.set_entry_text_column(0)
         self.country_combo.show()
-        self.table.attach(self.country_combo, 1, 2, 0, 1, yoptions=0)
+        self.table.attach_next_to(self.country_combo, country,
+            Gtk.PositionType.RIGHT, 1, 1)
         country.set_mnemonic_widget(self.country_combo)
         
         providers = Gtk.Label()
         providers.set_markup_with_mnemonic(_("_Providers:"))
         providers.show()
-        self.table.attach(providers, 0, 1, 1, 2, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
+        self.table.add(providers)
         
         self.providers = Gtk.ListStore(str, str)
         self.providers.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -316,7 +322,9 @@ class InitialTuningDataPage(BasePage):
             self.on_providers_changed)
         providers.set_mnemonic_widget(self.providers_view)
         
-        self.table.attach(scrolledview, 0, 2, 2, 3)
+        scrolledview.set_property("expand", True)
+        self.table.attach_next_to(scrolledview, providers,
+            Gtk.PositionType.BOTTOM, 2, 1)
         self.providers_view.set_sensitive(False)
          
     def _create_providers_treeview(self, providers, col_name):
