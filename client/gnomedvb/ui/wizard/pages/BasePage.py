@@ -19,10 +19,11 @@
 from gi.repository import GObject
 from gi.repository import Gtk
 
-class BasePage(Gtk.VBox):
+class BasePage(Gtk.Box):
 
     def __init__(self):
-        GObject.GObject.__init__(self, spacing=6)
+        GObject.GObject.__init__(self, orientation=Gtk.Orientation.VERTICAL,
+            spacing=6)
         self.set_border_width(24)
 
         self._label = Gtk.Label()

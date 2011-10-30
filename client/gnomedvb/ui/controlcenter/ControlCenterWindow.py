@@ -54,7 +54,7 @@ class ControlCenterWindow(Gtk.Window):
         self.set_title(_("DVB Control Center"))
         self.set_default_size(800, 500)
         
-        self.vbox_outer = Gtk.VBox()
+        self.vbox_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.vbox_outer.show()
         self.add(self.vbox_outer)
         
@@ -63,7 +63,7 @@ class ControlCenterWindow(Gtk.Window):
         self.__create_menu()
         self.__create_toolbar()
         
-        self.hbox = Gtk.HBox(spacing=6)
+        self.hbox = Gtk.Box(spacing=6)
         self.vbox_outer.pack_start(self.hbox, True, True, 0)
         
         self.hpaned = Gtk.HPaned()
@@ -71,7 +71,7 @@ class ControlCenterWindow(Gtk.Window):
         self.hpaned.set_position(175)
         self.hbox.pack_start(self.hpaned, True, True, 0)
         
-        self.vbox_left = Gtk.VBox(spacing=6)
+        self.vbox_left = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.hpaned.pack1(self.vbox_left)
 
         self.devgroupslist = Gtk.ListStore(str, int, GObject.GObject)

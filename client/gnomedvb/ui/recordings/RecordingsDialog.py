@@ -39,7 +39,7 @@ class RecordingsDialog(Gtk.Dialog):
         close_button = self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         close_button.grab_default()
             
-        hbox_main = Gtk.HBox(spacing=12)
+        hbox_main = Gtk.Box(spacing=12)
         hbox_main.set_border_width(5)
         hbox_main.show()
         self.get_content_area().pack_start(hbox_main, True, True, 0)
@@ -62,7 +62,7 @@ class RecordingsDialog(Gtk.Dialog):
         scrolledwindow.show()
         hbox_main.pack_start(scrolledwindow, True, True, 0)
         
-        buttonbox = Gtk.VButtonBox()
+        buttonbox = Gtk.ButtonBox(orientation=Gtk.Orientation.VERTICAL)
         buttonbox.set_spacing(6)
         buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
         buttonbox.show()

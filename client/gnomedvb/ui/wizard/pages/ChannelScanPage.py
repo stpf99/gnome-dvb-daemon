@@ -75,7 +75,7 @@ class ChannelScanPage(BasePage):
         
         self.popup_menu = uimanager.get_widget("/channels-popup")
 
-        topbox = Gtk.VBox(spacing=6)
+        topbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.pack_start(topbox, True, True, 0)
 
         label = TextFieldLabel()

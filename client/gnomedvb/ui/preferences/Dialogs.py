@@ -34,12 +34,12 @@ class AddToGroupDialog (Gtk.Dialog):
         self.__selected_group = None
         self.set_border_width(5)
         
-        self.vbox_main = Gtk.VBox(spacing=12)
+        self.vbox_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.vbox_main.set_border_width(5)
         self.vbox_main.show()
         self.get_content_area().pack_start(self.vbox_main, True, True, 0)
         
-        groupbox = Gtk.HBox(spacing=18)
+        groupbox = Gtk.Box(spacing=18)
         groupbox.show()
         
         group_frame = BaseFrame("<b>%s</b>" % _("Add Device to Group"), groupbox)
@@ -96,7 +96,7 @@ class NewGroupDialog (Gtk.Dialog):
         self.set_default_size(400, 150)
         self.set_border_width(5)
         
-        self.vbox_main = Gtk.VBox(spacing=12)
+        self.vbox_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.vbox_main.set_border_width(5)
         self.vbox_main.show()
         self.get_content_area().pack_start(self.vbox_main, True, True, 0)
@@ -125,7 +125,7 @@ class NewGroupDialog (Gtk.Dialog):
         self.channels.set_markup_with_mnemonic(_("Channels _file:"))
         self.channels.show()
         
-        self.channelsbox = Gtk.HBox(spacing=6)
+        self.channelsbox = Gtk.Box(spacing=6)
         self.channelsbox.show()
 
         self.channels_entry = Gtk.Entry()
@@ -142,7 +142,7 @@ class NewGroupDialog (Gtk.Dialog):
         self.table.attach(self.channels, 0, 1, 1, 2, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
         self.table.attach(self.channelsbox, 1, 2, 1, 2, yoptions=Gtk.AttachOptions.FILL)
         
-        recbox = Gtk.HBox(spacing=18)
+        recbox = Gtk.Box(spacing=18)
         recbox.show()
         
         recordings_frame = BaseFrame("<b>%s</b>" % _("Recordings"), recbox)
@@ -154,7 +154,7 @@ class NewGroupDialog (Gtk.Dialog):
         recordings.show()
         recbox.pack_start(recordings, False, True, 0)
         
-        recentrybox = Gtk.HBox(spacing=6)
+        recentrybox = Gtk.Box(spacing=6)
         recentrybox.show()
         recbox.pack_start(recentrybox, True, True, 0)
         

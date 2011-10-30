@@ -58,7 +58,7 @@ class EditTimersDialog(Gtk.Dialog):
         self.set_default_size(550, 400)
         self.set_border_width(5)
         
-        self.main_box = Gtk.HBox(spacing=12)
+        self.main_box = Gtk.Box(spacing=12)
         self.main_box.set_border_width(5)
         self.main_box.show()
         self.get_content_area().pack_start(self.main_box, True, True, 0)
@@ -109,7 +109,7 @@ class EditTimersDialog(Gtk.Dialog):
         self.scrolledwindow.add(self.timersview)
         self.main_box.pack_start(self.scrolledwindow, True, True, 0)
         
-        self.buttonbox = Gtk.VButtonBox()
+        self.buttonbox = Gtk.ButtonBox(orientation=Gtk.Orientation.VERTICAL)
         self.buttonbox.set_spacing(6)
         self.buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
         self.button_add = Gtk.Button(stock=Gtk.STOCK_ADD)

@@ -21,10 +21,11 @@ from gi.repository import Gtk
 
 __all__ = ["Frame", "BaseFrame", "TextFieldLabel"]
 
-class BaseFrame(Gtk.VBox):
+class BaseFrame(Gtk.Box):
 
     def __init__(self, markup, child, expand=True, fill=True, padding=0):
-        GObject.GObject.__init__(self, spacing=6)
+        GObject.GObject.__init__(self, orientation=Gtk.Orientation.VERTICAL,
+            spacing=6)
     
         label = Gtk.Label()
         label.set_halign(Gtk.Align.START)

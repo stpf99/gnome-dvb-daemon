@@ -45,18 +45,18 @@ class Preferences(Gtk.Window):
         self.set_default_size(600, 450)
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         
-        self.vbox = Gtk.VBox()
+        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(self.vbox)
         self.vbox.show()
         
         self.__create_toolbar()
 
-        self.vbox_main = Gtk.VBox(spacing=12)
+        self.vbox_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.vbox_main.set_border_width(12)
         self.vbox_main.show()
         self.vbox.pack_start(self.vbox_main, True, True, 0)
         
-        self.action_area = Gtk.HButtonBox()
+        self.action_area = Gtk.ButtonBox()
         self.action_area.set_layout(Gtk.ButtonBoxStyle.END)
         self.vbox_main.pack_end(self.action_area, False, True, 0)
         self.action_area.show()
@@ -133,7 +133,7 @@ class Preferences(Gtk.Window):
         button_setup.set_menu(setup_menu)
         
     def __create_registered_groups(self):
-        self.groups_box = Gtk.HBox(spacing=6)
+        self.groups_box = Gtk.Box(spacing=6)
         self.groups_box.show()
         self.vbox_main.pack_start(self.groups_box, True, True, 0)
     

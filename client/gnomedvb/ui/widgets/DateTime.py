@@ -32,7 +32,7 @@ class CalendarPopup(Gtk.Window):
     def __init__(self, dt=None):
         GObject.GObject.__init__(self, type=Gtk.WindowType.POPUP)
         self.set_border_width(5)
-        self.vbox = Gtk.VBox(spacing=12)
+        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.add(self.vbox)
         
         self.connect("key-press-event", self._on_key_press_event)
@@ -43,14 +43,14 @@ class CalendarPopup(Gtk.Window):
         self.cal.connect("day-selected-double-click", lambda w: self.popdown())
         self.vbox.pack_start(self.cal, True, True, 0)
         
-        self.time_box = Gtk.HBox(spacing=12)
+        self.time_box = Gtk.Box(spacing=12)
         self.vbox.pack_start(self.time_box, False, True, 0)
 
         time_label = Gtk.Label()
         time_label.set_markup_with_mnemonic(_("_Time:"))
         self.time_box.pack_start(time_label, False, True, 0)
 
-        spinners_box = Gtk.HBox(spacing=6)
+        spinners_box = Gtk.Box(spacing=6)
         self.time_box.pack_start(spinners_box, True, True, 0)
 
         self.hour = Gtk.SpinButton()
@@ -162,7 +162,7 @@ class DateTimeBox(Gtk.Bin):
         self.valid_color = None
         self.invalid_color = None
 
-        self.hbox = Gtk.HBox()
+        self.hbox = Gtk.Box()
 
         self.entry = Gtk.Entry()
         self.entry.set_editable(False)

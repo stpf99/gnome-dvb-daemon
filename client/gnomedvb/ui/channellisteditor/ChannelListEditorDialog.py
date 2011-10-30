@@ -45,12 +45,12 @@ class ChannelListEditorDialog(Gtk.Dialog):
         close_button = self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         close_button.grab_default()
 
-        self.vbox_main = Gtk.VBox(spacing=12)
+        self.vbox_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.vbox_main.set_border_width(5)
         self.get_content_area().pack_start(self.vbox_main, True, True, 0)
 
         # channel groups
-        groups_box = Gtk.HBox(spacing=6)
+        groups_box = Gtk.Box(spacing=6)
         groups_frame = BaseFrame("<b>%s</b>" % _("Channel groups"),
             groups_box)
         self.vbox_main.pack_start(groups_frame, False, True, 0)
@@ -69,7 +69,7 @@ class ChannelListEditorDialog(Gtk.Dialog):
         scrolledgroups.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         groups_box.pack_start(scrolledgroups, True, True, 0)
         
-        groups_buttonbox = Gtk.VButtonBox()
+        groups_buttonbox = Gtk.ButtonBox(orientation=Gtk.Orientation.VERTICAL)
         groups_buttonbox.set_spacing(6)
         groups_buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
         groups_box.pack_end(groups_buttonbox, False, False, 0)
@@ -95,7 +95,7 @@ class ChannelListEditorDialog(Gtk.Dialog):
         groups_label.set_markup_with_mnemonic(_("_Group:"))
         groups_label.set_mnemonic_widget(self.devgroupscombo)
         
-        groups_box = Gtk.HBox(spacing=6)
+        groups_box = Gtk.Box(spacing=6)
         groups_box.pack_start(groups_label, False, True, 0)
         groups_box.pack_start(self.devgroupscombo, True, True, 0)
         
@@ -104,10 +104,10 @@ class ChannelListEditorDialog(Gtk.Dialog):
         self.vbox_main.pack_start(self.devgroups_frame, False, True, 0)
      
         # channels
-        channels_box = Gtk.VBox(spacing=6)
+        channels_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.vbox_main.pack_start(channels_box, True, True, 0)
 
-        cbox = Gtk.HBox(spacing=6)
+        cbox = Gtk.Box(spacing=6)
         channels_box.pack_start(cbox, True, True, 0)
 
         # all channels
@@ -154,7 +154,7 @@ class ChannelListEditorDialog(Gtk.Dialog):
             self.select_group_helpbox)
         cbox.pack_start(self.right_frame, True, True, 0)
         
-        buttonbox = Gtk.HButtonBox()
+        buttonbox = Gtk.ButtonBox()
         buttonbox.set_spacing(6)
         buttonbox.set_layout(Gtk.ButtonBoxStyle.SPREAD)
         self.add_channel_button = Gtk.Button(stock=Gtk.STOCK_ADD)

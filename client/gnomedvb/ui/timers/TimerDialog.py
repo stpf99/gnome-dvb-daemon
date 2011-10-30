@@ -92,7 +92,7 @@ class TimerDialog(Gtk.Dialog):
         label_start.set_markup_with_mnemonic(_("_Start time:"))
         table.attach(label_start, 0, 1, 2, 3)
         
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         table.attach(hbox, 1, 2, 2, 3, yoptions=0)
 
         if starttime == None:
@@ -107,7 +107,7 @@ class TimerDialog(Gtk.Dialog):
         label_duration.set_markup_with_mnemonic(_("_Duration:"))
         table.attach(label_duration, 0, 1, 3, 4, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
         
-        duration_hbox = Gtk.HBox(spacing=6)
+        duration_hbox = Gtk.Box(spacing=6)
         table.attach(duration_hbox, 1, 2, 3, 4)
         
         self.duration = Gtk.SpinButton()
