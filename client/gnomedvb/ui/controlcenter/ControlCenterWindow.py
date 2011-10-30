@@ -66,7 +66,7 @@ class ControlCenterWindow(Gtk.Window):
         self.hbox = Gtk.Box(spacing=6)
         self.vbox_outer.pack_start(self.hbox, True, True, 0)
         
-        self.hpaned = Gtk.HPaned()
+        self.hpaned = Gtk.Paned()
         self.hpaned.set_border_width(3)
         self.hpaned.set_position(175)
         self.hbox.pack_start(self.hpaned, True, True, 0)

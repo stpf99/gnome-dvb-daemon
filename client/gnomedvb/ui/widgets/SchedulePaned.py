@@ -21,10 +21,10 @@ from gi.repository import Gtk
 from gnomedvb.ui.widgets.ScheduleStore import ScheduleStore
 from gnomedvb.ui.widgets.ScheduleView import ScheduleView
 
-class SchedulePaned (Gtk.VPaned):
+class SchedulePaned (Gtk.Paned):
 
     def __init__(self):
-        GObject.GObject.__init__(self)
+        GObject.GObject.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         
         self.scheduleview = ScheduleView()
         self.scheduleview.show()
