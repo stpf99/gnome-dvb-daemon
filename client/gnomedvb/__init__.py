@@ -23,7 +23,6 @@ import gnomedvb.userdirs
 import gettext
 from gi.repository import Gtk
 import os
-import gettext
 from os.path import abspath, join, expanduser
 
 # Setup i18n
