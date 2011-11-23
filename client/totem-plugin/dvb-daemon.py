@@ -261,6 +261,9 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         self.sidebar = None
         self._size = 0
         self._loaded_groups = 0
+        self.title_handler_id = 0
+        self.active_title = None
+        self.active_url = None
 
     def do_activate (self):
         gettext.bindtextdomain('gnome-dvb-daemon')
@@ -288,11 +291,30 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
 
     def construct(self):
         self.totem_object = self.object
+        # THIS IS A HACK:
+        # We connect to metadata-updated signal to anticipate when the title
+        # of the main window might change to immediately set the desired title.
+        # Connecting to file-opened signal is needed to disable this hack when
+        # opening files not related to gnome-dvb-daemon.
+        self.totem_object.connect("metadata-updated", self.on_metadata_updated)
+        self.totem_object.connect("file-opened", self.on_file_opened)
+
         self.manager = DVBModel()
 
         self.setup = DvbSetup()
         
         self.manager.get_all_devices(lambda devs: self.enable_dvb_support(len(devs) > 0))
+
+    def on_file_opened(self, obj, mrl):
+        # If the new MRL does not come from this plugin stop updating the title
+        if mrl != self.active_url:
+            self.active_title = None
+            self.active_url = None
+            if self.title_handler_id != 0:
+                # stop being notified on title changes
+                window = self.totem_object.get_main_window()
+                window.disconnect(self.title_handler_id)
+                self.title_handler_id = 0
 
     def enable_dvb_support(self, val):
         if val:
@@ -558,7 +580,12 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
                     if group == None:
                         return
                     channellist = group.get_channel_list()
+
                     url, success = channellist.get_channel_url(sid)
+
+                    self.set_current_title(channellist, sid)
+                    self.active_url = url
+
                 self.totem_object.action_remote(Totem.RemoteCommand.REPLACE, url)
                 self.totem_object.action_remote(Totem.RemoteCommand.PLAY, url)
         elif event.button == 3:
@@ -580,7 +607,31 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
                         self.popup_recordings.popup(None, None, None, None, event.button, time)
                 else:
                     self.popup_menu.popup(None, None, None, None, event.button, time)
-        
+
+    def set_current_title(self, channellist, sid):
+        name, success = channellist.get_channel_name(sid)
+
+        if success:
+            self.active_title = name
+        else:
+            self.active_title = None
+
+    def on_metadata_updated(self, source, artist, title, album, track):
+        main_window = self.totem_object.get_main_window()
+        if self.title_handler_id == 0 and self.active_title != None:
+            # start getting notified for title changes
+            self.title_handler_id = main_window.connect("notify::title",
+                self.on_title_changed)
+
+    def on_title_changed(self, window, param):
+        # update the window's title with the titel retrieved from the daemon
+        # as stored in self.active_title, then stop listening to changes of title
+        window.freeze_notify()
+        window.set_title(self.active_title)
+        window.disconnect(self.title_handler_id)
+        self.title_handler_id = 0
+        window.thaw_notify()
+
     def _on_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         if aiter == None or model[aiter][model.COL_GROUP] == None:
