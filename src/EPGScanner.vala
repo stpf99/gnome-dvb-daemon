@@ -261,6 +261,13 @@ namespace DVB {
             weak Gst.Structure event;
             // Iterate over events
             lock (this.channel_events) {
+                uint sid = get_uint_val (structure, "service-id");
+                if (!this.channel_events.has_key (sid)) {
+                    this.channel_events.set (sid,
+                        new HashSet<Event> (Event.hash, Event.equal));
+                }
+                HashSet<Event> list = this.channel_events.get (sid);
+
                 for (uint i=0; i<size; i++) {
                     val = events.list_get_value (i);
                     event = val.get_structure ();
@@ -297,13 +304,6 @@ namespace DVB {
 */  
                     //log.debug ("Adding new event: %s", event_class.to_string ());
 
-                    uint sid = get_uint_val (structure, "service-id");
-                    if (!this.channel_events.has_key (sid)) {
-                        this.channel_events.set (sid,
-                            new HashSet<Event> (Event.hash, Event.equal));
-                    }
-                    HashSet<Event> list = this.channel_events.get (sid);
-                    
                     list.add (event_class);
                 }
             }
