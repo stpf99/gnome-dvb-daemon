@@ -1,5 +1,4 @@
 import gnomedvb
-import gobject
 import unittest
 import sys
 import random
@@ -441,7 +440,7 @@ class TestRecordingsStore(DVBTestCase):
 
 
 if __name__ == '__main__':
-    loop = gobject.MainLoop()
+    loop = GLib.MainLoop()
     
     unittest.main()
     loop.run()
