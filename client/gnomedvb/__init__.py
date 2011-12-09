@@ -19,8 +19,8 @@
 from gnomedvb.DBusWrapper import *
 
 import gnomedvb.defs
-import gnomedvb.userdirs
 import gettext
+from gi.repository import GLib
 from gi.repository import Gtk
 import os
 from os.path import abspath, join, expanduser
@@ -46,12 +46,11 @@ def get_config_dir():
     return join(XDG_CONFIG_HOME, gnomedvb.defs.PACKAGE)
 
 def get_default_recordings_dir():
-    videos = gnomedvb.userdirs.get_xdg_user_dir(
-        gnomedvb.userdirs.DIRECTORY_VIDEOS)
+    videos = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS)
     if videos == None:
         videos = join(expanduser('~'), 'Videos')
     return join(videos, 'Recordings')
-        
+
 def seconds_to_time_duration_string(duration):
     hours = duration / 3600
     minutes = (duration / 60) % 60
