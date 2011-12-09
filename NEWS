@@ -1,4 +1,18 @@
 =============
+Version 0.2.6
+=============
+
+This is release fixes a couple of bugs, including one that caused Totem to crash
+if the plugin was enabled.
+
+- Don't use deprecated GTK+ widgets anymore
+- Use ugettext to make sure we always obtain an utf8 encoded string
+- totem-plugin: Change title of window to the name of the channel that is currently playing
+- gnomedvb: Remove userdirs module and use GLib via introspection instead
+- Added GetAdapterInfo method to Manager DBus interface
+- Droped python-gstreamer dependency
+
+=============
 Version 0.2.5
 =============
 
