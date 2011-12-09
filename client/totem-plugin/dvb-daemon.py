@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gettext
 import gnomedvb
 from gi.repository import GObject
 import os
@@ -47,7 +46,7 @@ from gnomedvb.ui.recordings.DetailsDialog import DetailsDialog
 DBUS_DVB_SERVICE = "org.gnome.DVB"
 
 def _(message):
-    return gettext.dgettext('gnome-dvb-daemon', message)
+    return gnomedvb._(message)
 
 def spawn_on_screen(argv, screen, flags=0):
 
@@ -266,8 +265,6 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         self.active_url = None
 
     def do_activate (self):
-        gettext.bindtextdomain('gnome-dvb-daemon')
-
         self.monitor_bus()
 
         try:
