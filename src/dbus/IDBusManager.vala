@@ -25,7 +25,12 @@ namespace DVB {
 	    public int id;
 	    public string name;
     }
-	
+
+    public struct AdapterInfo {
+        public string name;
+        public string type;
+    }
+
     [DBus (name = "org.gnome.DVB.Manager")]
     public interface IDBusManager : GLib.Object {
     
@@ -112,6 +117,13 @@ namespace DVB {
          * devices retrieved via udev
          */
 		public abstract GLib.HashTable<string, string>[] GetDevices () throws DBusError;
+
+        /**
+         * @info: type and name of adapter
+         * @returns: TRUE on success
+         */
+        public abstract bool GetAdapterInfo (uint adapter, uint frontend,
+            out AdapterInfo info) throws DBusError;
 
     }
 

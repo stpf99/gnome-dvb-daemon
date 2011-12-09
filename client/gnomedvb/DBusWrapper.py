@@ -17,7 +17,6 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import GObject
-import gst
 import re
 import sys
 from gi.repository import Gio
@@ -51,29 +50,8 @@ def _default_error_handler_func(*args):
 global_error_handler = _default_error_handler_func
 
 def get_adapter_info(adapter, frontend):
-    dvbelement = gst.element_factory_make ("dvbsrc", "test_dvbsrc")
-    dvbelement.set_property("adapter", int(adapter))
-    dvbelement.set_property("frontend", int(frontend))
-    pipeline = gst.Pipeline("")
-    pipeline.add(dvbelement)
-    pipeline.set_state(gst.STATE_READY)
-    pipeline.get_state()
-    bus = pipeline.get_bus()
-    info = {}
-    success = False
-    while bus.have_pending():
-        msg = bus.pop()
-        if msg.type == gst.MESSAGE_ELEMENT and msg.src == dvbelement:
-            structure = msg.structure
-            if structure.get_name() == "dvb-adapter":
-                info["type"] = structure["type"]
-                info["name"] = structure["name"]
-                success = True
-                break
-        elif msg.type == gst.MESSAGE_ERROR:
-            info = msg.structure["debug"]
-            global_error_handler(info)
-    pipeline.set_state(gst.STATE_NULL)
+    manager = DVBManagerClient()
+    info, success = manager.get_adapter_info(adapter, frontend)
     return (success, info)
 
 def get_dvb_devices():
@@ -161,7 +139,10 @@ class DVBManagerClient(GObject.GObject):
 
     def get_devices(self, **kwargs):
         return self.manager.GetDevices()
-    
+
+    def get_adapter_info(self, adapter, frontend, **kwargs):
+        return self.manager.GetAdapterInfo('(uu)', adapter, frontend, **kwargs)
+
     def on_g_signal(self, proxy, sender_name, signal_name, params):
         params = params.unpack()
         if signal_name == "GroupAdded":

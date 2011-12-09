@@ -140,8 +140,7 @@ PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0 >= $PYGOBJECT_REQUIRED)
 dnl ******************
 dnl * Python modules
 dnl *****************
-AM_CHECK_PYMOD(gobject)
-AM_CHECK_PYMOD(gst)
+AM_CHECK_PYMOD(gi.repository)
 
 AC_CONFIG_FILES([
 	Makefile

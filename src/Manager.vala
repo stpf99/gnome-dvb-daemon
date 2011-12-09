@@ -380,6 +380,44 @@ namespace DVB {
             return arr;
         }
 
+        public bool GetAdapterInfo (uint adapter, uint frontend, out AdapterInfo info) throws DBusError {
+            Gst.Element dvbelement = Gst.ElementFactory.make ("dvbsrc", null);
+            dvbelement.set("adapter", adapter);
+            dvbelement.set("frontend", frontend);
+
+            Gst.Element pipeline = new Gst.Pipeline(null);
+            ((Gst.Bin)pipeline).add(dvbelement);
+            pipeline.set_state(Gst.State.READY);
+
+            Gst.Bus bus = pipeline.get_bus ();
+
+            info = AdapterInfo();
+            bool success = false;
+            while (bus.have_pending()) {
+                Gst.Message msg = bus.pop ();
+                if (msg.type == Gst.MessageType.ELEMENT && msg.src == dvbelement) {
+                    Gst.Structure structure = msg.get_structure ();
+                    if (structure.get_name () == "dvb-adapter") {
+                        info.name = structure.get_string ("name");
+                        info.type = structure.get_string ("type");
+                        success = true;
+                        break;
+                    }
+                } else if (msg.type == Gst.MessageType.ERROR) {
+                    log.warning ("Could not retrieve adapter infos: %s",
+                        msg.get_structure().to_string ());
+                }
+            }
+            pipeline.set_state (Gst.State.NULL);
+
+            if (!success) {
+                info.name = "unknown";
+                info.type = "unknown";
+            }
+
+            return success;
+        }
+
         /**
          * @returns: Whether the device has been added successfully
          *
