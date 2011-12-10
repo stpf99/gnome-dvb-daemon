@@ -51,7 +51,8 @@ global_error_handler = _default_error_handler_func
 
 def get_adapter_info(adapter, frontend):
     manager = DVBManagerClient()
-    info, success = manager.get_adapter_info(adapter, frontend)
+    info_t, success = manager.get_adapter_info(adapter, frontend)
+    info = {"name": info_t[0], "type": info_t[1]}
     return (success, info)
 
 def get_dvb_devices():
