@@ -1,4 +1,12 @@
 =============
+Version 0.2.7
+=============
+
+This release fixes a bug where selecting a device in gnome-dvb-setup causes a crash.
+
+- gnomedvb: Let get_adapter_info return a dict
+
+=============
 Version 0.2.6
 =============
 
