@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the gnome-dvb-daemon package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Fran Diéguez <frandieguez@gnome.org>, 2011.
+# Xosé M. Lamas <correo.xmgz@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-16 23:50+0200\n"
+"POT-Creation-Date: 2012-02-07 01:00+0100\n"
 "PO-Revision-Date: 2011-08-16 23:49+0200\n"
-"Last-Translator: Fran Diéguez <frandieguez@gnome.org>\n"
+"Last-Translator: Xosé M. Lamas <correo.xmgz@gmail.com>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
@@ -273,7 +274,7 @@ msgstr "Programar unha gravación para o evento seleccionado?"
 #. translators: These appear in the About dialog, usual format applies.
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:596
 msgid "translator-credits"
-msgstr ""
+msgstr "créditos da tradución"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:58
 msgid "Devices"
@@ -388,7 +389,7 @@ msgstr "Non foi posíbel eliminar o dispositivo do grupo"
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr ""
+msgstr "Ten a certeza de querer sacar o dispositivo <b>%s</b> de <b>%s</b>"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
@@ -399,20 +400,24 @@ msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
+"Asegúrese de que escolleu o ficheiro de canles correcto asi como o "
+"directorio onde se gardan as gravacións e ambos son leíbles."
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:289
 msgid "Device could not be added to group"
-msgstr ""
+msgstr "O dispositivo non se puido engadir ao grupo"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:291
 msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
 msgstr ""
+"Asegúrese de que o dispositivo non está xa asignado a outro grupo e que "
+"todos os dispositivos do grupo son do mesmo tipo."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
-msgstr ""
+msgstr "Borrar as gravacións seleccionadas?"
 
 #: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
 msgid "Pick a date"
@@ -442,25 +447,27 @@ msgstr "Cancelar a gravación activa?"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:181
 msgid "The timer you selected belongs to a currently active recording."
-msgstr ""
+msgstr "A programación seleccionada pertence a unha gravación activa."
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:182
 msgid "Deleting this timer will abort the recording."
-msgstr ""
+msgstr "Borrar esta programación cancelará a gravación."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
 msgid "Timer could not be created"
-msgstr ""
+msgstr "Non se puido crear a programación"
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
 msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
 msgstr ""
+"Asegúrese de que a programación non entra en conflicto con outra e que non "
+"comeza no pasado."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
-msgstr ""
+msgstr "A gravación foi programada con éxito"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:62
 msgid "Add Timer"
@@ -553,6 +560,9 @@ msgid ""
 "make sure you close all programs such as video players that access your DVB "
 "card."
 msgstr ""
+"Ou ben non hai tarxetas DVB instaladas ou todas están ocupadas. Neste último "
+"caso, asegúrese de pechar todos os aplicativos que acceden a súa tarxeta DVB "
+"como poden ser os reproductores de vídeo."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
 msgid "Name"
@@ -580,21 +590,23 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
 msgid "An error occured while retrieving devices."
-msgstr ""
+msgstr "Aconteceu un erro na obtención de dispositivos."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
 msgid ""
 "Make sure other applications don't access DVB devices and you have "
 "permissions to access them."
 msgstr ""
+"Asegúrese de que outros aplicativos non acceden a dispositivos DVB e vostede "
+"ten permisos para acceder a eles."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
 msgid "The detailed error message is:"
-msgstr ""
+msgstr "A mensaxe de erro polo miudo é:"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
 msgid "Searching for devices"
-msgstr ""
+msgstr "Buscando dispositivos"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
 msgid "Device selection"
@@ -607,27 +619,27 @@ msgstr "<b>%s</b>\n"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:59
 msgid "This process can take some time."
-msgstr ""
+msgstr "Este proceso pode levar algún tempo."
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "You can select the channels you want to have in your list of channels."
-msgstr ""
+msgstr "Pode escoller as canles que quere ter na súa lista de canles."
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:66
 msgid "Select all"
-msgstr ""
+msgstr "Seleccionar todas"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:68
 msgid "Deselect all"
-msgstr ""
+msgstr "Deseleccionar todas"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:82
 msgid "_Channels:"
-msgstr ""
+msgstr "_Canles:"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:117
 msgid "Select _scrambled channels"
-msgstr ""
+msgstr "_Seleccionar canles codificadas"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:133
 msgid "Signal quality:"
@@ -643,7 +655,7 @@ msgstr "Buscando canles"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:87
 msgid "Missing requirements"
-msgstr ""
+msgstr "Faltan condicións"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:93
 msgid "Country and antenna selection"
@@ -669,26 +681,30 @@ msgstr "As tarxetas «%s» non son compatíbeis."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
 msgid "Could not find initial tuning data."
-msgstr ""
+msgstr "Non se atoparon datos de sintonización inicial."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
 msgid "Please make sure that the dvb-apps package is installed."
-msgstr ""
+msgstr "Por favor, asegúrese de que o paquete dvb-apps está instalado."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr ""
+"Por favor, escolla un país e a antena que está máis preto da súa "
+"localización."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
+"Se non sabe que antena elexir, seleccione «Don't know» na lista de "
+"proveedores."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
 msgid "However, searching for channels will take considerably longer this way."
-msgstr ""
+msgstr "Non obstante, deste xeito a búsqueda de canles tomará máis tempo."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
 msgid "Not listed"
@@ -736,6 +752,8 @@ msgid ""
 "It will automatically configure your devices and search for channels, if "
 "necessary."
 msgstr ""
+"Configurará automáticamente os seus dispositivos e buscará canles, se fose "
+"preciso."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
 msgid "Click \"Forward\" to begin."
@@ -775,37 +793,39 @@ msgid ""
 "Make sure that the antenna is connected and you have selected the correct "
 "tuning data."
 msgstr ""
+"Asegúrese de que a antena está conectada e seleccionou os datos de "
+"sintonización correctos."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:139
 #, python-format
 msgid "The device has been added to the group %s."
-msgstr ""
+msgstr "O dispositivo foi engadido ao grupo %s."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:148
 msgid "An error occured while trying to setup the device."
-msgstr ""
+msgstr "Aconteceu un erro ao tentar configurar o dispositivo."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
 msgid "Configure Another Device"
-msgstr ""
+msgstr "Configure Outro Dispositivo"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
 msgid "Configuration finished"
-msgstr ""
+msgstr "Configuración rematada"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
 #, python-format
 msgid "The device %s has been configured sucessfully."
-msgstr ""
+msgstr "O dispositivo %s foi configurado con éxito."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
 #, python-format
 msgid "Failed configuring device %s."
-msgstr ""
+msgstr "Fallou a configuración do dispositivo %s."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:44
 msgid "Cleaning up. This may take a while."
-msgstr ""
+msgstr "Limpando. Isto pode levar un anaco."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:82
 #: ../data/gnome-dvb-setup.desktop.in.in.h:2
@@ -817,12 +837,16 @@ msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
 msgstr ""
+"O ficheiro de canles xerado pode ser utilizado para configurar os seus "
+"dispositivos no centro de control."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:214
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
 msgstr ""
+"Seguro que quere cancelar?\n"
+"Perderase todo o proceso."
 
 #: ../client/totem-plugin/dvb-daemon.py:156
 #: ../client/totem-plugin/dvb-daemon.py:201
