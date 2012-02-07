@@ -11,14 +11,15 @@ client/gnomedvb/ui/timers/CalendarDialog.py
 client/gnomedvb/ui/timers/EditTimersDialog.py
 client/gnomedvb/ui/timers/MessageDialogs.py
 client/gnomedvb/ui/timers/TimerDialog.py
-client/gnomedvb/ui/wizard/__init__.py
-client/gnomedvb/ui/widgets/ChannelsView.py
 client/gnomedvb/ui/widgets/ChannelGroupsView.py
+client/gnomedvb/ui/widgets/ChannelsStore.py
+client/gnomedvb/ui/widgets/ChannelsView.py
 client/gnomedvb/ui/widgets/DateTime.py
 client/gnomedvb/ui/widgets/DetailsDialog.py
 client/gnomedvb/ui/widgets/RecordingsView.py
 client/gnomedvb/ui/widgets/RunningNextView.py
 client/gnomedvb/ui/widgets/ScheduleView.py
+client/gnomedvb/ui/wizard/__init__.py
 client/gnomedvb/ui/wizard/pages/AdaptersPage.py
 client/gnomedvb/ui/wizard/pages/ChannelScanPage.py
 client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py
@@ -27,7 +28,7 @@ client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py
 client/gnomedvb/ui/wizard/pages/SetupDevicePage.py
 client/gnomedvb/ui/wizard/pages/SummaryPage.py
 client/gnomedvb/ui/wizard/SetupWizard.py
-client/totem-plugin/dvb-daemon.py
 client/totem-plugin/dvb-daemon.plugin.in
+client/totem-plugin/dvb-daemon.py
 data/gnome-dvb-control.desktop.in.in
 data/gnome-dvb-setup.desktop.in.in
