@@ -27,7 +27,7 @@ from os.path import abspath, join, expanduser
 
 # Setup i18n
 t = gettext.translation(gnomedvb.defs.PACKAGE, fallback=True)
-_ = t.ugettext
+_ = t.gettext
 
 INFOS = {
     "authors": ["Sebastian Pölsterl <sebp@k-d-w.org>"],
