@@ -2,16 +2,16 @@
 # Copyright (C) 2011 gnome-dvb-daemon's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-dvb-daemon package.
 #
-# Matej Urbančič <mateju@svn.gnome.org>, 2011.
 # Martin Srebotnjak  <miles@filmsi.net>, 2011.
+# Matej Urbančič <mateju@svn.gnome.org>, 2011 - 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-07-19 20:27+0000\n"
-"PO-Revision-Date: 2011-09-11 22:16+0100\n"
-"Last-Translator: Martin Srebotnjak  <miles@filmsi.net>\n"
+"POT-Creation-Date: 2012-02-16 11:21+0000\n"
+"PO-Revision-Date: 2012-02-17 21:17+0100\n"
+"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -22,15 +22,15 @@ msgstr ""
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../client/gnomedvb/__init__.py:32
+#: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon"
 msgstr "Ozadnji program GNOME DVB"
 
-#: ../client/gnomedvb/__init__.py:35
+#: ../client/gnomedvb/__init__.py:38
 msgid "GNOME DVB Daemon Website"
 msgstr "Spletna stran ozadnjega programa GNOME DVB"
 
-#: ../client/gnomedvb/__init__.py:65
+#: ../client/gnomedvb/__init__.py:60
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -39,7 +39,7 @@ msgstr[1] "%d ura"
 msgstr[2] "%d uri"
 msgstr[3] "%d ure"
 
-#: ../client/gnomedvb/__init__.py:67
+#: ../client/gnomedvb/__init__.py:62
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -48,7 +48,7 @@ msgstr[1] "%d minuta"
 msgstr[2] "%d minuti"
 msgstr[3] "%d minute"
 
-#: ../client/gnomedvb/__init__.py:69
+#: ../client/gnomedvb/__init__.py:64
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -81,7 +81,7 @@ msgstr "Vsi kanali"
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:74
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:94
 msgid "Channel"
@@ -129,7 +129,7 @@ msgid "There is currently no schedule available for this channel"
 msgstr "Za ta program ni določenega urnika snemanja."
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
-#: ../client/totem-plugin/dvb-daemon.py:359
+#: ../client/totem-plugin/dvb-daemon.py:377
 msgid "_Recording schedule"
 msgstr "_Načrtovanje snemanja ..."
 
@@ -253,13 +253,13 @@ msgstr "Načrtovanje snemanja"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:148
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:31
-#: ../client/totem-plugin/dvb-daemon.py:313
+#: ../client/totem-plugin/dvb-daemon.py:331
 msgid "Recordings"
 msgstr "Posnetki"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:287
-#: ../client/totem-plugin/dvb-daemon.py:340
-#: ../client/totem-plugin/dvb-daemon.py:361
+#: ../client/totem-plugin/dvb-daemon.py:358
+#: ../client/totem-plugin/dvb-daemon.py:379
 msgid "What's on now"
 msgstr "Kaj je trenutno na sporedu"
 
@@ -272,7 +272,7 @@ msgid "Next Day"
 msgstr "Naslednji dan"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
-#: ../client/totem-plugin/dvb-daemon.py:185
+#: ../client/totem-plugin/dvb-daemon.py:184
 msgid "Schedule recording for the selected event?"
 msgstr "Ali naj se izbrani dogodek vpiše v urnik snemanja?"
 
@@ -345,7 +345,7 @@ msgid "Edit group"
 msgstr "Uredi skupino"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:39
-#: ../client/totem-plugin/dvb-daemon.py:362
+#: ../client/totem-plugin/dvb-daemon.py:380
 msgid "Digital TV Preferences"
 msgstr "Možnosti digitalne TV"
 
@@ -423,7 +423,7 @@ msgid "Pick a date"
 msgstr "Izbor datuma"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:85
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:39
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:34
 msgid "Title"
 msgstr "Naslov"
 
@@ -472,26 +472,74 @@ msgstr "Dodaj časovnik"
 msgid "_Channel:"
 msgstr "_Kanal:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:82
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:83
 msgid "Edit Timer"
 msgstr "Uredi časovnik"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:85
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:58
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:86
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
 msgid "Channel:"
 msgstr "Kanal:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:92
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:94
 msgid "_Start time:"
 msgstr "_Začetni čas:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:107
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:109
 msgid "_Duration:"
 msgstr "_Trajanje:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:121
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:124
 msgid "minutes"
 msgstr "minut"
+
+#: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
+msgid "Channel group"
+msgstr "Skupina kanala"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:107
+msgid "TV Channels"
+msgstr "Televizijski kanali"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:109
+msgid "Radio Channels"
+msgstr "Radijski kanali"
+
+#: ../client/gnomedvb/ui/widgets/DateTime.py:50
+msgid "_Time:"
+msgstr "_Čas:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
+msgid "Title:"
+msgstr "Naslov:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:64
+msgid "Date:"
+msgstr "Datum:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:69
+msgid "Duration:"
+msgstr "Trajanje:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:74
+msgid "Description:"
+msgstr "Opis:"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:37
+msgid "Length"
+msgstr "Dolžina"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:42
+msgid "Start"
+msgstr "Začetek"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
+msgid "Now"
+msgstr "Takoj"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
+msgid "Next"
+msgstr "Naslednja"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:4
 msgid "digital cable"
@@ -504,46 +552,6 @@ msgstr "digitalna satelitska"
 #: ../client/gnomedvb/ui/wizard/__init__.py:6
 msgid "digital terrestrial"
 msgstr "digitalna zemeljska"
-
-#: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
-msgid "Channel group"
-msgstr "Skupina kanala"
-
-#: ../client/gnomedvb/ui/widgets/DateTime.py:50
-msgid "_Time:"
-msgstr "_Čas:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
-msgid "Title:"
-msgstr "Naslov:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:62
-msgid "Date:"
-msgstr "Datum:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:66
-msgid "Duration:"
-msgstr "Trajanje:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:70
-msgid "Description:"
-msgstr "Opis:"
-
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
-msgid "Start"
-msgstr "Začetek"
-
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:41
-msgid "Length"
-msgstr "Dolžina"
-
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
-msgid "Now"
-msgstr "Takoj"
-
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
-msgid "Next"
-msgstr "Naslednja"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
@@ -626,94 +634,94 @@ msgstr "Izberi _kodirane kanale"
 msgid "Signal quality:"
 msgstr "Kakovost signala:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:144
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:145
 msgid "Signal strength:"
 msgstr "Moč signala:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:159
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:161
 msgid "Scanning for channels"
 msgstr "Preiskovanje kanalov"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:87
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:151
 msgid "Missing requirements"
 msgstr "Manjkajoče zahteve"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:93
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
 msgid "Country and antenna selection"
 msgstr "Izbor države in antene"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:96
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:160
 msgid "Satellite selection"
 msgstr "Izbor satelita"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:99
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
 msgid "Country and provider selection"
 msgstr "Izbor države in ponudnika"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:101
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:165
 msgid "Unsupported adapter"
 msgstr "Nepodprt prilagodilnik"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:126
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:190
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Kartice '%s' niso podprte."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
 msgid "Could not find initial tuning data."
 msgstr "Ni mogoče najti začetnih podatkov za naravnanje."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:131
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Prepričajte se, da je nameščen paket dvb-apps."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
 msgid "Please choose a country and the antenna that is closest to your location."
 msgstr "Izberite državo in anteno, ki je najbližje vašemu mestu."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
 msgid "If you don't know which antenna to choose select \"Don't know\" from the list of providers."
 msgstr "Če ne veste, katero anteno bi izbrali, s seznama ponudnikov izberite \"Ne vem\"."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:137
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "However, searching for channels will take considerably longer this way."
 msgstr "Iskanje kanalov na takšen način pa bo trajalo opazno dlje."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:142
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
 msgid "Not listed"
 msgstr "Ni na seznamu"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:153
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:224
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:214
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:288
 msgid "_Country:"
 msgstr "Držav_a:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:177
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:240
 msgid "_Antenna:"
 msgstr "_Antena:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:186
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:249
 msgid "Antenna"
 msgstr "Antena"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:263
 msgid "_Satellite:"
 msgstr "_Satelit:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:271
 msgid "Satellite"
 msgstr "Satelit"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:312
 msgid "_Providers:"
 msgstr "_Ponudniki:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:254
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:320
 msgid "Provider"
 msgstr "Ponudnik"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:303
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:371
 msgid "Don't know"
 msgstr "Ni znano"
 
@@ -810,75 +818,74 @@ msgstr ""
 "Ali ste prepričani, da želite opravilo prekiniti?\n"
 "Vsa opravila bodo izgubljena."
 
-#: ../client/totem-plugin/dvb-daemon.py:156
-#: ../client/totem-plugin/dvb-daemon.py:201
-#: ../client/totem-plugin/dvb-daemon.py:346
+#: ../client/totem-plugin/dvb-daemon.py:155
+#: ../client/totem-plugin/dvb-daemon.py:200
+#: ../client/totem-plugin/dvb-daemon.py:364
 msgid "Program Guide"
 msgstr "Programski spored"
 
-#: ../client/totem-plugin/dvb-daemon.py:306
+#: ../client/totem-plugin/dvb-daemon.py:325
 msgid "Digital TV"
 msgstr "Digitalna TV"
 
-#: ../client/totem-plugin/dvb-daemon.py:357
+#: ../client/totem-plugin/dvb-daemon.py:375
 msgid "Watch TV"
 msgstr "Gledanje TV"
 
-#: ../client/totem-plugin/dvb-daemon.py:358
+#: ../client/totem-plugin/dvb-daemon.py:376
 msgid "Digital _TV"
 msgstr "Digitalna _TV"
 
-#: ../client/totem-plugin/dvb-daemon.py:360
+#: ../client/totem-plugin/dvb-daemon.py:378
 msgid "_Program Guide"
 msgstr "_Programski spored"
 
-#: ../client/totem-plugin/dvb-daemon.py:363
+#: ../client/totem-plugin/dvb-daemon.py:381
 msgid "_Delete"
 msgstr "_Izbriši"
 
-#: ../client/totem-plugin/dvb-daemon.py:364
+#: ../client/totem-plugin/dvb-daemon.py:382
 msgid "D_etails"
 msgstr "_Podrobnosti"
 
-#: ../client/totem-plugin/dvb-daemon.py:365
+#: ../client/totem-plugin/dvb-daemon.py:383
 msgid "_Order channels"
 msgstr "_Razvrščanje kanalov"
 
-#: ../client/totem-plugin/dvb-daemon.py:368
+#: ../client/totem-plugin/dvb-daemon.py:386
 msgid "By _name"
 msgstr "Po _imenu"
 
-#: ../client/totem-plugin/dvb-daemon.py:369
+#: ../client/totem-plugin/dvb-daemon.py:387
 msgid "By _group"
 msgstr "Po _skupini"
 
-#: ../client/totem-plugin/dvb-daemon.py:372
+#: ../client/totem-plugin/dvb-daemon.py:390
 msgid "_Reverse order"
 msgstr "_Obrnjen vrstni red"
 
-#: ../client/totem-plugin/dvb-daemon.py:524
+#: ../client/totem-plugin/dvb-daemon.py:542
 msgid "Delete selected recording?"
 msgstr "Ali naj se izbriše izbrani posnetek?"
 
-#: ../client/totem-plugin/dvb-daemon.py:604
+#: ../client/totem-plugin/dvb-daemon.py:651
 #, python-format
 msgid "Recording %d"
 msgstr "Posnetek %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:664
-#: ../client/totem-plugin/dvb-daemon.py:667
+#: ../client/totem-plugin/dvb-daemon.py:709
+#: ../client/totem-plugin/dvb-daemon.py:712
 msgid "Setup Failed"
 msgstr "Namestitev je spodletela"
 
-#: ../client/totem-plugin/dvb-daemon.py:665
+#: ../client/totem-plugin/dvb-daemon.py:710
 msgid "GNOME DVB Daemon is not installed"
 msgstr "Ozadnji program GNOME DVB ni nameščen"
 
-#: ../client/totem-plugin/dvb-daemon.py:668
+#: ../client/totem-plugin/dvb-daemon.py:713
 msgid "Could not start GNOME DVB Daemon setup"
 msgstr "Ni mogoče začeti nastavitev ozadnjega programa GNOME DVB"
 
-#. www.k-d-w.org/
 #: ../data/gnome-dvb-control.desktop.in.in.h:1
 msgid "Digital TV Control Center"
 msgstr "Nadzorno središče digitalne TV"
