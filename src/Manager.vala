@@ -48,7 +48,7 @@ namespace DVB {
         private GUdev.Client udev_client;
 
         private static Manager instance;
-        private static StaticRecMutex instance_mutex = StaticRecMutex ();
+        private static RecMutex instance_mutex = RecMutex ();
         private static const string[] UDEV_SUBSYSTEMS = {"dvb", null};
 
         construct {

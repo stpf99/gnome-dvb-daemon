@@ -269,7 +269,7 @@ public class LogManager : GLib.Object {
     private static const string DEFAULT_NAME = "default";
 
     private static LogManager instance;
-    private static StaticRecMutex instance_mutex = StaticRecMutex ();
+    private static RecMutex instance_mutex = RecMutex ();
 
     private Gee.HashMap<string, Logger> loggers;
 

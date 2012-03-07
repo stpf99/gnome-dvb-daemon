@@ -33,7 +33,7 @@ namespace DVB {
         private HashMap<uint32, Recording> recordings;
         private uint32 last_id;
         private static RecordingsStore instance;
-        private static StaticRecMutex instance_mutex = StaticRecMutex ();
+        private static RecMutex instance_mutex = RecMutex ();
         
         construct {
             this.recordings = new HashMap <uint32, Recording> ();

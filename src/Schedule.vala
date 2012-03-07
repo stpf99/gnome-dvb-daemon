@@ -37,7 +37,7 @@ namespace DVB {
         // Use weak to avoid ref cycle
         public weak Channel channel {get; construct;}
 
-        private static StaticRecMutex mutex = StaticRecMutex ();
+        private static RecMutex mutex = RecMutex ();
 
         private EPGStore epgstore;
         private EventStorage events;
