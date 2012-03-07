@@ -110,7 +110,7 @@ namespace DVB {
         private bool locked;
         private MainContext context;
         private MainLoop loop;
-        private unowned Thread<void*> worker_thread;
+        private Thread<void*> worker_thread;
         private bool running;
         private uint bus_watch_id;
         
@@ -158,8 +158,8 @@ namespace DVB {
         
             this.loop = new MainLoop (this.context, false);
             try {
-                this.worker_thread = Thread.create<void*> (this.worker, true);
-            } catch (ThreadError e) {
+                this.worker_thread = new Thread<void*>.try ("Scanner-Worker-Thread", this.worker);
+            } catch (Error e) {
                 log.error ("Could not create thread: %s", e.message);
                 return;
             }

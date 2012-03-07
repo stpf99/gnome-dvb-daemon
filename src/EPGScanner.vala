@@ -45,7 +45,7 @@ namespace DVB {
         private int stop_counter;
         private MainContext context;
         private MainLoop loop;
-        private unowned Thread<void*> worker_thread;
+        private Thread<void*> worker_thread;
         private uint bus_watch_id;
         private HashMap<uint, HashSet<Event>> channel_events;
         
@@ -138,8 +138,8 @@ namespace DVB {
 
             this.loop = new MainLoop (this.context, false);
             try {
-                this.worker_thread = Thread.create<void*> (this.worker, true);
-            } catch (ThreadError e) {
+                this.worker_thread = new Thread<void*>.try ("EPG-Worker-Thread", this.worker);
+            } catch (Error e) {
                 log.error ("Could not create thread: %s", e.message);
                 return false;
             }
