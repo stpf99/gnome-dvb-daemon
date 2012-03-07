@@ -21,8 +21,8 @@ using GLib;
 
 namespace DVB.Utils {
 
-    private const string NAME_ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_STANDARD_NAME;
-    private const string READ_ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_ACCESS_CAN_READ;
+    private const string NAME_ATTRS = FileAttribute.STANDARD_TYPE + "," + FileAttribute.STANDARD_NAME;
+    private const string READ_ATTRS = FileAttribute.STANDARD_TYPE + "," + FileAttribute.ACCESS_CAN_READ;
         
     public static inline unowned string? get_nick_from_enum (GLib.Type enumtype, int val) {
         EnumClass eclass = (EnumClass)enumtype.class_ref ();
@@ -169,7 +169,7 @@ namespace DVB.Utils {
             return false;
         }
         
-        if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
+        if (!info.get_attribute_boolean (FileAttribute.ACCESS_CAN_READ)) {
             Main.log.error ("Cannot read %s", file.get_path ());
             return false;
         }
@@ -185,7 +185,7 @@ namespace DVB.Utils {
         FileInfo childinfo;
         while ((childinfo = files.next_file (null)) != null) {
             uint32 type = childinfo.get_attribute_uint32 (
-                FILE_ATTRIBUTE_STANDARD_TYPE);
+                FileAttribute.STANDARD_TYPE);
             
             File child = dir.get_child (childinfo.get_name ());
         

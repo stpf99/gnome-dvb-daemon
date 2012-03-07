@@ -30,10 +30,10 @@ namespace DVB.io {
         public RecordingsStore store {get; construct;}
         public int max_recursion {get; set; default = 3;}
 
-        private static const string ATTRS = FILE_ATTRIBUTE_STANDARD_TYPE
-            + "," + FILE_ATTRIBUTE_ACCESS_CAN_READ
-            + "," + FILE_ATTRIBUTE_STANDARD_NAME
-            + "," + FILE_ATTRIBUTE_STANDARD_IS_HIDDEN;
+        private static const string ATTRS = FileAttribute.STANDARD_TYPE
+            + "," + FileAttribute.ACCESS_CAN_READ
+            + "," + FileAttribute.STANDARD_NAME
+            + "," + FileAttribute.STANDARD_IS_HIDDEN;
 
         /**
          * @recordingsbasedir: The directory to search
@@ -70,7 +70,7 @@ namespace DVB.io {
                 return false;
             }
 
-            if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
+            if (!info.get_attribute_boolean (FileAttribute.ACCESS_CAN_READ)) {
                 log.error ("Cannot read %s", directory.get_path ());
                 return false;
             }
@@ -101,7 +101,7 @@ namespace DVB.io {
                         continue;
 
                     uint32 type = childinfo.get_attribute_uint32 (
-                        FILE_ATTRIBUTE_STANDARD_TYPE);
+                        FileAttribute.STANDARD_TYPE);
 
                     File child = recordingsbasedir.get_child (
                         childinfo.get_name ());

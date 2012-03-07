@@ -49,7 +49,7 @@ namespace DVB {
         private Map<uint, Recording> recordings;
         
         private const int CHECK_TIMERS_INTERVAL = 5;
-        private const string ATTRIBUTES = FILE_ATTRIBUTE_STANDARD_TYPE + "," + FILE_ATTRIBUTE_ACCESS_CAN_WRITE;
+        private const string ATTRIBUTES = FileAttribute.STANDARD_TYPE + "," + FileAttribute.ACCESS_CAN_WRITE;
         
         construct {
             this.active_timers = new HashSet<uint32> ();
@@ -735,13 +735,13 @@ namespace DVB {
                 return null;
             }
             
-            if (info.get_attribute_uint32 (FILE_ATTRIBUTE_STANDARD_TYPE)
+            if (info.get_attribute_uint32 (FileAttribute.STANDARD_TYPE)
                 != FileType.DIRECTORY) {
                 log.error ("%s is not a directory", dir.get_path ());
                 return null;
             }
             
-            if (!info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+            if (!info.get_attribute_boolean (FileAttribute.ACCESS_CAN_WRITE)) {
                 log.error ("Cannot write to %s", dir.get_path ());
                 return null;
             }
