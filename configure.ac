@@ -16,7 +16,7 @@ AM_PROG_CC_C_O
 LT_PREREQ([2.2.6])
 LT_INIT([disable-static])
 
-AM_PROG_VALAC([0.14.0])
+AM_PROG_VALAC([0.15.0])
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
@@ -59,7 +59,7 @@ fi
 dnl ******************
 dnl * Check for libs
 dnl ******************
-GLIB_REQUIRED=2.28.5
+GLIB_REQUIRED=2.31.0
 GST_REQUIRED=0.10.29
 GEE_REQUIRED=0.5.0
 SQLITE_REQUIRED=3.4
