@@ -187,8 +187,8 @@ namespace Main {
         // set timezone to avoid that strftime stats /etc/localtime on every call
         Environment.set_variable ("TZ", "/etc/localtime", false);
 
-        cUtils.Signal.connect (cUtils.Signal.SIGINT, on_exit);
-        cUtils.Signal.connect (cUtils.Signal.SIGTERM, on_exit);
+        Process.signal(ProcessSignal.INT, on_exit);
+        Process.signal(ProcessSignal.TERM, on_exit);
 
         OptionContext context = new OptionContext ("- record and watch TV shows using one or more DVB adapters");
         context.add_main_entries (options, null);
