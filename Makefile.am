@@ -93,7 +93,7 @@ gnome_dvb_daemon_CPPFLAGS = \
 	-include $(CONFIG_HEADER) \
 	$(NULL)
 
-VALAFLAGS = --vapidir=$(top_srcdir)/vapi $(own_pkgs) $(vala_pkgs) --basedir $(top_srcdir)
+VALAFLAGS = --target-glib=2.32 --vapidir=$(top_srcdir)/vapi $(own_pkgs) $(vala_pkgs) --basedir $(top_srcdir)
 
 gnome_dvb_daemon_LDFLAGS = \
 	-Wl,--export-dynamic
