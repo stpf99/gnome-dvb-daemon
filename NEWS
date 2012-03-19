@@ -1,4 +1,24 @@
 =============
+Version 0.2.8
+=============
+
+This release fixes issues with Unicode encoding and removes a couple of
+deprecation warnings by Vala. Therefore, the minimum required version changed
+for pygobject (3.0.4), Vala (0.15) and GLib (2.31.0).
+
+- Revert "Use ugettext to make sure we always get an utf8 encoded string"
+- Replaced StaticRecMutex with RecMutex
+- Removed usage of deprecated Thread.create function
+- Removed custom bindings of signal.h
+
+Translations:
+- Updated cs: Marek Černocký
+- Updated es: Daniel Mustieles
+- Updated gl: Xosé M. Lamas
+- Updated pl: Piotr Drąg
+- Updated sl: Matej Urbančič
+
+=============
 Version 0.2.7
 =============
 
