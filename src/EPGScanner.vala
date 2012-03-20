@@ -105,8 +105,28 @@ namespace DVB {
 
             return null;
         }
-            
-        private void reset () {
+
+        private bool setup_pipeline () {
+            DVB.Device? device = this.DeviceGroup.get_next_free_device ();
+            if (device == null) return false;
+
+            lock (this.pipeline) {
+                try {
+                    this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
+                        device.Adapter, device.Frontend));
+                } catch (Error e) {
+                    log.error ("Could not create pipeline: %s", e.message);
+                    return false;
+                }
+
+                Gst.Bus bus = this.pipeline.get_bus ();
+                this.bus_watch_id = cUtils.gst_bus_add_watch_context (bus,
+                    this.bus_watch_func, this.context);
+            }
+            return true;
+        }
+
+        private void reset_pipeline() {
             lock (this.pipeline) {
                 if (this.pipeline != null) {
                     Source bus_watch_source = this.context.find_source_by_id (
@@ -120,7 +140,11 @@ namespace DVB {
                     this.pipeline = null;
                 }
             }
-            
+        }
+
+        private void reset () {
+            reset_pipeline ();
+
             // clear doesn't unref for us so we do this instead
             Channel c;
             while ((c = this.channels.pop_head ()) != null) {
@@ -143,7 +167,7 @@ namespace DVB {
                 log.error ("Could not create thread: %s", e.message);
                 return false;
             }
-            
+
             this.stop_counter -= 1;
             if (this.stop_counter > 0) return false;
             this.stop_counter = 0;
@@ -152,22 +176,7 @@ namespace DVB {
                 this.channels.push_tail (c);
             }
             
-            DVB.Device? device = this.DeviceGroup.get_next_free_device ();
-            if (device == null) return false;
-            
-            lock (this.pipeline) {
-                try {
-                    this.pipeline = Gst.parse_launch (PIPELINE_TEMPLATE.printf (
-                        device.Adapter, device.Frontend));
-                } catch (Error e) {
-                    log.error ("Could not create pipeline: %s", e.message);
-                    return false;
-                }
-                
-                Gst.Bus bus = this.pipeline.get_bus ();
-                this.bus_watch_id = cUtils.gst_bus_add_watch_context (bus,
-                    this.bus_watch_func, this.context);
-            }
+            if (!setup_pipeline ()) return false;
 
             this.scan_source = new TimeoutSource.seconds (WAIT_FOR_EIT_DURATION);
             this.scan_source.set_callback (this.scan_new_frequency);
@@ -229,8 +238,7 @@ namespace DVB {
                 case Gst.MessageType.ELEMENT:
                     Gst.Structure structure = message.get_structure ();
                     if (structure.get_name() == "dvb-read-failure") {
-                        log.error ("Could not read from DVB device");
-                        this.stop ();
+                        log.warning ("Could not read from DVB device");
                     } else if (structure.get_name() == "eit") {
                         this.on_eit_structure (structure);
                     }
@@ -241,8 +249,13 @@ namespace DVB {
                     string debug;
                     message.parse_error (out gerror, out debug);
                     log.error ("%s %s", gerror.message, debug);
-                    this.stop ();
-                    return false;
+                    reset_pipeline();
+                    if (setup_pipeline()) {
+                        return true;
+                    } else {
+                        reset();
+                        return false;
+                    }
                 
                 default:
                 break;
