@@ -173,6 +173,10 @@ namespace DVB {
             int s = match_events (overlap, event);
             if (s > MATCH_THRESHOLD) {
                 this.events.remove_all (overlap);
+                foreach (Event overlapping_event in overlap) {
+                    this.epgstore.remove_event (overlapping_event.id, this.channel.Sid,
+                        this.channel.GroupId);
+                }
             }
 
             this.epgstore.add_or_update_event (event, this.channel.Sid,
