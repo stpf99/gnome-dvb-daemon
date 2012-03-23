@@ -113,7 +113,7 @@ namespace DVB {
         private Thread<void*> worker_thread;
         private bool running;
         private uint bus_watch_id;
-        
+
         construct {
             this.scanned_frequencies =
                 new HashSet<ScannedItem> (ScannedItem.hash, ScannedItem.equal);
@@ -178,7 +178,7 @@ namespace DVB {
             Gst.Bus bus = this.pipeline.get_bus();
             this.bus_watch_id = cUtils.gst_bus_add_watch_context (bus,
                     this.bus_watch_func, this.context);
-            
+
             this.pipeline.set_state(Gst.State.READY);
             
             this.queue_start_scan ();
@@ -249,7 +249,7 @@ namespace DVB {
             foreach (uint sid in channel_sids) {
                 DVB.Channel? c = this.channels.get_channel (sid);
                 if (c == null) {
-                    warning ("Channel with SID 0x%x does not exist", sid);
+                    log.warning ("Channel with SID 0x%x does not exist", sid);
                     continue;
                 }
                 try {
@@ -406,11 +406,11 @@ namespace DVB {
             uint freq;
             this.current_tuning_params.get_uint ("frequency", out freq);
             
-            debug("Starting scanning frequency %u (%u left)", freq,
+            log.debug("Starting scanning frequency %u (%u left)", freq,
                 this.frequencies.get_length ());
-            
+
             this.pipeline.set_state (Gst.State.READY);
-            
+
             this.prepare ();
 
             // Reset PIDs
@@ -426,7 +426,7 @@ namespace DVB {
 
             return false;
         }
-        
+
         /**
          * Check if we received a lock with the currently
          * used tuning parameters
@@ -494,7 +494,8 @@ namespace DVB {
             bool has_lock;
             structure.get_boolean ("lock", out has_lock);
             if (has_lock && !this.locked) {
-                debug("Got lock");
+                log.debug ("Got lock");
+
                 this.remove_check_for_lock_timeout ();
                 this.wait_for_tables_source =
                     new TimeoutSource.seconds (10);
@@ -510,14 +511,14 @@ namespace DVB {
         }
         
         protected void on_dvb_read_failure_structure () {
-            warning ("Read failure");
+            log.warning ("Read failure");
             /*
             this.Destroy ();
             */
         }
         
         protected void on_pat_structure (Gst.Structure structure) {
-            debug("Received PAT");
+            log.debug("Received PAT");
         
             Set<uint> pid_set = new HashSet<uint> ();
             // add BASE_PIDS
@@ -564,7 +565,7 @@ namespace DVB {
             uint tsid;
             structure.get_uint ("transport-stream-id", out tsid);
             
-            debug("Received SDT (0x%x)", tsid);
+            log.debug("Received SDT (0x%x)", tsid);
             
             Gst.Value services = structure.get_value ("services");
             uint size = services.list_get_size ();
@@ -623,7 +624,7 @@ namespace DVB {
             if (!actual)
                 return;
 
-            debug("Received NIT");
+            log.debug("Received NIT");
             
             string name;
             if (structure.has_field ("network-name")) {
@@ -775,7 +776,7 @@ namespace DVB {
                     Error gerror;
                     string debug;
                     message.parse_error (out gerror, out debug);
-                    warning ("%s %s", gerror.message, debug);
+                    log.warning ("%s %s", gerror.message, debug);
                     return true;
                 }
                 default:
