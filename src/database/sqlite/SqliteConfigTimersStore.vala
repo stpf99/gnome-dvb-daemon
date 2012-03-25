@@ -60,6 +60,11 @@ namespace DVB.database.sqlite {
         event_id INTEGER,
         PRIMARY KEY(timer_id))""";
 
+        private static const string UPDATE_TIMER  =
+        """UPDATE timers SET
+        year=?, month=?, day=?, hour=?, minute=?, duration=?
+        WHERE timer_id=? AND group_id=?""";
+
         private static const string CREATE_GROUPS =
         """CREATE TABLE channel_groups (
         channel_group_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -159,6 +164,7 @@ namespace DVB.database.sqlite {
         private Statement add_channel_group_statement;
         private Statement remove_channel_group_statement;
         private Statement select_channels_statement;
+        private Statement update_timer_statement;
 
         public SqliteConfigTimersStore () {
             File config_dir = File.new_for_path (
@@ -226,6 +232,8 @@ namespace DVB.database.sqlite {
                 out this.remove_channel_group_statement);
             this.db.prepare (SELECT_CHANNELS, -1,
                 out this.select_channels_statement);
+            this.db.prepare (UPDATE_TIMER, -1,
+                out this.update_timer_statement);
         }
 
         public Gee.List<DeviceGroup> get_all_device_groups () throws SqlError {
@@ -528,7 +536,33 @@ namespace DVB.database.sqlite {
             return true;
         }
 
-        public bool contains_timer (uint timer_id) throws SqlError {
+        public bool update_timer (Timer timer, DeviceGroup dev)
+                throws SqlError
+        {
+            uint[] start = timer.get_start_time ();
+            if (this.update_timer_statement.bind_int (1, (int)start[0]) != Sqlite.OK
+                || this.update_timer_statement.bind_int (2, (int)start[1]) != Sqlite.OK
+                || this.update_timer_statement.bind_int (3, (int)start[2]) != Sqlite.OK
+                || this.update_timer_statement.bind_int (4, (int)start[3]) != Sqlite.OK
+                || this.update_timer_statement.bind_int (5, (int)start[4]) != Sqlite.OK
+                || this.update_timer_statement.bind_int (6, (int)timer.Duration) != Sqlite.OK
+                || this.update_timer_statement.bind_int (7, (int)timer.Id) != Sqlite.OK
+                || this.update_timer_statement.bind_int (8, (int)dev.Id) != Sqlite.OK)
+            {
+                this.throw_last_error ();
+                return false;
+            }
+
+            if (this.update_timer_statement.step () != Sqlite.DONE) {
+                this.throw_last_error_reset (this.update_timer_statement);
+                return false;
+            }
+            this.update_timer_statement.reset ();
+
+            return true;
+        }
+
+        private bool contains_timer (uint timer_id) throws SqlError {
             if (this.contains_timer_statement.bind_int (1, (int)timer_id) != Sqlite.OK)
             {
                 this.throw_last_error ();

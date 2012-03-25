@@ -163,17 +163,16 @@ namespace DVB {
                         }
                     }
                 }
-                
+
                 if (!has_conflict) {
                     this.timers.set (new_timer.Id, new_timer);
                     try {
-                        new Factory().get_timers_store ().add_timer_to_device_group (new_timer,
+                        ret = new Factory().get_timers_store ().add_timer_to_device_group (new_timer,
                             this.DeviceGroup);
                     } catch (SqlError e) {
                         log.error ("%s", e.message);
                     }
-                    this.changed (new_timer.Id, ChangeType.ADDED);
-                                   
+
                     if (this.timers.size == 1 && !this.have_check_timers_timeout) {
                         log.debug ("Creating new check timers");
                         this. check_timers_event_id = Timeout.add_seconds (
@@ -181,12 +180,14 @@ namespace DVB {
                         );
                         this.have_check_timers_timeout = true;
                     }
-                    
+
                     timer_id = new_timer.Id;
-                    ret = true;
                 }
             }
-            
+
+            if (ret)
+                this.changed (new_timer.Id, ChangeType.ADDED);
+
             return ret;
         }
         
@@ -231,7 +232,7 @@ namespace DVB {
         }
 
         protected bool delete_timer (uint32 timer_id) {
-            bool val;
+            bool ret = false;
             lock (this.timers) {
                 if (this.timers.has_key (timer_id)) {
                     if (this.is_timer_active (timer_id)) {
@@ -241,18 +242,18 @@ namespace DVB {
                     }
                     this.timers.unset (timer_id);
                     try {
-                        new Factory().get_timers_store ().remove_timer_from_device_group (
+                        ret = new Factory().get_timers_store ().remove_timer_from_device_group (
                             timer_id, this.DeviceGroup);
                     } catch (SqlError e) {
                         log.error ("%s", e.message);
                     }
-                    this.changed (timer_id, ChangeType.DELETED);
-                    val = true;
-                } else {
-                    val = false;
                 }
             }
-            return val;
+
+            if (ret)
+                this.changed (timer_id, ChangeType.DELETED);
+
+            return ret;
         }
         
         /**
@@ -320,7 +321,12 @@ namespace DVB {
                         timer.set_start_time (start_year, start_month,
                             start_day, start_hour, start_minute);
 
-                        ret = true;
+                        try {
+                            ret = new Factory().get_timers_store ().update_timer (
+                                timer, this.DeviceGroup);
+                        } catch (SqlError e) {
+                            log.error ("%s", e.message);
+                        }
                     }
                 }
             }
@@ -387,6 +393,13 @@ namespace DVB {
                 if (ret) {
                     Timer timer = this.timers.get (timer_id);
                     timer.Duration = duration;
+
+                    try {
+                        ret = new Factory().get_timers_store ().update_timer (
+                            timer, this.DeviceGroup);
+                    } catch (SqlError e) {
+                        log.error ("%s", e.message);
+                    }
                 }
             }
 
