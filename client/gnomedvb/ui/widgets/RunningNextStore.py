@@ -33,30 +33,30 @@ class RunningNextStore(Gtk.ListStore):
 
     def __init__(self, group):
         Gtk.ListStore.__init__(self, str, long, str, long, str, long, long, long)
-        
+
         self.set_sort_column_id(self.COL_CHANNEL,
             Gtk.SortType.ASCENDING)
-          
+
         self._group = group
         self._fill()
-        
+
     def get_device_group(self):
         return self._group
-        
+
     def _fill(self):
         channellist = self._group.get_channel_list()
-    
+
         def add_channels(proxy, channels, user_data):
             for sid, name, is_radio in channels:
                 aiter = self.append()
                 self.set_value(aiter, self.COL_CHANNEL, name)
                 self.set_value(aiter, self.COL_SID, sid)
-                
+
                 sched = self._group.get_schedule(sid)
                 now = sched.now_playing()
                 if now != 0:
                     next_id, name, duration, short_desc = sched.get_informations(now)[0][1:]
-                    
+
                     self.set_value(aiter, self.COL_RUNNING_START, sched.get_local_start_timestamp(now)[0])
                     self.set_value(aiter, self.COL_RUNNING, escape(name))
                     self.set_value(aiter, self.COL_RUNNING_EVENT, now)
@@ -65,7 +65,6 @@ class RunningNextStore(Gtk.ListStore):
                         self.set_value(aiter, self.COL_NEXT_START, sched.get_local_start_timestamp(next_id)[0])
                         self.set_value(aiter, self.COL_NEXT, escape(name))
                         self.set_value(aiter, self.COL_NEXT_EVENT, next_id)
-        
+
         channellist.get_channel_infos(result_handler=add_channels,
             error_handler=global_error_handler)
-        

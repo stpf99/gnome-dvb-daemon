@@ -25,7 +25,7 @@ from gnomedvb.ui.wizard.pages.BasePage import BasePage
 from gnomedvb.ui.widgets.Frame import BaseFrame
 
 class AdaptersPage(BasePage):
-    
+
     __gsignals__ = {
         "finished": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [bool]),
         "next-page": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
@@ -33,7 +33,7 @@ class AdaptersPage(BasePage):
 
     def __init__(self, model):
         BasePage.__init__(self)
-        
+
         self.__adapter_info = None
         self.__use_configured = True
         self.__model = model
@@ -41,20 +41,20 @@ class AdaptersPage(BasePage):
         self._progressbar_timer = None
         self.devicesview = None
         self.frame = None
-        
+
         # Name, Type Name, Type, adapter, frontend, registered
         self.deviceslist = Gtk.ListStore(str, str, str, int, int, bool)
-        
+
     def show_no_devices(self):
         if self.frame:
             self.frame.hide()
-    
+
         text = "<big><span weight=\"bold\">%s</span></big>" % _('No devices have been found.')
         text += "\n\n"
         text += _('Either no DVB cards are installed or all cards are busy. In the latter case make sure you close all programs such as video players that access your DVB card.')
         self._label.set_markup (text)
         self._label.show()
-    
+
     def show_devices(self):
         self._label.hide()
 
@@ -62,35 +62,35 @@ class AdaptersPage(BasePage):
             self.devicesview = Gtk.TreeView.new_with_model(self.deviceslist)
             self.devicesview.get_selection().connect("changed",
                 self.on_device_selection_changed)
-        
+
             cell_name = Gtk.CellRendererText()
             col_name = Gtk.TreeViewColumn(_("Name"))
             col_name.pack_start(cell_name, True)
             col_name.set_cell_data_func(cell_name, self.name_data_func, None)
             self.devicesview.append_column(col_name)
-        
+
             cell_type = Gtk.CellRendererText()
             col_type = Gtk.TreeViewColumn(_("Type"))
             col_type.pack_start(cell_type, True)
             col_type.add_attribute(cell_type, "text", 1)
             self.devicesview.append_column(col_type)
-        
+
             scrolledview = Gtk.ScrolledWindow()
             scrolledview.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
             scrolledview.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
             scrolledview.add(self.devicesview)
             scrolledview.show_all()
-        
+
             text = "<b>%s</b>" % _("Select the device you want to configure.")
             self.frame = BaseFrame(text, scrolledview)
             self.frame.show()
             self.pack_start(self.frame, True, True, 0)
 
         self.devicesview.grab_focus()
-        
+
         if len(self.deviceslist) == 1:
             self.emit("next-page")
-        
+
     def show_all_configured(self):
         if self.frame:
             self.frame.hide()
@@ -100,11 +100,11 @@ class AdaptersPage(BasePage):
         text += _('Go to the control center if you want to alter the settings of already configured devices.')
         self._label.set_markup (text)
         self._label.show()
-        
+
     def show_error(self, error):
         if self.frame:
             self.frame.hide()
-            
+
         text = "<big><span weight=\"bold\">%s</span></big>" % _('An error occured while retrieving devices.')
         text += "\n\n"
         text += _("Make sure other applications don't access DVB devices and you have permissions to access them.")
@@ -114,7 +114,7 @@ class AdaptersPage(BasePage):
         self._label.set_selectable(True)
         self._label.set_markup (text)
         self._label.show()
-        
+
     def show_progressbar(self):
         self._label.hide()
         self._progressbar = Gtk.ProgressBar()
@@ -123,7 +123,7 @@ class AdaptersPage(BasePage):
         self._progressbar.show()
         self.pack_start(self._progressbar, False, True, 0)
         self._progressbar_timer = GObject.timeout_add(100, self.progressbar_pulse, None)
-        
+
     def destroy_progressbar(self):
         GObject.source_remove(self._progressbar_timer)
         self._progressbar_timer = None
@@ -135,17 +135,17 @@ class AdaptersPage(BasePage):
 
     def get_page_title(self):
         return _("Device selection")
-        
+
     def display_configured(self, val):
         self.__use_configured = val
-    
+
     def get_selected_device(self):
         model, aiter = self.devicesview.get_selection().get_selected()
         if aiter != None:
             return None
         else:
             return model[aiter]
-        
+
     def get_adapter_info(self):
         if self.__adapter_info == None and len(self.deviceslist) == 1:
             aiter = self.deviceslist.get_iter_first()
@@ -166,9 +166,9 @@ class AdaptersPage(BasePage):
                 for dev in group["devices"]:
                     dev.type_name = DVB_TYPE_TO_DESC[dev.type]
                     dev.registered = True
-                    registered.add(dev)       
+                    registered.add(dev)
             self.__model.get_all_devices(result_handler=devices_handler)
-        
+
         def devices_handler(devices):
             error = None
             for dev in devices:
@@ -200,7 +200,7 @@ class AdaptersPage(BasePage):
                     dev.type, dev.adapter, dev.frontend, dev.registered])
 
             self.destroy_progressbar()
-            
+
             if error != None:
                 self.show_error(error)
             elif len(devs) == 0:
@@ -210,14 +210,14 @@ class AdaptersPage(BasePage):
                     self.show_all_configured()
             else:
                 self.show_devices()
-    
+
         registered = set()
         unregistered = set()
         self.__adapter_info = None
         self.show_progressbar()
-        
+
         self.__model.get_registered_device_groups(result_handler=registered_handler)
-    
+
     def on_device_selection_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         if aiter != None:
@@ -239,4 +239,3 @@ class AdaptersPage(BasePage):
         text += "<small>%s</small>" % (_("Adapter: %d, Frontend: %d") % (adapter, frontend))
 
         cell.set_property("markup", text)
-        

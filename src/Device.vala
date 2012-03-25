@@ -33,11 +33,11 @@ namespace DVB {
         DVB_S,
         DVB_C
     }
-    
+
     public class Device : GLib.Object {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
-    
+
         private static const int PRIME = 31;
 
         public uint Adapter { get; construct; }
@@ -50,7 +50,7 @@ namespace DVB {
         }
         public ChannelList Channels { get; set; }
         public File RecordingsDirectory { get; set; }
-        
+
         private string adapter_name;
         private AdapterType adapter_type;
 
@@ -71,9 +71,9 @@ namespace DVB {
 
         public static Device new_with_type (uint adapter, uint frontend) {
         	var device = new Device (adapter, frontend);
-            
+
             device.setAdapterTypeAndName(adapter, frontend);
-            
+
             return device;
         }
 
@@ -97,24 +97,24 @@ namespace DVB {
 
             return device;
         }
-        
+
         public static bool equal (Device* dev1, Device* dev2) {
             if (dev1 == null || dev2 == null) return false;
-            
+
             return (dev1->Adapter == dev2->Adapter
                     && dev2->Frontend == dev2->Frontend);
         }
-        
+
         public static uint hash (Device *device) {
             if (device == null) return 0;
-            
+
             return hash_without_device (device->Adapter, device->Frontend);
         }
-        
+
         public static uint hash_without_device (uint adapter, uint frontend) {
             return 2 * PRIME + PRIME * adapter + frontend;
         }
-        
+
         public bool is_busy () {
             Element dvbsrc = ElementFactory.make ("dvbsrc", "text_dvbsrc");
             if (dvbsrc == null) {
@@ -123,15 +123,15 @@ namespace DVB {
             }
             dvbsrc.set ("adapter", this.Adapter);
             dvbsrc.set ("frontend", this.Frontend);
-            
+
             Element pipeline = new Pipeline ("");
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
-            
+
             Gst.Bus bus = pipeline.get_bus();
-            
+
             bool busy_val = false;
-            
+
             while (bus.have_pending()) {
                 Message msg = bus.pop();
 
@@ -139,15 +139,15 @@ namespace DVB {
                     Error gerror;
                     string debug_text;
                     msg.parse_error (out gerror, out debug_text);
-                    
+
                     log.debug ("Error tuning: %s; %s", gerror.message, debug_text);
-                    
+
                     busy_val = true;
                 }
             }
-               
+
             pipeline.set_state(State.NULL);
-            
+
             return busy_val;
         }
 
@@ -159,16 +159,16 @@ namespace DVB {
             }
             dvbsrc.set ("adapter", adapter);
             dvbsrc.set ("frontend", frontend);
-            
+
             Element pipeline = new Pipeline ("type_name");
             ((Bin)pipeline).add (dvbsrc);
             pipeline.set_state (State.READY);
-            
+
             Gst.Bus bus = pipeline.get_bus();
-            
+
             bool success = false;
             string adapter_type = null;
-            
+
             while (bus.have_pending()) {
                 Message msg = bus.pop();
 
@@ -188,7 +188,7 @@ namespace DVB {
                     warning ("%s %s", gerror.message, debug);
                 }
             }
-               
+
             pipeline.set_state(State.NULL);
 
             this.adapter_type = get_type_from_string (adapter_type);

@@ -26,7 +26,7 @@ namespace DVB {
     public class EPGScanner : GLib.Object {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
-    
+
         // how long to wait after all channels have been scanned
         // before the next iteration is started
         private static int CHECK_EIT_INTERVAL = -1;
@@ -48,14 +48,14 @@ namespace DVB {
         private Thread<void*> worker_thread;
         private uint bus_watch_id;
         private HashMap<uint, HashSet<Event>> channel_events;
-        
+
         construct {
             this.channels = new GLib.Queue<Channel> ();
             this.stop_counter = 0;
             this.context = new MainContext ();
             this.channel_events = new HashMap<uint, HashSet<Event>> ();
         }
-        
+
         /**
          * @device: The device where EPG should be collected from
          */
@@ -67,20 +67,20 @@ namespace DVB {
                 CHECK_EIT_INTERVAL = settings.get_epg_scan_interval ();
             }
         }
-        
+
         /**
          * Stop collecting EPG data
          */
         public void stop () {
             log.debug ("Stopping EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
-        
+
             if (this.stop_counter == 0) {
                 this.remove_timeouts ();
                 this.reset ();
             }
             this.stop_counter += 1;
-        }   
-            
+        }
+
         private void remove_timeouts () {
             if (this.scan_source != null) {
                 this.scan_source.destroy ();
@@ -153,7 +153,7 @@ namespace DVB {
             this.channels.clear ();
             this.channel_events.clear ();
         }
-        
+
         /**
          * Start collection EPG data for all channels
          */
@@ -175,7 +175,7 @@ namespace DVB {
             foreach (Channel c in this.DeviceGroup.Channels) {
                 this.channels.push_tail (c);
             }
-            
+
             if (!setup_pipeline ()) return false;
 
             this.scan_source = new TimeoutSource.seconds (WAIT_FOR_EIT_DURATION);
@@ -184,7 +184,7 @@ namespace DVB {
 
             return false;
         }
-        
+
         /**
          * Scan the next frequency for EPG data
          */
@@ -215,24 +215,24 @@ namespace DVB {
                 this.queue_source.attach (this.context);
                 return false;
             }
-            
+
             Channel channel = this.channels.pop_head ();
             channel.Schedule.remove_expired_events ();
-/*            
+/*
             log.debug ("Scanning channel %s (%u left)",
                 channel.Name, this.channels.get_length ());
-*/          
+*/
             lock (this.pipeline) {
                 this.pipeline.set_state (Gst.State.READY);
                 Gst.Element dvbsrc = ((Gst.Bin)this.pipeline).get_by_name ("dvbsrc");
                 channel.setup_dvb_source (dvbsrc);
-                
+
                 this.pipeline.set_state (Gst.State.PLAYING);
             }
-            
+
             return true;
         }
-        
+
         private bool bus_watch_func (Gst.Bus bus, Gst.Message message) {
             switch (message.type) {
                 case Gst.MessageType.ELEMENT:
@@ -243,7 +243,7 @@ namespace DVB {
                         this.on_eit_structure (structure);
                     }
                 break;
-                
+
                 case Gst.MessageType.ERROR:
                     Error gerror;
                     string debug;
@@ -256,19 +256,19 @@ namespace DVB {
                         reset();
                         return false;
                     }
-                
+
                 default:
                 break;
             }
             return true;
         }
-        
+
         public void on_eit_structure (Gst.Structure structure) {
             Gst.Value events = structure.get_value ("events");
-            
+
             if (!(events.holds (Gst.Value.list_get_type ())))
                 return;
-            
+
             uint size = events.list_get_size ();
             Gst.Value val;
             weak Gst.Structure event;
@@ -314,7 +314,7 @@ namespace DVB {
 /*
                     Gst.Value components = event.get_value ("components");
                     add_components (components, event_class);
-*/  
+*/
                     //log.debug ("Adding new event: %s", event_class.to_string ());
 
                     list.add (event_class);
@@ -324,40 +324,40 @@ namespace DVB {
 /*
         private static void add_components (Gst.Value components, Event event_class) {
             uint components_len = components.list_get_size ();
-                
+
             Gst.Value comp_val;
             weak Gst.Structure component;
             for (uint j=0; j<components_len; j++) {
                 comp_val = components.list_get_value (j);
                 component = comp_val.get_structure ();
-                
+
                 string comp_name = component.get_name ();
                 if (comp_name == "audio") {
                     var audio = new Event.AudioComponent ();
                     audio.type = component.get_string ("type");
-                    
+
                     event_class.audio_components.append (audio);
                 } else if (comp_name == "video") {
                     var video = new Event.VideoComponent ();
-                    
+
                     bool highdef;
                     component.get_boolean ("high-definition", out highdef);
                     video.high_definition = highdef;
-                    
+
                     video.aspect_ratio = component.get_string ("aspect-ratio");
-                    
+
                     int freq;
                     component.get_int ("frequency", out freq);
                     video.frequency = freq;
-                    
+
                     event_class.video_components.append (video);
                 } else if (comp_name == "teletext") {
                     var teletext = new Event.TeletextComponent ();
                     teletext.type = component.get_string ("type");
-                    
+
                     event_class.teletext_components.append (teletext);
                 }
-            }            
+            }
         }
 */
         private static uint get_uint_val (Gst.Structure structure, string name) {

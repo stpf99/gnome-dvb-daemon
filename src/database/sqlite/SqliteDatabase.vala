@@ -28,7 +28,7 @@ namespace DVB.database.sqlite {
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public File database_file {get; construct;}
-        
+
         protected Database db;
         private int new_version;
 
@@ -54,14 +54,14 @@ namespace DVB.database.sqlite {
                     log.error ("Could not create directory: %s", e.message);
                     return;
                 }
-            }                
+            }
 
             if (Database.open (dbfile.get_path (), out this.db) != Sqlite.OK) {
                 this.throw_last_error ();
             }
 
             int version = this.get_version ();
-            
+
             if (create_tables) {
                 log.debug ("Creating tables");
                 this.create ();

@@ -32,12 +32,12 @@ namespace DVB {
         public uint id;
         /* Time is stored in UTC */
         public time_t starttime;
-    
+
         public static int compare (EventElement event1, EventElement event2) {
             if (event1 == null && event2 == null) return 0;
             else if (event1 == null && event2 != null) return +1;
             else if (event1 != null && event2 == null) return -1;
-        
+
             if (event1.starttime < event2.starttime) return -1;
             else if (event1.starttime > event2.starttime) return +1;
             else return 0;
@@ -207,7 +207,7 @@ namespace DVB {
                 return false;
             }
 
-            public bool has_next () {   
+            public bool has_next () {
                 assert (_stamp == _storage._stamp);
                 return (!_iter.is_end ());
             }

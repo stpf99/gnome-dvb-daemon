@@ -32,9 +32,9 @@ class ScheduleStore(Gtk.ListStore):
      COL_EXTENDED_DESC,
      COL_RECORDED,
      COL_EVENT_ID,) = range(8)
-     
+
     NEW_DAY = -1L
-    
+
     __gsignals__ = {
         "loading-finished":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
     }
@@ -45,18 +45,18 @@ class ScheduleStore(Gtk.ListStore):
         if self._client != None:
             self._recorder = dev_group.get_recorder()
             self._fill_all()
-        
+
     def reload_all(self):
         self.clear()
         self._fill_all()
-        
+
     def _fill_from_now(self):
         current = self._client.now_playing()
-        
+
         while current != 0:
             self._append_event(current)
             current = self._client.next(current)
-            
+
     def _fill_all(self):
         def append_event(proxy, events, user_data):
             prev_date = (0,0,0,)
@@ -72,39 +72,39 @@ class ScheduleStore(Gtk.ListStore):
                     self.set_value(date_iter, self.COL_EVENT_ID, self.NEW_DAY)
                 prev_date = new_date
             self.emit("loading-finished")
-        
+
         self._client.get_all_event_infos(result_handler=append_event, error_handler=global_error_handler)
-        
+
     def get_date(self, aiter):
         dt = self[aiter][self.COL_DATETIME]
         return (dt.year, dt.month, dt.day,)
-            
+
     def get_time(self, aiter):
         dt = self[aiter][self.COL_DATETIME]
         return (dt.hour, dt.minute,)
-        
+
     def _append_event(self, event):
         event_id, next_id, name, duration, short_desc = event
         name = escape(name)
         short_desc = escape(short_desc)
-        
+
         start_arr = self._client.get_local_start_time(event_id)[0]
-        
+
         rec = self._recorder.has_timer_for_event(event_id,
             self._client.get_channel_sid())
-        
+
         # %X -> display locale's time representation
-        return self.append([datetime.datetime(*start_arr), "%X",            
+        return self.append([datetime.datetime(*start_arr), "%X",
             duration, name, short_desc, None,
             rec, event_id])
-            
+
     def get_extended_description(self, aiter):
         if aiter != None:
-            event_id = self[aiter][self.COL_EVENT_ID] 
+            event_id = self[aiter][self.COL_EVENT_ID]
             ext_desc = self._client.get_extended_description(event_id)[0]
             self[aiter][self.COL_EXTENDED_DESC] = ext_desc
         return ext_desc
-        
+
     def get_next_day_iter(self, aiter):
         """
         Get the iter pointing to the row that represents
@@ -115,19 +115,19 @@ class ScheduleStore(Gtk.ListStore):
         """
         if aiter == None:
             aiter = self.get_iter_first ()
-        
+
         # If the selected row marks a new day
         # we still want the following day
         aiter = self.iter_next (aiter)
-            
+
         while (aiter != None):
             row = self[aiter]
             if row[self.COL_EVENT_ID] == self.NEW_DAY:
                 return row.iter
             aiter = self.iter_next (aiter)
-                
+
         return None
-        
+
     def get_previous_day_iter(self, aiter):
         """
         Get the iter pointing to the row that represents
@@ -137,14 +137,14 @@ class ScheduleStore(Gtk.ListStore):
         """
         if aiter == None:
             return None
-        
+
         path0 = self.get_path(aiter)
 
         # If the selected row marks a new day
         # we still want the previous day
         # therefore we have to come across 2 new days
         day_seen = 0
-        
+
         root = Gtk.TreePath("0")
         while path0 != root:
             aiter = self.get_iter(path0)
@@ -154,6 +154,6 @@ class ScheduleStore(Gtk.ListStore):
                 if day_seen == 2:
                     return row.iter
             path0.prev()
-        
+
         return None
 

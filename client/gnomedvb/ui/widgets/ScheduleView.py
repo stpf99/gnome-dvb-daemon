@@ -30,7 +30,7 @@ class ScheduleView(Gtk.TreeView):
         GObject.GObject.__init__(self)
         if model != None:
             self.set_model(model)
-        
+
         self.prev_selection = None
         self.set_property("headers-visible", False)
         self.date_color = None
@@ -49,7 +49,7 @@ class ScheduleView(Gtk.TreeView):
         col_time.add_attribute(cell_time, "format", ScheduleStore.COL_FORMAT)
 
         self.append_column(col_time)
-        
+
         cell_description = Gtk.CellRendererText()
         cell_description.set_property("wrap-width", 500)
         cell_description.set_property("wrap-mode", Pango.WrapMode.WORD)
@@ -75,7 +75,7 @@ class ScheduleView(Gtk.TreeView):
         if data and data.lower().startswith(key.lower()):
             return False
         return True
-    
+
     def _get_description_data(self, column, cell, model, aiter, user_data=None):
         self._set_colors()
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
@@ -88,18 +88,18 @@ class ScheduleView(Gtk.TreeView):
         else:
             cell.set_property("xalign", 0)
             cell.set_property ("cell-background-rgba", self.entry_color)
-            
+
             duration = seconds_to_time_duration_string(model[aiter][ScheduleStore.COL_DURATION])
             title = model[aiter][ScheduleStore.COL_TITLE]
-            
+
             short_desc = model[aiter][ScheduleStore.COL_SHORT_DESC]
             if len(short_desc) > 0:
                 short_desc += "\n"
-            
+
             description = "<b>%s</b>\n%s<small><i>%s: %s</i></small>" % (title, short_desc, _("Duration"), duration)
-        
+
         cell.set_property("markup", description)
-        
+
     def _get_time_data(self, column, cell, model, aiter, user_data=None):
         event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
 

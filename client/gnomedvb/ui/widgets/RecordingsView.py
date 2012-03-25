@@ -29,11 +29,11 @@ class RecordingsView(Gtk.TreeView):
     def __init__(self, model=None):
         GObject.GObject.__init__(self)
         if model != None:
-            self.set_model(model)      
+            self.set_model(model)
 
         self._append_text_column(_("Title"), RecordingsStore.COL_NAME)
         self._append_text_column(_("Channel"), RecordingsStore.COL_CHANNEL)
-        
+
         col_length, cell_length = self._append_text_column(_("Length"),
             RecordingsStore.COL_DURATION)
         col_length.set_cell_data_func(cell_length, self._get_length_data, None)
@@ -42,16 +42,15 @@ class RecordingsView(Gtk.TreeView):
         col = Gtk.TreeViewColumn(_("Start"), cell,
             datetime=RecordingsStore.COL_START)
         self.append_column(col)
-            
+
     def _append_text_column(self, title, col_index):
         cell = Gtk.CellRendererText()
         col = Gtk.TreeViewColumn(title, cell, markup=col_index)
         self.append_column(col)
-        
+
         return (col, cell)
-        
+
     def _get_length_data(self, column, cell, model, aiter, user_data=None):
         duration = model[aiter][RecordingsStore.COL_DURATION]
         duration_str = seconds_to_time_duration_string(duration)
         cell.set_property("text", duration_str)
-                

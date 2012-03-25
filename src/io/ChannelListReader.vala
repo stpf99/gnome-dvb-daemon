@@ -28,17 +28,17 @@ namespace DVB.io {
 
         public ChannelList channels {get; construct;}
         public AdapterType Type {get; construct;}
-        
+
         public ChannelListReader (ChannelList channels, AdapterType type) {
             base (channels: channels, Type: type);
         }
 
         public void read_into () throws Error {
             return_if_fail (this.channels.channels_file != null);
-        
+
             var reader = new DataInputStream (
                 this.channels.channels_file.read (null));
-        	
+
         	string line = null;
         	size_t len;
         	while ((line = reader.read_line (out len, null)) != null) {
@@ -59,20 +59,20 @@ namespace DVB.io {
                 case AdapterType.DVB_T:
                 c = parse_terrestrial_channel (line);
                 break;
-                
+
                 case AdapterType.DVB_S:
                 c = parse_satellite_channel (line);
                 break;
-                
+
                 case AdapterType.DVB_C:
                 c = parse_cable_channel (line);
                 break;
-                
+
                 default:
                 log.error ("Unknown adapter type");
                 break;
             }
-            
+
             if (c != null && c.is_valid ()) {
                 return c;
             } else {
@@ -81,19 +81,19 @@ namespace DVB.io {
                 return null;
             }
         }
-        
+
         /**
          * @line: The line to parse
          * @returns: #TerrestrialChannel representing that line
-         * 
+         *
          * A line looks like
          * Das Erste:212500000:INVERSION_AUTO:BANDWIDTH_7_MHZ:FEC_3_4:FEC_1_2:QAM_16:TRANSMISSION_MODE_8K:GUARD_INTERVAL_1_4:HIERARCHY_NONE:513:514:32
          */
         private TerrestrialChannel? parse_terrestrial_channel (string line) {
             var channel = new TerrestrialChannel (this.channels.GroupId);
-            
+
             string[] fields = line.split(":");
-            
+
             int i=0;
             string val;
             bool failed = false;
@@ -179,21 +179,21 @@ namespace DVB.io {
                         failed = true;
                         break;
                     }
-                } else if (i == 10) {                
+                } else if (i == 10) {
                     channel.VideoPID = (uint)int.parse (val);
                 } else if (i == 11) {
                     channel.AudioPIDs.add ((uint)int.parse (val));
                 } else if (i == 12) {
                     channel.Sid = (uint)int.parse (val);
                 }
-                
+
                 i++;
             }
-            
+
             if (failed) return null;
             else return channel;
         }
-        
+
         /**
          *
          * A line looks like
@@ -201,9 +201,9 @@ namespace DVB.io {
          */
         private SatelliteChannel? parse_satellite_channel (string line) {
             var channel = new SatelliteChannel (this.channels.GroupId);
-            
+
             string[] fields = line.split(":");
-            
+
             int i=0;
             string val;
             while ( (val = fields[i]) != null) {
@@ -225,20 +225,20 @@ namespace DVB.io {
                 } else if (i == 4) {
                     // symbol rate is stored in kBaud
                     channel.SymbolRate = (uint)int.parse (val);
-                } else if (i == 5) {                
+                } else if (i == 5) {
                     channel.VideoPID = (uint)int.parse (val);
                 } else if (i == 6) {
                     channel.AudioPIDs.add ((uint)int.parse (val));
                 } else if (i == 7) {
                     channel.Sid = (uint)int.parse (val);
                 }
-                
+
                 i++;
             }
-            
+
             return channel;
         }
-        
+
         /**
          *
          * line looks like
@@ -246,9 +246,9 @@ namespace DVB.io {
          */
         private CableChannel? parse_cable_channel (string line) {
             var channel = new CableChannel (this.channels.GroupId);
-            
+
             string[] fields = line.split(":");
-            
+
             int i=0;
             string val;
             bool failed = false;
@@ -291,25 +291,25 @@ namespace DVB.io {
                         failed = true;
                         break;
                     }
-                } else if (i == 6) {                
+                } else if (i == 6) {
                     channel.VideoPID = (uint)int.parse (val);
                 } else if (i == 7) {
                     channel.AudioPIDs.add ((uint)int.parse (val));
                 } else if (i == 8) {
                     channel.Sid = (uint)int.parse (val);
                 }
-                
+
                 i++;
             }
-            
+
             if (failed) return null;
             else return channel;
         }
-        
+
         private static bool get_value_with_prefix (GLib.Type enumtype, string name,
                                                   string prefix, out int val) {
             return Utils.get_value_by_name_from_enum (enumtype, prefix + name, out val);
         }
     }
-    
+
 }

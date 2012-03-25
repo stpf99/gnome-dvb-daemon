@@ -25,20 +25,20 @@ from gnomedvb import global_error_handler
 from gnomedvb.ui.widgets.RunningNextStore import RunningNextStore
 from gnomedvb.ui.widgets.DetailsDialog import DetailsDialog
 from gnomedvb.ui.timers.MessageDialogs import TimerFailureDialog, TimerSuccessDialog
-       
+
 class RunningNextView(Gtk.TreeView):
 
     def __init__(self, model):
         GObject.GObject.__init__(self)
         self.set_model(model)
-        
+
         cell_channel = Gtk.CellRendererText()
         col_channel = Gtk.TreeViewColumn(_("Channel"), cell_channel)
         col_channel.add_attribute(cell_channel, "markup",
             RunningNextStore.COL_CHANNEL)
         self.append_column(col_channel)
         col_channel.index = RunningNextStore.COL_CHANNEL
-        
+
         cell_now_start = Gtk.CellRendererText()
         cell_now = Gtk.CellRendererText()
         col_now = Gtk.TreeViewColumn(_("Now"))
@@ -50,7 +50,7 @@ class RunningNextView(Gtk.TreeView):
         col_now.set_property("resizable", True)
         self.append_column(col_now)
         col_now.index = RunningNextStore.COL_RUNNING
-        
+
         cell_next_start = Gtk.CellRendererText()
         cell_next = Gtk.CellRendererText()
         col_next = Gtk.TreeViewColumn(_("Next"))
@@ -62,9 +62,9 @@ class RunningNextView(Gtk.TreeView):
         col_next.add_attribute(cell_next, "markup", RunningNextStore.COL_NEXT)
         self.append_column(col_next)
         col_next.index = RunningNextStore.COL_NEXT
-        
+
         self.connect("button-press-event", self._on_button_press_event)
-    
+
     def _format_time(self, column, cell, model, aiter, col_id):
         timestamp = model[aiter][col_id]
         if timestamp == 0:
@@ -72,24 +72,24 @@ class RunningNextView(Gtk.TreeView):
         else:
             dt = datetime.datetime.fromtimestamp(timestamp)
             time_str = dt.strftime("%X")
-        
+
         cell.set_property("text", time_str)
-        
+
     def _on_button_press_event(self, treeview, event):
-            
+
         def show_details(proxy, result, user_data):
             data, success = result
             if not success:
                 return
             event_id, next_id, name, duration, desc = data
-            
+
             ext_desc, success = schedule.get_extended_description(event_id)
             if success:
                 if len(desc) == 0:
                     desc = ext_desc
                 else:
                     desc += "\n%s" % ext_desc
-            
+
             dialog = DetailsDialog(self.get_toplevel())
             dialog.set_description(desc)
             dialog.set_title(name)
@@ -116,7 +116,7 @@ class RunningNextView(Gtk.TreeView):
                         event_id = model[aiter][RunningNextStore.COL_NEXT_EVENT]
                     else:
                         return
-                    
+
                     devgroup = model.get_device_group()
                     sid = model[aiter][RunningNextStore.COL_SID]
                     schedule = devgroup.get_schedule(sid)
@@ -139,4 +139,3 @@ class RunningNextView(Gtk.TreeView):
         recorder.add_timer_for_epg_event(event_id, channel_sid,
             result_handler=on_reply,
             error_handler=global_error_handler)
-        

@@ -26,38 +26,38 @@ namespace DVB.MediaServer2 {
 
     private static const string SERVICE_NAME = "org.gnome.UPnP.MediaServer2.DVBDaemon";
     private static const string ROOT_PATH = "/org/gnome/UPnP/MediaServer2/DVBDaemon";
-    
+
     private static const string GROUP_PATH = "/org/gnome/UPnP/MediaServer2/DVBDaemon/Group%u";
     private static const string CHANNEL_PATH = GROUP_PATH + "/Channel%u";
-    
+
     /**
      * Holds all device groups
      *
      * It only contains containers only and no items
      */
     public class DeviceGroupsMediaContainer2 : GLib.Object, MediaContainer2, MediaObject2 {
-        
+
         private HashMap<uint, ChannelsMediaContainer2> containers;
         private ObjectPath path;
-        
+
         construct {
             containers = new  HashMap<uint, ChannelsMediaContainer2> ();
-        
+
             Manager manager = Manager.get_instance ();
             manager.group_added.connect (this.on_device_added);
             manager.group_removed.connect (this.on_device_removed);
-            
+
             this.path = new ObjectPath (ROOT_PATH);
         }
-        
+
         public void create_container_services () {
             Manager manager = Manager.get_instance ();
-            
+
             foreach (DeviceGroup devgroup in manager.device_groups) {
                 this.create_service (devgroup);
             }
         }
-        
+
         private void create_service (DeviceGroup devgroup) {
             log.debug ("Creating container for device group %u", devgroup.Id);
 
@@ -73,7 +73,7 @@ namespace DVB.MediaServer2 {
 
             this.containers.set (devgroup.Id, devgroup_container);
         }
-        
+
         public ObjectPath Parent {
             owned get {
                 // root container => ref to itsself
@@ -86,7 +86,7 @@ namespace DVB.MediaServer2 {
                 return ROOT_PATH;
             }
         }
-        
+
         public string DisplayName {
             owned get {
                 return "@REALNAME@'s TV on @HOSTNAME@";
@@ -110,19 +110,19 @@ namespace DVB.MediaServer2 {
                 return ContainerCount;
             }
         }
-       
+
         public uint ContainerCount {
             get {
                 return this.containers.size;
             }
         }
-        
+
         public bool Searchable {
             get {
                 return false;
             }
         }
-     
+
         public GLib.HashTable<string, Variant?>[] ListContainers (
                 uint offset, uint max, string[] filter) throws DBusError {
 
@@ -159,20 +159,20 @@ namespace DVB.MediaServer2 {
                 uint offset, uint max, string[] filter) throws DBusError {
             return new GLib.HashTable<string, Variant?>[0];
         }
-        
+
         private void on_device_added (uint group_id) {
             Manager manager = Manager.get_instance ();
             DeviceGroup devgroup = manager.get_device_group_if_exists (group_id);
             this.create_service (devgroup);
             this.Updated ();
         }
-        
+
         private void on_device_removed (uint group_id) {
             this.containers.unset (group_id);
             this.Updated ();
         }
     }
-    
+
 
     /**
      * Holds a list of channels for a single device group
@@ -185,22 +185,22 @@ namespace DVB.MediaServer2 {
 
         private DeviceGroup device_group;
         private HashMap<uint, ChannelMediaItem2> items;
-        
+
         construct {
             this.items = new HashMap<uint, ChannelMediaItem2> ();
         }
-        
+
         public ChannelsMediaContainer2(DeviceGroup devgroup, ObjectPath parent) {
             this.device_group = devgroup;
             this.parent = parent;
         }
-        
+
         public void create_item_services (DBusConnection conn) {
             foreach (Channel channel in this.device_group.Channels) {
                 this.create_service (channel);
             }
         }
-        
+
         public void create_service (Channel channel) {
             log.debug ("Creating container for channel %u", channel.Sid);
 
@@ -210,10 +210,10 @@ namespace DVB.MediaServer2 {
                     channel_item.Path, channel_item);
             Utils.dbus_register_object<MediaObject2> (conn,
                     channel_item.Path, channel_item);
-                    
+
             this.items.set (channel.Sid, channel_item);
         }
-    
+
         public ObjectPath Parent {
             owned get {
                 return this.parent;
@@ -231,7 +231,7 @@ namespace DVB.MediaServer2 {
                 return this.device_group.Name;
             }
         }
-    
+
         public string Type {
             owned get {
                 return "container";
@@ -264,7 +264,7 @@ namespace DVB.MediaServer2 {
 
         public GLib.HashTable<string, Variant?>[] ListItems (
                 uint offset, uint max, string[] filter) throws DBusError {
-        
+
             uint num_elements = get_num_elements (this.items.size, offset, max);
 
             GLib.HashTable<string, Variant?>[] hash =
@@ -289,7 +289,7 @@ namespace DVB.MediaServer2 {
 
             return hash;
         }
-        
+
         public GLib.HashTable<string, Variant?>[] ListContainers (
                 uint offset, uint max, string[] filter) throws DBusError {
             return new GLib.HashTable<string, Variant?>[0];
@@ -299,10 +299,10 @@ namespace DVB.MediaServer2 {
                 uint offset, uint max, string[] filter) throws DBusError {
             return ListItems(offset, max, filter);
         }
-        
+
     }
-    
-    
+
+
     /**
      * Holds a single channel
      */
@@ -315,7 +315,7 @@ namespace DVB.MediaServer2 {
             this.channel = channel;
             this.parent = parent;
         }
-    
+
         public ObjectPath Parent {
             owned get {
                 return this.parent;
@@ -333,7 +333,7 @@ namespace DVB.MediaServer2 {
                 return this.channel.Name;
             }
         }
-    
+
          public string[] URLs {
             owned get {
                 return new string[] {
@@ -341,13 +341,13 @@ namespace DVB.MediaServer2 {
                 };
             }
         }
-        
+
         public string MIMEType {
             owned get {
                 return "video/mpeg";
             }
         }
-        
+
         public string Type {
             owned get {
                 return "video";

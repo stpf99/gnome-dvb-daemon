@@ -24,19 +24,19 @@ class DVBModel (gnomedvb.DVBManagerClient):
 
     def __init__(self):
         gnomedvb.DVBManagerClient.__init__(self)
-        
+
     def get_device_group(self, group_id):
         path, success = self.manager.GetDeviceGroup('(u)', group_id)
         if success:
             return DeviceGroup(path)
         else:
             return None
-        
+
     def get_registered_device_groups(self, result_handler,
             error_handler=gnomedvb.global_error_handler):
         def groups_handler(proxy, paths, user_data):
             result_handler([DeviceGroup(path) for path in paths])
-            
+
         if result_handler:
             self.manager.GetRegisteredDeviceGroups(result_handler=groups_handler,
                 error_handler=error_handler)
@@ -54,7 +54,7 @@ class DVBModel (gnomedvb.DVBManagerClient):
                 "Unknown")
             devs.append(dev)
         result_handler(devs)
-        
+
     def get_unregistered_devices(self, result_handler,
             error_handler=gnomedvb.global_error_handler):
         """
@@ -71,14 +71,14 @@ class DVBModel (gnomedvb.DVBManagerClient):
                         dev.type = info["type"]
                         unregistered.add(dev)
             result_handler(unregistered)
-        
+
         def registered_handler(devgroups):
             for group in devgroups:
                 for dev in group["devices"]:
                     registered.add(dev)
             self.get_all_devices(result_handler=devices_handler,
                 error_handler=error_handler)
-        
+
         registered = set()
         self.get_registered_device_groups(result_handler=registered_handler,
             error_handler=error_handler)
@@ -87,12 +87,12 @@ class DeviceGroup(gnomedvb.DVBDeviceGroupClient):
 
     def __init__(self, objpath):
         gnomedvb.DVBDeviceGroupClient.__init__(self, objpath)
-        
+
         self._adapter_pattern = re.compile("adapter(\d+?)/frontend(\d+?)")
         self._name = self.get_name()
         self._type = self.get_type()
         self._members = self.get_members()
-        
+
     def __getitem__(self, key):
         if key == "id":
             return self._id
@@ -104,7 +104,7 @@ class DeviceGroup(gnomedvb.DVBDeviceGroupClient):
             return self._type
         else:
             raise KeyError("Unknown key "+str(key))
-    
+
     def get_members(self):
         devices = []
         manager = gnomedvb.DVBManagerClient()
@@ -122,4 +122,3 @@ class DeviceGroup(gnomedvb.DVBDeviceGroupClient):
     def remove_device(self, device, **kwargs):
         return gnomedvb.DVBDeviceGroupClient.remove_device(self, device.adapter,
             device.frontend, **kwargs)
-     

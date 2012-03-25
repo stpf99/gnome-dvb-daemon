@@ -28,7 +28,7 @@ namespace DVB {
     public class Recording : GLib.Object {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
-    
+
         public uint32 Id {get; set;}
         public uint ChannelSid {get; set;}
         public string ChannelName {get; set;}
@@ -38,7 +38,7 @@ namespace DVB {
         public GLib.Time StartTime {get; set;}
         public int64 Length {get; set;}
         public FileMonitor file_monitor {get; set;}
-        
+
         public uint[] get_start () {
             return new uint[] {
                 this.StartTime.year + 1900,
@@ -66,13 +66,13 @@ namespace DVB {
                 log.error ("Could not save recording: %s", e.message);
             }
         }
- 
+
         private void on_recording_file_changed (FileMonitor monitor,
                 File file, File? other_file, FileMonitorEvent event) {
             if (event == FileMonitorEvent.DELETED) {
                 string location = file.get_path ();
                 log.debug ("%s has been deleted", location);
-                
+
                 monitor.cancel ();
 
                 RecordingsStore.get_instance().remove (this);

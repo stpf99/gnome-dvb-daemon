@@ -33,10 +33,10 @@ namespace DVB {
 
     [DBus (name = "org.gnome.DVB.Manager")]
     public interface IDBusManager : GLib.Object {
-    
+
         public abstract signal void group_added (uint group_id);
         public abstract signal void group_removed (uint group_id);
-         
+
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
@@ -48,19 +48,19 @@ namespace DVB {
          */
         public abstract bool GetScannerForDevice (uint adapter, uint frontend,
                 out ObjectPath opath, out string dbusiface) throws DBusError;
-        
+
         /**
          * @returns: Device groups' DBus path
          */
         public abstract ObjectPath[] GetRegisteredDeviceGroups () throws DBusError;
-        
+
         /**
          * @group_id: A group ID
          * @opath: Device group's DBus path
          * @returns: TRUE on success
          */
         public abstract bool GetDeviceGroup (uint group_id, out ObjectPath opath) throws DBusError;
-        
+
         /**
          * @adapter: Number of the device's adapter
          * @frontend: Number of the device's frontend
@@ -88,7 +88,7 @@ namespace DVB {
          */
         public abstract bool GetNameOfRegisteredDevice (uint adapter, uint frontend,
         	out string name) throws DBusError;
-        
+
         /**
          * @returns: the numner of configured device groups
          */

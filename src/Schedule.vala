@@ -41,7 +41,7 @@ namespace DVB {
 
         private EPGStore epgstore;
         private EventStorage events;
-        
+
         construct {
             this.events = new EventStorage ();
             this.epgstore = new Factory().get_epg_store ();
@@ -49,7 +49,7 @@ namespace DVB {
 
         public async void restore () {
             Gee.List<Event> levents;
-            try {                        
+            try {
                 levents = this.epgstore.get_events (
                     this.channel.Sid, this.channel.GroupId);
             } catch (SqlError e1) {
@@ -83,11 +83,11 @@ namespace DVB {
             log.debug ("Finished restoring %d EPG events for channel %u",
                 this.events.size, this.channel.Sid);
         }
-        
+
         public Schedule (Channel channel) {
             base (channel: channel);
         }
-        
+
         public void remove_expired_events () {
             int last_expired = -1;
 
@@ -138,7 +138,7 @@ namespace DVB {
          */
         public void add (Event event) {
             if (event.has_expired ()) return;
-            
+
             lock (this.events) {
                 try {
                     this.store_event (event);
@@ -159,7 +159,7 @@ namespace DVB {
                             this.store_event (event);
                     }
 
-                    ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();                    
+                    ((database.sqlite.SqliteDatabase)this.epgstore).end_transaction ();
                 } catch (SqlError e) {
                     log.error ("%s", e.message);
                 } finally {
@@ -204,7 +204,7 @@ namespace DVB {
             time_t ref_start = ref_event.get_start_timestamp ();
             time_t ref_end = ref_event.get_end_timestamp ();
 
-            double max_score = 0;            
+            double max_score = 0;
             foreach (Event event in events) {
                 double score = 0;
                 time_t e_start = event.get_start_timestamp ();
@@ -248,7 +248,7 @@ namespace DVB {
                     }
                 }
             }
-            
+
             return running_event;
         }
 
@@ -346,12 +346,12 @@ namespace DVB {
         {
             bool ret;
             event_info = EventInfo();
-            
-            lock (this.events) {        
+
+            lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     EventElement element = this.events.get_by_id (event_id);
                     Event? event = this.get_event (element.id);
-                    
+
                     event_info = event_to_event_info (event);
                     EventElement? next_element = this.events.next (element);
                     if (next_element == null) {
@@ -370,16 +370,16 @@ namespace DVB {
                     ret = false;
                 }
             }
-            
+
             return ret;
         }
-        
+
         public uint32 NowPlaying () throws DBusError {
             Event? event = this.get_running_event ();
-            
+
             return (event == null) ? 0 : event.id;
         }
-        
+
         public uint32 Next (uint32 event_id) throws DBusError {
             uint32 next_event = 0;
             lock (this.events) {
@@ -395,15 +395,15 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            
+
             return next_event;
         }
-        
+
         public bool GetName (uint32 event_id, out string name) throws DBusError {
             bool ret = false;
             name = "";
 
-            lock (this.events) {        
+            lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);
                     if (event != null && event.name != null) {
@@ -417,13 +417,13 @@ namespace DVB {
 
             return ret;
         }
-        
+
         public bool GetShortDescription (uint32 event_id,
                 out string description) throws DBusError
         {
             bool ret = false;
             description = "";
-            
+
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);
@@ -438,13 +438,13 @@ namespace DVB {
 
             return ret;
         }
-        
+
         public bool GetExtendedDescription (uint32 event_id,
                 out string description) throws DBusError
         {
             bool ret = false;
             description = "";
-            
+
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);
@@ -459,13 +459,13 @@ namespace DVB {
 
             return ret;
         }
-        
+
         public bool GetDuration (uint32 event_id, out uint duration)
                 throws DBusError
         {
             bool ret = false;
             duration = 0;
-        
+
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);
@@ -480,13 +480,13 @@ namespace DVB {
 
             return ret;
         }
-        
+
         public bool GetLocalStartTime (uint32 event_id, out uint[] start_time)
                 throws DBusError
         {
             bool ret = false;
             start_time = new uint[0];
-        
+
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);
@@ -499,10 +499,10 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            
+
             return ret;
         }
-        
+
         public bool GetLocalStartTimestamp (uint32 event_id, out int64 timestamp)
                 throws DBusError
         {
@@ -522,13 +522,13 @@ namespace DVB {
 
             return ret;
         }
-        
+
         public bool IsRunning (uint32 event_id, out bool running)
                 throws DBusError
         {
             bool ret = false;
             running = false;
-        
+
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);
@@ -540,16 +540,16 @@ namespace DVB {
                     log.debug ("No event with id %u", event_id);
                 }
             }
-            
+
             return ret;
         }
-        
+
         public bool IsScrambled (uint32 event_id, out bool scrambled)
                 throws DBusError
         {
             bool ret = false;
             scrambled = false;
-        
+
             lock (this.events) {
                 if (this.events.contains_event_with_id (event_id)) {
                     Event? event = this.get_extended_event_by_id (event_id);

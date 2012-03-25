@@ -50,7 +50,7 @@ class CloseDialog(Gtk.Dialog):
         self._progressbar_timer = GObject.timeout_add(100, self._progressbar_pulse)
         self.progressbar.show()
         vbox.pack_start(self.progressbar, False, True, 0)
-            
+
     def _progressbar_pulse(self, user_data=None):
         self.progressbar.pulse()
         return True
@@ -72,7 +72,7 @@ class SetupWizard(Gtk.Assistant):
         self.__model = DVBModel()
         self.__expert_mode = False
         self.__create_group = False
-        
+
         self.connect ('delete-event', self.confirm_quit)
         self.connect ('cancel', self.confirm_quit)
         self.connect ('close', self.confirm_quit)
@@ -80,12 +80,12 @@ class SetupWizard(Gtk.Assistant):
         self.set_forward_page_func(self.page_func, None)
         self.set_default_size(500, 400)
         self.set_title(_("Setup digital TV"))
-        
+
         self.intro_page = IntroPage()
         self.append_page(self.intro_page)
         self.set_page_complete(self.intro_page, True)
-        
-        self.adapters_page = AdaptersPage(self.__model)        
+
+        self.adapters_page = AdaptersPage(self.__model)
         self.adapters_page.connect("finished", self.on_adapter_page_finished)
         self.adapters_page.connect("next-page", self.on_next_page)
         self.append_page(self.adapters_page)
@@ -93,19 +93,19 @@ class SetupWizard(Gtk.Assistant):
         self.tuning_data_page = InitialTuningDataPage()
         self.tuning_data_page.connect("finished", self.on_page_finished)
         self.append_page(self.tuning_data_page)
-        
+
         self.scan_page = ChannelScanPage(self.__model)
         self.scan_page.connect("finished", self.on_page_finished)
         self.append_page(self.scan_page)
-        
+
         save_channels_page = SaveChannelListPage()
         save_channels_page.connect("finished", self.on_page_finished)
         self.append_page(save_channels_page)
-        
+
         self.setup_page = SetupDevicePage(self.__model)
         self.setup_page.connect("finished", self.on_setup_device_page_finished)
         self.append_page(self.setup_page)
-        
+
         self.summary_page = SummaryPage()
         self.summary_page.configure_button.connect("clicked",
             lambda button: self.set_current_page(self.INTRO_PAGE))
@@ -137,7 +137,7 @@ class SetupWizard(Gtk.Assistant):
     def append_page(self, page):
         Gtk.Assistant.append_page(self, page)
         self.set_page_type(page, page.get_page_type())
-        
+
     def on_prepare(self, assistant, page):
         if isinstance(page, IntroPage):
             # Reset to None so we can automatically search for adapter again
@@ -173,19 +173,19 @@ class SetupWizard(Gtk.Assistant):
             self.__adapter_info = None
 
         self.set_page_title(page, page.get_page_title())
-        
+
     def on_page_finished(self, page, state):
         self.set_page_complete(page, state)
-            
+
     def on_adapter_page_finished(self, page, state):
         if state:
             self.__adapter_info = page.get_adapter_info()
         self.on_page_finished(page, state)
-        
+
     def on_setup_device_page_finished(self, page, state):
         if state:
             self.set_current_page(self.SUMMARY_PAGE)
-        
+
     def page_func(self, current_page, user_data=None):
         if current_page == self.ADAPTERS_PAGE and not self.__expert_mode:
             # Check if the selected adapter is not registered
@@ -203,7 +203,7 @@ class SetupWizard(Gtk.Assistant):
             return self.SUMMARY_PAGE
 
         return current_page + 1
-            
+
     def confirm_quit(self, *args):
         scanner = self.scan_page.get_scanner()
         if self.__ask_on_exit:
@@ -212,7 +212,7 @@ class SetupWizard(Gtk.Assistant):
                 type=Gtk.MessageType.QUESTION,
                 buttons=Gtk.ButtonsType.YES_NO,
                 message_format=_("Are you sure you want to abort?\nAll process will be lost."))
-            
+
             response = dialog.run()
             if response == Gtk.ResponseType.YES:
                 dialog.destroy()
@@ -232,7 +232,7 @@ class SetupWizard(Gtk.Assistant):
             close_dialog.show()
         else:
             Gtk.main_quit()
-            
+
     def on_next_page(self, adapters_page):
         if not self.__expert_mode and self.__adapter_info == None:
             # There's only one device no need to select one

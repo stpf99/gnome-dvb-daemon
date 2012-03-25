@@ -17,7 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import GObject
-from gi.repository import Gtk 
+from gi.repository import Gtk
 
 class CellRendererDatetime(Gtk.CellRendererText):
 
@@ -36,7 +36,7 @@ class CellRendererDatetime(Gtk.CellRendererText):
         self._datetime = None
         self._format = "%c"
         self.set_property("text", "")
-        
+
     def do_get_property(self, prop):
         if prop.name == 'datetime':
             return self._datetime
@@ -61,4 +61,3 @@ class CellRendererDatetime(Gtk.CellRendererText):
         else:
             timestr = self._datetime.strftime(self._format)
             self.set_property("text", timestr)
-        

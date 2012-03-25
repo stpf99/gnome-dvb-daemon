@@ -28,26 +28,26 @@ namespace DVB {
     public class ChannelList : GLib.Object, Iterable<Channel>, IDBusChannelList {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
-        
+
         public File? channels_file {get; construct;}
         public uint GroupId {get; set;}
         public int size {
             get { return this.channels.size; }
         }
-        
+
         /**
          * Maps channels' SID to the channels' data
          */
         protected HashMap<uint, Channel> channels;
-        
+
         construct {
             this.channels = new HashMap<uint, Channel> ();
         }
-        
+
         public ChannelList (File? channels=null) {
             base (channels_file: channels);
         }
-        
+
         public Channel? get_channel (uint sid) {
             Channel? val = null;
             lock (this.channels) {
@@ -56,19 +56,19 @@ namespace DVB {
             }
             return val;
         }
-        
+
         public void add (Channel channel) {
             lock (this.channels) {
                 this.channels.set (channel.Sid, channel);
             }
         }
-        
+
         public void remove (uint sid) {
             lock (this.channels) {
                 this.channels.unset (sid);
             }
         }
-        
+
         public bool contains (uint sid) {
             bool val;
             lock (this.channels) {
@@ -76,24 +76,24 @@ namespace DVB {
             }
             return val;
         }
-        
+
         public void clear () {
             lock (this.channels) {
                 this.channels.clear ();
             }
         }
-        
+
         public Type element_type { get { return typeof (Channel); } }
-      
+
         public Iterator<Channel> iterator () {
             return this.channels.values.iterator();
         }
-        
+
         public void load (AdapterType type) throws Error {
         	var reader = new DVB.io.ChannelListReader (this, type);
         	reader.read_into ();
         }
-        
+
         /**
          * @returns: List of channel IDs aka SIDs
          */
@@ -106,10 +106,10 @@ namespace DVB {
                     i++;
                 }
             }
-            
+
             return ids;
         }
-        
+
         /**
          * @returns: List of channel IDs aka SIDs of radio channels
          */
@@ -123,15 +123,15 @@ namespace DVB {
                 }
             }
             radio_channels.reverse ();
-            
+
             uint[] ids = new uint[radio_channels.length ()];
             for (int i=0; i<radio_channels.length (); i++) {
                 ids[i] = radio_channels.nth_data (i);
             }
-            
+
             return ids;
         }
-        
+
         /**
          * @returns: List of channel IDs aka SIDs of TV channels
          */
@@ -145,15 +145,15 @@ namespace DVB {
                 }
             }
             video_channels.reverse ();
-            
+
             uint[] ids = new uint[video_channels.length ()];
             for (int i=0; i<video_channels.length (); i++) {
                 ids[i] = video_channels.nth_data (i);
             }
-            
+
             return ids;
         }
-        
+
         /**
          * @channel_id: ID of channel
          * @channel_name: Name of channel if channel with id exists
@@ -165,7 +165,7 @@ namespace DVB {
         {
             bool ret = false;
             string val = "";
-            
+
             lock (this.channels) {
                 if (this.channels.has_key (channel_id)) {
                     string name = this.channels.get (channel_id).Name;
@@ -174,10 +174,10 @@ namespace DVB {
                 }
             }
             channel_name = val;
-            
+
             return ret;
         }
-        
+
         /**
          * @channel_id: ID of channel
          * @network: Name of network the channel belongs to
@@ -200,7 +200,7 @@ namespace DVB {
             network = val;
             return ret;
         }
-        
+
         /**
          * @channel_id: ID of channel
          * @radio: Whether the channel is a radio channel or not
@@ -220,7 +220,7 @@ namespace DVB {
             radio = val;
             return ret;
         }
-        
+
         /**
          * @channel_id: ID of channel
          * @url: URL to watch the channel
@@ -245,7 +245,7 @@ namespace DVB {
                 return true;
             }
         }
-        
+
         public ChannelInfo[] GetChannelInfos () throws DBusError {
             ChannelInfo[] channels = new ChannelInfo[this.channels.size];
             int i = 0;
@@ -316,7 +316,7 @@ namespace DVB {
 		 * @channel_id: ID of channel
 	     * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
-         */       
+         */
 		public bool RemoveChannelFromGroup (uint channel_id,
                 int channel_group_id) throws DBusError
         {

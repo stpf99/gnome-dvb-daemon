@@ -52,11 +52,11 @@ namespace DVB {
                         Utils.remove_nonalphanums (this.Name));
             }
         }
-        
+
         private DVB.Schedule schedule;
         private uint sid;
         private bool has_schedule;
-        
+
         construct {
             this.AudioPIDs = new Gee.ArrayList<uint> ();
         }
@@ -69,7 +69,7 @@ namespace DVB {
         public Channel.without_schedule () {
             this.has_schedule = false;
         }
-        
+
         public string get_audio_pids_string () {
             StringBuilder apids = new StringBuilder ();
             int i = 1;
@@ -80,19 +80,19 @@ namespace DVB {
                     apids.append ("%u,".printf (pid));
                 i++;
             }
-            
+
             return apids.str;
         }
-        
+
         public bool is_radio () {
             return (this.VideoPID == 0);
         }
-        
+
         public virtual bool is_valid () {
             return (this.Name != null && this.Frequency != 0&& this.Sid != 0
                 && (this.VideoPID != 0 || this.AudioPIDs.size != 0));
         }
-        
+
         /**
          * @returns: TRUE if both channels are part of the same
          * transport stream (TS).
@@ -103,14 +103,14 @@ namespace DVB {
         public virtual bool on_same_transport_stream (Channel channel) {
             return (this.Frequency == channel.Frequency);
         }
-        
+
         /**
          * @returns: TRUE of both channels are identical
          */
         public virtual bool equals (Channel channel) {
             return (this.sid == channel.Sid);
         }
-        
+
         /**
          * @source: Either dvbbasebin or dvbsrc
          *
@@ -119,5 +119,5 @@ namespace DVB {
         public abstract void setup_dvb_source (Gst.Element source);
         public abstract string to_string ();
     }
-    
+
 }

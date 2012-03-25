@@ -21,15 +21,15 @@ using GLib;
 using DVB.Logging;
 
 namespace DVB {
-    
+
     public class Settings : GLib.Object {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
-    
+
         private static const string TIMERS_SECTION = "timers";
         private static const string MARGIN_START = "margin_start";
         private static const string MARGIN_END = "margin_end";
-        
+
         private static const string EPG_SECTION = "epg";
         private static const string SCAN_INTERVAL = "scan_interval";
 
@@ -57,7 +57,7 @@ namespace DVB {
         scan_interval=30
         [streaming]
         interface=lo""";
-        
+
         private KeyFile keyfile;
 
         construct {
@@ -144,10 +144,10 @@ namespace DVB {
                 Environment.get_user_config_dir ());
             File our_config = config_dir.get_child ("gnome-dvb-daemon");
             File settings_file = our_config.get_child ("settings.ini");
-            
+
             return settings_file;
         }
-        
+
         public bool load () {
             File settings_file = this.get_settings_file ();
             bool success = true;
@@ -160,7 +160,7 @@ namespace DVB {
                         settings_file.get_path (), e.message);
                     return false;
                 }
-                
+
                 try {
                     stream.write (DEFAULT_SETTINGS.data);
                 } catch (Error e) {
@@ -168,7 +168,7 @@ namespace DVB {
                         settings_file.get_path (), e.message);
                     success = false;
                 }
-                
+
                 try {
                     stream.close (null);
                 } catch (Error e) {
@@ -176,7 +176,7 @@ namespace DVB {
                     success = false;
                 }
             }
-            
+
             if (success) {
                 try {
                     keyfile.load_from_file (settings_file.get_path (), 0);
@@ -188,13 +188,13 @@ namespace DVB {
                     success = false;
                 }
             }
-            
+
             return success;
         }
-        
+
         public bool save () {
             File settings_file = this.get_settings_file ();
-            
+
             FileOutputStream stream = null;
             try {
                 stream = settings_file.replace (null, true, 0, null);
@@ -203,11 +203,11 @@ namespace DVB {
                     settings_file.get_path (), e.message);
                 return false;
             }
-            
+
             string data = null;
             size_t data_len;
             data = this.keyfile.to_data (out data_len);
-                
+
             try {
                 stream.write_all (data.data, null);
             } catch (Error e) {
@@ -215,69 +215,69 @@ namespace DVB {
                     settings_file.get_path (), e.message);
                 return false;
             }
-                
-            
+
+
             try {
                 stream.close (null);
             } catch (Error e) {
                 log.error ("%s", e.message);
             }
-        
+
             return false;
         }
-        
+
         public string get_string (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_string (group_name, key);
         }
-        
+
         public bool get_boolean (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_boolean (group_name, key);
         }
-        
+
         public int get_integer (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_integer (group_name, key);
         }
-        
+
         public double get_double (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_double (group_name, key);
         }
-        
+
         public string[] get_string_list (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_string_list (group_name, key);
         }
-        
+
         public bool[] get_boolean_list (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_boolean_list (group_name, key);
         }
-        
+
         public int[] get_integer_list (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_integer_list (group_name, key);
         }
-        
+
         public double[] get_double_list (string group_name, string key) throws KeyFileError {
             return this.keyfile.get_double_list (group_name, key);
         }
-        
+
         public void set_string (string group_name, string key, string val) throws KeyFileError {
             this.keyfile.set_string (group_name, key, val);
         }
-        
+
         public void set_boolean (string group_name, string key, bool val) throws KeyFileError {
             this.keyfile.set_boolean (group_name, key, val);
         }
-        
+
         public void set_double (string group_name, string key, double val) throws KeyFileError {
             this.keyfile.set_double (group_name, key, val);
         }
-        
+
         public void set_integer (string group_name, string key, int val) throws KeyFileError {
             this.keyfile.set_integer (group_name, key, val);
         }
-        
+
         public void set_string_list (string group_name, string key, string[] val) throws KeyFileError {
             this.keyfile.set_string_list (group_name, key, val);
         }
-        
+
         public void set_boolean_list (string group_name, string key, bool[] val) throws KeyFileError {
             this.keyfile.set_boolean_list (group_name, key, val);
         }
@@ -285,11 +285,11 @@ namespace DVB {
         public void set_double_list (string group_name, string key, double[] val) throws KeyFileError {
             this.keyfile.set_double_list (group_name, key, val);
         }
-        
+
         public void set_integer_list (string group_name, string key, int[] val) throws KeyFileError {
             this.keyfile.set_integer_list (group_name, key, val);
         }
-        
+
     }
 
 }

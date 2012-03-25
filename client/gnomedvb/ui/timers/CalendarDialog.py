@@ -18,7 +18,7 @@
 
 from gi.repository import Gtk
 from gnomedvb import _
-        
+
 class CalendarDialog(Gtk.Dialog):
 
     def __init__(self, parent):
@@ -26,16 +26,16 @@ class CalendarDialog(Gtk.Dialog):
 
         self.set_modal(True)
         self.set_destroy_with_parent(True)
-        
+
         self.set_position(Gtk.WindowPosition.MOUSE)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
         ok_button = self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
         ok_button.grab_default()
-        
+
         self.calendar = Gtk.Calendar()
         self.calendar.show()
         self.get_content_area().add(self.calendar)
-        
+
     def get_date(self):
         return self.calendar.get_date()
 

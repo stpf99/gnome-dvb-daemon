@@ -31,7 +31,7 @@ DVB_APPS_DIRS = ("/usr/share/dvb",
                  "/usr/share/dvb-apps",
                  "/usr/share/dvb-apps/scan",
                  "/usr/share/doc/dvb-utils/examples/scan")
-                 
+
 COUNTRIES = {
     "ad": "Andorra",
     "at": "Austria",
@@ -124,7 +124,7 @@ COUNTRIES_DVB_C = (
 )
 
 class InitialTuningDataPage(BasePage):
-    
+
     __gsignals__ = {
             "finished": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [bool]),
     }
@@ -132,15 +132,15 @@ class InitialTuningDataPage(BasePage):
 
     def __init__(self):
         BasePage.__init__(self)
-        
+
         self.__adapter_info = None
         self.__page_title = None
         self.__tuning_data = self.NOT_LISTED
         self.__data_dir = None
-        
+
     def get_page_title(self):
         return self.__page_title
-        
+
     def set_adapter_info(self, info):
         self.__adapter_info = info
         # skip label
@@ -151,7 +151,7 @@ class InitialTuningDataPage(BasePage):
             self.__page_title = _("Missing requirements")
             self.setup_dvb_apps_missing()
             return
-            
+
         if info["type"] == "DVB-T":
             self.setup_dvb_t()
             self.__page_title = _("Country and antenna selection")
@@ -164,12 +164,12 @@ class InitialTuningDataPage(BasePage):
         else:
             self.__page_title = _("Unsupported adapter")
             self.setup_unknown(info["type"])
-            
+
     def get_tuning_data(self):
         if self.__tuning_data == self.NOT_LISTED:
             self.add_brute_force_scan()
         return self.__tuning_data
-        
+
     def _create_table(self):
         self.table = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
         self.table.set_row_spacing(6)
@@ -184,7 +184,7 @@ class InitialTuningDataPage(BasePage):
                 val = True
                 break
         return val
-    
+
     def setup_unknown(self, devtype):
         # translators: first %s is the DVB type, e.g. DVB-S
         text = _("Sorry, but '%s' cards aren't supported.") % devtype
@@ -194,20 +194,20 @@ class InitialTuningDataPage(BasePage):
         text = "<big><b>%s</b></big>\n%s" % (_("Could not find initial tuning data."),
             _("Please make sure that the dvb-apps package is installed."))
         self._label.set_markup(text)
-        
+
     def setup_dvb_t(self):
         text = "%s %s %s" %(_('Please choose a country and the antenna that is closest to your location.'),
             _("If you don't know which antenna to choose select \"Don't know\" from the list of providers."),
             _("However, searching for channels will take considerably longer this way."))
         self._label.set_markup(text)
-    
+
         self.providers_view = None
-        
+
         countries = {self.NOT_LISTED: _("Not listed")}
         t = gettext.translation("iso_3166", fallback=True)
         for lang in COUNTRIES_DVB_T:
             countries[lang] = t.ugettext(COUNTRIES[lang])
-        
+
         self._create_table()
 
         country = Gtk.Label(halign=Gtk.Align.START)
@@ -215,14 +215,14 @@ class InitialTuningDataPage(BasePage):
         country.show()
         self.table.add(country)
 
-        # name, code    
+        # name, code
         self.countries = Gtk.ListStore(str, str)
         self.countries.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.countries.set_sort_func(0, self.combobox_sort_func)
-        
+
         for code, name in countries.items():
             self.countries.append([name, code])
-    
+
         self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
         self.country_combo.set_hexpand(True)
         self.country_combo.connect('changed', self.on_country_changed)
@@ -235,47 +235,47 @@ class InitialTuningDataPage(BasePage):
             Gtk.PositionType.RIGHT, 1, 1)
         self.country_combo.set_active(0)
         country.set_mnemonic_widget(self.country_combo)
-        
+
         providers = Gtk.Label()
         providers.set_markup_with_mnemonic(_("_Antenna:"))
         providers.show()
         self.table.add(providers)
-        
+
         self.providers = Gtk.ListStore(str, str)
         self.providers.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.providers.set_sort_func(0, self.combobox_sort_func, None)
-        
+
         self.providers_view, scrolledview = self._create_providers_treeview(
             self.providers, _("Antenna"))
         self.providers_view.get_selection().connect('changed',
             self.on_providers_changed)
         providers.set_mnemonic_widget(self.providers_view)
-        
+
         scrolledview.set_property("expand", True)
         self.table.attach_next_to(scrolledview, providers,
             Gtk.PositionType.BOTTOM, 2, 1)
-        
+
         self.providers_view.set_sensitive(False)
-   
+
     def setup_dvb_s(self):
-        
+
         satellite = Gtk.Label()
         satellite.set_markup_with_mnemonic(_("_Satellite:"))
         satellite.show()
         self.pack_start(satellite, False, False, 0)
-        
+
         self.satellites = Gtk.ListStore(str, str)
         self.satellites.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        
+
         self.satellite_view, scrolledview = self._create_providers_treeview(
             self.satellites, _("Satellite"))
         self.satellite_view.get_selection().connect("changed",
             self.on_satellite_changed)
         satellite.set_mnemonic_widget(self.satellite_view)
         self.pack_start(scrolledview, True, True, 0)
-        
+
         self.read_satellites()
-        
+
     def setup_dvb_c(self):
         countries = {}
         t = gettext.translation("iso_3166", fallback=True)
@@ -292,10 +292,10 @@ class InitialTuningDataPage(BasePage):
         self.countries = Gtk.ListStore(str, str)
         self.countries.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.countries.set_sort_func(0, self.combobox_sort_func, None)
-        
+
         for code, name in countries.items():
             self.countries.append([name, code])
-    
+
         self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
         self.country_combo.set_hexpand(True)
         self.country_combo.connect('changed', self.on_country_changed)
@@ -307,26 +307,26 @@ class InitialTuningDataPage(BasePage):
         self.table.attach_next_to(self.country_combo, country,
             Gtk.PositionType.RIGHT, 1, 1)
         country.set_mnemonic_widget(self.country_combo)
-        
+
         providers = Gtk.Label()
         providers.set_markup_with_mnemonic(_("_Providers:"))
         providers.show()
         self.table.add(providers)
-        
+
         self.providers = Gtk.ListStore(str, str)
         self.providers.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        
+
         self.providers_view, scrolledview = self._create_providers_treeview(
             self.providers, _("Provider"))
         self.providers_view.get_selection().connect('changed',
             self.on_providers_changed)
         providers.set_mnemonic_widget(self.providers_view)
-        
+
         scrolledview.set_property("expand", True)
         self.table.attach_next_to(scrolledview, providers,
             Gtk.PositionType.BOTTOM, 2, 1)
         self.providers_view.set_sensitive(False)
-         
+
     def _create_providers_treeview(self, providers, col_name):
         providers_view = Gtk.TreeView.new_with_model(providers)
         providers_view.set_headers_visible(False)
@@ -336,21 +336,21 @@ class InitialTuningDataPage(BasePage):
         col.add_attribute(cell, "markup", 0)
         providers_view.append_column(col)
         providers_view.show()
-        
+
         scrolledview= Gtk.ScrolledWindow()
         scrolledview.add(providers_view)
         scrolledview.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolledview.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         scrolledview.show()
-        
+
         return providers_view, scrolledview
-        
+
     def on_country_changed(self, combo):
         aiter = combo.get_active_iter()
-        
+
         if aiter != None:
             selected_country = self.countries[aiter][1]
-    
+
             if selected_country == self.NOT_LISTED:
                 if self.providers_view:
                     self.providers_view.set_sensitive(False)
@@ -361,7 +361,7 @@ class InitialTuningDataPage(BasePage):
 
                 toplevel_window = self.get_toplevel().get_window()
                 toplevel_window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-                
+
                 # Fill list async
                 GObject.idle_add(self._fill_providers, selected_country)
 
@@ -377,11 +377,11 @@ class InitialTuningDataPage(BasePage):
                     if len(values) != 2:
                         continue
                     country, city = values
-                
+
                     if country == selected_country:
                         self.providers.append([city,
                             os.path.join(d, self.__data_dir, f)])
-    
+
         self.providers_view.set_sensitive(True)
         first_iter = self.providers.get_iter_first()
         self.providers_view.get_selection().select_iter(first_iter)
@@ -390,34 +390,34 @@ class InitialTuningDataPage(BasePage):
         self.emit("finished", True)
 
         return False
-        
+
     def on_providers_changed(self, selection):
         model, aiter = selection.get_selected()
-        
+
         if aiter != None:
             self.__tuning_data = self.providers[aiter][1]
             self.emit("finished", True)
-    
+
     def read_satellites(self):
         for d in DVB_APPS_DIRS:
             if os.access(d, os.F_OK | os.R_OK):
                 for f in os.listdir(os.path.join(d, 'dvb-s')):
                     self.satellites.append([f, os.path.join(d, 'dvb-s', f)])
-                        
+
     def on_satellite_changed(self, selection):
         model, aiter = selection.get_selected()
-        
+
         if aiter != None:
             self.__tuning_data = self.satellites[aiter][1]
             self.emit("finished", True)
-    
+
     def on_scan_all_toggled(self, checkbutton):
         state = not checkbutton.get_active()
         self.country_combo.set_sensitive(state)
         self.providers_view.set_sensitive(state)
         self.add_brute_force_scan()
         self.emit("finished", not state)
-    
+
     def add_brute_force_scan(self):
         self.__tuning_data = []
         for chan in range(5, 13):
@@ -454,4 +454,3 @@ class InitialTuningDataPage(BasePage):
             return 1
         else:
             return locale.strcoll(name1, name2)
-    

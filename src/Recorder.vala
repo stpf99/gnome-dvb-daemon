@@ -33,24 +33,24 @@ namespace DVB {
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
         public unowned DVB.DeviceGroup DeviceGroup { get; construct; }
-        
+
         public uint count {
             get { return this.recordings.size; }
         }
-        
+
         // Contains timer ids
         private Set<uint32> active_timers;
-        
+
         private bool have_check_timers_timeout;
         private uint check_timers_event_id;
         // Maps timer id to timer
         private HashMap<uint32, Timer> timers;
         // Maps timer id to Recording
         private Map<uint, Recording> recordings;
-        
+
         private const int CHECK_TIMERS_INTERVAL = 5;
         private const string ATTRIBUTES = FileAttribute.STANDARD_TYPE + "," + FileAttribute.ACCESS_CAN_WRITE;
-        
+
         construct {
             this.active_timers = new HashSet<uint32> ();
             this.timers = new HashMap<uint, Timer> ();
@@ -60,17 +60,17 @@ namespace DVB {
             this.recordings = new HashMap<uint, Recording> ();
             this.check_timers_event_id = 0;
         }
-        
+
         public Recorder (DVB.DeviceGroup dev) {
             base (DeviceGroup: dev);
         }
-        
+
 	public Type element_type { get { return typeof (Timer); } }
-    
+
         public Gee.Iterator<Timer> iterator () {
             return this.timers.values.iterator ();
         }
-        
+
         /**
          * @channel: Channel number
          * @start_year: The year when the recording should start
@@ -82,17 +82,17 @@ namespace DVB {
          * @timer_id: The new timer's id on success, or 0 if timer couldn't
          * be created
          * @returns: TRUE on success
-         * 
+         *
          * Add a new timer
          */
         public bool AddTimer (uint channel,
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration,
                 out uint32 timer_id) throws DBusError {
-            
+
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
-            
+
             if (new_timer == null) {
                 timer_id = 0;
                 return false;
@@ -100,7 +100,7 @@ namespace DVB {
                 return this.add_timer (new_timer, out timer_id);
             }
         }
-        
+
         /**
          * Works the same way as AddTimer() but adds a margin before and
          * after the timer.
@@ -113,7 +113,7 @@ namespace DVB {
                 int start_year, int start_month, int start_day,
                 int start_hour, int start_minute, uint duration,
                 out uint32 timer_id) throws DBusError {
-            
+
             Timer new_timer = this.create_timer (channel, start_year, start_month,
                 start_day, start_hour, start_minute, duration);
 
@@ -125,7 +125,7 @@ namespace DVB {
             Settings settings = new Factory().get_settings ();
             int start_margin = -1 * settings.get_timers_margin_start ();
             uint end_margin = (uint)(2 * settings.get_timers_margin_end ());
-    
+
             new_timer.Duration += end_margin;
             new_timer.add_to_start_time (start_margin);
 
@@ -149,12 +149,12 @@ namespace DVB {
             lock (this.timers) {
                 bool has_conflict = false;
                 int conflict_count = 0;
-                
+
                 // Check for conflicts
                 foreach (uint32 key in this.timers.keys) {
                     if (this.timers.get(key).conflicts_with (new_timer)) {
                         conflict_count++;
-                        
+
                         if (conflict_count >= this.DeviceGroup.size) {
                             log.debug ("Timer is conflicting with another timer: %s",
                                 this.timers.get(key).to_string ());
@@ -190,7 +190,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         /**
          * @event_id: id of the EPG event
          * @channel_sid: SID of channel
@@ -213,13 +213,13 @@ namespace DVB {
                 return false;
             }
             Time start = event.get_local_start_time ();
-            
+
             return this.AddTimerWithMargin (channel_sid,
                 start.year + 1900, start.month + 1,
                 start.day, start.hour, start.minute,
                 event.duration / 60, out timer_id);
         }
-        
+
         /**
          * @timer_id: The id of the timer you want to delete
          * @returns: TRUE on success
@@ -255,7 +255,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         /**
          * dvb_recorder_GetTimers
          * @returns: A list of all timer ids
@@ -264,17 +264,17 @@ namespace DVB {
             uint32[] timer_arr;
             lock (this.timers) {
                 timer_arr = new uint32[this.timers.size];
-                
+
                 int i=0;
                 foreach (uint32 key in this.timers.keys) {
                     timer_arr[i] = this.timers.get(key).Id;
                     i++;
                 }
             }
-        
+
             return timer_arr;
         }
-        
+
         /**
          * @timer_id: Timer's id
          * @start_time: An array of length 5, where index 0 = year, 1 = month,
@@ -336,7 +336,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         /**
          * @timer_id: Timer's id
          * @end_time: Same as dvb_recorder_GetStartTime()
@@ -357,7 +357,7 @@ namespace DVB {
             }
             return ret;
         }
-        
+
         /**
          * @timer_id: Timer's id
          * @duration: Duration in seconds or 0 if there's no timer with
@@ -497,7 +497,7 @@ namespace DVB {
          */
         public uint32[] GetActiveTimers () throws DBusError {
             uint32[] val = new uint32[this.active_timers.size];
-            
+
             int i=0;
             foreach (uint32 timer_id in this.active_timers) {
                 Timer timer = this.timers.get (timer_id);
@@ -506,7 +506,7 @@ namespace DVB {
             }
             return val;
         }
-        
+
         /**
          * @timer_id: Timer's id
          * @returns: TRUE if timer is currently active
@@ -518,7 +518,7 @@ namespace DVB {
         protected bool is_timer_active (uint32 timer_id) {
             return this.active_timers.contains (timer_id);
         }
-        
+
         /**
          * @returns: TRUE if a timer is already scheduled in the given
          * period of time
@@ -533,7 +533,7 @@ namespace DVB {
                     OverlapType overlap = this.timers.get(key).get_overlap_local (
                         start_year, start_month, start_day, start_hour,
                         start_minute, duration);
-                    
+
                     if (overlap == OverlapType.PARTIAL
                             || overlap == OverlapType.COMPLETE) {
                         val = true;
@@ -541,10 +541,10 @@ namespace DVB {
                     }
                 }
             }
-        
+
             return val;
         }
-        
+
         public OverlapType HasTimerForEvent (uint event_id, uint channel_sid)
                 throws DBusError
         {
@@ -560,29 +560,29 @@ namespace DVB {
                 log.debug ("Could not find event with id %u", event_id);
                 return OverlapType.UNKNOWN;
             }
-            
+
             OverlapType val= OverlapType.NONE;
             lock (this.timers) {
                 foreach (uint32 key in this.timers.keys) {
                     Timer timer = this.timers.get (key);
-                    
+
                     if (timer.Channel.Sid == channel_sid) {
                         OverlapType overlap = timer.get_overlap_utc (
                             event.year, event.month, event.day, event.hour,
                             event.minute, event.duration/60);
-                        
+
                         if (overlap == OverlapType.PARTIAL
                                 || overlap == OverlapType.COMPLETE) {
                             val = overlap;
                             break;
                         }
                     }
-                } 
+                }
             }
-            
+
             return val;
         }
-        
+
         public void stop () {
             if (this.check_timers_event_id > 0)
                 Source.remove (this.check_timers_event_id);
@@ -600,7 +600,7 @@ namespace DVB {
             log.debug ("Creating new timer: channel: %u, start: %04d-%02d-%02d %02d:%02d, duration: %u",
                 channel, start_year, start_month, start_day,
                 start_hour, start_minute, duration);
-    
+
             ChannelList channels = this.DeviceGroup.Channels;
             if (!channels.contains (channel)) {
                 warning ("No channel %u for device group %u", channel,
@@ -622,7 +622,7 @@ namespace DVB {
          */
         protected void start_recording (Timer timer) {
             Channel channel = timer.Channel;
-            
+
             File? location = this.create_recording_dirs (channel,
                 timer.get_start_time ());
             if (location == null) return;
@@ -634,7 +634,7 @@ namespace DVB {
             }
             filesink.set ("location", location.get_path ());
             timer.sink = filesink;
-            
+
             ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
             PlayerThread? player = channel_factory.watch_channel (channel,
                 filesink, true);
@@ -648,7 +648,7 @@ namespace DVB {
                     return;
                 }
                 player.eit_structure.connect (this.on_eit_structure);
-                
+
                 Recording recording = new Recording ();
                 recording.Id = timer.Id;
                 recording.ChannelSid = channel.Sid;
@@ -671,19 +671,19 @@ namespace DVB {
                             event.extended_description);
                     }
                 }
-                
+
                 lock (this.recordings) {
                     this.recordings.set (recording.Id, recording);
                 }
-                
+
                 RecordingsStore.get_instance().add (recording);
             }
-            
+
             this.active_timers.add (timer.Id);
-            
+
             this.recording_started (timer.Id);
         }
-        
+
         /**
          * Stop recording of specified timer
          */
@@ -697,39 +697,39 @@ namespace DVB {
                 log.debug ("Recording of channel %s stopped after %"
                     + int64.FORMAT +" seconds",
                     rec.ChannelName, rec.Length);
-                
+
                 rec.save_to_disk ();
 
                 ChannelFactory channel_factory = this.DeviceGroup.channel_factory;
                 channel_factory.stop_channel (timer.Channel, timer.sink);
-                
+
                 this.recordings.unset (timer.Id);
-            } 
+            }
             uint32 timer_id = timer.Id;
             lock (this.timers) {
                 this.active_timers.remove (timer_id);
                 this.timers.unset (timer_id);
             }
             rec.monitor_recording ();
-            
+
             this.changed (timer_id, ChangeType.DELETED);
-            
+
             this.recording_finished (rec.Id);
         }
-        
+
         /**
          * @returns: File on success, NULL otherwise
-         * 
+         *
          * Create directories and set location of recording
          */
         private File? create_recording_dirs (Channel channel, uint[] start) {
             string channel_name = Utils.remove_nonalphanums (channel.Name);
             string time = "%u-%u-%u_%u-%u".printf (start[0], start[1],
                 start[2], start[3], start[4]);
-            
+
             File dir = this.DeviceGroup.RecordingsDirectory.get_child (
                 channel_name).get_child (time);
-            
+
             if (!dir.query_exists (null)) {
                 try {
                     Utils.mkdirs (dir);
@@ -747,18 +747,18 @@ namespace DVB {
                 log.error ("Could not retrieve attributes: %s", e.message);
                 return null;
             }
-            
+
             if (info.get_attribute_uint32 (FileAttribute.STANDARD_TYPE)
                 != FileType.DIRECTORY) {
                 log.error ("%s is not a directory", dir.get_path ());
                 return null;
             }
-            
+
             if (!info.get_attribute_boolean (FileAttribute.ACCESS_CAN_WRITE)) {
                 log.error ("Cannot write to %s", dir.get_path ());
                 return null;
             }
-            
+
             File recording = dir.get_child ("001.mpeg");
             if (recording.query_exists (null)) {
                 warning ("Recording %s already exists", recording.get_path ());
@@ -766,10 +766,10 @@ namespace DVB {
             }
             return recording;
         }
-        
+
         private bool check_timers () {
             log.debug ("Checking timers");
-            
+
             bool val;
             SList<Timer> ended_recordings =
                 new SList<Timer> ();
@@ -828,18 +828,18 @@ namespace DVB {
             }
             return val;
         }
-        
+
         private void on_eit_structure (PlayerThread player, Gst.Structure structure) {
             uint sid;
             structure.get_uint ("service-id", out sid);
-            
+
             lock (this.recordings) {
                 // Find name and description for recordings
                 foreach (Recording rec in this.recordings.values) {
                     if (rec.Name == null && sid == rec.ChannelSid) {
                         Channel chan = this.DeviceGroup.Channels.get_channel (sid);
                         Schedule sched = chan.Schedule;
-                        
+
                         Event? event = sched.get_running_event ();
                         if (event != null) {
                             log.debug ("Found running event for active recording");

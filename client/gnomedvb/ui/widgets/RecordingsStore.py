@@ -23,7 +23,7 @@ from gnomedvb import DVBRecordingsStoreClient, global_error_handler
 from cgi import escape
 
 class RecordingsStore(Gtk.ListStore):
-    
+
     (COL_START,
     COL_CHANNEL,
     COL_NAME,
@@ -33,32 +33,32 @@ class RecordingsStore(Gtk.ListStore):
 
     def __init__(self):
         Gtk.ListStore.__init__(self, GObject.TYPE_PYOBJECT, str, str, long, str, long)
-        
+
         self._recstore = DVBRecordingsStoreClient()
         self._recstore.connect("changed", self._on_changed)
-        
+
         self._fill()
-        
+
     def get_recordings_store_client(self):
         return self._recstore
-        
+
     def _append_recording(self, rec_id):
         info, success = self._recstore.get_all_informations (rec_id)
-        
+
         if success:
             channame = info[5]
             name = escape(info[1])
             start = datetime.datetime.fromtimestamp(info[4])
             duration = info[3]
             location = info[6]
-    
+
             self.append([start, channame, name, duration, location, rec_id])
-        
+
     def _fill(self):
         def append_rec(proxy, rids, user_data):
             for rid in rids:
                 self._append_recording(rid)
-    
+
         self._recstore.get_recordings(result_handler=append_rec, error_handler=global_error_handler)
 
     def _on_changed(self, recstore, rec_id, change_type):
@@ -74,4 +74,3 @@ class RecordingsStore(Gtk.ListStore):
         elif change_type == 2:
             # Updated
             pass
-        

@@ -31,24 +31,24 @@ namespace DVB {
 
     [DBus (name = "org.gnome.DVB.RecordingsStore")]
     public interface IDBusRecordingsStore : GLib.Object {
-        
+
         /**
          * @type: 0: added, 1: deleted, 2: updated
          */
         public abstract signal void changed (uint32 rec_id, uint type);
-        
+
         /**
          * @returns: A list of ids for all recordings
          */
         public abstract uint32[] GetRecordings () throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @location: The location of the recording on the filesystem
          * @returns: TRUE on success
          */
         public abstract bool GetLocation (uint32 rec_id, out string location) throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @name: The name of the recording (e.g. the name of
@@ -56,7 +56,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool GetName (uint32 rec_id, out string name) throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @description: A short text describing the recorded item
@@ -64,28 +64,28 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool GetDescription (uint32 rec_id, out string description) throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @start_time: The starting time of the recording
          * @returns: TRUE on success
          */
         public abstract bool GetStartTime (uint32 rec_id, out uint[] start_time) throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @timestamp: Start time as UNIX timestamp
          * @returns: TRUE on success
          */
         public abstract bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @length: The length of the recording in seconds
          * @returns: TRUE on success
          */
         public abstract bool GetLength (uint32 rec_id, out int64 length) throws DBusError;
-        
+
          /**
          * @rec_id: The id of the recording
          * @returns: TRUE on success, FALSE otherwises
@@ -94,7 +94,7 @@ namespace DVB {
          * created by the Recorder
          */
         public abstract bool Delete (uint32 rec_id) throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @name: The channel's name or an empty string if
@@ -102,7 +102,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool GetChannelName (uint32 rec_id, out string name) throws DBusError;
-        
+
         /**
          * @rec_id: The id of the recording
          * @returns: TRUE on success
@@ -111,7 +111,7 @@ namespace DVB {
          * about a particular recording at once
          */
         public abstract bool GetAllInformations (uint32 rec_id, out RecordingInfo infos) throws DBusError;
-        
+
     }
 
 }

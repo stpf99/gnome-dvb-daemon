@@ -24,7 +24,7 @@ class SummaryPage(BasePage):
 
     def __init__(self):
         BasePage.__init__(self)
-        
+
         self._details_label = Gtk.Label()
         self._details_label.set_line_wrap(True)
         self.pack_start(self._details_label, True, True, 0)
@@ -32,13 +32,13 @@ class SummaryPage(BasePage):
         self.configure_button = Gtk.Button(label=_('Configure Another Device'))
         self.configure_button.set_halign(Gtk.Align.CENTER)
         self.pack_start(self.configure_button, False, True, 0)
-    
+
     def get_page_title(self):
         return _("Configuration finished")
-        
+
     def get_page_type(self):
         return Gtk.AssistantPageType.SUMMARY
-        
+
     def set_device_name_and_details(self, name, details, success):
         if success:
             text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)

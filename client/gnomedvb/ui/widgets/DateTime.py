@@ -34,15 +34,15 @@ class CalendarPopup(Gtk.Window):
         self.set_border_width(5)
         self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.add(self.vbox)
-        
+
         self.connect("key-press-event", self._on_key_press_event)
         self.connect("button-press-event", self._on_button_press_event)
-        
+
         self.cal = Gtk.Calendar()
         self.cal.connect("day-selected", self._emit_changed)
         self.cal.connect("day-selected-double-click", lambda w: self.popdown())
         self.vbox.pack_start(self.cal, True, True, 0)
-        
+
         self.time_box = Gtk.Box(spacing=12)
         self.vbox.pack_start(self.time_box, False, True, 0)
 
@@ -61,7 +61,7 @@ class CalendarPopup(Gtk.Window):
         self.hour.set_width_chars(2)
         spinners_box.pack_start(self.hour, True, True, 0)
         time_label.set_mnemonic_widget(self.hour)
-        
+
         self.minute = Gtk.SpinButton()
         self.minute.connect("changed", self._emit_changed)
         self.minute.set_range(0, 59)
@@ -77,7 +77,7 @@ class CalendarPopup(Gtk.Window):
 
     def get_calendar(self):
         return self.cal
-  
+
     def popup(self, widget):
         if (self.get_mapped()):
             return
@@ -112,7 +112,7 @@ class CalendarPopup(Gtk.Window):
         self.hour.set_value(hour)
         self.minute.set_value(minute)
 
-    def get_date_and_time(self):        
+    def get_date_and_time(self):
         year, mon, day = self.cal.get_date()
         hour = self.hour.get_value_as_int()
         minute = self.minute.get_value_as_int()
@@ -175,10 +175,10 @@ class DateTimeBox(Gtk.Bin):
         if dt == None:
             dt = datetime.datetime.now()
 
-        self.popup_win = CalendarPopup(dt)        
+        self.popup_win = CalendarPopup(dt)
         self.popup_win.connect("changed", self._on_datetime_changed)
         self.popup_win.connect("closed", lambda w: self.button.set_active(False))
-        
+
         self.hbox.pack_start(self.entry, True, True, 0)
         self.hbox.pack_start(self.button, False, True, 0)
 

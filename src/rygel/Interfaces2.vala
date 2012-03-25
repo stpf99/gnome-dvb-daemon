@@ -18,11 +18,11 @@
  */
 [DBus (name = "org.gnome.UPnP.MediaObject2")]
 public interface MediaObject2 : GLib.Object {
-    
+
     public abstract ObjectPath Parent {
         owned get;
     }
-    
+
     public abstract string DisplayName {
         owned get;
     }
@@ -38,25 +38,25 @@ public interface MediaObject2 : GLib.Object {
 
 [DBus (name = "org.gnome.UPnP.MediaContainer2")]
 public interface MediaContainer2 : GLib.Object {
-    
+
     public abstract signal void Updated ();
-    
+
     public abstract uint ChildCount {
         get;
     }
-    
+
     public abstract uint ItemCount {
         get;
     }
-    
+
     public abstract uint ContainerCount {
         get;
     }
-    
+
     public abstract bool Searchable {
         get;
     }
-    
+
     public abstract GLib.HashTable<string, Variant?>[] ListChildren (
         uint offset, uint max, string[] filter) throws DBusError;
 
@@ -65,16 +65,16 @@ public interface MediaContainer2 : GLib.Object {
 
     public abstract GLib.HashTable<string, Variant?>[] ListItems (
         uint offset, uint max, string[] filter) throws DBusError;
-    
+
 }
 
 [DBus (name = "org.gnome.UPnP.MediaItem2")]
 public interface MediaItem2 : GLib.Object {
-    
+
     public abstract string[] URLs {
         owned get;
     }
-    
+
     public abstract string MIMEType {
         owned get;
     }

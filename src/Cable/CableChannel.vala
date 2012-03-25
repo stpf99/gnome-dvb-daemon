@@ -21,7 +21,7 @@
 namespace DVB {
 
     public class CableChannel : Channel {
-    
+
         public DvbSrcInversion Inversion {get; set;}
         public uint SymbolRate {get; set;}
         public DvbSrcCodeRate CodeRate {get; set;}
@@ -34,7 +34,7 @@ namespace DVB {
         public CableChannel.without_schedule () {
             Channel.without_schedule ();
         }
-        
+
         public override void setup_dvb_source (Gst.Element source) {
             source.set ("frequency", this.Frequency);
             source.set ("inversion", this.Inversion);
@@ -42,7 +42,7 @@ namespace DVB {
             source.set ("code-rate-hp", this.CodeRate);
             source.set ("modulation", this.Modulation);
         }
-        
+
         public override string to_string () {
             return "%s:%u:%s:%u:%s:%s:%u:%s:%u".printf(this.Name, this.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
@@ -54,7 +54,7 @@ namespace DVB {
                                           this.Modulation),
                 this.VideoPID, this.get_audio_pids_string (), this.Sid);
         }
-    
+
     }
-    
+
 }

@@ -22,7 +22,7 @@ using GLib;
 namespace DVB.database {
 
     public interface ConfigStore : GLib.Object {
-        
+
         public abstract Gee.List<DeviceGroup> get_all_device_groups () throws SqlError;
         public abstract bool add_device_group (DeviceGroup dev_group) throws SqlError;
         public abstract bool remove_device_group (DeviceGroup devgroup) throws SqlError;
@@ -38,7 +38,7 @@ namespace DVB.database {
         public abstract Gee.List<uint> get_channels_of_group (uint dev_group_id, int channel_group_id) throws SqlError;
         public abstract bool add_channel_to_group (Channel channel, int group_id) throws SqlError;
         public abstract bool remove_channel_from_group (Channel channel, int group_id) throws SqlError;
-        
+
     }
 
 }

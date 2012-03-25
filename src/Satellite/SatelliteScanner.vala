@@ -20,41 +20,41 @@
 using GLib;
 
 namespace DVB {
-    
+
     [DBus (name = "org.gnome.DVB.Scanner.Satellite")]
     public interface IDBusSatelliteScanner : GLib.Object {
-    
+
         public abstract signal void frequency_scanned (uint frequency, uint freq_left);
         public abstract signal void finished ();
         public abstract signal void channel_added (uint frequency, uint sid,
             string name, string network, string type, bool scrambled);
         public abstract signal void frontend_stats (double signal_strength,
             double signal_noise_ratio);
-        
+
         public abstract void Run () throws DBusError;
         public abstract void Destroy () throws DBusError;
         public abstract bool WriteAllChannelsToFile (string path) throws DBusError;
         public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBusError;
-        
+
         public abstract void AddScanningData (uint frequency,
                                      string polarization, // "horizontal", "vertical"
                                      uint symbol_rate) throws DBusError;
-        
+
         /**
          * @path: Path to file containing scanning data
          * @returns: TRUE when the file has been parsed successfully
          *
          * Parses initial tuning data from a file as provided by dvb-apps
-         */                            
+         */
         public abstract bool AddScanningDataFromFile (string path) throws DBusError;
     }
-    
+
     public class SatelliteScanner : Scanner, IDBusScanner {
-    
+
         public SatelliteScanner (DVB.Device device) {
             Object (Device: device);
         }
-     
+
         public bool AddScanningData (GLib.HashTable<string, Variant> data) throws DBusError
          {
             uint frequency, symbol_rate;
@@ -80,27 +80,27 @@ namespace DVB {
             this.add_scanning_data (frequency, polarization, symbol_rate);
             return true;
         }
-                
+
         private inline void add_scanning_data (uint frequency,
                 string polarization, uint symbol_rate) {
             var tuning_params = new Gst.Structure ("tuning_params",
             "frequency", typeof(uint), frequency,
             "symbol-rate", typeof(uint), symbol_rate,
             "polarization", typeof(string), polarization);
-            
+
             base.add_structure_to_scan (tuning_params);
         }
-        
+
         protected override void add_scanning_data_from_string (string line) {
             // line looks like:
             // S freq pol sr fec
             string[] cols = Regex.split_simple ("\\s+", line);
 
             if (cols.length < 5) return;
-            
+
             uint freq = (uint)int.parse (cols[1]);
             uint symbol_rate = (uint)(int.parse (cols[3]) / 1000);
-            
+
             string pol;
             string lower_pol = cols[2].down ();
             if (lower_pol == "h")
@@ -109,66 +109,66 @@ namespace DVB {
                 pol = "vertical";
             else
                 return;
-            
+
             // TODO what about fec?
-            
+
             this.add_scanning_data (freq, pol, symbol_rate);
         }
-        
+
         protected override void prepare () {
             debug("Setting up pipeline for DVB-S scan");
-        
+
             Gst.Element dvbsrc = ((Gst.Bin)base.pipeline).get_by_name ("dvbsrc");
-           
+
             string[] uint_keys = new string[] {"frequency", "symbol-rate"};
-            
+
             foreach (string key in uint_keys) {
                 base.set_uint_property (dvbsrc, base.current_tuning_params, key);
             }
-            
+
             string polarity =
                 base.current_tuning_params.get_string ("polarization")
                 .substring (0, 1);
             dvbsrc.set ("polarity", polarity);
-            
+
             uint code_rate;
             base.current_tuning_params.get_uint ("inner-fec", out code_rate);
             dvbsrc.set ("code-rate-hp", code_rate);
         }
-        
+
         protected override ScannedItem get_scanned_item (Gst.Structure structure) {
             // dup string because get_string returns weak string
             string pol = "%s".printf (
                 structure.get_string ("polarization"));
-            
+
             uint freq;
             structure.get_uint ("frequency", out freq);
             return new ScannedSatteliteItem (freq, pol);
         }
-        
+
         protected override Channel get_new_channel () {
             return new SatelliteChannel.without_schedule ();
         }
-        
+
         protected override void add_values_from_structure_to_channel (
             Gst.Structure delivery, Channel channel) {
             if (!(channel is SatelliteChannel)) return;
-            
+
             SatelliteChannel sc = (SatelliteChannel)channel;
-            
+
             uint freq;
             delivery.get_uint ("frequency", out freq);
             sc.Frequency = freq;
-            
+
             sc.Polarization = delivery.get_string ("polarization").substring (0, 1);
 
             uint srate;
-            delivery.get_uint ("symbol-rate", out srate);            
+            delivery.get_uint ("symbol-rate", out srate);
             sc.SymbolRate = srate;
-            
+
             // TODO
             sc.DiseqcSource = -1;
         }
     }
-    
+
 }

@@ -30,7 +30,7 @@ namespace DVB.database.sqlite {
 
         private static const int VERSION = 2;
 
-        private static const string CREATE_EVENTS_TABLE_STATEMENT = 
+        private static const string CREATE_EVENTS_TABLE_STATEMENT =
             """CREATE TABLE events (group_id INTEGER,
             sid INTEGER,
             event_id INTEGER,
@@ -43,12 +43,12 @@ namespace DVB.database.sqlite {
             extended_description TEXT,
             PRIMARY KEY (group_id, sid, event_id))""";
 
-        private static const string INSERT_EVENT_SQL = 
+        private static const string INSERT_EVENT_SQL =
             "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            
-        private static const string DELETE_EVENT_STATEMENT = 
+
+        private static const string DELETE_EVENT_STATEMENT =
             "DELETE FROM events WHERE group_id=? AND sid=? AND event_id=?";
-            
+
         private static const string SELECT_ALL_EVENTS_STATEMENT =
             """SELECT event_id, datetime(starttime),
             duration, running_status, free_ca_mode, name,
@@ -59,31 +59,31 @@ namespace DVB.database.sqlite {
             """SELECT event_id, datetime(starttime),
             duration FROM events WHERE group_id='%u' AND sid='%u'
             ORDER BY starttime ASC""";
-            
+
         private static const string HAS_EVENT_STATEMENT =
             "SELECT 1 FROM events WHERE group_id=? AND sid=? AND event_id=? LIMIT 1";
-            
+
         private static const string UPDATE_EVENT_SQL =
             """UPDATE events SET starttime=?, duration=?, running_status=?,
             free_ca_mode=?, name=?, description=?,
             extended_description=? WHERE group_id=? AND sid=? AND event_id=?""";
-            
+
         private static const string TO_JULIAN_SQL =
             "SELECT julianday(?)";
-            
+
         private static const string SELECT_EVENT_SQL =
             """SELECT event_id, datetime(starttime),
             duration, running_status, free_ca_mode, name,
             description, extended_description
             FROM events WHERE group_id=? AND sid=? AND event_id=?""";
-            
+
         private static const string DELETE_EVENTS_GROUP =
         "DELETE FROM events WHERE group_id=?";
 
         private static const string DELETE_EXPIRED_EVENTS =
         """DELETE FROM events WHERE starttime <= julianday(?, 'unixepoch')
         AND sid=? AND group_id=?""";
-            
+
         private Statement to_julian_statement;
         private Statement insert_event_statement;
         private Statement update_event_statement;
@@ -138,19 +138,19 @@ namespace DVB.database.sqlite {
                 uint group_id) throws SqlError
         {
             int free_ca_mode = (event.free_ca_mode) ? 1 : 0;
-            
+
             string name = SqliteUtils.escape (event.name);
             string desc = SqliteUtils.escape (event.description);
             string ext_desc = SqliteUtils.escape (event.extended_description);
             double julian_start = this.to_julian (event.year, event.month,
                 event.day, event.hour, event.minute, event.second);
-            
+
             // Check if start time got converted correctly
             if (julian_start <= 0) {
                 log.warning ("Failed to convert start time");
                 return false;
             }
-            
+
             if (this.contains_event (event, channel_sid, group_id)) {
                 if (this.update_event_statement.bind_double (1, julian_start) != Sqlite.OK
                         || this.update_event_statement.bind_int (2, (int)event.duration) != Sqlite.OK
@@ -165,7 +165,7 @@ namespace DVB.database.sqlite {
                     this.throw_last_error ();
                     return false;
                 }
-                
+
                 if (this.update_event_statement.step () != Sqlite.DONE) {
                     this.throw_last_error_reset (this.update_event_statement);
                     return false;
@@ -186,7 +186,7 @@ namespace DVB.database.sqlite {
                     this.throw_last_error ();
                     return false;
                 }
-                
+
                 if (this.insert_event_statement.step () != Sqlite.DONE) {
                     this.throw_last_error_reset (this.insert_event_statement);
                     return false;
@@ -196,7 +196,7 @@ namespace DVB.database.sqlite {
             }
             return true;
         }
-        
+
         public Event? get_event (uint event_id, uint channel_sid,
                 uint group_id) throws SqlError
         {
@@ -206,24 +206,24 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return null;
             }
-            
+
             int rc = this.select_event_statement.step ();
-            
+
             if (rc != Sqlite.ROW && rc != Sqlite.DONE) {
                 this.throw_last_error_reset (this.select_event_statement);
                 return null;
             }
-            
+
             // ROW means there's data, DONE means there's none
             Event? event = null;
             if (rc != Sqlite.DONE) {
                 event = this.create_event_from_statement (this.select_event_statement);
-            }                
+            }
             this.select_event_statement.reset ();
 
             return event;
         }
-        
+
         public bool remove_event (uint event_id, uint channel_sid,
                 uint group_id) throws SqlError
         {
@@ -233,14 +233,14 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.delete_event_statement.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.delete_event_statement);
                 return false;
             }
-  
+
             this.delete_event_statement.reset ();
-                      
+
             return true;
         }
 
@@ -266,7 +266,7 @@ namespace DVB.database.sqlite {
 
             return true;
         }
-        
+
         public bool contains_event (Event event, uint channel_sid, uint group_id) throws SqlError
         {
             if (this.has_event_statement.bind_int (1, (int)group_id) != Sqlite.OK
@@ -275,64 +275,64 @@ namespace DVB.database.sqlite {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             int c = 0;
             while (this.has_event_statement.step () == Sqlite.ROW) {
                 c = this.has_event_statement.column_int (0);
             }
-     
+
             this.has_event_statement.reset ();
-                   
+
             return (c > 0);
         }
-        
+
         public Gee.List<Event> get_events (uint channel_sid, uint group_id)
                 throws SqlError
         {
             Gee.List<Event> events = new ArrayList<Event> ();
-            
+
             if (this.db == null) {
                 log.warning ("DB not initialized");
                 return events;
             }
-            
+
             string statement_str = SELECT_MINIMAL_EVENTS_STATEMENT.printf (
                 group_id, channel_sid);
-            
+
             Statement statement;
             if (this.db.prepare (statement_str, -1, out statement) != Sqlite.OK) {
                 this.throw_last_error ();
                 return events;
             }
-            
+
             while (statement.step () == Sqlite.ROW) {
                 Event event = this.create_minimal_event (statement);
                 events.add (event);
             }
-            
+
             return events;
         }
-        
+
         public bool remove_events_of_group (uint group_id) throws SqlError {
             if (this.delete_events_group.bind_int (1, (int)group_id) != Sqlite.OK) {
                 this.throw_last_error ();
                 return false;
             }
-            
+
             if (this.delete_events_group.step () != Sqlite.DONE) {
                 this.throw_last_error_reset (this.delete_events_group);
                 return false;
             }
-            
+
             this.delete_events_group.reset ();
-            
+
             return true;
         }
 
         private Event create_minimal_event (Statement statement) {
             var event = new Event ();
             event.id = (uint)statement.column_int (0);
-            
+
             weak string starttime = statement.column_text (1);
             starttime.scanf ("%04u-%02u-%02u %02u:%02u:%02u",
                 &event.year,
@@ -341,16 +341,16 @@ namespace DVB.database.sqlite {
                 &event.hour,
                 &event.minute,
                 &event.second);
-            
+
             event.duration = (uint)statement.column_int (2);
 
             return event;
         }
-        
+
         private Event create_event_from_statement (Statement statement) {
             var event = new Event ();
             event.id = (uint)statement.column_int (0);
-            
+
             weak string starttime = statement.column_text (1);
             starttime.scanf ("%04u-%02u-%02u %02u:%02u:%02u",
                 &event.year,
@@ -359,7 +359,7 @@ namespace DVB.database.sqlite {
                 &event.hour,
                 &event.minute,
                 &event.second);
-            
+
             event.duration = (uint)statement.column_int (2);
             event.running_status = (uint)statement.column_int (3);
             event.free_ca_mode = (statement.column_int (4) == 1);
@@ -373,7 +373,7 @@ namespace DVB.database.sqlite {
             event.audio_components = null;
             event.video_components = null;
             event.teletext_components = null;
-            
+
             return event;
         }
 
@@ -382,20 +382,20 @@ namespace DVB.database.sqlite {
 
             string datetime_str = "%04u-%02u-%02u %02u:%02u:%02u".printf (
                 year, month, day, hour, minute, second);
-            
+
             if (this.to_julian_statement.bind_text (1, datetime_str)
                     != Sqlite.OK) {
                 this.throw_last_error ();
-                return 0;       
+                return 0;
             }
-            
+
             if (this.to_julian_statement.step () != Sqlite.ROW) {
                 this.throw_last_error ();
                 return 0;
             }
-            
+
             double val = this.to_julian_statement.column_double (0);
-            
+
             this.to_julian_statement.reset ();
 
             return val;

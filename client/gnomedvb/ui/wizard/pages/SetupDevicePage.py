@@ -25,7 +25,7 @@ from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 class SetupDevicePage(BasePage):
-    
+
     __gsignals__ = {
         "finished": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [bool]),
     }
@@ -40,39 +40,39 @@ class SetupDevicePage(BasePage):
         self._progressbar = None
         self._progressbar_timer = None
         self.__success = False
-            
+
     def get_page_title(self):
         return _("Configuring device")
-        
+
     def get_page_type(self):
         return Gtk.AssistantPageType.PROGRESS
-  
+
     def set_scanner(self, scanner):
         self.__scanner = scanner
-        
+
     def set_adapter(self, adapter):
         self.__adapter_info = adapter
 
     def set_channels(self, channels):
         self.__channels = channels
-   
+
     def get_summary(self):
         return self.__success, self.__summary
-        
+
     def can_be_added_to_group(self, adapter_info):
         self.__adapter_info = adapter_info
         ex_group = self.get_existing_group_of_same_type()
         self.__adapter_info = None
         return ex_group != None
-        
+
     def run(self, create_group):
         self.show_progressbar()
-        
+
         def reply_handler(proxy, success, user_data):
             self.destroy_progressbar()
             self.__success = True
             self.emit("finished", True)
-        
+
         existing_group = self.get_existing_group_of_same_type()
         if existing_group == None:
             self.create_group_automatically(result_handler=reply_handler,
@@ -80,7 +80,7 @@ class SetupDevicePage(BasePage):
         else:
             self.add_to_group(existing_group, result_handler=reply_handler,
                 error_handler=gnomedvb.global_error_handler)
-         
+
     def show_progressbar(self):
         # From parent
         self._label.hide()
@@ -91,7 +91,7 @@ class SetupDevicePage(BasePage):
         self._progressbar.show()
         self.pack_start(self._progressbar, False, True, 0)
         self._progressbar_timer = GObject.timeout_add(100, self.progressbar_pulse)
-        
+
     def destroy_progressbar(self):
         GObject.source_remove(self._progressbar_timer)
         self._progressbar_timer = None
@@ -100,7 +100,7 @@ class SetupDevicePage(BasePage):
     def progressbar_pulse(self):
         self._progressbar.pulse()
         return True
-   
+
     def get_existing_group_of_same_type(self):
         groups = self.__model.get_registered_device_groups(None)
         # Find group of same type
@@ -131,10 +131,10 @@ class SetupDevicePage(BasePage):
             self.__summary = ''
             channels_file = os.path.join(gnomedvb.get_config_dir(),
                 "channels_%s.conf" % self.__adapter_info["type"])
-            
+
             self.__scanner.write_channels_to_file(self.__channels, channels_file,
                 result_handler=write_channels_handler, error_handler=error_handler)
-                        
+
     def add_to_group(self, group, result_handler, error_handler):
         self.__summary = _('The device has been added to the group %s.') % group['name']
         group.add_device(self.__adapter_info['adapter'],

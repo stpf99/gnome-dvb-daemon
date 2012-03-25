@@ -25,58 +25,58 @@ class SchedulePaned (Gtk.Paned):
 
     def __init__(self):
         GObject.GObject.__init__(self, orientation=Gtk.Orientation.VERTICAL)
-        
+
         self.scheduleview = ScheduleView()
         self.scheduleview.show()
-        
+
         self.scheduleview.get_selection().connect("changed", self._on_selection_changed)
-        
+
         self.scrolledschedule = Gtk.ScrolledWindow()
         self.scrolledschedule.add(self.scheduleview)
         self.scrolledschedule.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrolledschedule.set_shadow_type(Gtk.ShadowType.IN)
         self.scrolledschedule.show()
-        
+
         self.pack1(self.scrolledschedule, True)
-        
+
         self.textview = Gtk.TextView()
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_editable(False)
         self.textview.show()
-        
+
         self.scrolledtextview = Gtk.ScrolledWindow()
         self.scrolledtextview.add(self.textview)
         self.scrolledtextview.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.scrolledtextview.set_shadow_type(Gtk.ShadowType.IN)
         self.scrolledtextview.show()
-        
+
         self.pack2(self.scrolledtextview, False)
-        
+
         self.scrolledtextview.set_size_request(-1, 100)
-        
+
     def get_treeview(self):
         return self.scheduleview
-    
+
     def get_textview(self):
         return self.textview
-        
+
     def _on_selection_changed(self, selection):
         model, aiter = selection.get_selected()
-        
+
         if aiter != None:
             event_id = model[aiter][ScheduleStore.COL_EVENT_ID]
             if event_id != ScheduleStore.NEW_DAY:
                 description = model[aiter][ScheduleStore.COL_SHORT_DESC]
                 if description != None and len(description) > 0:
                     description += "\n\n"
-                
+
                 # Check if row is the selected row
                 ext_desc = model[aiter][ScheduleStore.COL_EXTENDED_DESC]
                 if ext_desc == None:
                     ext_desc = model.get_extended_description(aiter)
                     model[aiter][ScheduleStore.COL_EXTENDED_DESC] = ext_desc
                 description += ext_desc
-                
+
                 textbuffer = self.textview.get_buffer()
                 textbuffer.set_text(description)
                 self.scrolledtextview.show()

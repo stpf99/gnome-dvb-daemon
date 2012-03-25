@@ -31,16 +31,15 @@ class ChannelsView(Gtk.TreeView):
         GObject.GObject.__init__(self)
         if model != None:
             self.set_model(model)
-        
+
         col_name = Gtk.TreeViewColumn(_("Channel"))
         cell_name = Gtk.CellRendererText()
         col_name.pack_start(cell_name, True)
         col_name.add_attribute(cell_name, "markup", name_col)
         self.append_column(col_name)
-        
+
     def set_model(self, model=None):
         if model != None and not (isinstance(model, ChannelsStore) \
                 or isinstance(model, ChannelsTreeStore)):
             raise TypeError("model must be a ChannelsStore or ChannelsTreeStore instance")
         Gtk.TreeView.set_model(self, model)
-        

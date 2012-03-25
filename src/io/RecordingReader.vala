@@ -105,12 +105,12 @@ namespace DVB.io {
 
                     File child = recordingsbasedir.get_child (
                         childinfo.get_name ());
-                    
+
                     switch (type) {
                         case FileType.DIRECTORY:
                             this.restore_from_dir (child, depth + 1);
                         break;
-                        
+
                         case FileType.REGULAR:
                             if (childinfo.get_name () == "info.rec") {
                                 Recording rec = null;
@@ -125,8 +125,8 @@ namespace DVB.io {
                                     log.debug ("Restored recording from %s",
                                         child.get_path ());
                                     this.store.add_and_monitor (rec);
-                                    
-                                    
+
+
                                 }
                             }
                         break;
@@ -146,7 +146,7 @@ namespace DVB.io {
 
             return success;
         }
- 
+
         protected Recording? deserialize (File file) throws Error {
             var reader = new DataInputStream (file.read (null));
 
@@ -156,21 +156,21 @@ namespace DVB.io {
 
             var rec = new Recording ();
             StringBuilder description = new StringBuilder ();
-        	
+
         	while ((line = reader.read_line (out len, null)) != null) {
                 switch (line_number) {
                     case 0:
                         rec.Id = (uint32)int.parse (line);
                     break;
-                    
+
                     case 1:
                         rec.ChannelName = line;
                     break;
-                    
+
                     case 2:
                         rec.Location = (len == 0) ? null : File.new_for_path (line);
                     break;
-                    
+
                     case 3: {
                         int year = 0;
                         int month = 0;
@@ -185,15 +185,15 @@ namespace DVB.io {
                         }
                     break;
                     }
-                    
+
                     case 4:
                         rec.Length = (int64)int.parse (line);
                     break;
-                    
+
                     case 5:
                         rec.Name = (len == 0) ? null : line;
                     break;
-                    
+
                     default:
                         description.append (line);
                     break;
@@ -203,9 +203,9 @@ namespace DVB.io {
         	}
         	reader.close (null);
             rec.Description = description.str;
-            
+
             return rec;
         }
-          
+
     }
 }

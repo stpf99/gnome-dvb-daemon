@@ -26,7 +26,7 @@ __all__ = ["UnassignedDevicesStore", "DeviceGroupsStore", "DeviceGroupsView"]
 class UnassignedDevicesStore (Gtk.ListStore):
 
     (COL_DEVICE,) = range(1)
-    
+
     def __init__(self):
         Gtk.ListStore.__init__(self, GObject.TYPE_PYOBJECT)
 
@@ -37,15 +37,15 @@ class DeviceGroupsStore (Gtk.TreeStore):
 
     def __init__(self):
         Gtk.TreeStore.__init__(self, GObject.GObject, GObject.TYPE_PYOBJECT)
-        
+
     def get_groups(self):
         groups = []
         for row in self:
             if not isinstance(row, Device):
                 groups.append((row[self.COL_GROUP], row.iter))
         return groups
- 
-    
+
+
 class DeviceGroupsView (Gtk.TreeView):
 
     def __init__(self, model):
@@ -53,15 +53,15 @@ class DeviceGroupsView (Gtk.TreeView):
         self.set_model(model)
         self.set_headers_visible(False)
         #self.set_reorderable(True)
-        
+
         cell_description = Gtk.CellRendererText ()
         column_description = Gtk.TreeViewColumn (_("Devices"), cell_description)
         column_description.set_cell_data_func(cell_description, self.get_description_data, None)
         self.append_column(column_description)
-        
+
     def get_description_data(self, column, cell, model, aiter, user_data=None):
         device = model[aiter][model.COL_DEVICE]
-        
+
         if isinstance(device, Device):
             # translators: first is device's name, second its type
             text = _("<b>%s (%s)</b>\n") % (device.name, device.type)
@@ -73,7 +73,7 @@ class DeviceGroupsView (Gtk.TreeView):
                 text = _("Group %d") % group["id"]
             else:
                 text = device[0]
-            
+
         cell.set_property("markup", text)
 
 

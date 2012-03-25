@@ -25,7 +25,7 @@ namespace DVB {
      * Represents an EPG event (i.e. a show with all its information)
      */
     public class Event {
-        
+
         // See EN 300 486 Table 6
         public static const uint RUNNING_STATUS_UNDEFINED = 0;
         public static const uint RUNNING_STATUS_NOT_RUNNING = 1;
@@ -36,7 +36,7 @@ namespace DVB {
         public uint id;
         /* Time is stored in UTC */
         public uint year;
-        public uint month; 
+        public uint month;
         public uint hour;
         public uint day;
         public uint minute;
@@ -51,14 +51,14 @@ namespace DVB {
         public SList<AudioComponent> audio_components;
         public SList<VideoComponent> video_components;
         public SList<TeletextComponent> teletext_components;
-        
+
         public Event () {
             this.audio_components = new SList<AudioComponent> ();
             this.video_components = new SList<VideoComponent> ();
             this.teletext_components = new SList<TeletextComponent> ();
-            
+
             this.year = 0;
-            this.month = 0; 
+            this.month = 0;
             this.hour = 0;
             this.day = 0;
             this.minute = 0;
@@ -66,7 +66,7 @@ namespace DVB {
             this.duration = 0;
             this.running_status = RUNNING_STATUS_UNDEFINED;
         }
-        
+
         /**
          * Whether the event has started and ended in the past
          */
@@ -76,21 +76,21 @@ namespace DVB {
             // otherwise mktime will add an hour,
             // because it respects dst
             current_utc.isdst = -1;
-            
+
             time_t current_time = current_utc.mktime ();
-           
+
             time_t end_timestamp = this.get_end_timestamp ();
-            
+
             return (end_timestamp < current_time);
         }
-        
+
         public bool is_running () {
             Time time_now = Time.gm (time_t ());
             Time time_start = this.get_utc_start_time ();
-            
+
             time_t timestamp_now = cUtils.timegm (time_now);
             time_t timestamp_start = cUtils.timegm (time_start);
-            
+
             if (timestamp_now - timestamp_start >= 0) {
                 // Has started, check if it's still running
                 return (!this.has_expired ());
@@ -99,7 +99,7 @@ namespace DVB {
                 return false;
             }
         }
-        
+
         public string to_string () {
             string text = "ID: %u\nDate: %04u-%02u-%02u %02u:%02u:%02u\n".printf (this.id,
             this.year, this.month, this.day, this.hour, this.minute, this.second)
@@ -111,14 +111,14 @@ namespace DVB {
             }
             return text;
         }
-        
+
         public Time get_local_start_time () {
             // Initialize time zone and set values
             Time utc_time = this.get_utc_start_time ();
-            
+
             time_t utc_timestamp = cUtils.timegm (utc_time);
             Time local_time = Time.local (utc_timestamp);
-            
+
             return local_time;
         }
 
@@ -141,15 +141,15 @@ namespace DVB {
             Time end_time = Utils.create_utc_time ((int)this.year, (int)this.month,
                 (int)this.day, (int)this.hour, (int)this.minute,
                 (int)this.second);
-                
+
             time_t before = end_time.mktime ();
-            
+
             end_time.second += (int)this.duration;
-            
+
             time_t after = end_time.mktime ();
-            
+
             assert (after - before == this.duration);
-            
+
             return after;
         }
 
@@ -179,15 +179,15 @@ namespace DVB {
             if (event1 == null && event2 == null) return 0;
             else if (event1 == null && event2 != null) return +1;
             else if (event1 != null && event2 == null) return -1;
-        
+
             time_t event1_time = event1->get_end_timestamp ();
             time_t event2_time = event2->get_end_timestamp ();
-            
+
             if (event1_time < event2_time) return -1;
             else if (event1_time > event2_time) return +1;
             else return 0;
         }
-        
+
         /**
          * @returns: TRUE if event1 and event2 represent the same event,
          * else FALSE
@@ -196,27 +196,27 @@ namespace DVB {
          */
         public static bool equal (Event* event1, Event* event2) {
             if (event1 == null || event2 == null) return false;
-            
+
             return (event1->id == event2->id);
         }
 
         public static uint hash (Event* event) {
             return event->id;
         }
-        
+
         public class AudioComponent {
             public string type;
         }
-        
+
         public class VideoComponent {
             public bool high_definition;
             public string aspect_ratio;
             public int frequency;
         }
-        
+
         public class TeletextComponent {
             public string type;
         }
     }
-    
+
 }

@@ -31,10 +31,10 @@ class BasePage(Gtk.Box):
         self._label.set_line_wrap(True)
 
         self.pack_start(self._label, False, False, 0)
-        
+
     def get_page_title(self):
         raise NotImplementedError
-        
+
     def get_page_type(self):
         return Gtk.AssistantPageType.CONTENT
 

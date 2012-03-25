@@ -22,7 +22,7 @@ using GLib;
 namespace DVB {
 
     public class TerrestrialChannel : Channel {
-    
+
         public DvbSrcInversion Inversion {get; set;}
         public DvbSrcBandwidth Bandwidth {get; set;}
         public DvbSrcCodeRate CodeRateHP {get; set;}
@@ -39,7 +39,7 @@ namespace DVB {
         public TerrestrialChannel.without_schedule () {
             Channel.without_schedule ();
         }
-        
+
         public override void setup_dvb_source (Gst.Element source) {
             source.set ("modulation", this.Constellation);
             source.set ("trans-mode", this.TransmissionMode);
@@ -51,7 +51,7 @@ namespace DVB {
             source.set ("hierarchy", this.Hierarchy);
             source.set ("inversion", this.Inversion);
         }
-        
+
         public override string to_string () {
             return "%s:%u:%s:%s:%s:%s:%s:%s:%s:%s:%u:%s:%u".printf(this.Name, this.Frequency,
                 Utils.get_nick_from_enum (typeof(DvbSrcInversion),
@@ -72,7 +72,7 @@ namespace DVB {
                                           this.Hierarchy),
                 this.VideoPID, this.get_audio_pids_string (), this.Sid);
         }
-    
+
     }
 
 }

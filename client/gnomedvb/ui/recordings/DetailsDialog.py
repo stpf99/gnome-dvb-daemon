@@ -24,12 +24,12 @@ class DetailsDialog(gnomedvb.ui.widgets.DetailsDialog.DetailsDialog):
 
     def __init__(self, rec_id, parent=None):
         gnomedvb.ui.widgets.DetailsDialog.DetailsDialog.__init__(self, parent=parent)
-        
+
         self.rec_button.hide()
         self.get_action_area().set_layout(Gtk.ButtonBoxStyle.END)
 
         self._fill(rec_id)
-        
+
     def _fill(self, rec_id):
         def get_all_informations_callback(proxy, data, user_data):
             infos, success = data
@@ -39,7 +39,7 @@ class DetailsDialog(gnomedvb.ui.widgets.DetailsDialog.DetailsDialog):
                 self.set_duration(infos[3])
                 self.set_date(infos[4])
                 self.set_channel(infos[5])
-    
+
         recstore = gnomedvb.DVBRecordingsStoreClient()
         recstore.get_all_informations(rec_id,
             result_handler=get_all_informations_callback,

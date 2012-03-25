@@ -42,7 +42,7 @@ namespace DVB {
          * @returns: TRUE when the file has been parsed successfully
          *
          * Parses initial tuning data from a file as provided by dvb-apps
-         */                             
+         */
         public abstract bool AddScanningDataFromFile (string path) throws DBusError;
     }
 }

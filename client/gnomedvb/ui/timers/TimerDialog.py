@@ -42,21 +42,21 @@ class TimerDialog(Gtk.Dialog):
         self.device_group = device_group
         self.date_valid = False
         self.allowed_delta = datetime.timedelta(hours=1)
-        
+
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
         self.ok_button = self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
 
         self.set_border_width(5)
-        
+
         table = Gtk.Grid(orientation=Gtk.Orientation.VERTICAL)
         table.set_column_spacing(18)
         table.set_row_spacing(6)
         table.set_border_width(5)
         self.get_content_area().pack_start(table, True, True, 0)
-                         
+
         label_channel = TextFieldLabel()
         table.add(label_channel)
-        
+
         if channel == None:
             self.channel_selected = False
             self.set_title(_("Add Timer"))
@@ -64,13 +64,13 @@ class TimerDialog(Gtk.Dialog):
 
             label_channel.set_markup_with_mnemonic(_("_Channel:"))
             self.channels = ChannelsStore(device_group)
-        
+
             scrolledchannels = Gtk.ScrolledWindow(expand=True)
             scrolledchannels.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
             scrolledchannels.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
             table.attach_next_to(scrolledchannels, label_channel,
                 Gtk.PositionType.BOTTOM, 2, 1)
-            
+
             self.channelsview = ChannelsView(self.channels)
             self.channelsview.set_headers_visible(False)
             self.channelsview.get_selection().connect("changed",
@@ -89,30 +89,30 @@ class TimerDialog(Gtk.Dialog):
             channel_label = TextFieldLabel(channel)
             table.attach_next_to(channel_label, label_channel,
                 Gtk.PositionType.RIGHT, 1, 1)
-        
+
         label_start = TextFieldLabel()
         label_start.set_markup_with_mnemonic(_("_Start time:"))
         table.add(label_start)
-        
+
         hbox = Gtk.Box(spacing=6, hexpand=True)
         table.attach_next_to(hbox, label_start, Gtk.PositionType.RIGHT, 1, 1)
 
         if starttime == None:
             starttime = datetime.datetime.now()
-        
+
         self.datetime_box = DateTimeBox(starttime)
         self.datetime_box.connect("changed", self._on_datetime_changed)
         hbox.pack_start(self.datetime_box, True, True, 0)
         label_start.set_mnemonic_widget(self.datetime_box)
-        
+
         label_duration = TextFieldLabel()
         label_duration.set_markup_with_mnemonic(_("_Duration:"))
         table.add(label_duration)
-        
+
         duration_hbox = Gtk.Box(spacing=6, hexpand=True)
         table.attach_next_to(duration_hbox, label_duration,
             Gtk.PositionType.RIGHT, 1, 1)
-        
+
         self.duration = Gtk.SpinButton()
         self.duration.set_range(1, 65535)
         self.duration.set_increments(1, 10)
@@ -120,13 +120,13 @@ class TimerDialog(Gtk.Dialog):
         self.duration.set_value(60)
         duration_hbox.pack_start(self.duration, False, True, 0)
         label_duration.set_mnemonic_widget(self.duration)
-        
+
         minutes_label = TextFieldLabel(_("minutes"))
         duration_hbox.pack_start(minutes_label, True, True, 0)
-        
+
         self.set_start_time(starttime)
         self.set_duration(duration)
-        
+
         table.show_all()
 
     def get_duration(self):
@@ -134,14 +134,14 @@ class TimerDialog(Gtk.Dialog):
 
     def set_duration(self, minutes):
         self.duration.set_value(minutes)
-        
+
     def get_start_time(self):
         return self.datetime_box.get_date_and_time()
 
     def set_start_time(self, time):
         self.datetime_box.set_date_and_time(time.year, time.month, time.day,
             time.hour, time.minute)
-        
+
     def get_channel(self):
         if self.channelsview == None:
             return None
@@ -153,7 +153,7 @@ class TimerDialog(Gtk.Dialog):
 
     def set_time_and_date_editable(self, val):
         self.datetime_box.set_editable(val)
-        
+
     def _on_channel_changed(self, treeselection):
         model, aiter = treeselection.get_selected()
         self.channel_selected = (aiter != None)

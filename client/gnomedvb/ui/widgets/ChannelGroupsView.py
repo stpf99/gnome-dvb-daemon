@@ -34,7 +34,7 @@ class ChannelGroupsView(Gtk.TreeView):
         col_name.add_attribute(self.cell_name, "markup", ChannelGroupsStore.COL_NAME)
         col_name.add_attribute(self.cell_name, "editable", ChannelGroupsStore.COL_EDITABLE)
         self.append_column(col_name)
-        
+
     def get_renderer(self):
         return self.cell_name
 

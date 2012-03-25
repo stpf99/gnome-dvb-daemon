@@ -21,10 +21,10 @@ from gnomedvb import _
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 class IntroPage(BasePage):
-    
+
     def __init__(self):
         BasePage.__init__(self)
-        
+
         text = "<b>%s</b>" % _('Welcome to the digital television Assistant.')
         self._label.set_markup(text)
         self._label.set_line_wrap(False)
@@ -36,16 +36,15 @@ class IntroPage(BasePage):
         label2.set_halign(Gtk.Align.START)
         label2.set_valign(Gtk.Align.START)
         self.pack_start(label2, True, True, 0)
-        
+
         self.expert_mode = Gtk.CheckButton.new_with_mnemonic(_('_Expert mode'))
         self.pack_start(self.expert_mode, False, False, 0)
-        
+
     def get_page_title(self):
         return _("Digital TV configuration")
-        
+
     def get_page_type(self):
         return Gtk.AssistantPageType.INTRO
-        
+
     def has_expert_mode(self):
         return self.expert_mode.get_active()
-    

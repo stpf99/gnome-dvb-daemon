@@ -24,5 +24,5 @@ namespace DVB {
         DELETED = 1,
         UPDATED = 2
     }
-    
+
 }

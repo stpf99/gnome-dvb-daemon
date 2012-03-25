@@ -31,26 +31,26 @@ class SaveChannelListPage(BasePage):
         BasePage.__init__(self)
         self.__scanner = None
         self.__channels = None
-        
+
         text = _("Choose a location where you want to save the list of channels.")
         self._label.set_text(text)
 
         button_box = Gtk.ButtonBox()
         self.pack_start(button_box, True, True, 0)
-    
+
         save_button = Gtk.Button(stock=Gtk.STOCK_SAVE)
         save_button.connect("clicked", self.__on_save_button_clicked)
         button_box.pack_start(save_button, True, True, 0)
-            
+
     def get_page_title(self):
         return _("Save channels")
-    
+
     def set_scanner(self, scanner):
         self.__scanner = scanner
-        
+
     def set_channels(self, channels):
         self.__channels = channels
-        
+
     def __on_save_button_clicked(self, button):
         filechooser = Gtk.FileChooserDialog(action=Gtk.FileChooserAction.SAVE,
             buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,

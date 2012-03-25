@@ -29,17 +29,17 @@ namespace DVB {
     public class RecordingsStore : GLib.Object, IDBusRecordingsStore {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
-    
+
         private HashMap<uint32, Recording> recordings;
         private uint32 last_id;
         private static RecordingsStore instance;
         private static RecMutex instance_mutex = RecMutex ();
-        
+
         construct {
             this.recordings = new HashMap <uint32, Recording> ();
             this.last_id = 0;
         }
-        
+
         public static unowned RecordingsStore get_instance () {
             instance_mutex.lock ();
             if (instance == null) {
@@ -48,7 +48,7 @@ namespace DVB {
             instance_mutex.unlock ();
             return instance;
         }
-        
+
         public static void shutdown () {
             instance_mutex.lock ();
             RecordingsStore rs = instance;
@@ -83,7 +83,7 @@ namespace DVB {
             }
             return true;
         }
-        
+
         public bool add_and_monitor (Recording rec) {
             if (this.add (rec)) {
                 rec.monitor_recording ();
@@ -105,7 +105,7 @@ namespace DVB {
             }
             return val;
         }
-        
+
         /**
          * @returns: A list of ids for all recordings
          */
@@ -113,17 +113,17 @@ namespace DVB {
             uint32[] ids;
             lock (this.recordings) {
                 ids = new uint32[this.recordings.size];
-                
+
                 int i = 0;
                 foreach (uint32 key in this.recordings.keys) {
                     ids[i] = key;
                     i++;
                 }
             }
-            
+
             return ids;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @location: The location of the recording on the filesystem
@@ -142,7 +142,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @name: The name of the recording (e.g. the name of
@@ -163,7 +163,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @description: A short text describing the recorded item
@@ -184,7 +184,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @start_time: The starting time of the recording
@@ -204,7 +204,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @timestamp: Start time as UNIX timestamp
@@ -220,10 +220,10 @@ namespace DVB {
                     timestamp = 0;
                 }
             }
-            
+
             return ret;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @length: The length of the recording in seconds
@@ -239,10 +239,10 @@ namespace DVB {
                     length = 0;
                 }
             }
-           
+
             return ret;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @returns: TRUE on success, FALSE otherwises
@@ -267,10 +267,10 @@ namespace DVB {
                     this.remove (rec);
                 }
             }
-            
+
             return val;
         }
-        
+
         /**
          * @rec_id: The id of the recording
          * @name: The channel's name or an empty string if
@@ -291,7 +291,7 @@ namespace DVB {
 
             return ret;
         }
-        
+
         public bool GetAllInformations (uint32 rec_id, out RecordingInfo info) throws DBusError {
             bool ret;
             info = RecordingInfo ();
@@ -327,5 +327,5 @@ namespace DVB {
         }
 
     }
-    
+
 }

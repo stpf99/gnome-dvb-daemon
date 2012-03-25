@@ -26,7 +26,7 @@ namespace DVB.database.SqliteUtils {
      */
     public static string escape (string? text) {
         if (text == null) return "";
-    
+
         Regex regex;
         try {
             regex = new Regex ("'",
@@ -36,7 +36,7 @@ namespace DVB.database.SqliteUtils {
             warning ("RegexError: %s", e.message);
             return text;
         }
-        
+
         string escaped_str;
         try {
             escaped_str = regex.replace_literal (text, -1,
@@ -45,10 +45,10 @@ namespace DVB.database.SqliteUtils {
             warning ("RegexError: %s", e.message);
             return text;
         }
-        
+
         return escaped_str;
     }
-    
+
     /**
      * Replace "''" with "'"
      */
@@ -62,7 +62,7 @@ namespace DVB.database.SqliteUtils {
             warning ("RegexError: %s", e.message);
             return text;
         }
-        
+
         string new_str;
         try {
             new_str = regex.replace_literal (text, -1,
@@ -71,7 +71,7 @@ namespace DVB.database.SqliteUtils {
             warning ("RegexError: %s", e.message);
             return text;
         }
-        
+
         return new_str;
     }
 

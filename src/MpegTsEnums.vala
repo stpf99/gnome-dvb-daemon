@@ -78,7 +78,7 @@ namespace DVB {
         INVERSION_ON,
         INVERSION_AUTO
     }
-    
+
     /**
      * @bandwith: 0, 6, 7 or 8
      */
@@ -93,7 +93,7 @@ namespace DVB {
         }
         return val;
     }
-    
+
     /**
      * @hierarchy: 0, 1, 2 or 4.
      * If value doesn't match one of above HIERARCHY_AUTO is returned.
@@ -109,7 +109,7 @@ namespace DVB {
         }
         return val;
     }
-    
+
     /**
      * @modulation: QPSK, QAM16, QAM32, QAM64, QAM128 or QAM256.
      * If value doesn't match one of above QAM_AUTO is returned.
@@ -130,10 +130,10 @@ namespace DVB {
             val = DvbSrcModulation.QAM_256;
         else
             val = DvbSrcModulation.QAM_AUTO;
-        
+
         return val;
     }
-    
+
     /**
      * @code_rate_string: "NONE", 1/2", "2/3", "3/4", "4/5", "5/6", "6/7",
      * "7/8" or "8/9".
@@ -161,10 +161,10 @@ namespace DVB {
             val = DvbSrcCodeRate.FEC_8_9;
         else
             val = DvbSrcCodeRate.FEC_AUTO;
-        
+
         return val;
     }
-    
+
     /**
      * @guard: 4, 8, 16 or 32.
      * If value doesn't match one of above GUARD_INTERVAL_AUTO is returned.
@@ -185,7 +185,7 @@ namespace DVB {
         }
         return val;
     }
-    
+
     /**
      * @transmode: "2k" or "8k"
      * If value doesn't match one of above TRANSMISSION_MODE_AUTO is returned.
@@ -199,7 +199,7 @@ namespace DVB {
             val = DvbSrcTransmissionMode.TRANSMISSION_MODE_8K;
         else
             val = DvbSrcTransmissionMode.TRANSMISSION_MODE_AUTO;
-            
+
         return val;
     }
 

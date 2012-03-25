@@ -38,28 +38,28 @@ namespace DVB.io {
          */
         public void write () throws GLib.Error {
             File parentdir = this.rec.Location.get_parent ();
-        
+
             File recfile = parentdir.get_child ("info.rec");
-            
+
             log.debug ("Saving recording to %s", recfile.get_path() );
-            
+
             if (recfile.query_exists (null)) {
                 log.debug ("Deleting old info.rec");
                 recfile.delete (null);
             }
-            
+
             FileOutputStream stream = recfile.create (0, null);
-            
+
             string text = this.serialize (this.rec);
             stream.write (text.data);
-            
+
             stream.close (null);
         }
-        
+
         protected string serialize (Recording rec) {
             uint[] started = rec.get_start ();
             return ("%u\n%s\n%s\n%u-%u-%u %u:%u\n%"+int64.FORMAT+"\n%s\n%s").printf (
-                rec.Id, rec.ChannelName, rec.Location.get_path (),                
+                rec.Id, rec.ChannelName, rec.Location.get_path (),
                 started[0], started[1], started[2], started[3],
                 started[4], rec.Length,
                 (rec.Name == null) ? "" : rec.Name,
@@ -68,5 +68,5 @@ namespace DVB.io {
         }
 
     }
-        
+
 }

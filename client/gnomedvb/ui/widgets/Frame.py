@@ -26,18 +26,18 @@ class BaseFrame(Gtk.Box):
     def __init__(self, markup, child, expand=True, fill=True, padding=0):
         GObject.GObject.__init__(self, orientation=Gtk.Orientation.VERTICAL,
             spacing=6)
-    
+
         label = Gtk.Label()
         label.set_halign(Gtk.Align.START)
         label.set_markup(markup)
         label.show()
         self.pack_start(label, False, False, 0)
-        
+
         self.child_widget = child
         self.child_widget.set_margin_left(12)
         self.child_widget.show()
         self.pack_start(self.child_widget, expand, fill, padding)
-        
+
     def set_aligned_child(self, child, expand=True, fill=True, padding=0):
         self.remove(self.child_widget)
         self.child_widget = child
@@ -49,7 +49,7 @@ class TextFieldLabel(Gtk.Label):
 
     def __init__(self, markup=None, **kwargs):
         GObject.GObject.__init__(self, **kwargs)
-        
+
         if markup:
             self.set_markup(markup)
         self.set_halign(Gtk.Align.START)
@@ -62,6 +62,5 @@ class Frame (BaseFrame):
         scrolled.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolled.add(treeview)
-        
+
         BaseFrame.__init__(self, markup, scrolled)
-        

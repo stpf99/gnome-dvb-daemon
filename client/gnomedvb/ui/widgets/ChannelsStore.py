@@ -28,7 +28,7 @@ class ChannelsStore(Gtk.ListStore):
 
     (COL_NAME,
      COL_SID,) = range(2)
-    
+
     __gsignals__ = {
         "loading-finished":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
     }
@@ -38,22 +38,22 @@ class ChannelsStore(Gtk.ListStore):
         @param device_group: ID of device group the
         list of channels should be retrieved
         """
-    
+
         Gtk.ListStore.__init__(self, str, long)
-        
+
         self.set_sort_column_id(self.COL_NAME,
             Gtk.SortType.ASCENDING)
-            
+
         self._add_channels(device_group)
-        
+
     def _add_channels(self, device_group):
         channellist = device_group.get_channel_list()
-        
+
         def append_channel(proxy, channels, user_data):
             for channel_id, name, is_radio in channels:
                 self.append([name, channel_id])
             self.emit("loading-finished")
-        
+
         channellist.get_channel_infos(result_handler=append_channel,
             error_handler=global_error_handler)
 
@@ -64,16 +64,16 @@ class ChannelsTreeStore(Gtk.TreeStore):
      COL_NAME,
      COL_SID,
      COL_GROUP,) = range(4)
-    
+
     __gsignals__ = {
         "loading-finished":  (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [int]),
     }
-    
+
     def __init__(self, use_channel_groups=False):
         Gtk.TreeStore.__init__(self, int, str, long, GObject.GObject)
-        
+
         self.set_sort_order(Gtk.SortType.ASCENDING)
-        
+
         self._use_channel_groups = use_channel_groups
         self._manager = gnomedvb.DVBManagerClient ()
         self._manager.connect('group-added', self._on_manager_group_added)
@@ -87,14 +87,14 @@ class ChannelsTreeStore(Gtk.TreeStore):
 
         self._manager.get_registered_device_groups(result_handler=append_groups,
             error_handler=global_error_handler)
-    
+
     def _append_group(self, dev_group):
         group_id = dev_group.get_id()
         group_name = dev_group.get_name()
 
         group_iter = self.append(None, [group_id, group_name, 0L, dev_group])
         channellist = dev_group.get_channel_list()
-        
+
         d = Callback()
         if self._use_channel_groups:
             d.add_callback(self._append_channel_groups, channellist, group_id,
@@ -118,7 +118,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
         channellist.get_channel_infos(
             result_handler=lambda p,x,u: d_all.callback(x),
             error_handler=global_error_handler)
-     
+
     def _append_channels(self, channels, group_id, dev_group, tv_group_iter, radio_group_iter):
         for channel_id, name, is_radio in channels:
             if is_radio:
@@ -143,7 +143,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
                         escape(name),
                         channel_id,
                         dev_group])
-        
+
         for chan_group_id, name in channel_groups:
             chan_group_iter = self.append(group_iter, [group_id, escape(name),
                 0, dev_group])
@@ -152,20 +152,20 @@ class ChannelsTreeStore(Gtk.TreeStore):
             channellist.get_channels_of_group(chan_group_id,
                 result_handler=lambda p,data,u: d.callback(data[1]),
                 error_handler=global_error_handler)
-                
+
         self.emit("loading-finished", group_id)
-       
+
     def _on_manager_group_added(self, manager, group_id):
         group = manager.get_device_group(group_id)
         if group != None:
             self._append_group(group)
-        
+
     def _on_manager_group_removed(self, manager, group_id):
         for row in self:
             if row[self.COL_GROUP_ID] == group_id:
                 self.remove(row.iter)
                 break
-                
+
     def set_sort_order(self, order):
         self.set_sort_column_id(self.COL_NAME, order)
 

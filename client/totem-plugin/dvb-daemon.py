@@ -156,24 +156,24 @@ class ScheduleDialog(Gtk.Dialog):
             parent=parent,
             flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
             buttons=(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
-            
+
         self._group = group
         self._sid = sid
-            
+
         self.set_default_size(640, 380)
         content_area = self.get_content_area()
         content_area.set_spacing(6)
-            
+
         self.schedulepaned = SchedulePaned()
         self.schedulepaned.show()
         content_area.pack_start(self.schedulepaned, True, True, 0)
-        
+
         self.scheduleview = self.schedulepaned.get_treeview()
         self.scheduleview.connect("button-press-event", self._on_event_selected)
-        
+
         self.schedulestore = ScheduleStore(group, sid)
         self.scheduleview.set_model(self.schedulestore)
-    
+
     def _on_event_selected(self, treeview, event):
         if event.type == Gdk.EventType._2BUTTON_PRESS:
             model, aiter = treeview.get_selection().get_selected()
@@ -188,7 +188,7 @@ class ScheduleDialog(Gtk.Dialog):
                     recorder = self._group.get_recorder()
                     rec_id, success = recorder.add_timer_for_epg_event(event_id, self._sid)
                 dialog.destroy()
-                
+
                 if response == Gtk.ResponseType.YES and not success:
                     dialog = TimerFailureDialog(self)
                     dialog.run()
@@ -201,17 +201,17 @@ class RunningNextDialog(Gtk.Dialog):
             parent=parent,
             flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
             buttons=(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
-            
+
         self._group = group
-        
+
         self.set_default_size(640, 380)
         content_area = self.get_content_area()
         content_area.set_spacing(6)
-        
+
         self.schedule = RunningNextStore(self._group)
         self.scheduleview = RunningNextView(self.schedule)
         self.scheduleview.show()
-        
+
         self.scrolledschedule = Gtk.ScrolledWindow()
         self.scrolledschedule.add(self.scheduleview)
         self.scrolledschedule.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -227,7 +227,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
     object = GObject.property(type = GObject.GObject)
 
     REC_GROUP_ID = -1
-    
+
     MENU = '''<ui>
     <popup name="dvb-popup">
         <menuitem name="dvb-program-guide" action="dvb-epg" />
@@ -238,7 +238,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
     </popup>
     </ui>
     '''
-    
+
     (ORDER_BY_NAME_ID,
      ORDER_BY_GROUP_ID,) = range(2)
 
@@ -299,7 +299,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         self.manager = DVBModel()
 
         self.setup = DvbSetup()
-        
+
         self.manager.get_all_devices(lambda devs: self.enable_dvb_support(len(devs) > 0))
 
     def on_file_opened(self, obj, mrl):
@@ -321,7 +321,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
             self._setup_menu()
 
             self._get_and_add_recordings()
-            
+
             self.totem_object.add_sidebar_page ("dvb-daemon", _("Digital TV"), self.sidebar)
             self.sidebar.show_all()
 
@@ -337,38 +337,38 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
 
     def _setup_sidebar(self):
         self.sidebar = Gtk.VBox(spacing=6)
-        
+
         self.channels = ChannelsTreeStore()
         self.channels.connect("loading-finished", self._on_group_loaded)
-        
+
         self.channels_view = ChannelsView(self.channels, ChannelsTreeStore.COL_NAME)
         self.channels_view.connect("button-press-event", self._on_channel_selected)
         self.channels_view.get_selection().connect("changed", self._on_selection_changed)
-        
+
         self.scrolledchannels = Gtk.ScrolledWindow()
         self.scrolledchannels.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrolledchannels.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         self.scrolledchannels.add(self.channels_view)
         self.sidebar.pack_start(self.scrolledchannels, True, True, 0)
-        
+
         buttonbox = Gtk.HButtonBox()
         buttonbox.set_spacing(6)
         self.sidebar.pack_start(buttonbox, False, True, 0)
-        
+
         self.whatson_button = Gtk.Button(label=_("What's on now"))
         self.whatson_button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.BUTTON))
         self.whatson_button.connect('clicked', self._on_action_whats_on_now)
         buttonbox.pack_start(self.whatson_button, True, True, 0)
         self.whatson_button.set_sensitive(False)
-        
+
         self.epg_button = Gtk.Button(label=_('Program Guide'))
         self.epg_button.connect('clicked', self._on_action_epg)
         self.epg_button.set_sensitive(False)
         buttonbox.pack_start(self.epg_button, True, True, 0)
-        
+
     def _setup_menu(self):
         uimanager = self.totem_object.get_ui_manager()
-        
+
         # Create actions
         actiongroup = Gtk.ActionGroup('dvb')
         actiongroup.add_actions([
@@ -391,7 +391,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
              self._on_order_reverse_toggled)
         ])
         uimanager.insert_action_group(actiongroup)
-        
+
         uimanager.add_ui_from_string(self.MENU)
         uimanager.ensure_update()
 
@@ -404,24 +404,24 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/edit/plugins', 'dvb-timers', 'dvb-timers',
             Gtk.UIManagerItemType.AUTO, True)
-        
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/edit/plugins', 'dvb-preferences', 'dvb-preferences',
             Gtk.UIManagerItemType.AUTO, True)
-            
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/edit/plugins', 'dvb-sep-1', None,
             Gtk.UIManagerItemType.AUTO, True)
-        
+
         # View menu
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/sidebar', 'dvb-whatson', 'dvb-whatson',
             Gtk.UIManagerItemType.AUTO, True)
-        
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/sidebar', 'dvb-epg', 'dvb-epg',
             Gtk.UIManagerItemType.AUTO, True)
-        
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/sidebar', 'dvb-sep-2', None,
             Gtk.UIManagerItemType.AUTO, True)
@@ -430,27 +430,27 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/show-controls', 'dvb-order-channels',
             'dvb-order-channels', Gtk.UIManagerItemType.MENU, False)
-            
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels',
             'dvb-order-by-name', 'dvb-order-by-name', Gtk.UIManagerItemType.AUTO, False)
-            
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels',
             'dvb-order-by-group', 'dvb-order-by-group', Gtk.UIManagerItemType.AUTO, False)
-        
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels', 'dvb-sep-3', None,
             Gtk.UIManagerItemType.AUTO, False)
-            
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/dvb-order-channels',
             'dvb-order-reverse', 'dvb-order-reverse', Gtk.UIManagerItemType.AUTO, False)
-        
+
         merge_id = uimanager.new_merge_id()
         uimanager.add_ui(merge_id, '/tmw-menubar/view/show-controls', 'dvb-sep-4', None,
             Gtk.UIManagerItemType.AUTO, False)
-        
+
         self.popup_menu = uimanager.get_widget('/dvb-popup')
         self.popup_recordings = uimanager.get_widget('/dvb-recording-popup')
 
@@ -459,20 +459,20 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
 
         watch_item = uimanager.get_widget('/tmw-menubar/movie/devices-placeholder/dvbdevice')
         watch_item.set_image(totemtv_image)
-        
+
         timers_image = Gtk.Image.new_from_icon_name("stock_timer", Gtk.IconSize.MENU)
         timers_image.show()
-        
+
         self.timers_item = uimanager.get_widget('/tmw-menubar/edit/dvb-timers')
         self.timers_item.set_image(timers_image)
-        
+
         self.epg_item = uimanager.get_widget('/tmw-menubar/view/dvb-epg')
         self.timers_item.set_sensitive(False)
         self.epg_item.set_sensitive(False)
-        
+
         self.whatson_item = uimanager.get_widget('/tmw-menubar/view/dvb-whatson')
         self.whatson_item.set_sensitive(False)
-        
+
     def _configure_mode(self):
         if self._size == 1:
             # Activate single group mode
@@ -480,11 +480,11 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
             group_iter = self.channels.iter_next(root_iter)
             self.single_group = self.channels[group_iter][self.channels.COL_GROUP]
             self._enable_single_group_mode(True)
-        
+
         # Monitor if channels are added (don't monitor it when channels are added when loading)
         self.channels.connect('row-deleted', self._on_channels_row_inserted_deleted)
         self.channels.connect('row-inserted', self._on_channels_row_inserted_deleted)
-            
+
     def _enable_single_group_mode(self, val):
         self.timers_item.set_sensitive(val)
         self.whatson_item.set_sensitive(val)
@@ -519,7 +519,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
                 dialog = RunningNextDialog(group, self.totem_object.get_main_window())
             dialog.connect("response", lambda d, resp: d.destroy())
             dialog.show()
-            
+
     def _on_action_whats_on_now(self, action, user_date=None):
         group, sid = self._get_selected_group_and_channel()
         if group == None:
@@ -528,11 +528,11 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
             dialog = RunningNextDialog(group, self.totem_object.get_main_window())
             dialog.connect("response", lambda d, resp: d.destroy())
             dialog.show()
-    
+
     def _on_action_preferences(self, action, user_date=None):
         prefs = Preferences(self.manager, self.totem_object.get_main_window())
         prefs.show()
-        
+
     def _on_action_delete(self, action, user_date=None):
         model, aiter = self.channels_view.get_selection().get_selected()
         if aiter != None:
@@ -546,7 +546,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
                 self.recstore.delete(model[aiter][model.COL_SID],
                     result_handler=self._delete_callback,
                     error_handler=global_error_handler)
-        
+
     def _on_action_details(self, action, user_date=None):
         model, aiter = self.channels_view.get_selection().get_selected()
         if aiter != None:
@@ -554,11 +554,11 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
             dialog = DetailsDialog(rec_id, self.totem_object.get_main_window())
             dialog.run()
             dialog.destroy()
-    
+
     def do_deactivate (self):
         if self.totem_object != None:
             self.totem_object.remove_sidebar_page ("dvb-daemon")
-        
+
     def _on_channel_selected(self, treeview, event):
         if event.type == Gdk.EventType._2BUTTON_PRESS:
             # double click
@@ -644,7 +644,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
             epg_status = model[aiter][model.COL_SID] != 0
             self.epg_item.set_sensitive(epg_status)
             self.epg_button.set_sensitive(epg_status)
-                
+
     def _add_recording(self, rid):
         name, success = self.recstore.get_name(rid)
         if name == "":
@@ -667,7 +667,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
                     self.channels.remove(child_iter)
                     break
                 child_iter = self.channels.iter_next(child_iter)
-                
+
     def _on_channels_row_inserted_deleted(self, treestore, path, aiter=None):
         if path.get_depth() == 1:
             # One entry is for recordings
@@ -678,11 +678,11 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         self._loaded_groups += 1
         if self._loaded_groups == self._size:
             self._configure_mode()
-                        
+
     def _delete_callback(self, proxy, success, user_data):
         if not success:
             global_error_handler("Could not delete recording")
-            
+
     def _on_order_by_changed(self, action, current, user_date=None):
         val = current.get_current_value()
         sort_order = self.channels.get_sort_column_id()[1]
@@ -693,7 +693,7 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         self.channels.set_sort_order(sort_order)
         self._get_and_add_recordings()
         self.channels_view.set_model(self.channels)
-        
+
     def _on_order_reverse_toggled(self, action, user_date=None):
         if action.get_active():
             self.channels.set_sort_order(Gtk.SortType.DESCENDING)

@@ -27,27 +27,27 @@ namespace DVB {
 
 	[DBus (name = "org.gnome.DVB.ChannelList")]
 	public interface IDBusChannelList : GLib.Object {
-	
+
 		/**
          * @type: 0: added, 1: deleted, 2: updated
          */
         public abstract signal void changed (uint channel_id, uint type);
-        
+
         /**
          * @returns: List of channel IDs aka SIDs of all channels
          */
         public abstract uint[] GetChannels () throws DBusError;
-        
+
         /**
          * @returns: List of channel IDs aka SIDs of radio channels
          */
         public abstract uint[] GetRadioChannels () throws DBusError;
-        
+
         /**
          * @returns: List of channel IDs aka SIDs of TV channels
          */
         public abstract uint[] GetTVChannels () throws DBusError;
-        
+
         /**
          * @channel_id: ID of channel
          * @channel_name: Name of channel if channel with id exists
@@ -55,7 +55,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool GetChannelName (uint channel_id, out string channel_name) throws DBusError;
-        
+
         /**
          * @channel_id: ID of channel
          * @network: Name of network the channel belongs to
@@ -64,21 +64,21 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool GetChannelNetwork (uint channel_id, out string network) throws DBusError;
-        
+
         /**
          * @channel_id: ID of channel
          * @radio: Whether the channel is a radio channel or not
          * @returns: TRUE on success
          */
         public abstract bool IsRadioChannel (uint channel_id, out bool radio) throws DBusError;
-        
+
         /**
          * @channel_id: ID of channel
          * @url: URL to watch the channel
          * @returns: TRUE on success
          */
         public abstract bool GetChannelURL (uint channel_id, out string url) throws DBusError;
-        
+
         public abstract ChannelInfo[] GetChannelInfos () throws DBusError;
 
 		/**
@@ -99,7 +99,7 @@ namespace DVB {
 		 * @channel_id: ID of channel
 	     * @channel_group_id: ID of the ChannelGroup
          * @returns: TRUE on success
-         */       
+         */
 		public abstract bool RemoveChannelFromGroup (uint channel_id, int channel_group_id) throws DBusError;
 	}
 
