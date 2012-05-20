@@ -1,4 +1,19 @@
 =============
+Version 0.2.9
+=============
+
+- Remove overlapping events from EPGStore
+- Do not stop EPGScanner after failure
+- Print all log messages using Logger
+- Update timer in SQlite database when changing start time or duration
+- Raise min PyGObject version to 3.2.1
+- Raise min GLib version to stable 2.32
+
+Translations:
+- Updated fr: Pierre Henry
+- Updated gl: Fran Dieguez
+
+=============
 Version 0.2.8
 =============
 
