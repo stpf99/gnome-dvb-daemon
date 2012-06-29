@@ -8,11 +8,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
-"daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-23 12:06+0000\n"
-"PO-Revision-Date: 2011-05-22 13:30+0300\n"
-"Last-Translator: Giannis Katsampirhs <juankatsampirhs@gmail.com>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daemon&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-02-07 21:57+0000\n"
+"PO-Revision-Date: 2012-06-29 11:47+0200\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,29 +20,29 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-04-16 19:16+0000\n"
 "X-Generator: Launchpad (build 12821)\n"
 
-#: ../client/gnomedvb/__init__.py:33
+#: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon"
 msgstr "DVB δαίμονας του GNOME"
 
-#: ../client/gnomedvb/__init__.py:36
+#: ../client/gnomedvb/__init__.py:38
 msgid "GNOME DVB Daemon Website"
 msgstr "Ιστοσελίδα DVB δαίμονα του GNOME "
 
-#: ../client/gnomedvb/__init__.py:73
+#: ../client/gnomedvb/__init__.py:60
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d ώρα"
 msgstr[1] "%d ώρες"
 
-#: ../client/gnomedvb/__init__.py:75
+#: ../client/gnomedvb/__init__.py:62
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d λεπτό"
 msgstr[1] "%d λεπτά"
 
-#: ../client/gnomedvb/__init__.py:77
+#: ../client/gnomedvb/__init__.py:64
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -74,7 +73,7 @@ msgstr "Όλα τα κανάλια"
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:74
 #: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:38
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
 #: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:94
 msgid "Channel"
@@ -111,22 +110,18 @@ msgstr "Κέντρο ελέγχου DVB"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:103
 msgid "Choose a device group and channel on the left to view the program guide"
-msgstr ""
-"Επιλέξτε ομάδα συσκευών και κανάλι στα αριστερά για να δείτε τον οδηγό "
-"προγράμματος"
+msgstr "Επιλέξτε ομάδα συσκευών και κανάλι στα αριστερά για να δείτε τον οδηγό προγράμματος"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
 msgid "No devices are configured. Please go to preferences to configure them."
-msgstr ""
-"Δεν έχει ρυθμιστεί καμία συσκευή. Παρακαλώ μεταβείτε στις προτιμήσεις για να "
-"τις ρυθμίσετε."
+msgstr "Δεν έχει ρυθμιστεί καμία συσκευή. Παρακαλώ μεταβείτε στις προτιμήσεις για να τις ρυθμίσετε."
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
 msgid "There is currently no schedule available for this channel"
 msgstr "Δεν υπάρχει τρέχον πρόγραμμα διαθέσιμο για αυτό το κανάλι"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
-#: ../client/totem-plugin/dvb-daemon.py:359
+#: ../client/totem-plugin/dvb-daemon.py:377
 msgid "_Recording schedule"
 msgstr "Πρόγραμμα ε_γγραφών"
 
@@ -250,13 +245,13 @@ msgstr "Πρόγραμμα εγγραφών"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
 #: ../client/gnomedvb/ui/preferences/Dialogs.py:148
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:31
-#: ../client/totem-plugin/dvb-daemon.py:313
+#: ../client/totem-plugin/dvb-daemon.py:331
 msgid "Recordings"
 msgstr "Εγγραφές"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:287
-#: ../client/totem-plugin/dvb-daemon.py:340
-#: ../client/totem-plugin/dvb-daemon.py:361
+#: ../client/totem-plugin/dvb-daemon.py:358
+#: ../client/totem-plugin/dvb-daemon.py:379
 msgid "What's on now"
 msgstr "Τι αναπαράγεται τώρα"
 
@@ -269,7 +264,7 @@ msgid "Next Day"
 msgstr "Επόμενη ημέρα"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
-#: ../client/totem-plugin/dvb-daemon.py:185
+#: ../client/totem-plugin/dvb-daemon.py:184
 msgid "Schedule recording for the selected event?"
 msgstr "Να προγραμματιστεί εγγραφή για το επιλεγμένο γεγονός;"
 
@@ -344,84 +339,74 @@ msgid "Edit group"
 msgstr "Επεξεργασία ομάδας"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:39
-#: ../client/totem-plugin/dvb-daemon.py:362
+#: ../client/totem-plugin/dvb-daemon.py:380
 msgid "Digital TV Preferences"
 msgstr "Προτιμήσεις ψηφιακής τηλεόρασης"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:89
+#: ../client/gnomedvb/ui/preferences/Preferences.py:90
 msgid "Edit selected group"
 msgstr "Επεξεργασία επιλεγμένης ομάδας"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:96
+#: ../client/gnomedvb/ui/preferences/Preferences.py:97
 msgid "Remove selected device"
 msgstr "Αφαίρεση επιλεγμένης συσκευής"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:105
+#: ../client/gnomedvb/ui/preferences/Preferences.py:106
 msgid "Setup"
 msgstr "Ρύθμιση"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:107
+#: ../client/gnomedvb/ui/preferences/Preferences.py:108
 msgid "Setup devices"
 msgstr "Ρύθμιση συσκευών"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:114
+#: ../client/gnomedvb/ui/preferences/Preferences.py:115
 msgid "Create new group"
 msgstr "Δημιουργία νέας ομάδας"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:118
+#: ../client/gnomedvb/ui/preferences/Preferences.py:119
 msgid "Create new group for selected device"
 msgstr "Δημιουργία νέας ομάδας για την επιλεγμένη συσκευή"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:124
+#: ../client/gnomedvb/ui/preferences/Preferences.py:125
 msgid "Add to group"
 msgstr "Προσθήκη στην ομάδα"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:128
+#: ../client/gnomedvb/ui/preferences/Preferences.py:129
 msgid "Add selected device to existing group"
 msgstr "Προσθήκη της επιλεγμένης συσκευής σε υπάρχουσα ομάδα"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:144
+#: ../client/gnomedvb/ui/preferences/Preferences.py:145
 msgid "Configured devices"
 msgstr "Ρυθμισμένες συσκευές"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:155
+#: ../client/gnomedvb/ui/preferences/Preferences.py:156
 msgid "Unconfigured devices"
 msgstr "Μη ρυθμισμένες συσκευές"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:220
+#: ../client/gnomedvb/ui/preferences/Preferences.py:221
 msgid "Device could not be removed from group"
 msgstr "Δεν ήταν δυνατή η απομάκρυνση της συσκευής από την ομάδα"
 
-#: ../client/gnomedvb/ui/preferences/Preferences.py:234
+#: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr ""
-"Είστε βέβαιοι ότι επιθυμείτε να αφαιρέσετε τη συσκευή <b>%s</b> από το <b>"
-"%s</b>;"
+msgstr "Είστε βέβαιοι ότι επιθυμείτε να αφαιρέσετε τη συσκευή <b>%s</b> από το <b>%s</b>;"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
 msgstr "Δεν ήταν δυνατή η δημιουργία ομάδας"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:260
-msgid ""
-"Make sure that you selected the correct channels file and directory where "
-"recordings are stored and that both are readable."
-msgstr ""
-"Επιβεβαιώστε ότι επιλέξατε το σωστό αρχείο καναλιών και τον κατάλογο όπου "
-"αποθηκεύονται οι εγγραφές και ότι και τα δύο είναι αναγνώσιμα."
+msgid "Make sure that you selected the correct channels file and directory where recordings are stored and that both are readable."
+msgstr "Επιβεβαιώστε ότι επιλέξατε το σωστό αρχείο καναλιών και τον κατάλογο όπου αποθηκεύονται οι εγγραφές και ότι και τα δύο είναι αναγνώσιμα."
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:289
 msgid "Device could not be added to group"
 msgstr "Δεν ήταν δυνατή η προσθήκη της συσκευής σε ομάδα"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:291
-msgid ""
-"Make sure that the device isn't already assigned to a different group and "
-"that all devices in the group are of the same type."
-msgstr ""
-"Επιβεβαιώστε ότι η συσκευή δεν έχει ήδη ανατεθεί σε διαφορετική ομάδα και "
-"ότι όλες οι συσκευές της ομάδας είναι του ίδιου τύπου."
+msgid "Make sure that the device isn't already assigned to a different group and that all devices in the group are of the same type."
+msgstr "Επιβεβαιώστε ότι η συσκευή δεν έχει ήδη ανατεθεί σε διαφορετική ομάδα και ότι όλες οι συσκευές της ομάδας είναι του ίδιου τύπου."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
@@ -432,7 +417,7 @@ msgid "Pick a date"
 msgstr "Επιλογή ημερομηνίας"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:85
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:39
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:34
 msgid "Title"
 msgstr "Τίτλος"
 
@@ -466,12 +451,8 @@ msgid "Timer could not be created"
 msgstr "Δεν ήταν δυνατή η δημιουργία χρονομέτρου"
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
-msgid ""
-"Make sure that the timer doesn't conflict with another one and doesn't start "
-"in the past."
-msgstr ""
-"Επιβεβαιώστε ότι το χρονόμετρο δε συγκρούεται με άλλο και δεν ξεκινάει στο "
-"παρελθόν."
+msgid "Make sure that the timer doesn't conflict with another one and doesn't start in the past."
+msgstr "Επιβεβαιώστε ότι το χρονόμετρο δε συγκρούεται με άλλο και δεν ξεκινάει στο παρελθόν."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
@@ -485,26 +466,76 @@ msgstr "Προσθήκη χρονομέτρου"
 msgid "_Channel:"
 msgstr "Κανά_λι:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:82
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:83
 msgid "Edit Timer"
 msgstr "Επεξεργασία χρονομέτρου"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:85
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:58
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:86
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
 msgid "Channel:"
 msgstr "Κανάλι:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:92
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:94
 msgid "_Start time:"
 msgstr "_Χρόνος έναρξης:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:107
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:109
 msgid "_Duration:"
 msgstr "_Διάρκεια:"
 
-#: ../client/gnomedvb/ui/timers/TimerDialog.py:121
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:124
 msgid "minutes"
 msgstr "λεπτά"
+
+#: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
+msgid "Channel group"
+msgstr "Ομάδα καναλιών"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:107
+#| msgid "_Channels"
+msgid "TV Channels"
+msgstr "Τηλεοπτικά κανάλια"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:109
+#| msgid "_Channels"
+msgid "Radio Channels"
+msgstr "Ραδιοφωνικά κανάλια"
+
+#: ../client/gnomedvb/ui/widgets/DateTime.py:50
+msgid "_Time:"
+msgstr "_Ώρα:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
+msgid "Title:"
+msgstr "Τίτλος:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:64
+msgid "Date:"
+msgstr "Ημερομηνία:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:69
+msgid "Duration:"
+msgstr "Διάρκεια:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:74
+msgid "Description:"
+msgstr "Περιγραφή:"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:37
+msgid "Length"
+msgstr "Διάρκεια"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:42
+msgid "Start"
+msgstr "Έναρξη"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
+msgid "Now"
+msgstr "Τώρα"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
+msgid "Next"
+msgstr "Επόμενο"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:4
 msgid "digital cable"
@@ -518,59 +549,13 @@ msgstr "ψηφιακή κεραία δορυφόρου"
 msgid "digital terrestrial"
 msgstr "ψηφιακή επίγεια κεραία"
 
-#: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
-msgid "Channel group"
-msgstr "Ομάδα καναλιών"
-
-#: ../client/gnomedvb/ui/widgets/DateTime.py:50
-msgid "_Time:"
-msgstr "_Ώρα:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
-msgid "Title:"
-msgstr "Τίτλος:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:62
-msgid "Date:"
-msgstr "Ημερομηνία:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:66
-msgid "Duration:"
-msgstr "Διάρκεια:"
-
-#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:70
-msgid "Description:"
-msgstr "Περιγραφή:"
-
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
-msgid "Start"
-msgstr "Έναρξη"
-
-#: ../client/gnomedvb/ui/widgets/RecordingsView.py:41
-msgid "Length"
-msgstr "Διάρκεια"
-
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
-msgid "Now"
-msgstr "Τώρα"
-
-#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
-msgid "Next"
-msgstr "Επόμενο"
-
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
 msgstr "Δε βρέθηκαν συσκευές."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
-msgid ""
-"Either no DVB cards are installed or all cards are busy. In the latter case "
-"make sure you close all programs such as video players that access your DVB "
-"card."
-msgstr ""
-"Είτε δεν έχουν εγκατασταθεί κάρτες DVB ή όλες οι κάρτες είναι απασχολημένες. "
-"Στην τελευταία περίπτωση, επιβεβαιώστε ότι έχετε κλείσει όλα τα προγράμματα "
-"όπως αναπαραγωγείς βίντεο που έχουν πρόσβαση στην κάρτα DVB σας."
+msgid "Either no DVB cards are installed or all cards are busy. In the latter case make sure you close all programs such as video players that access your DVB card."
+msgstr "Είτε δεν έχουν εγκατασταθεί κάρτες DVB ή όλες οι κάρτες είναι απασχολημένες. Στην τελευταία περίπτωση, επιβεβαιώστε ότι έχετε κλείσει όλα τα προγράμματα όπως αναπαραγωγείς βίντεο που έχουν πρόσβαση στην κάρτα DVB σας."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
 msgid "Name"
@@ -589,24 +574,16 @@ msgid "All devices are already configured."
 msgstr "Όλες οι συσκευές είναι ρυθμισμένες ήδη."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
-msgid ""
-"Go to the control center if you want to alter the settings of already "
-"configured devices."
-msgstr ""
-"Μεταβείτε στο κέντρο ελέγχου αν επιθυμείτε να αλλάξετε τις ρυθμίσεις των ήδη "
-"ρυθμισμένων συσκευών."
+msgid "Go to the control center if you want to alter the settings of already configured devices."
+msgstr "Μεταβείτε στο κέντρο ελέγχου αν επιθυμείτε να αλλάξετε τις ρυθμίσεις των ήδη ρυθμισμένων συσκευών."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
 msgid "An error occured while retrieving devices."
 msgstr "Παρουσιάστηκε σφάλμα κατά την ανάκτηση συσκευών."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
-msgid ""
-"Make sure other applications don't access DVB devices and you have "
-"permissions to access them."
-msgstr ""
-"Επιβεβαιώστε ότι άλλες εφαρμογές δεν έχουν πρόσβαση στις συσκευές DVB και "
-"ότι έχετε άδειες πρόσβασης σε αυτές."
+msgid "Make sure other applications don't access DVB devices and you have permissions to access them."
+msgstr "Επιβεβαιώστε ότι άλλες εφαρμογές δεν έχουν πρόσβαση στις συσκευές DVB και ότι έχετε άδειες πρόσβασης σε αυτές."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
 msgid "The detailed error message is:"
@@ -631,9 +608,7 @@ msgstr "Αυτή η διαδικασία ενδεχομένως να διαρκ�
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
 msgid "You can select the channels you want to have in your list of channels."
-msgstr ""
-"Μπορείτε να επιλέξετε τα κανάλια που επιθυμείτε να έχετε στη λίστα καναλιών "
-"σας."
+msgstr "Μπορείτε να επιλέξετε τα κανάλια που επιθυμείτε να έχετε στη λίστα καναλιών σας."
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:66
 msgid "Select all"
@@ -655,102 +630,94 @@ msgstr "Επιλογή _περιπλεγμένων καναλιών"
 msgid "Signal quality:"
 msgstr "Ποιότητα σήματος:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:144
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:145
 msgid "Signal strength:"
 msgstr "Ισχύς σήματος:"
 
-#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:159
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:161
 msgid "Scanning for channels"
 msgstr "Σάρωση για κανάλια"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:86
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:151
 msgid "Missing requirements"
 msgstr "Λείπουν απαιτήσεις"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:92
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
 msgid "Country and antenna selection"
 msgstr "Επιλογή χώρας και κεραίας"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:95
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:160
 msgid "Satellite selection"
 msgstr "Επιλογή δορυφόρου"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:98
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
 msgid "Country and provider selection"
 msgstr "Επιλογή χώρας και παρόχου"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:100
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:165
 msgid "Unsupported adapter"
 msgstr "Μη υποστηριζόμενος προσαρμογέας"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:125
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:190
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Λυπούμαστε, αλλά οι κάρτες '%s' δεν υποστηρίζονται."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:129
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
 msgid "Could not find initial tuning data."
 msgstr "Δεν ήταν δυνατή η εύρεση αρχικών δεδομένων συντονισμού."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:130
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Παρακαλώ ελέγξτε ότι είναι εγκατεστημένο το πακέτο dvb-apps."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:134
-msgid ""
-"Please choose a country and the antenna that is closest to your location."
-msgstr ""
-"Παρακαλώ επιλέξτε τη χώρα και την κεραία που βρίσκονται πλησιέστερα στην "
-"τοποθεσία σας."
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
+msgid "Please choose a country and the antenna that is closest to your location."
+msgstr "Παρακαλώ επιλέξτε τη χώρα και την κεραία που βρίσκονται πλησιέστερα στην τοποθεσία σας."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:135
-msgid ""
-"If you don't know which antenna to choose select \"Don't know\" from the "
-"list of providers."
-msgstr ""
-"Αν δε γνωρίζετε ποια κεραία να επιλέξετε, επιλέξτε «Δε γνωρίζω» από τη λίστα "
-"παρόχων."
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
+msgid "If you don't know which antenna to choose select \"Don't know\" from the list of providers."
+msgstr "Αν δε γνωρίζετε ποια κεραία να επιλέξετε, επιλέξτε «Δε γνωρίζω» από τη λίστα παρόχων."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:136
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "However, searching for channels will take considerably longer this way."
-msgstr ""
-"Παρόλα αυτά, η αναζήτηση καναλιών ενδεχομένως διαρκέσει αρκετά περισσότερο."
+msgstr "Παρόλα αυτά, η αναζήτηση καναλιών ενδεχομένως διαρκέσει αρκετά περισσότερο."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:141
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
 msgid "Not listed"
 msgstr "Δεν είναι στη λίστα"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:152
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:223
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:214
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:288
 msgid "_Country:"
 msgstr "_Χώρα:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:176
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:240
 msgid "_Antenna:"
 msgstr "_Κεραία:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:185
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:249
 msgid "Antenna"
 msgstr "Κεραία"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:263
 msgid "_Satellite:"
 msgstr "_Δορυφόρος:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:271
 msgid "Satellite"
 msgstr "Δορυφόρος"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:245
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:312
 msgid "_Providers:"
 msgstr "_Πάροχοι:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:253
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:320
 msgid "Provider"
 msgstr "Πάροχος"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:302
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:371
 msgid "Don't know"
 msgstr "Δε γνωρίζω"
 
@@ -759,12 +726,8 @@ msgid "Welcome to the digital television Assistant."
 msgstr "Καλωσήλθατε στον ψηφιακό τηλεοπτικό Βοηθό."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
-msgid ""
-"It will automatically configure your devices and search for channels, if "
-"necessary."
-msgstr ""
-"Θα ρυθμίσει αυτόματα τις συσκευές σας και θα κάνει αναζήτηση για κανάλια, αν "
-"είναι ανάγκη."
+msgid "It will automatically configure your devices and search for channels, if necessary."
+msgstr "Θα ρυθμίσει αυτόματα τις συσκευές σας και θα κάνει αναζήτηση για κανάλια, αν είναι ανάγκη."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
 msgid "Click \"Forward\" to begin."
@@ -780,8 +743,7 @@ msgstr "Ρυθμίσεις ψηφιακής τηλεόρασης"
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
 msgid "Choose a location where you want to save the list of channels."
-msgstr ""
-"Επιλέξτε τοποθεσία όπου επιθυμείτε να αποθηκεύσετε τη λίστα καναλιών σας."
+msgstr "Επιλέξτε τοποθεσία όπου επιθυμείτε να αποθηκεύσετε τη λίστα καναλιών σας."
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
 msgid "Save channels"
@@ -801,12 +763,8 @@ msgid "No channels were found."
 msgstr "Δε βρέθηκαν κανάλια."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
-msgid ""
-"Make sure that the antenna is connected and you have selected the correct "
-"tuning data."
-msgstr ""
-"Επιβεβαιώστε ότι η κεραία είναι συνδεδεμένη και ότι έχετε επιλέξει τα σωστά "
-"δεδομένα συντονισμού."
+msgid "Make sure that the antenna is connected and you have selected the correct tuning data."
+msgstr "Επιβεβαιώστε ότι η κεραία είναι συνδεδεμένη και ότι έχετε επιλέξει τα σωστά δεδομένα συντονισμού."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:139
 #, python-format
@@ -845,12 +803,8 @@ msgid "Setup digital TV"
 msgstr "Ρύθμιση ψηφιακής τηλεόρασης"
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:167
-msgid ""
-"The generated channels file can be used to configure your devices in the "
-"control center."
-msgstr ""
-"Το δημιουργημένο αρχείο καναλιών μπορεί να χρησιμοποιηθεί για να ρυθμίσετε "
-"τις συσκευές σας στο κέντρο ελέγχου."
+msgid "The generated channels file can be used to configure your devices in the control center."
+msgstr "Το δημιουργημένο αρχείο καναλιών μπορεί να χρησιμοποιηθεί για να ρυθμίσετε τις συσκευές σας στο κέντρο ελέγχου."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:214
 msgid ""
@@ -860,75 +814,74 @@ msgstr ""
 "Είστε βέβαιοι ότι επιθυμείτε να κάνετε διακοπή;\n"
 "Όλες οι διεργασίες θα χαθούν."
 
-#: ../client/totem-plugin/dvb-daemon.py:156
-#: ../client/totem-plugin/dvb-daemon.py:201
-#: ../client/totem-plugin/dvb-daemon.py:346
+#: ../client/totem-plugin/dvb-daemon.py:155
+#: ../client/totem-plugin/dvb-daemon.py:200
+#: ../client/totem-plugin/dvb-daemon.py:364
 msgid "Program Guide"
 msgstr "Οδηγός προγράμματος"
 
-#: ../client/totem-plugin/dvb-daemon.py:306
+#: ../client/totem-plugin/dvb-daemon.py:325
 msgid "Digital TV"
 msgstr "Ψηφιακή τηλεόραση"
 
-#: ../client/totem-plugin/dvb-daemon.py:357
+#: ../client/totem-plugin/dvb-daemon.py:375
 msgid "Watch TV"
 msgstr "Παρακολούθηση τηλεόρασης"
 
-#: ../client/totem-plugin/dvb-daemon.py:358
+#: ../client/totem-plugin/dvb-daemon.py:376
 msgid "Digital _TV"
 msgstr "Ψηφιακή _τηλεόραση"
 
-#: ../client/totem-plugin/dvb-daemon.py:360
+#: ../client/totem-plugin/dvb-daemon.py:378
 msgid "_Program Guide"
 msgstr "_Οδηγός προγράμματος"
 
-#: ../client/totem-plugin/dvb-daemon.py:363
+#: ../client/totem-plugin/dvb-daemon.py:381
 msgid "_Delete"
 msgstr "_Διαγραφή"
 
-#: ../client/totem-plugin/dvb-daemon.py:364
+#: ../client/totem-plugin/dvb-daemon.py:382
 msgid "D_etails"
 msgstr "Λ_επτομέρειες"
 
-#: ../client/totem-plugin/dvb-daemon.py:365
+#: ../client/totem-plugin/dvb-daemon.py:383
 msgid "_Order channels"
 msgstr "_Ταξινόμηση καναλιών"
 
-#: ../client/totem-plugin/dvb-daemon.py:368
+#: ../client/totem-plugin/dvb-daemon.py:386
 msgid "By _name"
 msgstr "Κατά ό_νομα"
 
-#: ../client/totem-plugin/dvb-daemon.py:369
+#: ../client/totem-plugin/dvb-daemon.py:387
 msgid "By _group"
 msgstr "Κατά _ομάδα"
 
-#: ../client/totem-plugin/dvb-daemon.py:372
+#: ../client/totem-plugin/dvb-daemon.py:390
 msgid "_Reverse order"
 msgstr "_Αναστροφή σειράς"
 
-#: ../client/totem-plugin/dvb-daemon.py:524
+#: ../client/totem-plugin/dvb-daemon.py:542
 msgid "Delete selected recording?"
 msgstr "Διαγραφή επιλεγμένης εγγραφής;"
 
-#: ../client/totem-plugin/dvb-daemon.py:602
+#: ../client/totem-plugin/dvb-daemon.py:651
 #, python-format
 msgid "Recording %d"
 msgstr "Εγγραφή %d"
 
-#: ../client/totem-plugin/dvb-daemon.py:662
-#: ../client/totem-plugin/dvb-daemon.py:665
+#: ../client/totem-plugin/dvb-daemon.py:709
+#: ../client/totem-plugin/dvb-daemon.py:712
 msgid "Setup Failed"
 msgstr "Αποτυχία ρύθμισης"
 
-#: ../client/totem-plugin/dvb-daemon.py:663
+#: ../client/totem-plugin/dvb-daemon.py:710
 msgid "GNOME DVB Daemon is not installed"
 msgstr "Δεν έχει εγκατασταθεί ο DVB δαίμονας του GNOME "
 
-#: ../client/totem-plugin/dvb-daemon.py:666
+#: ../client/totem-plugin/dvb-daemon.py:713
 msgid "Could not start GNOME DVB Daemon setup"
 msgstr "Αποτυχία έναρξης ρύθμισης του DVB δαίμονα του GNOME"
 
-#. www.k-d-w.org/
 #: ../data/gnome-dvb-control.desktop.in.in.h:1
 msgid "Digital TV Control Center"
 msgstr "Κέντρο ελέγχου ψηφιακής τηλεόρασης"
@@ -940,3 +893,4 @@ msgstr "Προγραμματισμός εγγραφών και περιήγησ�
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
 msgstr "Ρυθμίσεις ψηφιακής τηλεόρασης"
+
