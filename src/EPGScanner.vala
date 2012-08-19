@@ -160,12 +160,14 @@ namespace DVB {
         public bool start () {
             log.debug ("Starting EPG scan for group %u (%d)", this.DeviceGroup.Id, this.stop_counter);
 
+            if (this.loop == null) {
             this.loop = new MainLoop (this.context, false);
             try {
                 this.worker_thread = new Thread<void*>.try ("EPG-Worker-Thread", this.worker);
             } catch (Error e) {
                 log.error ("Could not create thread: %s", e.message);
                 return false;
+            }
             }
 
             this.stop_counter -= 1;
