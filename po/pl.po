@@ -4,12 +4,18 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Jarosław Ogrodnik https://launchpad.net/~goz
+# Michał Sawicz https://launchpad.net/~saviq
+# Tomasz Świątek https://launchpad.net/~devegoo
+# pp/bs https://launchpad.net/~pawprok
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2012.
+# Aviary.pl <gnomepl@aviary.pl>, 2011-2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-07 22:59+0100\n"
-"PO-Revision-Date: 2012-02-07 23:00+0100\n"
+"POT-Creation-Date: 2012-09-03 23:07+0200\n"
+"PO-Revision-Date: 2012-09-03 23:08+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -284,7 +290,8 @@ msgstr ""
 "Michał Sawicz https://launchpad.net/~saviq\n"
 "Tomasz Świątek https://launchpad.net/~devegoo\n"
 "pp/bs https://launchpad.net/~pawprok\n"
-"Aviary.pl <gnomepl@aviary.pl>, 2011"
+"Piotr Drąg <piotrdrag@gmail.com>, 2011-2012\n"
+"Aviary.pl <gnomepl@aviary.pl>, 2011-2012"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:58
 msgid "Devices"
@@ -671,90 +678,90 @@ msgstr "Moc sygnału:"
 msgid "Scanning for channels"
 msgstr "Wyszukiwanie kanałów"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:151
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:155
 msgid "Missing requirements"
 msgstr "Brakujące wymagania"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:161
 msgid "Country and antenna selection"
 msgstr "Wybór kraju i nadajnika"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:160
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:164
 msgid "Satellite selection"
 msgstr "Wybór satelit"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:167
 msgid "Country and provider selection"
 msgstr "Wybór kraju i dostawcy"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:165
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
 msgid "Unsupported adapter"
 msgstr "Nieobsługiwany adapter"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:190
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Karty typu \"%s\" nie są obsługiwane."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
 msgid "Could not find initial tuning data."
 msgstr "Nie można odnaleźć początkowych danych strojenia."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Proszę upewnić się, że zainstalowano pakiet dvb-apps."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:203
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr "Proszę wybrać kraj oraz najbliższy nadajnik."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:204
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
 "Jeśli nadajnik jest nieznany, należy wybrać \"Nieznany\" z listy dostawców."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
 msgid "However, searching for channels will take considerably longer this way."
 msgstr "Proszę mieć na uwadze, że wyszukiwanie kanałów potrwa wtedy dłużej."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:210
 msgid "Not listed"
 msgstr "Brak na liście"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:214
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:288
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:218
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:292
 msgid "_Country:"
 msgstr "_Kraj:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:240
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:244
 msgid "_Antenna:"
 msgstr "N_adajnik:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:249
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:253
 msgid "Antenna"
 msgstr "Nadajnik"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:263
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:267
 msgid "_Satellite:"
 msgstr "_Satelita:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:271
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:275
 msgid "Satellite"
 msgstr "Satelita"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:312
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:316
 msgid "_Providers:"
 msgstr "_Dostawcy:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:320
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:324
 msgid "Provider"
 msgstr "Dostawca"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:371
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:375
 msgid "Don't know"
 msgstr "Nieznany"
 
