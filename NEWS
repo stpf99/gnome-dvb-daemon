@@ -1,3 +1,20 @@
+==============
+Version 0.2.10
+==============
+
+- Updated list of countries for initial tuning data
+- Reuse thread in EPGScanner
+- Drop obsolete option from DBus files
+
+Translations:
+- Updated de: Daniel Winzen
+- Updated el: Tom Tryfonidis
+- Updated en_GB: Chris Leonard
+- Updated fi: Jiri Grönroos
+- Updated hu: Gabor Kelemen
+- Updated pl: Piotr Drąg
+- Updated ru: Aleksej Kabano
+
 =============
 Version 0.2.9
 =============
