@@ -1,0 +1,933 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Peteris Krisjanis <pecisk@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daem"
+"on&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-10-03 18:17+0000\n"
+"PO-Revision-Date: 2012-10-14 15:23+0000\n"
+"Last-Translator: Peteris Krisjanis <pecisk@gmail.com>\n"
+"Language-Team: Latvian <kde-i18n-doc@kde.org>\n"
+"Language: lv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
+"X-Generator: Lokalize 1.4\n"
+
+#: ../client/gnomedvb/__init__.py:35
+msgid "GNOME DVB Daemon"
+msgstr "GNOME DVB dēmons"
+
+#: ../client/gnomedvb/__init__.py:38
+msgid "GNOME DVB Daemon Website"
+msgstr "GNOME DVB dēmona vietne"
+
+#: ../client/gnomedvb/__init__.py:60
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d stunda"
+msgstr[1] "%d stundas"
+msgstr[2] "%d stundu"
+
+#: ../client/gnomedvb/__init__.py:62
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minūte"
+msgstr[1] "%d minūtes"
+msgstr[2] "%d minūšu"
+
+#: ../client/gnomedvb/__init__.py:64
+#, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d sekunde"
+msgstr[1] "%d sekundes"
+msgstr[2] "%d sekunžu"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:33
+msgid "Edit Channel Lists"
+msgstr "Labot kanālu sarakstus"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:54
+msgid "Channel groups"
+msgstr "Kanālu grupas"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:95
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:51
+msgid "_Group:"
+msgstr "_Grupa:"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:102
+msgid "Device groups"
+msgstr "Ierīces grupas"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:124
+msgid "All channels"
+msgstr "Visi kanāli"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:74
+#: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:94
+msgid "Channel"
+msgstr "Kanāls"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:152
+msgid "Choose a channel group"
+msgstr "Izvēlēties kanālu grupu"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:153
+msgid "Channels of group"
+msgstr "Grupas kanāli"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
+msgid "An error occured while adding the group"
+msgstr "Radusies kļūda pievienojot grupu"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
+#, python-format
+msgid "Are you sure you want to delete the group '%s'?"
+msgstr "Vai esat pārliecināti, ka vēlaties dzēst grupu %s'?"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
+msgid "All assignments to this group will be lost."
+msgstr "Visi norīkojumi šai grupai būs zaudēti."
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
+msgid "An error occured while removing the group"
+msgstr "Radusies kļūda pārvietojot grupu"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:54
+msgid "DVB Control Center"
+msgstr "DVB vadības centrs"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:103
+msgid "Choose a device group and channel on the left to view the program guide"
+msgstr "Izvēlieties ierīces grupu un kanālu, lai skatītu programmas ceļvedi"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
+msgid "No devices are configured. Please go to preferences to configure them."
+msgstr ""
+"Nav konfigurētas ierīces. Lūdzu, dodieties uz iestatījumiem lat tās "
+"konfigurētu."
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
+msgid "There is currently no schedule available for this channel"
+msgstr "Šim kanālam šobrīd plānošana nav pieejama"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
+#: ../client/totem-plugin/dvb-daemon.py:377
+msgid "_Recording schedule"
+msgstr "_Ieraksta plānojums"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
+msgid "_Edit"
+msgstr "_Rediģēt"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
+msgid "_View"
+msgstr "_Skatīt"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:161
+msgid "Help"
+msgstr "Palīdzība"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:168
+msgid "_Manage"
+msgstr "_Pārvaldīt"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:271
+msgid "Manage recording schedule"
+msgstr "Pārvaldīt ieraksta plānojumu"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
+msgid "_Recordings"
+msgstr "_Ieraksti"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
+msgid "Manage recordings"
+msgstr "Pārvaldīt ierakstus "
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
+msgid "_Quit"
+msgstr "_Iziet"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:173
+msgid "Quit the Program"
+msgstr "Iziet no programmas"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:178
+msgid "_Channel Lists"
+msgstr "_Kanālu saraksts"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
+msgid "Edit channel lists"
+msgstr "Rediģēt kanālu sarakstus"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
+msgid "_Preferences"
+msgstr "_Iestatījumi"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:181
+msgid "Display preferences"
+msgstr "Parādīt iestatījumus"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:187
+msgid "_What's on now"
+msgstr "_Ko šobrīd rāda"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
+msgid "See what's currently on and is coming next"
+msgstr "Skatīt, ko šobrīd rāda un kas sekos pēc tam"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
+msgid "_Refresh"
+msgstr "_Atsvaidzināt"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:300
+msgid "Refresh program guide"
+msgstr "Atsvaidzināt programmu ceļvedi"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
+msgid "_Previous Day"
+msgstr "_Iepriekšējā diena"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:308
+msgid "Go to previous day"
+msgstr "Doties uz iepriekšējo dienu"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
+msgid "_Next Day"
+msgstr "_Nākamā diena"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:317
+msgid "Go to next day"
+msgstr "Doties uz nākamo dienu"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:197
+msgid "_Channels"
+msgstr "_Kanāli"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
+msgid "View/Hide channels"
+msgstr "Skatīt/Slēpt kanālus"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
+msgid "_Toolbar"
+msgstr "_Rīkjosla"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:200
+msgid "View/Hide toolbar"
+msgstr "Skatīt/ Slēpt rīkjoslu"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:210
+msgid "_About"
+msgstr "_Par"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
+msgid "Display informations about the program"
+msgstr "Skatīt informāciju par programmu"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:267
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
+msgid "Recording schedule"
+msgstr "Ieraksta plānojums"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:148
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:31
+#: ../client/totem-plugin/dvb-daemon.py:331
+msgid "Recordings"
+msgstr "Ieraksti"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:287
+#: ../client/totem-plugin/dvb-daemon.py:358
+#: ../client/totem-plugin/dvb-daemon.py:379
+msgid "What's on now"
+msgstr "Ko šobrīd rāda"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:306
+msgid "Previous Day"
+msgstr "Iepriekšējā diena"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:315
+msgid "Next Day"
+msgstr "Nākamā diena"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:508
+#: ../client/totem-plugin/dvb-daemon.py:184
+msgid "Schedule recording for the selected event?"
+msgstr "Ieplānot ierakstīšanu izvēlētajam notikumam?"
+
+#. translators: These appear in the About dialog, usual format applies.
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:596
+msgid "translator-credits"
+msgstr "Didzis Briedis <didzisb19@gmail.com>"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:58
+msgid "Devices"
+msgstr "Ierīces"
+
+#. translators: first is device's name, second its type
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:67
+#, python-format
+msgid "<b>%s (%s)</b>\n"
+msgstr "<b>%s (%s)</b>\n"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:68
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:239
+#, python-format
+msgid "Adapter: %d, Frontend: %d"
+msgstr "Adapteris: %d, Priekšpuse: %d"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:73
+#, python-format
+msgid "Group %d"
+msgstr "Grupa %d"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:29
+msgid "Add to Group"
+msgstr "Pievienot grupai"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:45
+msgid "Add Device to Group"
+msgstr "Pievienot ierīci grupai"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:89
+msgid "Create new Group"
+msgstr "Izveidot jaunu grupu"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:109
+msgid "General"
+msgstr "Galvenais"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:114
+msgid "_Name:"
+msgstr "_Nosaukums:"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:125
+msgid "Channels _file:"
+msgstr "Kanālu _datne:"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:153
+msgid "_Directory:"
+msgstr "_Direktorija"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:181
+msgid "Select File"
+msgstr "Izvēlēties datni"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:190
+msgid "Select Directory"
+msgstr "Izvēlēties direktoriju"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:203
+msgid "Edit group"
+msgstr "Labot grupu"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:39
+#: ../client/totem-plugin/dvb-daemon.py:380
+msgid "Digital TV Preferences"
+msgstr "Digitālās TV iestatījumi"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:90
+msgid "Edit selected group"
+msgstr "Labot izvēlēto grupu"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:97
+msgid "Remove selected device"
+msgstr "Izņemt izvēleto iekārtu"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:106
+msgid "Setup"
+msgstr "Iestatīšana"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:108
+msgid "Setup devices"
+msgstr "Iestatīt ierīces"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:115
+msgid "Create new group"
+msgstr "Izveidot jaunu grupu"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:119
+msgid "Create new group for selected device"
+msgstr "Izveidot jaunu grupu izvēlētajai ierīcei"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:125
+msgid "Add to group"
+msgstr "Pievienot grupai"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:129
+msgid "Add selected device to existing group"
+msgstr "Pievienot izvēlēto ierīci esošajai grupai"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:145
+msgid "Configured devices"
+msgstr "Konfigurētās ierīces"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:156
+msgid "Unconfigured devices"
+msgstr "Nekonfigurētās ierīces"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:221
+msgid "Device could not be removed from group"
+msgstr "Ierīci neizdodas izņemt no grupas"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:235
+#, python-format
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
+msgstr "Vai esat pārliecināti, ka vēlaties izņemt ierīci <b>%s</b> no <b>%s</b>"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:258
+msgid "Group could not be created"
+msgstr "Neizdevās izveidot grupu"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:260
+msgid ""
+"Make sure that you selected the correct channels file and directory where "
+"recordings are stored and that both are readable."
+msgstr ""
+"Pārliecinieties ka esat izvēlējušies korekto kanālu datni un direktoriju, "
+"kurā tiek glabāti ieraksti, un ka abi tie ir lasāmi."
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:289
+msgid "Device could not be added to group"
+msgstr "Ierīci neizdevās pievienot grupai"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:291
+msgid ""
+"Make sure that the device isn't already assigned to a different group and "
+"that all devices in the group are of the same type."
+msgstr ""
+"Pārliecinieties, vai ierīce nav jau pievienota citai grupai, un visas ierīces "
+"grupā ir viena tipa."
+
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
+msgid "Delete selected recordings?"
+msgstr "Dzēst izvēlētos ierakstus?"
+
+#: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
+msgid "Pick a date"
+msgstr "Izvēlieties datumu"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:85
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:34
+msgid "Title"
+msgstr "Virsraksts"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:93
+msgid "Start time"
+msgstr "Sākuma laiks"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:100
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:99
+msgid "Duration"
+msgstr "Ilgums"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
+msgid "Timer could not be deleted"
+msgstr "Taimeri neizdevās izdzēst"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
+msgid "Abort active recording?"
+msgstr "Pārtraukt aktīvo ierakstu?"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:181
+msgid "The timer you selected belongs to a currently active recording."
+msgstr "Taimeris, ko esat izvēlējušies, pieder šobrīd notiekošajam ierakstam."
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:182
+msgid "Deleting this timer will abort the recording."
+msgstr "Dzēšot šo taimeri, ieraksts tiks pārtraukts."
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
+msgid "Timer could not be created"
+msgstr "Taimeri neizdevās izveidot"
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
+msgid ""
+"Make sure that the timer doesn't conflict with another one and doesn't start "
+"in the past."
+msgstr ""
+"Pārliecinieties, ka taimeris nekonfiliktē ar  ar citu un nesākas pagātnē."
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
+msgid "Recording has been scheduled successfully"
+msgstr "Ieraksts ieplānots veiksmīgi"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:62
+msgid "Add Timer"
+msgstr "Pievienot taimeri"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:65
+msgid "_Channel:"
+msgstr "_Kanāli:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:83
+msgid "Edit Timer"
+msgstr "Rediģēt taimeri"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:86
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
+msgid "Channel:"
+msgstr "Kanāls:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:94
+msgid "_Start time:"
+msgstr "_Sākuma laiks:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:109
+msgid "_Duration:"
+msgstr "_Ilgums:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:124
+msgid "minutes"
+msgstr "minūtes"
+
+#: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
+msgid "Channel group"
+msgstr "Kanālu grupa"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:107
+msgid "TV Channels"
+msgstr "TV kanāli"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:109
+msgid "Radio Channels"
+msgstr "Radio kanāli"
+
+#: ../client/gnomedvb/ui/widgets/DateTime.py:50
+msgid "_Time:"
+msgstr "_Laiks:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
+msgid "Title:"
+msgstr "Nosaukums:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:64
+msgid "Date:"
+msgstr "Datums:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:69
+msgid "Duration:"
+msgstr "Ilgums:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:74
+msgid "Description:"
+msgstr "Apraksts:"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:37
+msgid "Length"
+msgstr "Garums"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:42
+msgid "Start"
+msgstr "Sākums"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
+msgid "Now"
+msgstr "Tagad"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
+msgid "Next"
+msgstr "Nākamais"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:4
+msgid "digital cable"
+msgstr "digitālā kabeļa pārraide"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:5
+msgid "digital satellite"
+msgstr "digitālā satelīta pārraide"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:6
+msgid "digital terrestrial"
+msgstr "digitālā virszemes pārraide"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
+msgid "No devices have been found."
+msgstr "Netika atrasta neviena ierīce."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
+msgid ""
+"Either no DVB cards are installed or all cards are busy. In the latter case "
+"make sure you close all programs such as video players that access your DVB "
+"card."
+msgstr ""
+"Vai nu nav instalēta neviena DVB karte, var arī visas kartes šobrīd ir "
+"aizņemtas. Pārbaudiet, vai citas programmas kas izmanto jūsu DVB karti, tādas "
+"kā video atskaņotājs, ir aizvērtas."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
+msgid "Name"
+msgstr "Nosaukums"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
+msgid "Type"
+msgstr "Tips"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:84
+msgid "Select the device you want to configure."
+msgstr "Izvēlieties ierīci, kuru vēlaties konfigurēt."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:98
+msgid "All devices are already configured."
+msgstr "Visas ierīces ir jau konfigurētas."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:100
+msgid ""
+"Go to the control center if you want to alter the settings of already "
+"configured devices."
+msgstr ""
+"Dodieties uz vadības centru, ja vēlaties mainīt iestatījumus jau konfigurētām "
+"ierīcēm. "
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
+msgid "An error occured while retrieving devices."
+msgstr "Radusies kļūda iegūstot ierīču sarakstu."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
+msgid ""
+"Make sure other applications don't access DVB devices and you have "
+"permissions to access them."
+msgstr ""
+"Pārliecinieties, vai citas lietotnes nepiekļūst DVB ierīcēm, un jums ir "
+"nepieciešamās piekļuves tiesības tām."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
+msgid "The detailed error message is:"
+msgstr "Detalizēts kļūdas ziņojums ir:"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:121
+msgid "Searching for devices"
+msgstr "Meklē ierīces"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:137
+msgid "Device selection"
+msgstr "Ierīču izvēle"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:238
+#, python-format
+msgid "<b>%s</b>\n"
+msgstr "<b>%s</b>\n"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:59
+msgid "This process can take some time."
+msgstr "Šis process aizņems kādu laiku."
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
+msgid "You can select the channels you want to have in your list of channels."
+msgstr "Jūs variet izvēlēties kanālus, kurus iekļaut kanālu sarakstā. "
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:66
+msgid "Select all"
+msgstr "Izvēlēties visu"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:68
+msgid "Deselect all"
+msgstr "Neizvēlēties nevienu"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:82
+msgid "_Channels:"
+msgstr "_Kanāli:"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:117
+msgid "Select _scrambled channels"
+msgstr "Izvēlēties _šifrētos kanālus"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:133
+msgid "Signal quality:"
+msgstr "Signāla kvalitāte:"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:145
+msgid "Signal strength:"
+msgstr "Signāla stiprums:"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:161
+msgid "Scanning for channels"
+msgstr "Kanālu skenēšana"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:155
+msgid "Missing requirements"
+msgstr "Trūkstošās prasības"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:161
+msgid "Country and antenna selection"
+msgstr "Valsts un antenas izvēle"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:164
+msgid "Satellite selection"
+msgstr "Satelītu izvēle"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:167
+msgid "Country and provider selection"
+msgstr "Valsts un pakalpojumu sniedzēja izvēle"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
+msgid "Unsupported adapter"
+msgstr "Neatbalstīts adapteris"
+
+#. translators: first %s is the DVB type, e.g. DVB-S
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
+#, python-format
+msgid "Sorry, but '%s' cards aren't supported."
+msgstr "Atvainojiet, bet '%s' kartes nav atbalstītas."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
+msgid "Could not find initial tuning data."
+msgstr "Neizdevās atrast sākotnējos regulēšanas datus."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
+msgid "Please make sure that the dvb-apps package is installed."
+msgstr "Lūdzu, pārliecinieties, ka dvd-apps pakotne ir instalēta."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:203
+msgid ""
+"Please choose a country and the antenna that is closest to your location."
+msgstr ""
+"Izvēlieties valsti un antenu, kura atrodas vistuvāk jūsu atrašanās vietai. "
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:204
+msgid ""
+"If you don't know which antenna to choose select \"Don't know\" from the list "
+"of providers."
+msgstr "Ja nezināt, kuru antenu izvēlēties, atzīmējiet \"Nezinu\" no saraksta."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
+msgid "However, searching for channels will take considerably longer this way."
+msgstr "Taču šāda kanālu meklēšana būs jūtami ilgāka."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:210
+msgid "Not listed"
+msgstr "Nav minēts"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:218
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:292
+msgid "_Country:"
+msgstr "_Valsts:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:244
+msgid "_Antenna:"
+msgstr "_Antena:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:253
+msgid "Antenna"
+msgstr "Antena"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:267
+msgid "_Satellite:"
+msgstr "_Satelīts:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:275
+msgid "Satellite"
+msgstr "Satelīts"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:316
+msgid "_Providers:"
+msgstr "_Sniedzēji:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:324
+msgid "Provider"
+msgstr "Sniedzējs"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:375
+msgid "Don't know"
+msgstr "Nezinu"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
+msgid "Welcome to the digital television Assistant."
+msgstr "Laipni lūgti digitālās televīzijas asistenta vednī."
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
+msgid ""
+"It will automatically configure your devices and search for channels, if "
+"necessary."
+msgstr "Tas automātiski konfigurēs ierīces un meklēs kanālus, ja nepieciešams."
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
+msgid "Click \"Forward\" to begin."
+msgstr "Nospiest \"Uz priekšu\", lai sāktu."
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:40
+msgid "_Expert mode"
+msgstr "_Eksperta režīms"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:44
+msgid "Digital TV configuration"
+msgstr "Digitālās TV konfigurācija"
+
+#: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
+msgid "Choose a location where you want to save the list of channels."
+msgstr "Izvēlieties vietu, kur saglabāt kanālu sarakstu."
+
+#: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
+msgid "Save channels"
+msgstr "Saglabāt kanālus"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:45
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
+msgid "Configuring device"
+msgstr "Konfigurē iekārtu"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
+msgid "TV"
+msgstr "TV"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
+msgid "No channels were found."
+msgstr "Kanāli netika atrasti."
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
+msgid ""
+"Make sure that the antenna is connected and you have selected the correct "
+"tuning data."
+msgstr ""
+"Pārliecinieties, ka antena ir pievienota un esat izvēlējušies pareizos "
+"regulēšanas datus."
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:139
+#, python-format
+msgid "The device has been added to the group %s."
+msgstr "Šī ierīce pievienota grupai %s."
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:148
+msgid "An error occured while trying to setup the device."
+msgstr "Radusies kļūda, veicot ierīces iestatīšanu."
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
+msgid "Configure Another Device"
+msgstr "Konfigurēt citu ierīci"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
+msgid "Configuration finished"
+msgstr "Konfigurācija pabeigta"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
+#, python-format
+msgid "The device %s has been configured sucessfully."
+msgstr "Ierīce %s ir konfigurēta veiksmīgi."
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
+#, python-format
+msgid "Failed configuring device %s."
+msgstr "Neizdevās konfigurēt ierīci %s."
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:44
+msgid "Cleaning up. This may take a while."
+msgstr "Notiek uzkopšana. Tas aizņems laiku."
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:82
+#: ../data/gnome-dvb-setup.desktop.in.in.h:2
+msgid "Setup digital TV"
+msgstr "Iestatīt digitālo TV"
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:167
+msgid ""
+"The generated channels file can be used to configure your devices in the "
+"control center."
+msgstr ""
+"Ģenerētā kanālu datne var tikt izmantota ierīču konfigurēšanai vadības centrā."
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:214
+msgid ""
+"Are you sure you want to abort?\n"
+"All process will be lost."
+msgstr ""
+"Vai esat pārliecināti, ka vēlaties pārtraukt?\n"
+"Viss porcess tiks atcelts."
+
+#: ../client/totem-plugin/dvb-daemon.py:155
+#: ../client/totem-plugin/dvb-daemon.py:200
+#: ../client/totem-plugin/dvb-daemon.py:364
+msgid "Program Guide"
+msgstr "Programmas ceļvedis"
+
+#: ../client/totem-plugin/dvb-daemon.py:325
+msgid "Digital TV"
+msgstr "Digitālā TV"
+
+#: ../client/totem-plugin/dvb-daemon.py:375
+msgid "Watch TV"
+msgstr "Skatīties TV"
+
+#: ../client/totem-plugin/dvb-daemon.py:376
+msgid "Digital _TV"
+msgstr "Digitālā _TV"
+
+#: ../client/totem-plugin/dvb-daemon.py:378
+msgid "_Program Guide"
+msgstr "_Programmas ceļvedis"
+
+#: ../client/totem-plugin/dvb-daemon.py:381
+msgid "_Delete"
+msgstr "_Dzēst"
+
+#: ../client/totem-plugin/dvb-daemon.py:382
+msgid "D_etails"
+msgstr "D_etalizēta informācija"
+
+#: ../client/totem-plugin/dvb-daemon.py:383
+msgid "_Order channels"
+msgstr "_Sakārtot kanālus"
+
+#: ../client/totem-plugin/dvb-daemon.py:386
+msgid "By _name"
+msgstr "Pēc _vārda"
+
+#: ../client/totem-plugin/dvb-daemon.py:387
+msgid "By _group"
+msgstr "Pēc _grupas"
+
+#: ../client/totem-plugin/dvb-daemon.py:390
+msgid "_Reverse order"
+msgstr "Apg_rieztā secībā"
+
+#: ../client/totem-plugin/dvb-daemon.py:542
+msgid "Delete selected recording?"
+msgstr "Dzēst izvēlēto ierakstu?"
+
+#: ../client/totem-plugin/dvb-daemon.py:651
+#, python-format
+msgid "Recording %d"
+msgstr "Ieraksta %d"
+
+#: ../client/totem-plugin/dvb-daemon.py:709
+#: ../client/totem-plugin/dvb-daemon.py:712
+msgid "Setup Failed"
+msgstr "Iestatīšana neizdevās"
+
+#: ../client/totem-plugin/dvb-daemon.py:710
+msgid "GNOME DVB Daemon is not installed"
+msgstr "GNOME DVB dēmons nav instalēts"
+
+#: ../client/totem-plugin/dvb-daemon.py:713
+msgid "Could not start GNOME DVB Daemon setup"
+msgstr "Neizdevās palaist GNOME DVB dēmona iestatīšanu"
+
+#: ../data/gnome-dvb-control.desktop.in.in.h:1
+msgid "Digital TV Control Center"
+msgstr "Digitālās TV vadības centrs"
+
+#: ../data/gnome-dvb-control.desktop.in.in.h:2
+msgid "Schedule recordings and browse program guide"
+msgstr "Ieplānot ierakstus un pārlūkot programmas ceļvedi"
+
+#: ../data/gnome-dvb-setup.desktop.in.in.h:1
+msgid "Digital TV Setup"
+msgstr "Digitālās TV iestatīšana"
+
+
