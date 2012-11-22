@@ -21,7 +21,7 @@ import gnomedvb
 from gi.repository import Gtk
 import os.path
 from gnomedvb import _
-from gnomedvb.ui.wizard import DVB_TYPE_TO_DESC
+from gnomedvb.ui.wizard import DVB_TYPE_TO_TV_DESC
 from gnomedvb.ui.wizard.pages.BasePage import BasePage
 
 class SetupDevicePage(BasePage):
@@ -115,7 +115,7 @@ class SetupDevicePage(BasePage):
         def write_channels_handler(proxy, success, user_data):
             if success:
                 recordings_dir = gnomedvb.get_default_recordings_dir()
-                name = "%s %s" % (DVB_TYPE_TO_DESC[self.__adapter_info["type"]], _("TV"))
+                name = DVB_TYPE_TO_TV_DESC[self.__adapter_info["type"]]
                 self.__model.add_device_to_new_group(self.__adapter_info['adapter'],
                                 self.__adapter_info['frontend'], channels_file,
                                 recordings_dir, name,
