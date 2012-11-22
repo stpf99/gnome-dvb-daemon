@@ -232,7 +232,7 @@ class Preferences(Gtk.Window):
                 flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT,
                 type=Gtk.MessageType.QUESTION, buttons=Gtk.ButtonsType.YES_NO)
             dialog.set_markup(
-                _("Are you sure you want to remove device <b>%s</b> from <b>%s</b>") % (device.name,
+                _("Are you sure you want to remove device <b>%s</b> from <b>%s</b>?") % (device.name,
                 device.group_name))
             response = dialog.run()
             dialog.destroy()
