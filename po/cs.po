@@ -1,6 +1,7 @@
 # Czech translation for gnome-dvb-daemon
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gnome-dvb-daemon package.
+#
 # Marek Černocký <marek@manet.cz>, 2011, 2012.
 #
 msgid ""
@@ -8,14 +9,14 @@ msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
 "daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-07 21:57+0000\n"
-"PO-Revision-Date: 2012-02-16 12:19+0100\n"
+"POT-Creation-Date: 2012-11-22 20:10+0000\n"
+"PO-Revision-Date: 2012-11-23 11:45+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../client/gnomedvb/__init__.py:35
@@ -396,8 +397,8 @@ msgstr "Zařízení nemohlo být odebráno ze skupiny"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
-msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr "Opravdu chcete odebrat zařízení <b>%s</b> ze skupiny <b>%s</b>"
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
+msgstr "Opravdu chcete odebrat zařízení <b>%s</b> ze skupiny <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
@@ -510,12 +511,10 @@ msgid "Channel group"
 msgstr "Skupina kanálů"
 
 #: ../client/gnomedvb/ui/widgets/ChannelsStore.py:107
-#| msgid "_Channels"
 msgid "TV Channels"
 msgstr "Televizní kanály"
 
 #: ../client/gnomedvb/ui/widgets/ChannelsStore.py:109
-#| msgid "_Channels"
 msgid "Radio Channels"
 msgstr "Rozhlasové kanály"
 
@@ -566,6 +565,18 @@ msgstr "digitální satelitní"
 #: ../client/gnomedvb/ui/wizard/__init__.py:6
 msgid "digital terrestrial"
 msgstr "digitální pozemní"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:10
+msgid "digital cable TV"
+msgstr "digitální kabelová TV"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:11
+msgid "digital satellite TV"
+msgstr "digitální satelitní TV"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:12
+msgid "digital terrestrial TV"
+msgstr "digitální pozemní TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
@@ -670,90 +681,90 @@ msgstr "Síla signálu:"
 msgid "Scanning for channels"
 msgstr "Hledání kanálů"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:151
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:155
 msgid "Missing requirements"
 msgstr "Chybějící požadavky"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:161
 msgid "Country and antenna selection"
 msgstr "Výběr země a vysílače"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:160
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:164
 msgid "Satellite selection"
 msgstr "Výběr satelitu"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:167
 msgid "Country and provider selection"
 msgstr "Výběr země a poskytovatele"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:165
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
 msgid "Unsupported adapter"
 msgstr "Nepodporovaný adaptér"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:190
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Litujeme, ale karty „%s“ nejsou podporovány."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
 msgid "Could not find initial tuning data."
 msgstr "Nelze najít výchozí údaje pro ladění."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Ujistěte se prosím, že je balíček dvb-apps nainstalován."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:203
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr "Vyberte prosím zemi a vysílač nejbližší k místu, kde se nacházíte."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:204
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
 "Pokud nevíte, který vysílač zvolit, vyberte ze seznamu poskytovatelů „Nevím“."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
 msgid "However, searching for channels will take considerably longer this way."
 msgstr "Hledání kanálu však bude trvat mnohem déle."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:210
 msgid "Not listed"
 msgstr "Není na seznamu"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:214
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:288
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:218
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:292
 msgid "_Country:"
 msgstr "_Země:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:240
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:244
 msgid "_Antenna:"
 msgstr "Vysíl_ač:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:249
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:253
 msgid "Antenna"
 msgstr "Vysílač"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:263
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:267
 msgid "_Satellite:"
 msgstr "_Satelit:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:271
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:275
 msgid "Satellite"
 msgstr "Satelit"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:312
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:316
 msgid "_Providers:"
 msgstr "_Poskytovatelé:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:320
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:324
 msgid "Provider"
 msgstr "Poskytovatel"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:371
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:375
 msgid "Don't know"
 msgstr "Nevím"
 
@@ -792,10 +803,6 @@ msgstr "Uložit kanály"
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
 msgid "Configuring device"
 msgstr "Nastavení zařízení"
-
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
-msgid "TV"
-msgstr "TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
 msgid "No channels were found."
