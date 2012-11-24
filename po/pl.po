@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-03 23:07+0200\n"
-"PO-Revision-Date: 2012-09-03 23:08+0200\n"
+"POT-Creation-Date: 2012-11-24 19:44+0100\n"
+"PO-Revision-Date: 2012-11-24 19:45+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -405,8 +405,8 @@ msgstr "Urządzenia nie można usunąć z grupy"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
-msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr "Na pewno usunąć urządzenie <b>%s</b> z grupy <b>%s</b>?"
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
+msgstr "Na pewno usunąć urządzenie <b>%s</b> z <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
@@ -573,6 +573,18 @@ msgstr "cyfrowa telewizja satelitarna"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:6
 msgid "digital terrestrial"
+msgstr "cyfrowa telewizja naziemna"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:10
+msgid "digital cable TV"
+msgstr "cyfrowa telewizja kablowa"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:11
+msgid "digital satellite TV"
+msgstr "cyfrowa telewizja satelitarna"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:12
+msgid "digital terrestrial TV"
 msgstr "cyfrowa telewizja naziemna"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
@@ -801,10 +813,6 @@ msgstr "Zapisz kanały"
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
 msgid "Configuring device"
 msgstr "Konfigurowanie urządzenia"
-
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
-msgid "TV"
-msgstr "Telewizja"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
 msgid "No channels were found."
