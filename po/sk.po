@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
 "daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-10-14 12:34+0000\n"
-"PO-Revision-Date: 2012-11-18 23:24+0000\n"
+"POT-Creation-Date: 2012-11-24 18:47+0000\n"
+"PO-Revision-Date: 2012-11-26 19:16+0000\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -23,9 +23,7 @@ msgstr ""
 msgid "GNOME DVB Daemon"
 msgstr "Démon GNOME DVB"
 
-# PK: dal som do ML prediskutovat
 #: ../client/gnomedvb/__init__.py:38
-#, fuzzy
 msgid "GNOME DVB Daemon Website"
 msgstr "Webová stránka démona GNOME DVB"
 
@@ -134,7 +132,7 @@ msgstr "Práve teraz nie je pre tento kanál dostupný žiadny časový harmonog
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:158
 #: ../client/totem-plugin/dvb-daemon.py:377
 msgid "_Recording schedule"
-msgstr "Plán _nahrávania"
+msgstr "Časový harmonogram _nahrávania"
 
 # GtkAction /
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
@@ -275,13 +273,11 @@ msgstr "_O programe"
 msgid "Display informations about the program"
 msgstr "Zobrazí informácie o programe"
 
-# PK: inde casovy harmonogram nahravania
 # GtkToolButton label
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:267
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
-#, fuzzy
 msgid "Recording schedule"
-msgstr "Plán nahrávania"
+msgstr "Časový harmonogram nahrávania"
 
 # GtkToolButton label
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:278
@@ -442,25 +438,22 @@ msgstr "Nenastavené zariadenia"
 msgid "Device could not be removed from group"
 msgstr "Nepodarilo sa odstrániť zariadenie zo skupiny"
 
-# PK: nechyba tu otaznik v originale? reportni bug
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
-#, fuzzy, python-format
-msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr "Naozaj chcete odstrániť zariadenie <b>%s</b> zo skupiny <b>%s</b>"
+#, python-format
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
+msgstr "Naozaj chcete odstrániť zariadenie <b>%s</b> zo skupiny <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
 msgstr "Nepodarilo sa vytvoriť skupinu"
 
-# PK: ci je vybrany subor s kanalmi a adresar s nahravkami citatelny
 #: ../client/gnomedvb/ui/preferences/Preferences.py:260
-#, fuzzy
 msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
-"Uistite sa, či ste vybrali správny a čitateľný súbor s kanálmi a adresár s "
-"uloženými nahrávkami."
+"Uistite sa, či je vybraný súbor s kanálmi a adresár s uloženými nahrávkami "
+"čitateľný."
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:289
 msgid "Device could not be added to group"
@@ -615,32 +608,43 @@ msgstr "Nasledujúci"
 # DK: ide o typ zariadenia
 #: ../client/gnomedvb/ui/wizard/__init__.py:4
 msgid "digital cable"
-msgstr "digitálne káblové"
+msgstr "digitálna káblová"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:5
 msgid "digital satellite"
-msgstr "digitálne satelitné"
+msgstr "digitálna satelitná"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:6
 msgid "digital terrestrial"
-msgstr "digitálne terestriálne"
+msgstr "digitálna terestriálna"
+
+# https://bugzilla.gnome.org/show_bug.cgi?id=687496
+# DK: ide o typ zariadenia
+#: ../client/gnomedvb/ui/wizard/__init__.py:10
+msgid "digital cable TV"
+msgstr "digitálna káblová televízia"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:11
+msgid "digital satellite TV"
+msgstr "digitálna satelitná televízia"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:12
+msgid "digital terrestrial TV"
+msgstr "digitálna terestriálna televízia"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
 msgstr "Nenašli sa žiadne zariadenia."
 
-# PK: signalu DVB
-# PK: zle prelozena druha veta, in latter case -> V druhom pripade alebo take nieco
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:54
-#, fuzzy
 msgid ""
 "Either no DVB cards are installed or all cards are busy. In the latter case "
 "make sure you close all programs such as video players that access your DVB "
 "card."
 msgstr ""
-"Buď nie sú nainštalované žiadne karty na príjem DVB signálu alebo sú všetky "
-"karty zaneprázdnené. Neskôr sa uistite, či ste zavreli všetky programy, "
-"ktoré využívajú vašu kartu na príjem DVB signálu, ako sú napríklad "
+"Buď nie sú nainštalované žiadne karty na príjem signálu DVB, alebo sú všetky "
+"karty zaneprázdnené. V druhom prípade sa uistite, či sú zavreté všetky "
+"programy, ktoré využívajú vašu kartu na príjem DVB signálu, ako sú napríklad "
 "prehrávače videa."
 
 # col name
@@ -672,15 +676,13 @@ msgstr ""
 msgid "An error occured while retrieving devices."
 msgstr "Vyskytla sa chyba pri získavaní zoznamu zariadení."
 
-# PK: prava
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:110
-#, fuzzy
 msgid ""
 "Make sure other applications don't access DVB devices and you have "
 "permissions to access them."
 msgstr ""
 "Uistite sa, či iné aplikácie nepoužívajú vaše zariadenia DVB, a či k nim "
-"máte oprávnenia pristupovať."
+"máte práva pristupovať."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:112
 msgid "The detailed error message is:"
@@ -867,19 +869,12 @@ msgstr "Zvoľte umiestnenie, kam chcete uložiť zoznam kanálov."
 msgid "Save channels"
 msgstr "Uloženie kanálov"
 
-# PK: reportni bug nech to splintu
+# https://bugzilla.gnome.org/show_bug.cgi?id=688680
 # title; progress bar
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:45
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
-#, fuzzy
 msgid "Configuring device"
 msgstr "Nastavuje sa zariadenie"
-
-# https://bugzilla.gnome.org/show_bug.cgi?id=687496
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
-#, fuzzy
-msgid "TV"
-msgstr "Televízia"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
 msgid "No channels were found."
@@ -1032,14 +1027,16 @@ msgstr "Nepodarilo sa spustiť nastavenia démona GNOME DVB"
 msgid "Digital TV Control Center"
 msgstr "Ovládacie centrum digitálnej televízie"
 
-# PK: Sluzi na planovanie nahravania a prehliadanie ...
 # desktop entry comment
 #: ../data/gnome-dvb-control.desktop.in.in.h:2
-#, fuzzy
 msgid "Schedule recordings and browse program guide"
-msgstr "Naplánuje nahrávanie a prezerá programového sprievodcu"
+msgstr "Slúži na plánovanie nahrávania a prehliadanie programového sprievodcu"
 
 # desktop entry name
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
 msgstr "Nastavenie digitálnej televízie"
+
+# https://bugzilla.gnome.org/show_bug.cgi?id=687496
+#~ msgid "TV"
+#~ msgstr "televízia"
