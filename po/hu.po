@@ -4,13 +4,15 @@
 #
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2012.
+# Balázs Úr <urbalazs at gmail dot com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-20 15:55+0200\n"
-"PO-Revision-Date: 2012-09-20 15:56+0200\n"
-"Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
+"daemon&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-11-22 20:10+0000\n"
+"PO-Revision-Date: 2012-12-26 15:59+0100\n"
+"Last-Translator: Balázs Úr <urbalazs at gmail dot com>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2011-04-16 19:16+0000\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.2\n"
 
 #: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon"
@@ -116,7 +118,8 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
 msgid "No devices are configured. Please go to preferences to configure them."
-msgstr "Egyetlen eszköz sincs beállítva. A Beállítások menüben állítsa be azokat."
+msgstr ""
+"Egyetlen eszköz sincs beállítva. A Beállítások menüben állítsa be azokat."
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
 msgid "There is currently no schedule available for this channel"
@@ -390,8 +393,11 @@ msgstr "Az eszközt nem lehet eltávolítani a csoportból"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
-msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr "Biztos, hogy eltávolítja a(z) <b>%s</b> eszközt innen: <b>%s</b>?"
+#| msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
+msgstr ""
+"Biztosan el szeretné távolítani a(z) <b>%s</b> eszközt innen: <b>%s</b>"
+"?Biztosan el szeretné távolítaniv a(z) <b>%s</b> eszközt innen: <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
@@ -560,6 +566,21 @@ msgstr "digitális műhold"
 msgid "digital terrestrial"
 msgstr "digitális szárazföldi"
 
+#: ../client/gnomedvb/ui/wizard/__init__.py:10
+#| msgid "digital cable"
+msgid "digital cable TV"
+msgstr "digitális kábel TV"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:11
+#| msgid "digital satellite"
+msgid "digital satellite TV"
+msgstr "digitális műhold TV"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:12
+#| msgid "digital terrestrial"
+msgid "digital terrestrial TV"
+msgstr "digitális szárazföldi TV"
+
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
 msgstr "Egyetlen eszköz sem találahtó."
@@ -593,7 +614,8 @@ msgstr "Már az összes eszköz be van konfigurálva."
 msgid ""
 "Go to the control center if you want to alter the settings of already "
 "configured devices."
-msgstr "A vezérlőpultban megváltoztathatja a már bekonfigurált eszközök beállításait."
+msgstr ""
+"A vezérlőpultban megváltoztathatja a már bekonfigurált eszközök beállításait."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
 msgid "An error occured while retrieving devices."
@@ -695,8 +717,10 @@ msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Győződjön meg róla, hogy a dvb-apps csomag telepítve van."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:203
-msgid "Please choose a country and the antenna that is closest to your location."
-msgstr "Válasszon egy országot, és a tartózkodási helyéhez legközelebbi antennát."
+msgid ""
+"Please choose a country and the antenna that is closest to your location."
+msgstr ""
+"Válasszon egy országot, és a tartózkodási helyéhez legközelebbi antennát."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:204
 msgid ""
@@ -783,10 +807,6 @@ msgstr "Csatornák mentése"
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
 msgid "Configuring device"
 msgstr "Eszköz beállítása"
-
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
-msgid "TV"
-msgstr "TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
 msgid "No channels were found."
@@ -932,3 +952,5 @@ msgstr "Felvételek ütemezése és a műsorfüzet böngészése"
 msgid "Digital TV Setup"
 msgstr "Digitális TV beállítása"
 
+#~ msgid "TV"
+#~ msgstr "TV"
