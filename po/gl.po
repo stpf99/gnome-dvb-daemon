@@ -1,24 +1,24 @@
 # Galician translation for gnome-dvb-daemon.
 # Copyright (C) 2011 gnome-dvb-daemon's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-dvb-daemon package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Fran Diéguez <frandieguez@gnome.org>, 2011.
 # Xosé M. Lamas <correo.xmgz@gmail.com>, 2011.
-# Fran Dieguez <frandieguez@gnome.org>, 2012.
-#
+# Fran Dieguez <frandieguez@gnome.org>, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 00:48+0100\n"
-"PO-Revision-Date: 2012-03-24 00:48+0100\n"
+"POT-Creation-Date: 2013-08-28 01:08+0200\n"
+"PO-Revision-Date: 2013-08-28 01:09+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
+"Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"X-Project-Style: gnome\n"
 
 #: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon"
@@ -389,8 +389,8 @@ msgstr "Non foi posíbel eliminar o dispositivo do grupo"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
-msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr "Ten a certeza de querer sacar o dispositivo <b>%s</b> de <b>%s</b>"
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
+msgstr "Ten a certeza de querer sacar o dispositivo <b>%s</b> de <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
@@ -559,6 +559,18 @@ msgstr "satélite dixital"
 msgid "digital terrestrial"
 msgstr "dixital terrestre"
 
+#: ../client/gnomedvb/ui/wizard/__init__.py:10
+msgid "digital cable TV"
+msgstr "cable de TV dixital"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:11
+msgid "digital satellite TV"
+msgstr "TV satélite dixital"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:12
+msgid "digital terrestrial TV"
+msgstr "TV dixital terrestre"
+
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
 msgstr "Non se atoparon dispositivos:"
@@ -662,48 +674,48 @@ msgstr "Potencia da sinal:"
 msgid "Scanning for channels"
 msgstr "Buscando canles"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:151
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
 msgid "Missing requirements"
 msgstr "Faltan condicións"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
 msgid "Country and antenna selection"
 msgstr "Selección de pais e antena"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:160
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:166
 msgid "Satellite selection"
 msgstr "Selección de satélite"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
 msgid "Country and provider selection"
 msgstr "Selección de país e fornecedor"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:165
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:171
 msgid "Unsupported adapter"
 msgstr "Adaptador non compatíbel"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:190
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:196
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "As tarxetas «%s» non son compatíbeis."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
 msgid "Could not find initial tuning data."
 msgstr "Non se atoparon datos de sintonización inicial."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:195
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Por favor, asegúrese de que o paquete dvb-apps está instalado."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr ""
 "Por favor, escolla un país e a antena que está máis preto da súa "
 "localización."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
@@ -711,44 +723,44 @@ msgstr ""
 "Se non sabe que antena elexir, seleccione «Don't know» na lista de "
 "proveedores."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:207
 msgid "However, searching for channels will take considerably longer this way."
 msgstr "Non obstante, deste xeito a búsqueda de canles tomará máis tempo."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:212
 msgid "Not listed"
 msgstr "Non está na lista"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:214
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:288
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:220
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:294
 msgid "_Country:"
 msgstr "_País:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:240
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
 msgid "_Antenna:"
 msgstr "_Antena:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:249
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:255
 msgid "Antenna"
 msgstr "Antena"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:263
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:269
 msgid "_Satellite:"
 msgstr "_Satélite:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:271
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:277
 msgid "Satellite"
 msgstr "Satélite"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:312
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:318
 msgid "_Providers:"
 msgstr "_Fornecedores:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:320
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:326
 msgid "Provider"
 msgstr "Fornecedor"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:371
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:377
 msgid "Don't know"
 msgstr "Non o sei"
 
@@ -788,10 +800,6 @@ msgstr "Gardar canles"
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
 msgid "Configuring device"
 msgstr "Configurando o dispositivo"
-
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
-msgid "TV"
-msgstr "TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
 msgid "No channels were found."
@@ -936,3 +944,6 @@ msgstr "Programe gravacións e navegue pola guía de programación"
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
 msgstr "Axustes de televisión dixital"
+
+#~ msgid "TV"
+#~ msgstr "TV"
