@@ -2,22 +2,23 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Peteris Krisjanis <pecisk@gmail.com>, 2012.
+# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-daem"
-"on&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-10-03 18:17+0000\n"
-"PO-Revision-Date: 2012-10-14 15:23+0000\n"
-"Last-Translator: Peteris Krisjanis <pecisk@gmail.com>\n"
-"Language-Team: Latvian <kde-i18n-doc@kde.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
+"daemon&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2013-08-27 23:10+0000\n"
+"PO-Revision-Date: 2013-10-05 13:22+0300\n"
+"Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
+"Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon"
@@ -389,8 +390,9 @@ msgstr "Ierīci neizdodas izņemt no grupas"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
-msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
-msgstr "Vai esat pārliecināti, ka vēlaties izņemt ierīci <b>%s</b> no <b>%s</b>"
+#| msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
+msgstr "Vai tiešām vēlaties izņemt ierīci <b>%s</b> no <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
@@ -413,8 +415,8 @@ msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
 msgstr ""
-"Pārliecinieties, vai ierīce nav jau pievienota citai grupai, un visas ierīces "
-"grupā ir viena tipa."
+"Pārliecinieties, vai ierīce nav jau pievienota citai grupai, un visas "
+"ierīces grupā ir viena tipa."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
@@ -558,6 +560,21 @@ msgstr "digitālā satelīta pārraide"
 msgid "digital terrestrial"
 msgstr "digitālā virszemes pārraide"
 
+#: ../client/gnomedvb/ui/wizard/__init__.py:10
+#| msgid "digital cable"
+msgid "digital cable TV"
+msgstr "digitālā kabeļa TV"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:11
+#| msgid "digital satellite"
+msgid "digital satellite TV"
+msgstr "digitālā satelīta TV"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:12
+#| msgid "digital terrestrial"
+msgid "digital terrestrial TV"
+msgstr "digitālā virszemes TV"
+
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:52
 msgid "No devices have been found."
 msgstr "Netika atrasta neviena ierīce."
@@ -569,8 +586,8 @@ msgid ""
 "card."
 msgstr ""
 "Vai nu nav instalēta neviena DVB karte, var arī visas kartes šobrīd ir "
-"aizņemtas. Pārbaudiet, vai citas programmas kas izmanto jūsu DVB karti, tādas "
-"kā video atskaņotājs, ir aizvērtas."
+"aizņemtas. Pārbaudiet, vai citas programmas kas izmanto jūsu DVB karti, "
+"tādas kā video atskaņotājs, ir aizvērtas."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:67
 msgid "Name"
@@ -593,8 +610,8 @@ msgid ""
 "Go to the control center if you want to alter the settings of already "
 "configured devices."
 msgstr ""
-"Dodieties uz vadības centru, ja vēlaties mainīt iestatījumus jau konfigurētām "
-"ierīcēm. "
+"Dodieties uz vadības centru, ja vēlaties mainīt iestatījumus jau "
+"konfigurētām ierīcēm. "
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:108
 msgid "An error occured while retrieving devices."
@@ -661,90 +678,90 @@ msgstr "Signāla stiprums:"
 msgid "Scanning for channels"
 msgstr "Kanālu skenēšana"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:155
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
 msgid "Missing requirements"
 msgstr "Trūkstošās prasības"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:161
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
 msgid "Country and antenna selection"
 msgstr "Valsts un antenas izvēle"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:164
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:166
 msgid "Satellite selection"
 msgstr "Satelītu izvēle"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:167
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
 msgid "Country and provider selection"
 msgstr "Valsts un pakalpojumu sniedzēja izvēle"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:171
 msgid "Unsupported adapter"
 msgstr "Neatbalstīts adapteris"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:194
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:196
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
 msgstr "Atvainojiet, bet '%s' kartes nav atbalstītas."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:198
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
 msgid "Could not find initial tuning data."
 msgstr "Neizdevās atrast sākotnējos regulēšanas datus."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:199
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "Please make sure that the dvb-apps package is installed."
 msgstr "Lūdzu, pārliecinieties, ka dvd-apps pakotne ir instalēta."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:203
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr ""
 "Izvēlieties valsti un antenu, kura atrodas vistuvāk jūsu atrašanās vietai. "
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:204
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
 msgid ""
-"If you don't know which antenna to choose select \"Don't know\" from the list "
-"of providers."
+"If you don't know which antenna to choose select \"Don't know\" from the "
+"list of providers."
 msgstr "Ja nezināt, kuru antenu izvēlēties, atzīmējiet \"Nezinu\" no saraksta."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:207
 msgid "However, searching for channels will take considerably longer this way."
 msgstr "Taču šāda kanālu meklēšana būs jūtami ilgāka."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:210
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:212
 msgid "Not listed"
 msgstr "Nav minēts"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:218
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:292
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:220
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:294
 msgid "_Country:"
 msgstr "_Valsts:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:244
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
 msgid "_Antenna:"
 msgstr "_Antena:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:253
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:255
 msgid "Antenna"
 msgstr "Antena"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:267
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:269
 msgid "_Satellite:"
 msgstr "_Satelīts:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:275
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:277
 msgid "Satellite"
 msgstr "Satelīts"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:316
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:318
 msgid "_Providers:"
 msgstr "_Sniedzēji:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:324
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:326
 msgid "Provider"
 msgstr "Sniedzējs"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:375
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:377
 msgid "Don't know"
 msgstr "Nezinu"
 
@@ -782,10 +799,6 @@ msgstr "Saglabāt kanālus"
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:89
 msgid "Configuring device"
 msgstr "Konfigurē iekārtu"
-
-#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:118
-msgid "TV"
-msgstr "TV"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:127
 msgid "No channels were found."
@@ -840,7 +853,8 @@ msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
 msgstr ""
-"Ģenerētā kanālu datne var tikt izmantota ierīču konfigurēšanai vadības centrā."
+"Ģenerētā kanālu datne var tikt izmantota ierīču konfigurēšanai vadības "
+"centrā."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:214
 msgid ""
@@ -930,4 +944,5 @@ msgstr "Ieplānot ierakstus un pārlūkot programmas ceļvedi"
 msgid "Digital TV Setup"
 msgstr "Digitālās TV iestatīšana"
 
-
+#~ msgid "TV"
+#~ msgstr "TV"
