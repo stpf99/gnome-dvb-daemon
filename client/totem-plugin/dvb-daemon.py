@@ -458,7 +458,8 @@ class DVBDaemonPlugin(GObject.GObject, Peas.Activatable):
         totemtv_image.show()
 
         watch_item = uimanager.get_widget('/tmw-menubar/movie/devices-placeholder/dvbdevice')
-        watch_item.set_image(totemtv_image)
+        if watch_item:
+            watch_item.set_image(totemtv_image)
 
         timers_image = Gtk.Image.new_from_icon_name("stock_timer", Gtk.IconSize.MENU)
         timers_image.show()
