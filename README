@@ -1,5 +1,5 @@
 DVB Daemon is a daemon written in Vala to setup your DVB devices,
-record and watch TV shows and browse EPG. It can be controlled direclty
+record and watch TV shows and browse EPG. It can be controlled directly
 via its D-Bus interface or with UI applications that come with it.
 
 Requirements
@@ -31,4 +31,4 @@ Configuration options
     Location where the Totem plugin will be installed
     (default: LIBDIR/totem/plugins)
 
-For more details please checkout http://live.gnome.org/DVBDaemon
+For more details please check out https://wiki.gnome.org/Projects/DVBDaemon

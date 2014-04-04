@@ -9,7 +9,7 @@
   <description>GNOME DVB Daemon is a daemon written in Vala based on GStreamer to
 setup your DVB devices, record and watch TV shows and browse EPG.
 It can be controlled by any application via its D-Bus interface.</description>
-  <homepage rdf:resource="http://live.gnome.org/DVBDaemon" />
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/DVBDaemon" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/dvb-daemon-list" />
   <download-page rdf:resource="http://download.gnome.org/sources/gnome-dvb-daemon/" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=dvb-daemon" />
