@@ -1,4 +1,36 @@
 ==============
+Version 0.2.90
+==============
+
+This release is a major update that is based in the latest version
+of gstreamer. It adds support for the DVBv5 API, which requires a
+new format for the channels configuration file. In addition, the
+client UI has been ported to python 3.
+
+- Update daemon to use gstreamer 1.4.0
+- Update client UI to python3
+- New minimum requirements: vala 0.25.1, libgee 0.8,
+  gstreamer/gst-plugins-bad 1.4.0, python 3.2
+
+Translations:
+- Updated ca: Gil Forcada
+- Updated ca@valencia: Gil Forcada
+- Updated cs: Marek Černock
+- Updated el: Tom Tryfonidis
+- Updated es: Daniel Mustieles
+- Updated gl: Fran Dieguez
+- Updated hu: Balázs Úr
+- Updated id: Andika Triwidada
+- Updated lv: Rūdolfs Mazurs
+- Updated pl: Piotr Drąg
+- Updated pt_BR: Enrico Nicoletto
+- Updated sk: Dušan Kazik
+- Updated sl: Matej Urbančič
+- Updated sr@latin: Miroslav Nikolić
+- Updated sr: Мирослав Николић
+- Updated zh_CN: Wylmer Wang
+
+==============
 Version 0.2.10
 ==============
 
