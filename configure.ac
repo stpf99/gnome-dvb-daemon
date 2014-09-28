@@ -125,6 +125,46 @@ if test "x$enable_totem" = "xyes"; then
 fi
 AC_SUBST(TOTEM_PLUGIN_DIR)
 
+dnl ****************
+dnl * Grilo plugin
+dnl ****************
+GRL_VERSION=0.2
+GRL_NAME=grilo-${GRL_VERSION}
+PKG_CHECK_MODULES([GRILO], [${GRL_NAME} gio-unix-2.0 gio-2.0 glib-2.0 gobject-2.0 gmodule-2.0],
+                    HAVE_GRL=yes,
+                    HAVE_GRL=no)
+
+GRL_PLUGINS_DIR=`${PKG_CONFIG} --variable=plugindir ${GRL_NAME}`
+AC_SUBST(GRL_PLUGINS_DIR)
+AC_DEFINE_UNQUOTED(GRL_PLUGINS_DIR, "$GRL_PLUGINS_DIR", [Grilo Plugins directory])
+
+DVBDAEMON_PLUGIN_ID="grl-dvb-daemon"
+AC_SUBST(DVBDAEMON_PLUGIN_ID)
+AC_DEFINE_UNQUOTED([DVBDAEMON_PLUGIN_ID], ["$DVBDAEMON_PLUGIN_ID"], [DVB Daemon plugin ID])
+
+AC_ARG_ENABLE([grilo-plugin],
+	AS_HELP_STRING([--enable-grilo-plugin], [Install the Grilo plugin (default: auto)]),
+	[
+		case "$enablevar" in
+			yes)
+				if test "x$HAVE_GRL" = "xno"; then
+					AC_MSG_ERROR([${GRL_NAME} not found, install it or use --disable-grilo-plugin])
+				fi
+
+			;;
+		esac
+	],
+	[
+		if test "x$HAVE_GRL" = "xyes"; then
+			enable_grilo=yes
+		else
+			enable_grilo=no
+		fi
+	])
+
+AM_CONDITIONAL(ENABLE_GRILO, test "x$enable_grilo" = "xyes")
+
+
 dnl **********
 dnl * Python
 dnl **********
@@ -146,6 +186,7 @@ AC_CONFIG_FILES([
 	client/Makefile
 	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
+	client/grilo-plugin/Makefile
 	client/totem-plugin/Makefile
 	data/Makefile
 	data/gnome-dvb-control.desktop.in
@@ -161,4 +202,5 @@ $PACKAGE_NAME $PACKAGE_VERSION
     Install Prefix:               ${prefix}
     Python dir:                   ${pythondir}
     Build Totem plugin            ${enable_totem}
+    Build Grilo plugin            ${enable_grilo}
 "

@@ -1,0 +1,12 @@
+<plugin>
+  <info>
+    <name>DVB Daemon</name>
+    <module>libgrldvbdaemon</module>
+    <description>A plugin for browsing TV and radio channels</description>
+    <author>Sebastian Pölsterl</author>
+    <license>GPLv3</license>
+    <site>http://wiki.gnome.org/DVBDaemon</site>
+  </info>
+</plugin>
+
+
