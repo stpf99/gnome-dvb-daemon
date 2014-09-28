@@ -31,10 +31,10 @@ _ = t.gettext
 
 INFOS = {
     "authors": ["Sebastian Pölsterl <sebp@k-d-w.org>"],
-    "copyright" : "Copyright © 2008-2011\nSebastian Pölsterl.",
+    "copyright" : "Copyright © 2008-2014\nSebastian Pölsterl.",
     "name" : _("GNOME DVB Daemon"),
     "version" : gnomedvb.defs.VERSION,
-    "website" : "http://live.gnome.org/DVBDaemon",
+    "website" : "https://wiki.gnome.org/Projects/DVBDaemon",
     "website-label" : _("GNOME DVB Daemon Website"),
 }
 

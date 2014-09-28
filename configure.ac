@@ -2,7 +2,7 @@ AC_PREREQ(2.63.2)
 AC_INIT([gnome-dvb-daemon], [0.2.91],
        [https://bugzilla.gnome.org/browse.cgi?product=dvb-daemon],
        [gnome-dvb-daemon],
-       [http://live.gnome.org/DVBDaemon])
+       [https://wiki.gnome.org/Projects/DVBDaemon])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
