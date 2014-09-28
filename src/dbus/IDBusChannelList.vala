@@ -23,6 +23,7 @@ namespace DVB {
 		public uint id;
 		public string name;
 		public bool is_radio;
+		public string url;
 	}
 
 	[DBus (name = "org.gnome.DVB.ChannelList")]

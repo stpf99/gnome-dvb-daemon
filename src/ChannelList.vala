@@ -260,6 +260,7 @@ namespace DVB {
                     chan_info.id = id;
                     chan_info.name = channel.Name;
                     chan_info.is_radio = channel.is_radio ();
+                    chan_info.url = channel.URL;
                     channels[i] = chan_info;
                     i++;
                 }
