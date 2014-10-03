@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
 from gi.repository import GObject
 import gnomedvb
 from gi.repository import Gtk
@@ -127,10 +128,10 @@ class AdaptersPage(BasePage):
         self._progressbar.set_fraction(0.1)
         self._progressbar.show()
         self.pack_start(self._progressbar, False, True, 0)
-        self._progressbar_timer = GObject.timeout_add(100, self.progressbar_pulse, None)
+        self._progressbar_timer = GLib.timeout_add(100, self.progressbar_pulse, None)
 
     def destroy_progressbar(self):
-        GObject.source_remove(self._progressbar_timer)
+        GLib.source_remove(self._progressbar_timer)
         self._progressbar_timer = None
         self._progressbar.destroy()
 

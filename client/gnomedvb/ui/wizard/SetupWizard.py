@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 import gnomedvb
+from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import Gtk
 from gnomedvb import _
@@ -47,7 +48,7 @@ class CloseDialog(Gtk.Dialog):
 
         self.progressbar = Gtk.ProgressBar()
         self.progressbar.set_pulse_step(0.1)
-        self._progressbar_timer = GObject.timeout_add(100, self._progressbar_pulse)
+        self._progressbar_timer = GLib.timeout_add(100, self._progressbar_pulse)
         self.progressbar.show()
         vbox.pack_start(self.progressbar, False, True, 0)
 

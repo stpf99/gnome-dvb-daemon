@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gdk
+from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import GObject
 from gnomedvb import _
@@ -417,7 +418,7 @@ class ControlCenterWindow(Gtk.Window):
     def _on_devgroupslist_inserted(self, model, path, aiter):
         if len(model) == 1:
             # Delay the call otherwise we get DBus errors
-            GObject.timeout_add(100, self._select_first_group)
+            GLib.timeout_add(100, self._select_first_group)
 
     def _on_channel_selected(self, treeselection):
         model, aiter = treeselection.get_selected()

@@ -17,6 +17,7 @@
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import GdkPixbuf
+from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import GObject
 from gnomedvb import _
@@ -180,7 +181,7 @@ class ChannelScanPage(BasePage):
         self._scanner.connect ("frontend-stats", self.__on_frontend_stats)
 
         self.progressbar.set_pulse_step(0.1)
-        self._progressbar_timer = GObject.timeout_add(100, self._progressbar_pulse)
+        self._progressbar_timer = GLib.timeout_add(100, self._progressbar_pulse)
         self.progressbar.show()
 
         if isinstance(tuning_data, str):
@@ -232,7 +233,7 @@ class ChannelScanPage(BasePage):
         fraction = float(self._scanned_freqs) / self._max_freqs
         # Stop progressbar from pulsing
         if self._progressbar_timer > 0:
-            GObject.source_remove(self._progressbar_timer)
+            GLib.source_remove(self._progressbar_timer)
             self._progressbar_timer = 0
 
         self.progressbar.set_fraction(fraction)
