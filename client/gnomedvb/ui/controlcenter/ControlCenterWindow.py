@@ -154,7 +154,7 @@ class ControlCenterWindow(Gtk.Window):
         self.add_accel_group(accelgroup)
 
         # Create actions
-        actiongroup = Gtk.ActionGroup('Root')
+        actiongroup = Gtk.ActionGroup(name='Root')
         actiongroup.add_actions([
             ('Timers', None, _('_Recording schedule')),
             ('Edit', None, _('_Edit')),
@@ -164,7 +164,7 @@ class ControlCenterWindow(Gtk.Window):
         # Add the actiongroup to the uimanager
         uimanager.insert_action_group(actiongroup, 0)
 
-        actiongroup = Gtk.ActionGroup('Timers')
+        actiongroup = Gtk.ActionGroup(name='Timers')
         actiongroup.add_actions([
             ('EditTimers', None, _('_Manage'), '<Control>T',
              _('Manage recording schedule'), self._on_button_display_timers_clicked),
@@ -174,7 +174,7 @@ class ControlCenterWindow(Gtk.Window):
              _('Quit the Program'), Gtk.main_quit)])
         uimanager.insert_action_group(actiongroup, 1)
 
-        actiongroup = Gtk.ActionGroup('Edit')
+        actiongroup = Gtk.ActionGroup(name='Edit')
         actiongroup.add_actions([
             ('EditChannelLists', None, _('_Channel Lists'), None,
              _('Edit channel lists'), self._on_edit_channellists_clicked),
@@ -183,7 +183,7 @@ class ControlCenterWindow(Gtk.Window):
         ])
         uimanager.insert_action_group(actiongroup, 2)
 
-        actiongroup = Gtk.ActionGroup('View')
+        actiongroup = Gtk.ActionGroup(name='View')
         actiongroup.add_actions([
             ('WhatsOnNow', None, _("_What's on now"), None,
              _("See what's currently on and is coming next"), self._on_whats_on_now_clicked),
@@ -206,7 +206,7 @@ class ControlCenterWindow(Gtk.Window):
         action.set_active(True)
         uimanager.insert_action_group(actiongroup, 3)
 
-        actiongroup = Gtk.ActionGroup('Help')
+        actiongroup = Gtk.ActionGroup(name='Help')
         actiongroup.add_actions([
             ('About', Gtk.STOCK_ABOUT, _('_About'), None,
              _('Display informations about the program'),
