@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!@PYTHON@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2008,2009 Sebastian Pölsterl
+# Copyright (C) 2008-2014 Sebastian Pölsterl
 #
 # This file is part of GNOME DVB Daemon.
 #
@@ -17,30 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gtk
 import gnomedvb
-from gi.repository import Gtk, Gdk
-from gnomedvb.ui.wizard.SetupWizard import SetupWizard
-from optparse import OptionParser
+from gnomedvb.ui.controlcenter.ControlCenterWindow import ControlCenterWindow
+from gnomedvb.DVBModel import DVBModel
 
-parser = OptionParser()
-parser.add_option("--transient-for", dest="transient_for", type="long",
-                  help="XID of parent window")
-		  
-(options, args) = parser.parse_args()
-
-w = SetupWizard()
-w.realize()
-
-if options.transient_for:
-	print("Parent window:", options.transient_for)
-	w.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-	w.set_modal(True)
-	#XXX foreign_win = Gdk.window_foreign_new(options.transient_for)
-	#if foreign_win:
-	#	w.window.set_transient_for(foreign_win)
-	#else:
-	#	print "Could not find parent window"
-
+model = DVBModel()
+w = ControlCenterWindow(model)
 w.show_all()
-Gtk.main ()
+
+Gtk.main()
 

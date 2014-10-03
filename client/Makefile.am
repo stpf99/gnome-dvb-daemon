@@ -15,5 +15,5 @@ gnomedvbbin_SCRIPTS = \
 	gnome-dvb-setup
 
 EXTRA_DIST = \
-	gnome-dvb-control \
-	gnome-dvb-setup
+	gnome-dvb-control.in \
+	gnome-dvb-setup.in

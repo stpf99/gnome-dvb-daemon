@@ -184,6 +184,8 @@ AM_CHECK_PYMOD(gi.repository)
 AC_CONFIG_FILES([
 	Makefile
 	client/Makefile
+	client/gnome-dvb-control
+	client/gnome-dvb-setup
 	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
 	client/grilo-plugin/Makefile
