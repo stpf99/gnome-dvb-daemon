@@ -40,7 +40,7 @@ namespace DVB {
         }
         public uint Id {get; construct;}
         public ChannelList Channels { get; construct; }
-        public File RecordingsDirectory { get; set; }
+        public File RecordingsDirectory { get; set construct; }
 
         public AdapterType Type { get; construct; }
 
