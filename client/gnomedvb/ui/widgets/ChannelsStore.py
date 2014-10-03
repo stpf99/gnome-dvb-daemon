@@ -50,7 +50,7 @@ class ChannelsStore(Gtk.ListStore):
         channellist = device_group.get_channel_list()
 
         def append_channel(proxy, channels, user_data):
-            for channel_id, name, is_radio in channels:
+            for channel_id, name, is_radio, url in channels:
                 self.append([name, channel_id])
             self.emit("loading-finished")
 
@@ -120,7 +120,7 @@ class ChannelsTreeStore(Gtk.TreeStore):
             error_handler=global_error_handler)
 
     def _append_channels(self, channels, group_id, dev_group, tv_group_iter, radio_group_iter):
-        for channel_id, name, is_radio in channels:
+        for channel_id, name, is_radio, url in channels:
             if is_radio:
                 group_iter = radio_group_iter
             else:
