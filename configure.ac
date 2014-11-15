@@ -93,39 +93,6 @@ AG_GST_CHECK_MODULE_BAD([dvbsrc])
 AG_GST_CHECK_MODULE_GOOD([rtpmp2tpay])
 
 dnl ****************
-dnl * Totem plugin
-dnl ****************
-AC_ARG_ENABLE([totem-plugin],
-	AS_HELP_STRING([--enable-totem-plugin], [Install the Totem plugin (default: no)]),
-	[enable_totem=$enableval],
-	[enable_totem=no])
-
-AM_CONDITIONAL(ENABLE_TOTEM, test "x$enable_totem" = "xyes")
-
-AC_ARG_WITH([totem-plugin-dir],
-	AS_HELP_STRING([--with-totem-plugin-dir],
-		[Directory where Totem plugins are installed (default: LIBDIR/totem/plugins)]))
-
-if test "x$enable_totem" = "xyes"; then
-	if test "x$with_totem_plugin_dir" = "x"; then
-		TOTEM_PLUGIN_DIR=`$PKG_CONFIG --variable=pluginsdir totem`
-		if test "x$TOTEM_PLUGIN_DIR" = "x"; then
-			AC_MSG_ERROR(
-			[
-
-	*** Could not determinate totem plugin directory.
-
-	Please make sure totem is installed or set the directory
-	manually using --with-totem-plugin-dir
-			])
-		fi
-	else
-		TOTEM_PLUGIN_DIR="$with_totem_plugin_dir"
-	fi
-fi
-AC_SUBST(TOTEM_PLUGIN_DIR)
-
-dnl ****************
 dnl * Grilo plugin
 dnl ****************
 GRL_VERSION=0.2
@@ -189,7 +156,6 @@ AC_CONFIG_FILES([
 	client/gnomedvb/defs.py
 	client/gnomedvb/Makefile
 	client/grilo-plugin/Makefile
-	client/totem-plugin/Makefile
 	data/Makefile
 	data/gnome-dvb-control.desktop.in
 	data/gnome-dvb-setup.desktop.in
@@ -203,6 +169,5 @@ $PACKAGE_NAME $PACKAGE_VERSION
 
     Install Prefix:               ${prefix}
     Python dir:                   ${pythondir}
-    Build Totem plugin            ${enable_totem}
     Build Grilo plugin            ${enable_grilo}
 "

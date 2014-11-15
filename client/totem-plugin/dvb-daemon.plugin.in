@@ -1,9 +1,0 @@
-[Plugin]
-Loader=python
-Module=dvb-daemon
-IAge=1
-_Name=GNOME DVB Daemon
-_Description=Watch live TV and recorded shows
-Authors=Sebastian Pölsterl <sebp@k-d-w.org>
-Copyright=Copyright © 2008 Sebastian Pölsterl
-Website=http://www.k-d-w.org/

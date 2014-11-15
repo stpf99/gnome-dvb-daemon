@@ -28,7 +28,5 @@ client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py
 client/gnomedvb/ui/wizard/pages/SetupDevicePage.py
 client/gnomedvb/ui/wizard/pages/SummaryPage.py
 client/gnomedvb/ui/wizard/SetupWizard.py
-client/totem-plugin/dvb-daemon.plugin.in
-client/totem-plugin/dvb-daemon.py
 data/gnome-dvb-control.desktop.in.in
 data/gnome-dvb-setup.desktop.in.in

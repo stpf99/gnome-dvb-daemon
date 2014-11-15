@@ -1,10 +1,6 @@
 SUBDIRS = \
 	gnomedvb
 
-if ENABLE_TOTEM
-SUBDIRS += totem-plugin
-endif
-
 if ENABLE_GRILO
 SUBDIRS += grilo-plugin
 endif
