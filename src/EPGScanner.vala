@@ -274,8 +274,9 @@ namespace DVB {
         }
 
         public void on_eit_structure (Section section) {
-
             unowned EIT eit = section.get_eit();
+            if (eit == null)
+                return;
 
             lock (this.channel_events) {
                 uint sid = section.subtable_extension;
