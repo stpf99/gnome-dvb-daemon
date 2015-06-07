@@ -146,7 +146,7 @@ class SetupDevicePage(BasePage):
         if self._progressbar != None:
             self._progressbar.destroy()
 
-        text = "<big><span weight=\"bold\">%s</span></big>" % _("An error occured while trying to setup the device.")
+        text = "<big><span weight=\"bold\">%s</span></big>" % _("An error occurred while trying to setup the device.")
         self._label.set_selectable(True)
         self._label.set_markup (text)
         self._label.show()

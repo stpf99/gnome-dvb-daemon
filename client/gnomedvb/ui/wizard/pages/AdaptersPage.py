@@ -111,7 +111,7 @@ class AdaptersPage(BasePage):
         if self.frame:
             self.frame.hide()
 
-        text = "<big><span weight=\"bold\">%s</span></big>" % _('An error occured while retrieving devices.')
+        text = "<big><span weight=\"bold\">%s</span></big>" % _('An error occurred while retrieving devices.')
         text += "\n\n"
         text += _("Make sure other applications don't access DVB devices and you have permissions to access them.")
         text += "\n\n"

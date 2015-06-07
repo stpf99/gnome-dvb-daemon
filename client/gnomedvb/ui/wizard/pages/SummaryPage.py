@@ -41,7 +41,7 @@ class SummaryPage(BasePage):
 
     def set_device_name_and_details(self, name, details, success):
         if success:
-            text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured sucessfully.") % name)
+            text = "<span weight=\"bold\">%s</span>" % (_("The device %s has been configured successfully.") % name)
         else:
             text = "<span weight=\"bold\">%s</span>" % (_("Failed configuring device %s.") % name)
         self._label.set_markup(text)
