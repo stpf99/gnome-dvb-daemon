@@ -1,0 +1,870 @@
+# GNOME DVB Daemon
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNOME DVB Daemon\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
+"daemon&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-08-13 07:11+0000\n"
+"PO-Revision-Date: 2015-09-19 09:53+0100\n"
+"Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"Language-Team: Português <palbuquerque73@gmail.com>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.6\n"
+"X-Project-Style: gnome\n"
+
+#: ../client/gnomedvb/__init__.py:35
+msgid "GNOME DVB Daemon"
+msgstr "Daemon GNOME DVB"
+
+#: ../client/gnomedvb/__init__.py:38
+msgid "GNOME DVB Daemon Website"
+msgstr "Página web do Daemon GNOME DVB"
+
+#: ../client/gnomedvb/__init__.py:66
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d hora"
+msgstr[1] "%d horas"
+
+#: ../client/gnomedvb/__init__.py:68
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minuto"
+msgstr[1] "%d minutos"
+
+#: ../client/gnomedvb/__init__.py:70
+#, python-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d segundo"
+msgstr[1] "%d segundos"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:33
+msgid "Edit Channel Lists"
+msgstr "Editar listas de canais"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:54
+msgid "Channel groups"
+msgstr "Grupos de canais"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:95
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:51
+msgid "_Group:"
+msgstr "_Grupo:"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:102
+msgid "Device groups"
+msgstr "Grupos de dispositivos"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:124
+msgid "All channels"
+msgstr "Todos os canais"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:138
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:74
+#: ../client/gnomedvb/ui/widgets/ChannelsView.py:35
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:35
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:36
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:95
+msgid "Channel"
+msgstr "Canal"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:152
+msgid "Choose a channel group"
+msgstr "Escolha um grupo de canais"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:153
+msgid "Channels of group"
+msgstr "Canais do grupo"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
+msgid "An error occured while adding the group"
+msgstr "Ocorreu um erro ao adicionar o grupo"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
+#, python-format
+msgid "Are you sure you want to delete the group '%s'?"
+msgstr "Tem a certeza que quer eliminar o grupo \"%s\"?"
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
+msgid "All assignments to this group will be lost."
+msgstr "Todas as atribuições a este grupo serão perdidas."
+
+#: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
+msgid "An error occured while removing the group"
+msgstr "Ocorreu um erro ao remover o grupo"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:55
+msgid "DVB Control Center"
+msgstr "Centro de controlo DVB"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
+msgid "Choose a device group and channel on the left to view the program guide"
+msgstr ""
+"Escolha um grupo de dispositivos e canal à esquerda para ver o guia de "
+"programação"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
+msgid "No devices are configured. Please go to preferences to configure them."
+msgstr ""
+"Sem dispositivos configurados. Por favor, vá às preferências e configure-os."
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:106
+msgid "There is currently no schedule available for this channel"
+msgstr "Presentemente, não há horário disponível para este canal"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
+msgid "_Recording schedule"
+msgstr "_Horário de gravação"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:160
+msgid "_Edit"
+msgstr "_Editar"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:161
+msgid "_View"
+msgstr "_Ver"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:162
+msgid "Help"
+msgstr "Ajuda"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:169
+msgid "_Manage"
+msgstr "_Gerir"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:170
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:272
+msgid "Manage recording schedule"
+msgstr "Gerir o horário de gravação"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:171
+msgid "_Recordings"
+msgstr "_Gravações"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:172
+msgid "Manage recordings"
+msgstr "Gerir gravações"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:173
+msgid "_Quit"
+msgstr "_Sair"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:174
+msgid "Quit the Program"
+msgstr "Sair da aplicação"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:179
+msgid "_Channel Lists"
+msgstr "_Listas de canais"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:180
+msgid "Edit channel lists"
+msgstr "Editar as listas de canais"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:181
+msgid "_Preferences"
+msgstr "_Preferências"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:182
+msgid "Display preferences"
+msgstr "Mostrar as preferências"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:188
+msgid "_What's on now"
+msgstr "_O que está a dar agora"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
+msgid "See what's currently on and is coming next"
+msgstr "Veja o que está a dar e o que vem a seguir"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
+msgid "_Refresh"
+msgstr "_Atualizar"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:191
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:301
+msgid "Refresh program guide"
+msgstr "Atualizar o guia de programação"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:192
+msgid "_Previous Day"
+msgstr "Dia _Anterior"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:309
+msgid "Go to previous day"
+msgstr "Ir para o dia anterior"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
+msgid "_Next Day"
+msgstr "Dia _Seguinte"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:195
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:318
+msgid "Go to next day"
+msgstr "Ir para o dia seguinte"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
+msgid "_Channels"
+msgstr "_Canais"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:199
+msgid "View/Hide channels"
+msgstr "Ver/Ocultar canais"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:200
+msgid "_Toolbar"
+msgstr "_Barra de ferramentas"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:201
+msgid "View/Hide toolbar"
+msgstr "Ver/Ocultar a barra de ferramentas"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
+msgid "_About"
+msgstr "_Sobre"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:212
+msgid "Display informations about the program"
+msgstr "Mostrar informação sobre o programa"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:268
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
+msgid "Recording schedule"
+msgstr "Horário de gravação"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:279
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:148
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:31
+msgid "Recordings"
+msgstr "Gravações"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:288
+msgid "What's on now"
+msgstr "O que está a dar"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:307
+msgid "Previous Day"
+msgstr "Dia anterior"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:316
+msgid "Next Day"
+msgstr "Dia seguinte"
+
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:509
+msgid "Schedule recording for the selected event?"
+msgstr "Agendar gravação para o evento selecionado?"
+
+#. translators: These appear in the About dialog, usual format applies.
+#: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:597
+msgid "translator-credits"
+msgstr "Pedro Albuquerque <palbuquerque73@gmail.com>"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:59
+msgid "Devices"
+msgstr "Dispositivos"
+
+#. translators: first is device's name, second its type
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:68
+#, python-format
+msgid "<b>%s (%s)</b>\n"
+msgstr "<b>%s (%s)</b>\n"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:69
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:267
+#, python-format
+msgid "Adapter: %d, Frontend: %d"
+msgstr "Adaptador: %d, Frontend: %d"
+
+#: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:74
+#, python-format
+msgid "Group %d"
+msgstr "Grupo %d"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:29
+msgid "Add to Group"
+msgstr "Adicionar ao grupo"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:45
+msgid "Add Device to Group"
+msgstr "Adicionar dispositivo ao grupo"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:89
+msgid "Create new Group"
+msgstr "Criar novo grupo"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:109
+msgid "General"
+msgstr "Geral"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:114
+msgid "_Name:"
+msgstr "_Nome:"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:125
+msgid "Channels _file:"
+msgstr "_Ficheiro de canais:"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:153
+msgid "_Directory:"
+msgstr "_Pasta:"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:181
+msgid "Select File"
+msgstr "Selecionar ficheiro"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:190
+msgid "Select Directory"
+msgstr "Selecionar pasta"
+
+#: ../client/gnomedvb/ui/preferences/Dialogs.py:203
+msgid "Edit group"
+msgstr "Editar grupo"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:39
+msgid "Digital TV Preferences"
+msgstr "Preferências de TV digital"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:90
+msgid "Edit selected group"
+msgstr "Editar o grupo selecionado"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:97
+msgid "Remove selected device"
+msgstr "Remover o dispositivo selecionado"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:106
+msgid "Setup"
+msgstr "Configuração"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:108
+msgid "Setup devices"
+msgstr "Configurar dispositivos"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:115
+msgid "Create new group"
+msgstr "Criar novo grupo"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:119
+msgid "Create new group for selected device"
+msgstr "Criar novo grupo para o dispositivo selecionado"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:125
+msgid "Add to group"
+msgstr "Adicionar a grupo"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:129
+msgid "Add selected device to existing group"
+msgstr "Adicionar o dispositivo selecionado a um grupo existente"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:145
+msgid "Configured devices"
+msgstr "Dispositivos configurados"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:156
+msgid "Unconfigured devices"
+msgstr "Dispositivos não configurados"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:221
+msgid "Device could not be removed from group"
+msgstr "Impossível remover dispositivo do grupo"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:235
+#, python-format
+msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
+msgstr "Tem a certeza que quer remover o dispositivo <b>%s</b> de <b>%s</b>?"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:258
+msgid "Group could not be created"
+msgstr "Impossível criar o grupo"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:260
+msgid ""
+"Make sure that you selected the correct channels file and directory where "
+"recordings are stored and that both are readable."
+msgstr ""
+"Certifique-se que selecionou o ficheiro de canais e a pasta onde as "
+"gravações estão armazenadas e que ambos são legíveis."
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:289
+msgid "Device could not be added to group"
+msgstr "Impossível adicionar dispositivo ao grupo"
+
+#: ../client/gnomedvb/ui/preferences/Preferences.py:291
+msgid ""
+"Make sure that the device isn't already assigned to a different group and "
+"that all devices in the group are of the same type."
+msgstr ""
+"Certifique-se que o dispositivo não está já atribuído a outro grupo e que "
+"todos os dispositivos no grupo são do mesmo tipo."
+
+#: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
+msgid "Delete selected recordings?"
+msgstr "Eliminar as gravações selecionadas?"
+
+#: ../client/gnomedvb/ui/timers/CalendarDialog.py:25
+msgid "Pick a date"
+msgstr "Escolha uma data"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:85
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:34
+msgid "Title"
+msgstr "Título"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:93
+msgid "Start time"
+msgstr "Hora de início"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:100
+#: ../client/gnomedvb/ui/widgets/ScheduleView.py:99
+msgid "Duration"
+msgstr "Duração"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
+msgid "Timer could not be deleted"
+msgstr "Impossível eliminar o temporizador"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
+msgid "Abort active recording?"
+msgstr "Abortar a gravação ativa?"
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:181
+msgid "The timer you selected belongs to a currently active recording."
+msgstr "O temporizador selecionado pertence a uma gravação atualmente ativa."
+
+#: ../client/gnomedvb/ui/timers/EditTimersDialog.py:182
+msgid "Deleting this timer will abort the recording."
+msgstr "Eliminar este temporizador vai abortar a gravação."
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
+msgid "Timer could not be created"
+msgstr "Impossível criar temporizador"
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
+msgid ""
+"Make sure that the timer doesn't conflict with another one and doesn't start "
+"in the past."
+msgstr ""
+"Certifique-se que o temporizador não entra em conflito com outro e que não "
+"começa no passado."
+
+#: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
+msgid "Recording has been scheduled successfully"
+msgstr "A gravação foi agendada com sucesso"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:62
+msgid "Add Timer"
+msgstr "Adicionar temporizador"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:65
+msgid "_Channel:"
+msgstr "_Canal:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:83
+msgid "Edit Timer"
+msgstr "Editar temporizador"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:86
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
+msgid "Channel:"
+msgstr "Canal:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:94
+msgid "_Start time:"
+msgstr "_Hora de início:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:109
+msgid "_Duration:"
+msgstr "_Duração:"
+
+#: ../client/gnomedvb/ui/timers/TimerDialog.py:124
+msgid "minutes"
+msgstr "minutos"
+
+#: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
+msgid "Channel group"
+msgstr "Grupo de canal"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:107
+msgid "TV Channels"
+msgstr "Canais de TV"
+
+#: ../client/gnomedvb/ui/widgets/ChannelsStore.py:109
+msgid "Radio Channels"
+msgstr "Canais de rádio"
+
+#: ../client/gnomedvb/ui/widgets/DateTime.py:50
+msgid "_Time:"
+msgstr "_Hora:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
+msgid "Title:"
+msgstr "Título:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:64
+msgid "Date:"
+msgstr "Data:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:69
+msgid "Duration:"
+msgstr "Duração:"
+
+#: ../client/gnomedvb/ui/widgets/DetailsDialog.py:74
+msgid "Description:"
+msgstr "Descrição:"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:37
+msgid "Length"
+msgstr "Duração"
+
+#: ../client/gnomedvb/ui/widgets/RecordingsView.py:42
+msgid "Start"
+msgstr "Início"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:44
+msgid "Now"
+msgstr "Agora"
+
+#: ../client/gnomedvb/ui/widgets/RunningNextView.py:56
+msgid "Next"
+msgstr "Seguinte"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:7
+msgid "digital cable"
+msgstr "cabo digital"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:8
+msgid "digital satellite"
+msgstr "satélite digital"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:9
+msgid "digital terrestrial"
+msgstr "terrestre digital"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:13
+msgid "digital cable TV"
+msgstr "TV por cabo digital"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:14
+msgid "digital satellite TV"
+msgstr "TV por satélite digital"
+
+#: ../client/gnomedvb/ui/wizard/__init__.py:15
+msgid "digital terrestrial TV"
+msgstr "TV terrestre digital"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:58
+msgid "No devices have been found."
+msgstr "Não foram encontrados dispositivos."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:60
+msgid ""
+"Either no DVB cards are installed or all cards are busy. In the latter case "
+"make sure you close all programs such as video players that access your DVB "
+"card."
+msgstr ""
+"Ou não estão instaladas placas DVB ou estão todas ocupadas. No último caso, "
+"certifique-se que fecha todos os programas, tais como reprodutores de vídeo, "
+"que acedam à sua placa DVB."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
+msgid "Name"
+msgstr "Nome"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:79
+msgid "Type"
+msgstr "Tipo"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:90
+msgid "Select the device you want to configure."
+msgstr "Selecione o dispositivo que quer configurar."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:104
+msgid "All devices are already configured."
+msgstr "Os dispositivos estão todos configurados."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:106
+msgid ""
+"Go to the control center if you want to alter the settings of already "
+"configured devices."
+msgstr ""
+"Vá ao centro de controlo se quer alterar as definições de dispositivos já "
+"configurados."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:114
+msgid "An error occured while retrieving devices."
+msgstr "Ocorreu um erro ao obter dispositivos."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:116
+msgid ""
+"Make sure other applications don't access DVB devices and you have "
+"permissions to access them."
+msgstr ""
+"Certifique-se que não há outras aplicações a aceder a dispositivos DVB e que "
+"tem permissões para o acesso."
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:118
+msgid "The detailed error message is:"
+msgstr "A mensagem de erro detalhada é:"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:127
+msgid "Searching for devices"
+msgstr "A procurar dispositivos"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:143
+msgid "Device selection"
+msgstr "Seleção de dispositivo"
+
+#: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:266
+#, python-format
+msgid "<b>%s</b>\n"
+msgstr "<b>%s</b>\n"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:60
+msgid "This process can take some time."
+msgstr "Este processo pode ser demorado."
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:61
+msgid "You can select the channels you want to have in your list of channels."
+msgstr "Pode selecionar os canais que quer ter na sua lista de canais."
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:67
+msgid "Select all"
+msgstr "Selecionar todos"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:69
+msgid "Deselect all"
+msgstr "Remover todas as seleções"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:83
+msgid "_Channels:"
+msgstr "_Canais:"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:118
+msgid "Select _scrambled channels"
+msgstr "_Selecionar canais codificados"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:134
+msgid "Signal quality:"
+msgstr "Qualidade do sinal:"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:146
+msgid "Signal strength:"
+msgstr "Força do sinal:"
+
+#: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:162
+msgid "Scanning for channels"
+msgstr "A procurar canais"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
+msgid "Missing requirements"
+msgstr "Requisitos em falta"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
+msgid "Country and antenna selection"
+msgstr "Seleção de país e antena"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:166
+msgid "Satellite selection"
+msgstr "Seleção de satélite"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
+msgid "Country and provider selection"
+msgstr "Seleção de país e fornecedor"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:171
+msgid "Unsupported adapter"
+msgstr "Adaptador não suportado"
+
+#. translators: first %s is the DVB type, e.g. DVB-S
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:196
+#, python-format
+msgid "Sorry, but '%s' cards aren't supported."
+msgstr "Desculpe, placas \"%s\" não são suportadas."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
+msgid "Could not find initial tuning data."
+msgstr "Impossível encontrar dados iniciais de sintonização."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
+msgid "Please make sure that the dvb-apps package is installed."
+msgstr "Por favor, certifique-se que o pacote dvb-apps está instalado."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
+msgid ""
+"Please choose a country and the antenna that is closest to your location."
+msgstr "Por favor, escolha um país e a antena mais próxima da sua localização."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+msgid ""
+"If you don't know which antenna to choose select \"Don't know\" from the "
+"list of providers."
+msgstr ""
+"Se não sabe qual a antena a escolher, selecione \"Não sei\" na lista de "
+"fornecedores."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:207
+msgid "However, searching for channels will take considerably longer this way."
+msgstr ""
+"Contudo, procurar por canais levará consideravelmente mais tempo desta forma."
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:212
+msgid "Not listed"
+msgstr "Não listado"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:220
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:294
+msgid "_Country:"
+msgstr "_País:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
+msgid "_Antenna:"
+msgstr "_Antena:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:255
+msgid "Antenna"
+msgstr "Antena"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:269
+msgid "_Satellite:"
+msgstr "_Satélite:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:277
+msgid "Satellite"
+msgstr "Satélite"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:318
+msgid "_Providers:"
+msgstr "_Fornecedores:"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:326
+msgid "Provider"
+msgstr "Fornecedor"
+
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:377
+msgid "Don't know"
+msgstr "Não sei"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
+msgid "Welcome to the digital television Assistant."
+msgstr "Boas vindas ao assistente de televisão digital."
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
+msgid ""
+"It will automatically configure your devices and search for channels, if "
+"necessary."
+msgstr ""
+"Vai configurar automaticamente os seus dispositivos e procurar por canais, "
+"se necessário."
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
+msgid "Click \"Forward\" to begin."
+msgstr "Clique em \"Avançar\" para começar."
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:40
+msgid "_Expert mode"
+msgstr "Modo _Perito"
+
+#: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:44
+msgid "Digital TV configuration"
+msgstr "Configuração de TV digital"
+
+#: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
+msgid "Choose a location where you want to save the list of channels."
+msgstr "Escolha uma localização onde queira gravar a lista de canais."
+
+#: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
+msgid "Save channels"
+msgstr "Gravar canais"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
+msgid "Configuring device"
+msgstr "A configurar dispositivo"
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
+msgid "No channels were found."
+msgstr "Não foram encontrados canais."
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:129
+msgid ""
+"Make sure that the antenna is connected and you have selected the correct "
+"tuning data."
+msgstr ""
+"Certifique-se que a antena está ligada e que selecionou os dados de "
+"sintonização corretos."
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
+#, python-format
+msgid "The device has been added to the group %s."
+msgstr "O dispositivo foi adicionado ao grupo %s."
+
+#: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
+msgid "An error occured while trying to setup the device."
+msgstr "Ocorreu um erro ao tentar configurar o dispositivo."
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
+msgid "Configure Another Device"
+msgstr "Configurar outro dispositivo"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
+msgid "Configuration finished"
+msgstr "Configuração terminada"
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
+#, python-format
+msgid "The device %s has been configured sucessfully."
+msgstr "O dispositivo %s foi configurado com sucesso."
+
+#: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
+#, python-format
+msgid "Failed configuring device %s."
+msgstr "Falha ao configurar o dispositivo %s."
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:45
+msgid "Cleaning up. This may take a while."
+msgstr "A limpar. Isto pode demorar um bocado."
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:83
+#: ../data/gnome-dvb-setup.desktop.in.in.h:2
+msgid "Setup digital TV"
+msgstr "Configurar TV digital"
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:168
+msgid ""
+"The generated channels file can be used to configure your devices in the "
+"control center."
+msgstr ""
+"O ficheiro de canais gerado pode ser usado para configurar os seus "
+"dispositivos no centro de controlo."
+
+#: ../client/gnomedvb/ui/wizard/SetupWizard.py:215
+msgid ""
+"Are you sure you want to abort?\n"
+"All process will be lost."
+msgstr ""
+"Tem a certeza que quer abortar?\n"
+"Todos os processos serão perdidos."
+
+#: ../data/gnome-dvb-control.desktop.in.in.h:1
+msgid "Digital TV Control Center"
+msgstr "Centro de controlo de TV digital"
+
+#: ../data/gnome-dvb-control.desktop.in.in.h:2
+msgid "Schedule recordings and browse program guide"
+msgstr "Agendar gravações e navegar pelo guia de programação"
+
+#: ../data/gnome-dvb-setup.desktop.in.in.h:1
+msgid "Digital TV Setup"
+msgstr "Configuração de TV digital"
