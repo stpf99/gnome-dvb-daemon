@@ -97,9 +97,6 @@ grl_dvb_daemon_plugin_init (GrlRegistry *registry,
 	return FALSE;
 }
 
-GRL_PLUGIN_REGISTER (grl_dvb_daemon_plugin_init, NULL, DVBDAEMON_PLUGIN_ID);
-
-
 /* ================== DVB Daemon GObject ================ */
 
 static void
@@ -262,7 +259,7 @@ on_manager_get_device_groups_cb (GObject *source, GAsyncResult *res,
 
 		exporter = grl_dvb_daemon_exporter_new (*object_paths,
 		                                          GRL_DVB_DAEMON_SOURCE(bs->source)->priv->bus);
-		box = grl_dvb_daemon_exporter_get_media_box (exporter, NULL, &error);
+		box = grl_dvb_daemon_exporter_get_media_container (exporter, NULL, &error);
 		if (box == NULL) {
 			g_object_unref (exporter);
 			goto on_error;
@@ -362,3 +359,15 @@ on_error:
 	bs->callback (bs->source, bs->operation_id, NULL, 0, bs->user_data, error);
 	g_error_free (error);
 }
+
+GRL_PLUGIN_DEFINE (0,3,
+                   DVBDAEMON_PLUGIN_ID,
+                   SOURCE_NAME,
+                   SOURCE_DESC,
+                   "Sebastian Pölsterl",
+                   PACKAGE_VERSION,
+                   "LGPL",
+                   PACKAGE_URL,
+                   grl_dvb_daemon_plugin_init,
+                   NULL,
+                   NULL);

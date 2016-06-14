@@ -23,7 +23,7 @@
 
 #include "grl-dvb-daemon-exporter.h"
 
-static GrlMedia * create_media_box (GrlDvbDaemonExporter *self);
+static GrlMedia * create_media_container (GrlDvbDaemonExporter *self);
 
 struct _GrlDvbDaemonExporterPrivate
 {
@@ -145,16 +145,16 @@ grl_dvb_daemon_exporter_class_init (GrlDvbDaemonExporterClass *klass)
 }
 
 static GrlMedia *
-create_media_box (GrlDvbDaemonExporter *self)
+create_media_container (GrlDvbDaemonExporter *self)
 {
-	GrlMedia * box = GRL_MEDIA (grl_media_box_new ());
-	grl_media_set_id (box, self->priv->channel_list_path);
-	grl_media_set_title (box, self->priv->name);
-	return box;
+	GrlMedia * container = GRL_MEDIA (grl_media_container_new ());
+	grl_media_set_id (container, self->priv->channel_list_path);
+	grl_media_set_title (container, self->priv->name);
+	return container;
 }
 
 GrlMedia *
-grl_dvb_daemon_exporter_get_media_box (GrlDvbDaemonExporter *self,
+grl_dvb_daemon_exporter_get_media_container (GrlDvbDaemonExporter *self,
                                          GCancellable *cancellable,
                                          GError **error)
 {
@@ -185,7 +185,7 @@ grl_dvb_daemon_exporter_get_media_box (GrlDvbDaemonExporter *self,
 		g_object_unref (proxy);
 	}
 
-	return create_media_box (self);
+	return create_media_container (self);
 
 on_error:
 	if (proxy != NULL)

@@ -53,7 +53,7 @@ struct _GrlDvbDaemonExporter
 };
 
 GrlDvbDaemonExporter * grl_dvb_daemon_exporter_new (const gchar *path, GDBusConnection *bus);
-GrlMedia * grl_dvb_daemon_exporter_get_media_box (GrlDvbDaemonExporter *self,
+GrlMedia * grl_dvb_daemon_exporter_get_media_container (GrlDvbDaemonExporter *self,
                                                     GCancellable *cancellable,
                                                     GError **error);
 

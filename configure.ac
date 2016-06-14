@@ -95,7 +95,7 @@ AG_GST_CHECK_MODULE_GOOD([rtpmp2tpay])
 dnl ****************
 dnl * Grilo plugin
 dnl ****************
-GRL_VERSION=0.2
+GRL_VERSION=0.3
 GRL_NAME=grilo-${GRL_VERSION}
 PKG_CHECK_MODULES([GRILO], [${GRL_NAME} gio-unix-2.0 gio-2.0 glib-2.0 gobject-2.0 gmodule-2.0],
                     HAVE_GRL=yes,
