@@ -43,7 +43,7 @@ class SetupDevicePage(BasePage):
         self.__success = False
 
     def get_page_title(self):
-        return _("Configuring device")
+        return _("Device configuration")
 
     def get_page_type(self):
         return Gtk.AssistantPageType.PROGRESS
