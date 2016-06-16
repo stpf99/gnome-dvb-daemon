@@ -8,14 +8,14 @@
 # Michał Sawicz https://launchpad.net/~saviq
 # Tomasz Świątek https://launchpad.net/~devegoo
 # pp/bs https://launchpad.net/~pawprok
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2015.
-# Aviary.pl <gnomepl@aviary.pl>, 2011-2015.
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2016.
+# Aviary.pl <gnomepl@aviary.pl>, 2011-2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-03 01:48+0200\n"
-"PO-Revision-Date: 2015-09-03 01:49+0200\n"
+"POT-Creation-Date: 2016-06-16 14:02+0200\n"
+"PO-Revision-Date: 2016-06-16 14:03+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -98,7 +98,7 @@ msgid "Channels of group"
 msgstr "Kanały z grupy"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
-msgid "An error occured while adding the group"
+msgid "An error occurred while adding the group"
 msgstr "Wystąpił błąd podczas dodawania grupy"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
@@ -111,7 +111,7 @@ msgid "All assignments to this group will be lost."
 msgstr "Wszystko przypisane do tej grupy zostanie utracone."
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
-msgid "An error occured while removing the group"
+msgid "An error occurred while removing the group"
 msgstr "Wystąpił błąd podczas usuwania grupy"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:55
@@ -285,8 +285,8 @@ msgstr ""
 "Michał Sawicz https://launchpad.net/~saviq\n"
 "Tomasz Świątek https://launchpad.net/~devegoo\n"
 "pp/bs https://launchpad.net/~pawprok\n"
-"Piotr Drąg <piotrdrag@gmail.com>, 2011-2015\n"
-"Aviary.pl <gnomepl@aviary.pl>, 2011-2015"
+"Piotr Drąg <piotrdrag@gmail.com>, 2011-2016\n"
+"Aviary.pl <gnomepl@aviary.pl>, 2011-2016"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:59
 msgid "Devices"
@@ -395,7 +395,7 @@ msgstr "Nieskonfigurowane urządzenia"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:221
 msgid "Device could not be removed from group"
-msgstr "Urządzenia nie można usunąć z grupy"
+msgstr "Nie można usunąć urządzenia z grupy"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
@@ -404,27 +404,27 @@ msgstr "Na pewno usunąć urządzenie <b>%s</b> z <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
-msgstr "Grupa nie może zostać utworzona"
+msgstr "Nie można utworzyć grupy"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:260
 msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
-"Proszę upewnić się, że wybrano poprawny plik z kanałami i katalog "
-"przechowywania oraz to, czy oba są dostępne do odczytu."
+"Proszę się upewnić, że wybrano poprawny plik z kanałami i katalog "
+"przechowywania oraz czy oba są dostępne do odczytu."
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:289
 msgid "Device could not be added to group"
-msgstr "Urządzenie nie może zostać dodane do grupy"
+msgstr "Nie można dodać urządzenia do grupy"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:291
 msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
 msgstr ""
-"Proszę upewnić się, że to urządzenie nie jest już przypisane do innej grupy "
-"oraz to, czy wszystkie urządzenia w grupie są tego samego typu."
+"Proszę się upewnić, że to urządzenie nie jest już przypisane do innej grupy "
+"oraz czy wszystkie urządzenia w grupie są tego samego typu."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
@@ -450,7 +450,7 @@ msgstr "Czas trwania"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
 msgid "Timer could not be deleted"
-msgstr "Zaplanowane nagranie nie może zostać usunięte"
+msgstr "Nie można usunąć zaplanowanego nagrania"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
 msgid "Abort active recording?"
@@ -473,12 +473,12 @@ msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
 msgstr ""
-"Proszę upewnić się, że zaplanowane zadanie nie jest w konflikcie z innym i "
+"Proszę się upewnić, że zaplanowane zadanie nie jest w konflikcie z innym i "
 "nie rozpoczyna się w przeszłości."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
-msgstr "Nagranie zostało poprawnie rozpoczęte"
+msgstr "Pomyślnie zaplanowano nagranie"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:62
 msgid "Add Timer"
@@ -507,7 +507,7 @@ msgstr "_Czas trwania:"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:124
 msgid "minutes"
-msgstr "minut"
+msgstr "min."
 
 #: ../client/gnomedvb/ui/widgets/ChannelGroupsView.py:31
 msgid "Channel group"
@@ -620,15 +620,15 @@ msgstr ""
 "skonfigurowanych urządzeń."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:114
-msgid "An error occured while retrieving devices."
-msgstr "Wystąpił błąd podczas uzyskiwania urządzeń."
+msgid "An error occurred while retrieving devices."
+msgstr "Wystąpił błąd podczas wykrywania urządzeń."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:116
 msgid ""
 "Make sure other applications don't access DVB devices and you have "
 "permissions to access them."
 msgstr ""
-"Proszę upewnić się, że inne programy nie używają urządzeń DVB oraz posiadane "
+"Proszę się upewnić, że inne programy nie używają urządzeń DVB oraz posiadane "
 "są odpowiednie uprawnienia dostępu do nich."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:118
@@ -716,7 +716,7 @@ msgstr "Nie można odnaleźć początkowych danych strojenia."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "Please make sure that the dvb-apps package is installed."
-msgstr "Proszę upewnić się, że zainstalowano pakiet dvb-apps."
+msgstr "Proszę się upewnić, że zainstalowano pakiet dvb-apps."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
 msgid ""
@@ -804,6 +804,9 @@ msgid "Save channels"
 msgstr "Zapisz kanały"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
+msgid "Device configuration"
+msgstr "Konfiguracja urządzenia"
+
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
 msgid "Configuring device"
 msgstr "Konfigurowanie urządzenia"
@@ -817,7 +820,7 @@ msgid ""
 "Make sure that the antenna is connected and you have selected the correct "
 "tuning data."
 msgstr ""
-"Proszę upewnić się, że antena jest podłączona oraz wybrano poprawne dane "
+"Proszę się upewnić, że antena jest podłączona oraz wybrano poprawne dane "
 "strojenia."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
@@ -826,7 +829,7 @@ msgid "The device has been added to the group %s."
 msgstr "Urządzenie zostało dodane do grupy %s."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
-msgid "An error occured while trying to setup the device."
+msgid "An error occurred while trying to setup the device."
 msgstr "Wystąpił błąd podczas próby ustawienia urządzenia."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
@@ -839,8 +842,8 @@ msgstr "Konfiguracja została ukończona"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
 #, python-format
-msgid "The device %s has been configured sucessfully."
-msgstr "Urządzenie %s zostało pomyślnie skonfigurowane."
+msgid "The device %s has been configured successfully."
+msgstr "Pomyślnie skonfigurowano urządzenie %s."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
 #, python-format
