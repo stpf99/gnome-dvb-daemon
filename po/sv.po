@@ -1,16 +1,16 @@
 # Swedish translation for DVB Daemon.
-# Copyright © 2008, 2011, 2015 Free Software Foundation, Inc.
+# Copyright © 2008, 2011, 2015, 2016 Free Software Foundation, Inc.
 # This file is distributed under the same license as the dvb-daemon package.
 # Daniel Nylander <po@danielnylander.se>, 2008, 2011.
-# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2015.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
 "daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-02-27 19:51+0000\n"
-"PO-Revision-Date: 2015-03-08 12:57+0100\n"
+"POT-Creation-Date: 2016-06-15 20:03+0000\n"
+"PO-Revision-Date: 2016-06-16 18:31+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.7.3\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon"
@@ -88,7 +88,7 @@ msgid "Channels of group"
 msgstr "Kanaler i grupp"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
-msgid "An error occured while adding the group"
+msgid "An error occurred while adding the group"
 msgstr "Ett fel inträffade när gruppen lades till"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
@@ -101,7 +101,7 @@ msgid "All assignments to this group will be lost."
 msgstr "Alla tilldelningar till denna grupp kommer att gå förlorade."
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
-msgid "An error occured while removing the group"
+msgid "An error occurred while removing the group"
 msgstr "Ett fel inträffade när gruppen togs bort"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:55
@@ -605,7 +605,7 @@ msgstr ""
 "konfigurerade enheter."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:114
-msgid "An error occured while retrieving devices."
+msgid "An error occurred while retrieving devices."
 msgstr "Ett fel inträffade under hämtandet av enheter."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:116
@@ -791,6 +791,9 @@ msgid "Save channels"
 msgstr "Spara kanaler"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
+msgid "Device configuration"
+msgstr "Konfiguration av enhet"
+
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
 msgid "Configuring device"
 msgstr "Konfigurerar enhet"
@@ -813,7 +816,7 @@ msgid "The device has been added to the group %s."
 msgstr "Enheten har lagts till i gruppen %s."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
-msgid "An error occured while trying to setup the device."
+msgid "An error occurred while trying to setup the device."
 msgstr "Ett fel inträffade vid försök att konfigurera enheten."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
@@ -826,7 +829,7 @@ msgstr "Konfigurationen är färdig"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
 #, python-format
-msgid "The device %s has been configured sucessfully."
+msgid "The device %s has been configured successfully."
 msgstr "Enheten %s har nu konfigurerats."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
