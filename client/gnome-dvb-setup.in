@@ -17,8 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with GNOME DVB Daemon.  If not, see <http://www.gnu.org/licenses/>.
 
-import gnomedvb
+import gi
+gi.require_version('Gtk', '3.0')
+
 from gi.repository import Gtk, Gdk
+import gnomedvb
 from gnomedvb.ui.wizard.SetupWizard import SetupWizard
 from optparse import OptionParser
 
