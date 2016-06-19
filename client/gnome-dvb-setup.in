@@ -23,22 +23,22 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 import gnomedvb
 from gnomedvb.ui.wizard.SetupWizard import SetupWizard
-from optparse import OptionParser
+import argparse
 
-parser = OptionParser()
-parser.add_option("--transient-for", dest="transient_for", type="long",
-                  help="XID of parent window")
+parser = argparse.ArgumentParser()
+parser.add_argument("--transient-for", dest="transient_for", type=int,
+                    help="XID of parent window")
 
-(options, args) = parser.parse_args()
+args = parser.parse_args()
 
 w = SetupWizard()
 w.realize()
 
-if options.transient_for:
-	print("Parent window:", options.transient_for)
+if args.transient_for is not None:
+	print("Parent window:", args.transient_for)
 	w.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 	w.set_modal(True)
-	#XXX foreign_win = Gdk.window_foreign_new(options.transient_for)
+	#XXX foreign_win = Gdk.window_foreign_new(args.transient_for)
 	#if foreign_win:
 	#	w.window.set_transient_for(foreign_win)
 	#else:
