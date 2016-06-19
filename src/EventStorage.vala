@@ -102,7 +102,7 @@ namespace DVB {
                 iter = iter.next ();
             }
 
-            Sequence.remove_range (begin_iter, end_iter);
+            begin_iter.remove_range (end_iter);
 
             _stamp++;
 
@@ -113,7 +113,7 @@ namespace DVB {
             foreach (Event event in events) {
                 SequenceIter<EventElement> iter = this.event_id_map.get (event.id);
                 if (iter != null) {
-                    Sequence.remove (iter);
+                    iter.remove ();
                     this.event_id_map.unset (event.id);
                 }
             }
