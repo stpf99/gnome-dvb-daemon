@@ -30,7 +30,7 @@ namespace DVB.io {
         public RecordingsStore store {get; construct;}
         public int max_recursion {get; set; default = 3;}
 
-        private static const string ATTRS = FileAttribute.STANDARD_TYPE
+        private const string ATTRS = FileAttribute.STANDARD_TYPE
             + "," + FileAttribute.ACCESS_CAN_READ
             + "," + FileAttribute.STANDARD_NAME
             + "," + FileAttribute.STANDARD_IS_HIDDEN;

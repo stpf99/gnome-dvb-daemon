@@ -32,9 +32,9 @@ namespace DVB {
         // before the next iteration is started
         private static int CHECK_EIT_INTERVAL = -1;
         // how long to wait for EIT data for each channel in seconds
-        private static const int WAIT_FOR_EIT_DURATION = 10;
+        private const int WAIT_FOR_EIT_DURATION = 10;
         // pids: 0=pat, 16=nit, 17=sdt, 18=eit
-        private static const string PIPELINE_TEMPLATE =
+        private const string PIPELINE_TEMPLATE =
         "dvbsrc name=dvbsrc adapter=%u frontend=%u pids=0:16:17:18 stats-reporting-interval=0 ! tsparse ! fakesink silent=true";
 
         private DVB.DeviceGroup DeviceGroup;

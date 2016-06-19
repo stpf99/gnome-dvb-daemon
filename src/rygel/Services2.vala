@@ -24,11 +24,11 @@ namespace DVB.MediaServer2 {
 
     private static Logger log;
 
-    private static const string SERVICE_NAME = "org.gnome.UPnP.MediaServer2.DVBDaemon";
-    private static const string ROOT_PATH = "/org/gnome/UPnP/MediaServer2/DVBDaemon";
+    private const string SERVICE_NAME = "org.gnome.UPnP.MediaServer2.DVBDaemon";
+    private const string ROOT_PATH = "/org/gnome/UPnP/MediaServer2/DVBDaemon";
 
-    private static const string GROUP_PATH = "/org/gnome/UPnP/MediaServer2/DVBDaemon/Group%u";
-    private static const string CHANNEL_PATH = GROUP_PATH + "/Channel%u";
+    private const string GROUP_PATH = "/org/gnome/UPnP/MediaServer2/DVBDaemon/Group%u";
+    private const string CHANNEL_PATH = GROUP_PATH + "/Channel%u";
 
     /**
      * Holds all device groups

@@ -71,8 +71,8 @@ namespace DVB {
          */
         private Gee.HashSet<Parameter> scanned_scanning_params;
 
-        private static const string BASE_PIDS = "16:17"; // NIT, SDT
-        private static const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u stats-reporting-interval=100 ! tsparse ! fakesink silent=true";
+        private const string BASE_PIDS = "16:17"; // NIT, SDT
+        private const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u stats-reporting-interval=100 ! tsparse ! fakesink silent=true";
 
         // Contains SIDs
         private ArrayList<uint> new_channels;

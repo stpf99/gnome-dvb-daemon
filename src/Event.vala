@@ -27,11 +27,11 @@ namespace DVB {
     public class Event {
 
         // See EN 300 486 Table 6
-        public static const uint RUNNING_STATUS_UNDEFINED = 0;
-        public static const uint RUNNING_STATUS_NOT_RUNNING = 1;
-        public static const uint RUNNING_STATUS_STARTS_SOON = 2;
-        public static const uint RUNNING_STATUS_PAUSING = 3;
-        public static const uint RUNNING_STATUS_RUNNING = 4;
+        public const uint RUNNING_STATUS_UNDEFINED = 0;
+        public const uint RUNNING_STATUS_NOT_RUNNING = 1;
+        public const uint RUNNING_STATUS_STARTS_SOON = 2;
+        public const uint RUNNING_STATUS_PAUSING = 3;
+        public const uint RUNNING_STATUS_RUNNING = 4;
 
         public uint id;
         /* Time is stored in UTC */

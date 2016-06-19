@@ -78,7 +78,7 @@ public class ColorFormatter : DefaultFormatter {
       "\033[33;01m",                /* WARNING */
       "\033[31;01m"                 /* ERROR */
     };
-    static const string clear = "\033[00m";
+    const string clear = "\033[00m";
 
     protected override string get_level_name (LogLevel level) {
         string lvlstr = base.get_level_name (level);
@@ -268,7 +268,7 @@ public class Logger : GLib.Object {
 
 public class LogManager : GLib.Object {
 
-    private static const string DEFAULT_NAME = "default";
+    private const string DEFAULT_NAME = "default";
 
     private static LogManager instance;
     private static RecMutex instance_mutex = RecMutex ();

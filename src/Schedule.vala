@@ -31,8 +31,8 @@ namespace DVB {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
-        private static const int MATCH_THRESHOLD = 100;
-        private static const double MIN_EVENT_OVERLAP = 0.5;
+        private const int MATCH_THRESHOLD = 100;
+        private const double MIN_EVENT_OVERLAP = 0.5;
 
         // Use weak to avoid ref cycle
         public weak Channel channel {get; construct;}

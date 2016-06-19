@@ -28,9 +28,9 @@ namespace DVB.database.sqlite {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
-        private static const int VERSION = 2;
+        private const int VERSION = 2;
 
-        private static const string CREATE_DEVICE_GROUPS =
+        private const string CREATE_DEVICE_GROUPS =
         """CREATE TABLE device_groups (
         group_id INTEGER,
         adapter_type INTEGER(1),
@@ -39,14 +39,14 @@ namespace DVB.database.sqlite {
         name VARCHAR(255),
         PRIMARY KEY(group_id))""";
 
-        private static const string CREATE_DEVICES =
+        private const string CREATE_DEVICES =
         """CREATE TABLE devices (
         group_id INTEGER,
         adapter INTEGER,
         frontend INTEGER,
         PRIMARY KEY(group_id, adapter, frontend))""";
 
-        private static const string CREATE_TIMERS =
+        private const string CREATE_TIMERS =
         """CREATE TABLE timers (
         timer_id INTEGER,
         group_id INTEGER,
@@ -60,93 +60,93 @@ namespace DVB.database.sqlite {
         event_id INTEGER,
         PRIMARY KEY(timer_id))""";
 
-        private static const string UPDATE_TIMER  =
+        private const string UPDATE_TIMER  =
         """UPDATE timers SET
         year=?, month=?, day=?, hour=?, minute=?, duration=?
         WHERE timer_id=? AND group_id=?""";
 
-        private static const string CREATE_GROUPS =
+        private const string CREATE_GROUPS =
         """CREATE TABLE channel_groups (
         channel_group_id INTEGER PRIMARY KEY AUTOINCREMENT,
         name VARCHAR(255))""";
 
-        private static const string CREATE_CHANNELS =
+        private const string CREATE_CHANNELS =
         """CREATE TABLE channels (
         sid INTEGER,
         group_id INTEGER,
         channel_group_id INTEGER,
         PRIMARY KEY(sid, group_id, channel_group_id))""";
 
-        private static const string SELECT_GROUP =
+        private const string SELECT_GROUP =
         "SELECT * FROM device_groups WHERE group_id=?";
 
-        private static const string SELECT_ALL_GROUPS =
+        private const string SELECT_ALL_GROUPS =
         "SELECT * FROM device_groups";
 
-        private static const string SELECT_DEVICES =
+        private const string SELECT_DEVICES =
         "SELECT * FROM devices WHERE group_id=?";
 
-        private static const string SELECT_DEVICE =
+        private const string SELECT_DEVICE =
         "SELECT * FROM devices WHERE group_id=? AND adapter=? AND frontend=?";
 
-        private static const string DELETE_GROUP =
+        private const string DELETE_GROUP =
         "DELETE FROM device_groups WHERE group_id=?";
 
-        private static const string INSERT_GROUP =
+        private const string INSERT_GROUP =
         "INSERT INTO device_groups VALUES (?, ?, ?, ?, ?)";
 
-        private static const string CONTAINS_GROUP =
+        private const string CONTAINS_GROUP =
         "SELECT 1 FROM device_groups WHERE group_id=?";
 
-        private static const string UPDATE_GROUP =
+        private const string UPDATE_GROUP =
         "UPDATE device_groups SET adapter_type=?, channels_file=?, recordings_dir=?, name=? WHERE group_id=?";
 
-        private static const string DELETE_DEVICE =
+        private const string DELETE_DEVICE =
         "DELETE FROM devices WHERE adapter=? AND frontend=?";
 
-        private static const string DELETE_GROUP_DEVICES =
+        private const string DELETE_GROUP_DEVICES =
         "DELETE FROM devices WHERE group_id=?";
 
-        private static const string INSERT_DEVICE =
+        private const string INSERT_DEVICE =
         "INSERT INTO devices VALUES (?, ?, ?)";
 
-        private static const string SELECT_GROUP_OF_DEVICE =
+        private const string SELECT_GROUP_OF_DEVICE =
         "SELECT group_id FROM devices WHERE adapter=? AND frontend=?";
 
-        private static const string SELECT_TIMERS =
+        private const string SELECT_TIMERS =
         "SELECT * FROM timers WHERE group_id=?";
 
-        private static const string DELETE_TIMER =
+        private const string DELETE_TIMER =
         "DELETE FROM timers WHERE timer_id=?";
 
-        private static const string DELETE_GROUP_TIMERS =
+        private const string DELETE_GROUP_TIMERS =
         "DELETE FROM timers WHERE group_id=?";
 
-        private static const string INSERT_TIMER =
+        private const string INSERT_TIMER =
         "INSERT INTO timers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        private static const string CONTAINS_TIMER =
+        private const string CONTAINS_TIMER =
         "SELECT 1 FROM timers WHERE timer_id=?";
 
-        private static const string INSERT_CHANNEL_GROUP =
+        private const string INSERT_CHANNEL_GROUP =
         "INSERT INTO channel_groups (name) VALUES (?)";
 
-        private static const string DELETE_CHANNEL_GROUP =
+        private const string DELETE_CHANNEL_GROUP =
         "DELETE FROM channel_groups WHERE channel_group_id=?";
 
-        private static const string REMOVE_ALL_CHANNEL_GROUP =
+        private const string REMOVE_ALL_CHANNEL_GROUP =
         "DELETE FROM channels WHERE channel_group_id=?";
 
-        private static const string SELECT_CHANNEL_GROUPS =
+        private const string SELECT_CHANNEL_GROUPS =
         "SELECT * FROM channel_groups";
 
-        private static const string ADD_CHANNEL_GROUP =
+        private const string ADD_CHANNEL_GROUP =
         "INSERT INTO channels VALUES (?, ?, ?)";
 
-        private static const string REMOVE_CHANNEL_GROUP =
+        private const string REMOVE_CHANNEL_GROUP =
         "DELETE FROM channels WHERE sid=? AND group_id=? AND channel_group_id=?";
 
-        private static const string SELECT_CHANNELS =
+        private const string SELECT_CHANNELS =
         "SELECT sid FROM channels WHERE group_id=? AND channel_group_id=?";
 
         private Statement select_devices_statement;

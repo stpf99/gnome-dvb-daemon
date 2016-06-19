@@ -39,7 +39,7 @@ namespace DVB {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
-        private static const int PRIME = 31;
+        private const int PRIME = 31;
 
         public uint Adapter { get; construct; }
         public uint Frontend { get; construct; }

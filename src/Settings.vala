@@ -26,22 +26,22 @@ namespace DVB {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
-        private static const string TIMERS_SECTION = "timers";
-        private static const string MARGIN_START = "margin_start";
-        private static const string MARGIN_END = "margin_end";
+        private const string TIMERS_SECTION = "timers";
+        private const string MARGIN_START = "margin_start";
+        private const string MARGIN_END = "margin_end";
 
-        private static const string EPG_SECTION = "epg";
-        private static const string SCAN_INTERVAL = "scan_interval";
+        private const string EPG_SECTION = "epg";
+        private const string SCAN_INTERVAL = "scan_interval";
 
-        private static const string STREAMING_SECTION = "streaming";
-        private static const string INTERFACE = "interface";
+        private const string STREAMING_SECTION = "streaming";
+        private const string INTERFACE = "interface";
 
-        private static const int DEFAULT_MARGIN_START = 5;
-        private static const int DEFAULT_MARGIN_END = 5;
-        private static const int DEFAULT_SCAN_INTERVAL = 30;
-        private static const string DEFAULT_INTERFACE = "lo";
+        private const int DEFAULT_MARGIN_START = 5;
+        private const int DEFAULT_MARGIN_END = 5;
+        private const int DEFAULT_SCAN_INTERVAL = 30;
+        private const string DEFAULT_INTERFACE = "lo";
 
-        private static const string DEFAULT_SETTINGS =
+        private const string DEFAULT_SETTINGS =
         """[timers]
         margin_start=5
         margin_end=5

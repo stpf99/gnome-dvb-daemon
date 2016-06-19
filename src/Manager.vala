@@ -58,7 +58,7 @@ namespace DVB {
 
         private static Manager instance;
         private static RecMutex instance_mutex = RecMutex ();
-        private static const string[] UDEV_SUBSYSTEMS = {"dvb", null};
+        private const string[] UDEV_SUBSYSTEMS = {"dvb", null};
 
         construct {
             this.scanners = new HashMap<string, ScannerData> (

@@ -28,9 +28,9 @@ namespace DVB.database.sqlite {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
-        private static const int VERSION = 2;
+        private const int VERSION = 2;
 
-        private static const string CREATE_EVENTS_TABLE_STATEMENT =
+        private const string CREATE_EVENTS_TABLE_STATEMENT =
             """CREATE TABLE events (group_id INTEGER,
             sid INTEGER,
             event_id INTEGER,
@@ -43,44 +43,44 @@ namespace DVB.database.sqlite {
             extended_description TEXT,
             PRIMARY KEY (group_id, sid, event_id))""";
 
-        private static const string INSERT_EVENT_SQL =
+        private const string INSERT_EVENT_SQL =
             "INSERT INTO events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        private static const string DELETE_EVENT_STATEMENT =
+        private const string DELETE_EVENT_STATEMENT =
             "DELETE FROM events WHERE group_id=? AND sid=? AND event_id=?";
 
-        private static const string SELECT_ALL_EVENTS_STATEMENT =
+        private const string SELECT_ALL_EVENTS_STATEMENT =
             """SELECT event_id, datetime(starttime),
             duration, running_status, free_ca_mode, name,
             description, extended_description
             FROM events WHERE group_id='%u' AND sid='%u'""";
 
-        private static const string SELECT_MINIMAL_EVENTS_STATEMENT =
+        private const string SELECT_MINIMAL_EVENTS_STATEMENT =
             """SELECT event_id, datetime(starttime),
             duration FROM events WHERE group_id='%u' AND sid='%u'
             ORDER BY starttime ASC""";
 
-        private static const string HAS_EVENT_STATEMENT =
+        private const string HAS_EVENT_STATEMENT =
             "SELECT 1 FROM events WHERE group_id=? AND sid=? AND event_id=? LIMIT 1";
 
-        private static const string UPDATE_EVENT_SQL =
+        private const string UPDATE_EVENT_SQL =
             """UPDATE events SET starttime=?, duration=?, running_status=?,
             free_ca_mode=?, name=?, description=?,
             extended_description=? WHERE group_id=? AND sid=? AND event_id=?""";
 
-        private static const string TO_JULIAN_SQL =
+        private const string TO_JULIAN_SQL =
             "SELECT julianday(?)";
 
-        private static const string SELECT_EVENT_SQL =
+        private const string SELECT_EVENT_SQL =
             """SELECT event_id, datetime(starttime),
             duration, running_status, free_ca_mode, name,
             description, extended_description
             FROM events WHERE group_id=? AND sid=? AND event_id=?""";
 
-        private static const string DELETE_EVENTS_GROUP =
+        private const string DELETE_EVENTS_GROUP =
         "DELETE FROM events WHERE group_id=?";
 
-        private static const string DELETE_EXPIRED_EVENTS =
+        private const string DELETE_EXPIRED_EVENTS =
         """DELETE FROM events WHERE starttime <= julianday(?, 'unixepoch')
         AND sid=? AND group_id=?""";
 
