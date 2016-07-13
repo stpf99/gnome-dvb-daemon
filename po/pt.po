@@ -2,22 +2,23 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
+# Tiago Santos <tiagofsantos81@sapo.pt>, 2014 - 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GNOME DVB Daemon\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
 "daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-08-13 07:11+0000\n"
-"PO-Revision-Date: 2015-09-19 09:53+0100\n"
-"Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
-"Language-Team: Português <palbuquerque73@gmail.com>\n"
+"POT-Creation-Date: 2016-06-15 20:03+0000\n"
+"PO-Revision-Date: 2016-07-05 19:19+0100\n"
+"Last-Translator: Tiago Santos <tiagofsantos81@sapo.pt>\n"
+"Language-Team: Português"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Project-Style: gnome\n"
 
 #: ../client/gnomedvb/__init__.py:35
@@ -88,7 +89,8 @@ msgid "Channels of group"
 msgstr "Canais do grupo"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
-msgid "An error occured while adding the group"
+#| msgid "An error occured while adding the group"
+msgid "An error occurred while adding the group"
 msgstr "Ocorreu um erro ao adicionar o grupo"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
@@ -101,7 +103,8 @@ msgid "All assignments to this group will be lost."
 msgstr "Todas as atribuições a este grupo serão perdidas."
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
-msgid "An error occured while removing the group"
+#| msgid "An error occured while removing the group"
+msgid "An error occurred while removing the group"
 msgstr "Ocorreu um erro ao remover o grupo"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:55
@@ -269,7 +272,8 @@ msgstr "Agendar gravação para o evento selecionado?"
 #. translators: These appear in the About dialog, usual format applies.
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:597
 msgid "translator-credits"
-msgstr "Pedro Albuquerque <palbuquerque73@gmail.com>"
+msgstr "Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"Tiago Santos <tiagofsantos81@sapo.pt>"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:59
 msgid "Devices"
@@ -603,7 +607,8 @@ msgstr ""
 "configurados."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:114
-msgid "An error occured while retrieving devices."
+#| msgid "An error occured while retrieving devices."
+msgid "An error occurred while retrieving devices."
 msgstr "Ocorreu um erro ao obter dispositivos."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:116
@@ -789,6 +794,10 @@ msgid "Save channels"
 msgstr "Gravar canais"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
+#| msgid "Digital TV configuration"
+msgid "Device configuration"
+msgstr "Configuração do dispositivo"
+
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
 msgid "Configuring device"
 msgstr "A configurar dispositivo"
@@ -811,7 +820,8 @@ msgid "The device has been added to the group %s."
 msgstr "O dispositivo foi adicionado ao grupo %s."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
-msgid "An error occured while trying to setup the device."
+#| msgid "An error occured while trying to setup the device."
+msgid "An error occurred while trying to setup the device."
 msgstr "Ocorreu um erro ao tentar configurar o dispositivo."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
@@ -824,7 +834,8 @@ msgstr "Configuração terminada"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
 #, python-format
-msgid "The device %s has been configured sucessfully."
+#| msgid "The device %s has been configured sucessfully."
+msgid "The device %s has been configured successfully."
 msgstr "O dispositivo %s foi configurado com sucesso."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
