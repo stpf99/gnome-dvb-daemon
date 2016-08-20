@@ -1,31 +1,27 @@
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Aviary.pl
-# Jeśli masz jakiekolwiek uwagi odnoszące się do tłumaczenia lub chcesz
-# pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
-# gnomepl@aviary.pl
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Polish translation for gnome-dvb-daemon.
+# Copyright © 2011-2016 the gnome-dvb-daemon authors.
+# This file is distributed under the same license as the gnome-dvb-daemon package.
 # Jarosław Ogrodnik https://launchpad.net/~goz
 # Michał Sawicz https://launchpad.net/~saviq
 # Tomasz Świątek https://launchpad.net/~devegoo
 # pp/bs https://launchpad.net/~pawprok
 # Piotr Drąg <piotrdrag@gmail.com>, 2011-2016.
-# Aviary.pl <gnomepl@aviary.pl>, 2011-2016.
+# Aviary.pl <community-poland@mozilla.org>, 2011-2016.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-16 14:02+0200\n"
-"PO-Revision-Date: 2016-06-16 14:03+0200\n"
+"POT-Creation-Date: 2016-08-20 16:04+0200\n"
+"PO-Revision-Date: 2016-08-20 16:05+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
-"Language-Team: Polish <gnomepl@aviary.pl>\n"
+"Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: Poland\n"
 
 #: ../client/gnomedvb/__init__.py:35
 msgid "GNOME DVB Daemon"
@@ -95,7 +91,7 @@ msgstr "Wybór grupy kanałów"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:153
 msgid "Channels of group"
-msgstr "Kanały z grupy"
+msgstr "Kanały z grupy"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
 msgid "An error occurred while adding the group"
@@ -121,7 +117,7 @@ msgstr "Centrum sterowania DVB"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:104
 msgid "Choose a device group and channel on the left to view the program guide"
 msgstr ""
-"Proszę wybrać grupę urządzeń i kanał z lewej strony, aby wyświetlić "
+"Proszę wybrać grupę urządzeń i kanał z lewej strony, aby wyświetlić "
 "przewodnik po programach"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:105
@@ -132,7 +128,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:106
 msgid "There is currently no schedule available for this channel"
-msgstr "W tej chwili nie ma zaprogramowanego nagrania dla tego kanału"
+msgstr "W tej chwili nie ma zaprogramowanego nagrania dla tego kanału"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:159
 msgid "_Recording schedule"
@@ -197,7 +193,7 @@ msgstr "_Teraz na antenie"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:189
 msgid "See what's currently on and is coming next"
-msgstr "Wyświetla nadawany program i co będzie następnie"
+msgstr "Wyświetla nadawany program i co będzie następnie"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:190
 msgid "_Refresh"
@@ -244,11 +240,11 @@ msgstr "Wyświetla/ukrywa pasek narzędziowy"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:211
 msgid "_About"
-msgstr "_O programie"
+msgstr "_O programie"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:212
 msgid "Display informations about the program"
-msgstr "Wyświetla informacje o programie"
+msgstr "Wyświetla informacje o programie"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:268
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:45
@@ -286,7 +282,7 @@ msgstr ""
 "Tomasz Świątek https://launchpad.net/~devegoo\n"
 "pp/bs https://launchpad.net/~pawprok\n"
 "Piotr Drąg <piotrdrag@gmail.com>, 2011-2016\n"
-"Aviary.pl <gnomepl@aviary.pl>, 2011-2016"
+"Aviary.pl <community-poland@mozilla.org>, 2011-2016"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:59
 msgid "Devices"
@@ -395,12 +391,12 @@ msgstr "Nieskonfigurowane urządzenia"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:221
 msgid "Device could not be removed from group"
-msgstr "Nie można usunąć urządzenia z grupy"
+msgstr "Nie można usunąć urządzenia z grupy"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
-msgstr "Na pewno usunąć urządzenie <b>%s</b> z <b>%s</b>?"
+msgstr "Na pewno usunąć urządzenie <b>%s</b> z <b>%s</b>?"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:258
 msgid "Group could not be created"
@@ -411,7 +407,7 @@ msgid ""
 "Make sure that you selected the correct channels file and directory where "
 "recordings are stored and that both are readable."
 msgstr ""
-"Proszę się upewnić, że wybrano poprawny plik z kanałami i katalog "
+"Proszę się upewnić, że wybrano poprawny plik z kanałami i katalog "
 "przechowywania oraz czy oba są dostępne do odczytu."
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:289
@@ -424,7 +420,7 @@ msgid ""
 "that all devices in the group are of the same type."
 msgstr ""
 "Proszę się upewnić, że to urządzenie nie jest już przypisane do innej grupy "
-"oraz czy wszystkie urządzenia w grupie są tego samego typu."
+"oraz czy wszystkie urządzenia w grupie są tego samego typu."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
@@ -473,8 +469,8 @@ msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
 msgstr ""
-"Proszę się upewnić, że zaplanowane zadanie nie jest w konflikcie z innym i "
-"nie rozpoczyna się w przeszłości."
+"Proszę się upewnić, że zaplanowane zadanie nie jest w konflikcie z innym "
+"i nie rozpoczyna się w przeszłości."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
@@ -591,7 +587,7 @@ msgid ""
 "make sure you close all programs such as video players that access your DVB "
 "card."
 msgstr ""
-"W systemie nie ma żadnych kart DVB albo wszystkie są zajęte. W tym drugim "
+"W systemie nie ma żadnych kart DVB albo wszystkie są zajęte. W tym drugim "
 "wypadku należy zamknąć wszystkie programy używające kart DVB (np. odtwarzacz "
 "wideo)."
 
@@ -690,7 +686,7 @@ msgstr "Brakujące wymagania"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
 msgid "Country and antenna selection"
-msgstr "Wybór kraju i nadajnika"
+msgstr "Wybór kraju i nadajnika"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:166
 msgid "Satellite selection"
@@ -698,7 +694,7 @@ msgstr "Wybór satelity"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:169
 msgid "Country and provider selection"
-msgstr "Wybór kraju i dostawcy"
+msgstr "Wybór kraju i dostawcy"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:171
 msgid "Unsupported adapter"
@@ -728,7 +724,7 @@ msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
-"Jeśli nadajnik jest nieznany, należy wybrać „Nieznany” z listy dostawców."
+"Jeśli nadajnik jest nieznany, należy wybrać „Nieznany” z listy dostawców."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:207
 msgid "However, searching for channels will take considerably longer this way."
@@ -773,14 +769,14 @@ msgstr "Nieznany"
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
 msgid "Welcome to the digital television Assistant."
-msgstr "Witamy w asystencie telewizji cyfrowej."
+msgstr "Witamy w asystencie telewizji cyfrowej."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
 msgid ""
 "It will automatically configure your devices and search for channels, if "
 "necessary."
 msgstr ""
-"Asystent automatycznie skonfiguruje i wyszuka kanały, jeśli będzie to "
+"Asystent automatycznie skonfiguruje i wyszuka kanały, jeśli będzie to "
 "konieczne."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
@@ -797,7 +793,7 @@ msgstr "Konfiguracja telewizji cyfrowej"
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
 msgid "Choose a location where you want to save the list of channels."
-msgstr "Proszę wybrać plik, w którym zapisać listę kanałów."
+msgstr "Proszę wybrać plik, w którym zapisać listę kanałów."
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
 msgid "Save channels"
@@ -864,8 +860,8 @@ msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
 msgstr ""
-"Utworzona lista kanałów może zostać użyta do skonfigurowania urządzeń w "
-"centrum sterowania."
+"Utworzona lista kanałów może zostać użyta do skonfigurowania urządzeń "
+"w centrum sterowania."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:215
 msgid ""
@@ -881,7 +877,7 @@ msgstr "Centrum sterowania telewizji cyfrowej"
 
 #: ../data/gnome-dvb-control.desktop.in.in.h:2
 msgid "Schedule recordings and browse program guide"
-msgstr "Planowanie nagrywania i przeglądanie przewodnika po programach"
+msgstr "Planowanie nagrywania i przeglądanie przewodnika po programach"
 
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
