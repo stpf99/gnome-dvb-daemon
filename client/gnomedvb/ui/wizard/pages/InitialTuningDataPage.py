@@ -30,7 +30,7 @@ from gnomedvb import GROUP_TERRESTRIAL
 from gnomedvb import GROUP_SATELLITE
 from gnomedvb import GROUP_CABLE
 
-DVB_APPS_DIRS = ("/usr/share/dvbv5","/usr/share/dvb",)
+DTV_SCAN_TABLES_DIRS = ("/usr/share/dvbv5","/usr/share/dvb",)
 
 COUNTRIES = {
     "ad": "Andorra",
@@ -185,8 +185,9 @@ class InitialTuningDataPage(BasePage):
 
     def is_dvb_apps_installed(self):
         val = False
-        for d in DVB_APPS_DIRS:
-            if os.path.exists(d):
+        # also check if subdir exists, to test different paths in different distributions
+        for d in DTV_SCAN_TABLES_DIRS:
+            if os.path.exists(d) and os.path.exists(os.path.join(d, 'dvb-t')) :
                 val = True
                 break
         return val
@@ -198,7 +199,7 @@ class InitialTuningDataPage(BasePage):
 
     def setup_dvb_apps_missing(self):
         text = "<big><b>%s</b></big>\n%s" % (_("Could not find initial tuning data."),
-            _("Please make sure that the dvb-apps package is installed."))
+            _("Please make sure that the dtv-scan-tables package is installed."))
         self._label.set_markup(text)
 
     def setup_dvb_t(self):
@@ -376,8 +377,10 @@ class InitialTuningDataPage(BasePage):
         if self.__adapter_info["type"] == GROUP_TERRESTRIAL:
             self.providers.append([_("Don't know"), self.NOT_LISTED])
 
-        for d in DVB_APPS_DIRS:
-            if os.access(d, os.F_OK | os.R_OK):
+        # only search in correct subfolders, to avoid errors if one of the
+        # DTV_SCAN_TABLES_DIRS exists, but has incorrect content
+        for d in DTV_SCAN_TABLES_DIRS:
+            if os.access(d, os.F_OK | os.R_OK) and os.access(os.path.join(d, self.__data_dir), os.F_OK | os.R_OK):
                 for f in os.listdir(os.path.join(d, self.__data_dir)):
                     values = f.split('-', 1)
                     if len(values) != 2:
@@ -405,8 +408,10 @@ class InitialTuningDataPage(BasePage):
             self.emit("finished", True)
 
     def read_satellites(self):
-        for d in DVB_APPS_DIRS:
-            if os.access(d, os.F_OK | os.R_OK):
+        # only search in correct subfolders, to avoid errors if one of the
+        # DTV_SCAN_TABLES_DIRS exists, but has incorrect content
+        for d in DTV_SCAN_TABLES_DIRS:
+            if os.access(d, os.F_OK | os.R_OK) and os.access(os.path.join(d, 'dvb-s'), os.F_OK | os.R_OK):
                 for f in os.listdir(os.path.join(d, 'dvb-s')):
                     self.satellites.append([f, os.path.join(d, 'dvb-s', f)])
 
