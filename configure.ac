@@ -112,7 +112,7 @@ AC_DEFINE_UNQUOTED([DVBDAEMON_PLUGIN_ID], ["$DVBDAEMON_PLUGIN_ID"], [DVB Daemon 
 AC_ARG_ENABLE([grilo-plugin],
 	AS_HELP_STRING([--enable-grilo-plugin], [Install the Grilo plugin (default: auto)]),
 	[
-		case "$enablevar" in
+		case "$enableval" in
 			yes)
 				if test "x$HAVE_GRL" = "xno"; then
 					AC_MSG_ERROR([${GRL_NAME} not found, install it or use --disable-grilo-plugin])
@@ -123,13 +123,13 @@ AC_ARG_ENABLE([grilo-plugin],
 	],
 	[
 		if test "x$HAVE_GRL" = "xyes"; then
-			enable_grilo=yes
+			enable_grilo_plugin=yes
 		else
-			enable_grilo=no
+			enable_grilo_plugin=no
 		fi
 	])
 
-AM_CONDITIONAL(ENABLE_GRILO, test "x$enable_grilo" = "xyes")
+AM_CONDITIONAL(ENABLE_GRILO, test "x$enable_grilo_plugin" = "xyes")
 
 
 dnl **********
