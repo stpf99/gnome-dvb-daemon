@@ -224,7 +224,7 @@ class ControlCenterWindow(Gtk.Window):
         self.timersitem.set_image(timers_image)
         self.timersitem.set_sensitive(False)
 
-        recordings_image = Gtk.Image.new_from_icon_name("video", Gtk.IconSize.MENU)
+        recordings_image = Gtk.Image.new_from_icon_name("video-x-generic", Gtk.IconSize.MENU)
         recordings_image.show()
 
         recordings = uimanager.get_widget('/MenuBar/Timers/Recordings')
@@ -273,7 +273,7 @@ class ControlCenterWindow(Gtk.Window):
         self.button_display_timers.show()
         self.toolbar.insert(self.button_display_timers, 0)
 
-        recordings_image = Gtk.Image.new_from_icon_name("video", Gtk.IconSize.MENU)
+        recordings_image = Gtk.Image.new_from_icon_name("video-x-generic", Gtk.IconSize.MENU)
         recordings_image.show()
 
         button_recordings = Gtk.ToolButton(icon_widget=recordings_image, label=_("Recordings"))
