@@ -32,6 +32,7 @@ _ = t.gettext
 INFOS = {
     "authors": ["Sebastian Pölsterl <sebp@k-d-w.org>"],
     "copyright" : "Copyright © 2008-2014\nSebastian Pölsterl.",
+    "logo-icon-name": "gnome-dvb-daemon",
     "name" : _("GNOME DVB Daemon"),
     "version" : gnomedvb.defs.VERSION,
     "website" : "https://wiki.gnome.org/Projects/DVBDaemon",
