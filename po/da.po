@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
 "daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-09-30 23:21+0000\n"
+"POT-Creation-Date: 2017-02-26 07:34+0000\n"
 "PO-Revision-Date: 2017-01-10 18:12+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <da@li.org>\n"
@@ -95,7 +95,7 @@ msgstr "Der opstod en fejl under tilføjelse af gruppen"
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
 #, python-format
 msgid "Are you sure you want to delete the group '%s'?"
-msgstr "Er du sikker på at du vil slette gruppen \"%s\"?"
+msgstr "Er du sikker på at du vil slette gruppen “%s”?"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:268
 msgid "All assignments to this group will be lost."
@@ -410,7 +410,9 @@ msgstr "Enhed kunne ikke føjes til gruppe"
 msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
-msgstr "Enheden skal ikke være tildelt en anden gruppe, og alle enheder i gruppen skal være af samme type."
+msgstr ""
+"Enheden skal ikke være tildelt en anden gruppe, og alle enheder i gruppen "
+"skal være af samme type."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
@@ -458,7 +460,8 @@ msgstr "Timeren kunne ikke oprettes"
 msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
-msgstr "Timeren må ikke starte i fortiden og må ikke være i konflikt med andre."
+msgstr ""
+"Timeren må ikke starte i fortiden og må ikke være i konflikt med andre."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
@@ -693,7 +696,7 @@ msgstr "Enhed ej understøttet"
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
-msgstr "Beklager, men enheder af typen \"%s\" understøttes ikke."
+msgstr "Beklager, men enheder af typen “%s” understøttes ikke."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "Could not find initial tuning data."
@@ -713,7 +716,7 @@ msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
 msgstr ""
-"Hvis du ikke ved hvilken sendemast du bør vælge, kan du vælge \"Ukendt\" på "
+"Hvis du ikke ved hvilken sendemast du bør vælge, kan du vælge “Ukendt” på "
 "listen af sendemaster."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:208
@@ -771,7 +774,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
 msgid "Click \"Forward\" to begin."
-msgstr "Tryk \"Fortsæt\" for at begynde."
+msgstr "Tryk “Fortsæt” for at begynde."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:40
 msgid "_Expert mode"
