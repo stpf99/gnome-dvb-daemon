@@ -14,7 +14,7 @@ It can be controlled by any application via its D-Bus interface.</description>
   <download-page rdf:resource="http://download.gnome.org/sources/gnome-dvb-daemon/" />
   <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gnome-dvb-daemon/issues/" />
 
-  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
+  <!-- <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" /> -->
 
   <maintainer>
     <foaf:Person>
