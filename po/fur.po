@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-dvb-daemon/"
 "issues\n"
 "POT-Creation-Date: 2018-12-15 23:20+0000\n"
-"PO-Revision-Date: 2019-03-04 19:45+0100\n"
+"PO-Revision-Date: 2019-03-05 22:06+0100\n"
 "Language-Team: Friulian <fur@li.org>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -404,6 +404,8 @@ msgid ""
 "Make sure that the device isn't already assigned to a different group and "
 "that all devices in the group are of the same type."
 msgstr ""
+"Controle che il dispositîf nol sedi za assegnât a un altri grup e che ducj i "
+"dispositîfs tal grup a sedin dal stes gjenar."
 
 #: ../client/gnomedvb/ui/recordings/RecordingsDialog.py:96
 msgid "Delete selected recordings?"
@@ -429,7 +431,7 @@ msgstr "Durade"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:167
 msgid "Timer could not be deleted"
-msgstr ""
+msgstr "Impussibil eliminâ il timer"
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:179
 msgid "Abort active recording?"
@@ -438,28 +440,31 @@ msgstr "Fermâ la regjistrazion ative?"
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:181
 msgid "The timer you selected belongs to a currently active recording."
 msgstr ""
+"Il timer selezionât al aparten a une regjistrazion ative in chest moment."
 
 #: ../client/gnomedvb/ui/timers/EditTimersDialog.py:182
 msgid "Deleting this timer will abort the recording."
-msgstr ""
+msgstr "Eliminant chest timer si fermarà la regjistrazion."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:28
 msgid "Timer could not be created"
-msgstr ""
+msgstr "Impussibil creâ il timer"
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:30
 msgid ""
 "Make sure that the timer doesn't conflict with another one and doesn't start "
 "in the past."
 msgstr ""
+"Controle che il timer nol sedi in conflit cuntun altri e che nol tachedi "
+"prime di cumò."
 
 #: ../client/gnomedvb/ui/timers/MessageDialogs.py:40
 msgid "Recording has been scheduled successfully"
-msgstr ""
+msgstr "La regjistrazion e je stade programade un sucès"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:62
 msgid "Add Timer"
-msgstr ""
+msgstr "Zonte timer"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:65
 msgid "_Channel:"
@@ -467,7 +472,7 @@ msgstr "_Canâl:"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:83
 msgid "Edit Timer"
-msgstr ""
+msgstr "Modifiche timer"
 
 #: ../client/gnomedvb/ui/timers/TimerDialog.py:86
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:59
@@ -500,7 +505,7 @@ msgstr "Canâi radio"
 
 #: ../client/gnomedvb/ui/widgets/DateTime.py:50
 msgid "_Time:"
-msgstr ""
+msgstr "_Ore:"
 
 #: ../client/gnomedvb/ui/widgets/DetailsDialog.py:54
 msgid "Title:"
@@ -574,7 +579,7 @@ msgstr ""
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:73
 msgid "Name"
-msgstr "Non "
+msgstr "Non"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:79
 msgid "Type"
@@ -647,7 +652,7 @@ msgstr "_Canâi:"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:118
 msgid "Select _scrambled channels"
-msgstr ""
+msgstr "Selezione canâi _criptâts"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:134
 msgid "Signal quality:"
@@ -659,11 +664,11 @@ msgstr "Fuarce segnâl:"
 
 #: ../client/gnomedvb/ui/wizard/pages/ChannelScanPage.py:162
 msgid "Scanning for channels"
-msgstr ""
+msgstr "Scansion di canâi"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:157
 msgid "Missing requirements"
-msgstr ""
+msgstr "A mancjin recuisîts"
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:163
 msgid "Country and antenna selection"
@@ -751,13 +756,14 @@ msgstr "No sai"
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
 msgid "Welcome to the digital television Assistant."
-msgstr ""
+msgstr "Benvignût sul assistent de television digjitâl."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
 msgid ""
 "It will automatically configure your devices and search for channels, if "
 "necessary."
 msgstr ""
+"Al configurarà in automatic i dispositîfs e al cirarà i canâi, se necessari."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:33
 msgid "Click \"Forward\" to begin."
@@ -773,86 +779,92 @@ msgstr "Configurazion TV digjitâl"
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:35
 msgid "Choose a location where you want to save the list of channels."
-msgstr ""
+msgstr "Sielç une posizion dulà salvâ la liste dai canâi."
 
 #: ../client/gnomedvb/ui/wizard/pages/SaveChannelListPage.py:46
 msgid "Save channels"
-msgstr ""
+msgstr "Salve canâi"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
 msgid "Device configuration"
-msgstr ""
+msgstr "Configurazion dispositîf"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
 msgid "Configuring device"
-msgstr ""
+msgstr "Daûr a configurâ il dispositîf"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
 msgid "No channels were found."
-msgstr ""
+msgstr "Nol è stât cjatât nissun canâl."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:129
 msgid ""
 "Make sure that the antenna is connected and you have selected the correct "
 "tuning data."
 msgstr ""
+"Controle che la antene e sedi colegade e di vê selezionât i dâts di "
+"sintonizazion juscj."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:140
 #, python-format
 msgid "The device has been added to the group %s."
-msgstr ""
+msgstr "Il dispositîf al è stât zontât al grup %s."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
 msgid "An error occurred while trying to setup the device."
-msgstr ""
+msgstr "Si è verificât un erôr intal cirî di configurâ il dispositîf."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
 msgid "Configure Another Device"
-msgstr ""
+msgstr "Configure un altri dispositîf"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:37
 msgid "Configuration finished"
-msgstr ""
+msgstr "Configurazion finide"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
 #, python-format
 msgid "The device %s has been configured successfully."
-msgstr ""
+msgstr "Il dispositîf %s al è stât configurât cun sucès."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
 #, python-format
 msgid "Failed configuring device %s."
-msgstr ""
+msgstr "No si è rivâts a configurâ il dispositîf %s."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:45
 msgid "Cleaning up. This may take a while."
-msgstr ""
+msgstr "Daûr a fâ netisie. Al podarès tirâle a dilunc."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:83
 #: ../data/gnome-dvb-setup.desktop.in.in.h:2
 msgid "Setup digital TV"
-msgstr ""
+msgstr "Configure TV digjitâl"
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:168
 msgid ""
 "The generated channels file can be used to configure your devices in the "
 "control center."
 msgstr ""
+"Il file dai canâi gjenerât al pues jessi doprât par configurâ i dispositîfs "
+"tal centri di control."
 
 #: ../client/gnomedvb/ui/wizard/SetupWizard.py:215
 msgid ""
 "Are you sure you want to abort?\n"
 "All process will be lost."
 msgstr ""
+"Sigûrs di anulâ?\n"
+"Dut il procès al larà pierdût."
 
 #: ../data/gnome-dvb-control.desktop.in.in.h:1
 msgid "Digital TV Control Center"
-msgstr ""
+msgstr "Centri di control de TV digjitâl"
 
 #: ../data/gnome-dvb-control.desktop.in.in.h:2
 msgid "Schedule recordings and browse program guide"
-msgstr ""
+msgstr "Programe regjistrazions e esplore la vuide dai programs"
 
 #: ../data/gnome-dvb-setup.desktop.in.in.h:1
 msgid "Digital TV Setup"
-msgstr ""
+msgstr "Configurazion TV digjitâl"
