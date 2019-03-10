@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
-"daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-02-26 07:34+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-dvb-daemon/"
+"issues\n"
+"POT-Creation-Date: 2018-06-10 16:52+0000\n"
 "PO-Revision-Date: 2017-01-10 18:12+0100\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <da@li.org>\n"
@@ -271,10 +271,9 @@ msgstr "Planlæg optagelse for valgte hændelse?"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:597
 msgid "translator-credits"
 msgstr ""
-"Launchpad Contributions:\n"
-"  Ask Hjorth Larsen https://launchpad.net/~askhl\n"
-"  Ville Witt https://launchpad.net/~villewitt\n"
-"  Alan Mortensen https://launchpad.net/~alanmortensen-am"
+"Ask Hjorth Larsen\n"
+"Ville Witt\n"
+"Alan Mortensen"
 
 #: ../client/gnomedvb/ui/preferences/DeviceGroupsView.py:59
 msgid "Devices"
@@ -951,3 +950,4 @@ msgstr "Opsætning af digital-tv"
 
 #~ msgid "Totem Movie Player"
 #~ msgstr "Totem - filmafspiller"
+
