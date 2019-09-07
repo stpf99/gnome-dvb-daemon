@@ -8,10 +8,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
-"daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-11-15 21:11+0000\n"
-"PO-Revision-Date: 2015-10-07 17:07+0300\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-dvb-daemon/"
+"issues\n"
+"POT-Creation-Date: 2018-06-10 16:52+0000\n"
+"PO-Revision-Date: 2019-09-07 17:36+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: fi\n"
@@ -20,31 +20,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2011-04-16 19:16+0000\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Poedit 2.0.6\n"
 
-#: ../client/gnomedvb/__init__.py:35
+#: ../client/gnomedvb/__init__.py:36
 msgid "GNOME DVB Daemon"
 msgstr "GNOME DVB -taustapalvelu"
 
-#: ../client/gnomedvb/__init__.py:38
+#: ../client/gnomedvb/__init__.py:39
 msgid "GNOME DVB Daemon Website"
 msgstr "GNOME DVB -taustapalvelun verkkosivusto"
 
-#: ../client/gnomedvb/__init__.py:66
+#: ../client/gnomedvb/__init__.py:67
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d tunti"
 msgstr[1] "%d tuntia"
 
-#: ../client/gnomedvb/__init__.py:68
+#: ../client/gnomedvb/__init__.py:69
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuutti"
 msgstr[1] "%d minuuttia"
 
-#: ../client/gnomedvb/__init__.py:70
+#: ../client/gnomedvb/__init__.py:71
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -90,7 +90,7 @@ msgid "Channels of group"
 msgstr "Ryhmän kanavat"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:256
-msgid "An error occured while adding the group"
+msgid "An error occurred while adding the group"
 msgstr "Ryhmän lisäämisessä tapahtui virhe"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:265
@@ -103,7 +103,7 @@ msgid "All assignments to this group will be lost."
 msgstr "Kaikki tehtävät tähän ryhmään menetetään"
 
 #: ../client/gnomedvb/ui/channellisteditor/ChannelListEditorDialog.py:283
-msgid "An error occured while removing the group"
+msgid "An error occurred while removing the group"
 msgstr "Ryhmää poistettaessa tapahtui virhe"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:55
@@ -387,7 +387,6 @@ msgstr "Laitetta ei voida poistaa ryhmästä"
 
 #: ../client/gnomedvb/ui/preferences/Preferences.py:235
 #, python-format
-#| msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>"
 msgid "Are you sure you want to remove device <b>%s</b> from <b>%s</b>?"
 msgstr "Haluatko varmasti poistaa laitteen <b>%s</b> paikasta <b>%s</b>?"
 
@@ -559,17 +558,14 @@ msgid "digital terrestrial"
 msgstr "digitaalinen antenni"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:13
-#| msgid "digital cable"
 msgid "digital cable TV"
 msgstr "digitaalinen kaapeli-TV"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:14
-#| msgid "digital satellite"
 msgid "digital satellite TV"
 msgstr "digitaalinen satelliitti-TV"
 
 #: ../client/gnomedvb/ui/wizard/__init__.py:15
-#| msgid "digital terrestrial"
 msgid "digital terrestrial TV"
 msgstr "digitaalinen antenni-TV"
 
@@ -611,8 +607,8 @@ msgstr ""
 "Mene asetusvalikkoon jos haluat muuttaa jo määritettyjen laitteiden asetuksia"
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:114
-msgid "An error occured while retrieving devices."
-msgstr "Laitteita haettaessa tapahtui virhe"
+msgid "An error occurred while retrieving devices."
+msgstr "Laitteita haettaessa tapahtui virhe."
 
 #: ../client/gnomedvb/ui/wizard/pages/AdaptersPage.py:116
 msgid ""
@@ -696,25 +692,25 @@ msgid "Unsupported adapter"
 msgstr "Tukematon sovitin"
 
 #. translators: first %s is the DVB type, e.g. DVB-S
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:196
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:197
 #, python-format
 msgid "Sorry, but '%s' cards aren't supported."
-msgstr "Anteeksi, mutta '%s'-kortit eivät ole tuettuja"
+msgstr "Pahoittelut, mutta '%s'-kortit eivät ole tuettuja."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:200
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
 msgid "Could not find initial tuning data."
 msgstr "Alustavia viritystietoja ei löytynyt"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:201
-msgid "Please make sure that the dvb-apps package is installed."
-msgstr "Vamistathan että paketti dvb-apps on asennettu."
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:202
+msgid "Please make sure that the dtv-scan-tables package is installed."
+msgstr "Varmista että paketti dvt-scan-tables on asennettu."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:205
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
 msgid ""
 "Please choose a country and the antenna that is closest to your location."
 msgstr "Valitse valtio ja antenni, joka on lähinnä omaa sijaintiasi."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:206
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:207
 msgid ""
 "If you don't know which antenna to choose select \"Don't know\" from the "
 "list of providers."
@@ -722,45 +718,45 @@ msgstr ""
 "Jos et tiedät mikä antenni sinun tulisi valita, valitse \"En tiedä\" "
 "palveluntarjoajien listalta."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:207
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:208
 msgid "However, searching for channels will take considerably longer this way."
 msgstr ""
 "Kuitenkin kanavien etsintä tällä tavalla vie huomattavasti pidemmän aikaa."
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:212
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:213
 msgid "Not listed"
 msgstr "Ei luettelossa"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:220
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:294
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:221
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:295
 msgid "_Country:"
 msgstr "_Maa:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:246
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:247
 msgid "_Antenna:"
 msgstr "_Antenni:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:255
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:256
 msgid "Antenna"
 msgstr "Antenni"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:269
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:270
 msgid "_Satellite:"
 msgstr "_Satelliitti:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:277
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:278
 msgid "Satellite"
 msgstr "Satelliitti"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:318
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:319
 msgid "_Providers:"
 msgstr "_Palveluntarjoaja:"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:326
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:327
 msgid "Provider"
 msgstr "Palveluntarjoaja"
 
-#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:377
+#: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:378
 msgid "Don't know"
 msgstr "En tiedä"
 
@@ -797,13 +793,16 @@ msgid "Save channels"
 msgstr "Tallenna kanavat"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:46
+msgid "Device configuration"
+msgstr "Laitemääritykset"
+
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:90
 msgid "Configuring device"
 msgstr "Määritetään laite"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:128
 msgid "No channels were found."
-msgstr "Kanavia ei löytynyt"
+msgstr "Kanavia ei löytynyt."
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:129
 msgid ""
@@ -818,8 +817,8 @@ msgid "The device has been added to the group %s."
 msgstr "Laite on lisätty ryhmään %s"
 
 #: ../client/gnomedvb/ui/wizard/pages/SetupDevicePage.py:149
-msgid "An error occured while trying to setup the device."
-msgstr "Laitteen asennuksessa tapahtui virhe"
+msgid "An error occurred while trying to setup the device."
+msgstr "Laitteen asennuksessa tapahtui virhe."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:32
 msgid "Configure Another Device"
@@ -831,8 +830,8 @@ msgstr "Kokoonpano saatiin valmiiksi"
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:44
 #, python-format
-msgid "The device %s has been configured sucessfully."
-msgstr "Laitteen %s kokoonpano on valmis."
+msgid "The device %s has been configured successfully."
+msgstr "Laite %s on määritetty onnistuneesti."
 
 #: ../client/gnomedvb/ui/wizard/pages/SummaryPage.py:46
 #, python-format
