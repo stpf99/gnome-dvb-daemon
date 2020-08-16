@@ -40,14 +40,14 @@ namespace DVB {
         /**
          * @returns: A list of ids for all recordings
          */
-        public abstract uint32[] GetRecordings () throws DBusError;
+        public abstract uint32[] GetRecordings () throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
          * @location: The location of the recording on the filesystem
          * @returns: TRUE on success
          */
-        public abstract bool GetLocation (uint32 rec_id, out string location) throws DBusError;
+        public abstract bool GetLocation (uint32 rec_id, out string location) throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
@@ -55,7 +55,7 @@ namespace DVB {
          * a TV show)
          * @returns: TRUE on success
          */
-        public abstract bool GetName (uint32 rec_id, out string name) throws DBusError;
+        public abstract bool GetName (uint32 rec_id, out string name) throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
@@ -63,28 +63,28 @@ namespace DVB {
          * (e.g. the description from EPG)
          * @returns: TRUE on success
          */
-        public abstract bool GetDescription (uint32 rec_id, out string description) throws DBusError;
+        public abstract bool GetDescription (uint32 rec_id, out string description) throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
          * @start_time: The starting time of the recording
          * @returns: TRUE on success
          */
-        public abstract bool GetStartTime (uint32 rec_id, out uint[] start_time) throws DBusError;
+        public abstract bool GetStartTime (uint32 rec_id, out uint[] start_time) throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
          * @timestamp: Start time as UNIX timestamp
          * @returns: TRUE on success
          */
-        public abstract bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) throws DBusError;
+        public abstract bool GetStartTimestamp (uint32 rec_id, out int64 timestamp) throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
          * @length: The length of the recording in seconds
          * @returns: TRUE on success
          */
-        public abstract bool GetLength (uint32 rec_id, out int64 length) throws DBusError;
+        public abstract bool GetLength (uint32 rec_id, out int64 length) throws DBusError, IOError;
 
          /**
          * @rec_id: The id of the recording
@@ -93,7 +93,7 @@ namespace DVB {
          * Delete the recording. This deletes all files in the directory
          * created by the Recorder
          */
-        public abstract bool Delete (uint32 rec_id) throws DBusError;
+        public abstract bool Delete (uint32 rec_id) throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
@@ -101,7 +101,7 @@ namespace DVB {
          * rec_id doesn't exist
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelName (uint32 rec_id, out string name) throws DBusError;
+        public abstract bool GetChannelName (uint32 rec_id, out string name) throws DBusError, IOError;
 
         /**
          * @rec_id: The id of the recording
@@ -110,7 +110,7 @@ namespace DVB {
          * This method can be used to retrieve all informations
          * about a particular recording at once
          */
-        public abstract bool GetAllInformations (uint32 rec_id, out RecordingInfo infos) throws DBusError;
+        public abstract bool GetAllInformations (uint32 rec_id, out RecordingInfo infos) throws DBusError, IOError;
 
     }
 

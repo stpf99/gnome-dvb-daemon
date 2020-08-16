@@ -31,11 +31,11 @@ namespace DVB {
         public abstract signal void frontend_stats (double signal_strength,
             double signal_noise_ratio);
 
-        public abstract void Run () throws DBusError;
-        public abstract void Destroy () throws DBusError;
-        public abstract bool WriteAllChannelsToFile (string path) throws DBusError;
-        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBusError;
-        public abstract bool AddScanningData (GLib.HashTable<string, Variant> data) throws DBusError;
+        public abstract void Run () throws DBusError, IOError;
+        public abstract void Destroy () throws DBusError, IOError;
+        public abstract bool WriteAllChannelsToFile (string path) throws DBusError, IOError;
+        public abstract bool WriteChannelsToFile (uint[] channel_sids, string path) throws DBusError, IOError;
+        public abstract bool AddScanningData (GLib.HashTable<string, Variant> data) throws DBusError, IOError;
 
         /**
          * @path: Path to file containing scanning data
@@ -43,6 +43,6 @@ namespace DVB {
          *
          * Parses initial tuning data from a file as provided by dtv-scan-tables
          */
-        public abstract bool AddScanningDataFromFile (string path) throws DBusError;
+        public abstract bool AddScanningDataFromFile (string path) throws DBusError, IOError;
     }
 }

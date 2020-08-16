@@ -58,13 +58,13 @@ public interface MediaContainer2 : GLib.Object {
     }
 
     public abstract GLib.HashTable<string, Variant?>[] ListChildren (
-        uint offset, uint max, string[] filter) throws DBusError;
+        uint offset, uint max, string[] filter) throws DBusError, IOError;
 
     public abstract GLib.HashTable<string, Variant?>[] ListContainers (
-        uint offset, uint max, string[] filter) throws DBusError;
+        uint offset, uint max, string[] filter) throws DBusError, IOError;
 
     public abstract GLib.HashTable<string, Variant?>[] ListItems (
-        uint offset, uint max, string[] filter) throws DBusError;
+        uint offset, uint max, string[] filter) throws DBusError, IOError;
 
 }
 

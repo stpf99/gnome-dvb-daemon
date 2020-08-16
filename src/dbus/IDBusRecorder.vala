@@ -54,7 +54,7 @@ namespace DVB {
          */
         public abstract bool AddTimer (uint channel,
             int start_year, int start_month, int start_day,
-            int start_hour, int start_minute, uint duration, out uint32 timer_id) throws DBusError;
+            int start_hour, int start_minute, uint duration, out uint32 timer_id) throws DBusError, IOError;
 
          /**
          * Works the same way as AddTimer() but adds a margin before and
@@ -62,7 +62,7 @@ namespace DVB {
          */
         public abstract bool AddTimerWithMargin (uint channel,
             int start_year, int start_month, int start_day,
-            int start_hour, int start_minute, uint duration, out uint32 timer_id) throws DBusError;
+            int start_hour, int start_minute, uint duration, out uint32 timer_id) throws DBusError, IOError;
 
         /**
          * @event_id: id of the EPG event
@@ -72,7 +72,7 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool AddTimerForEPGEvent (uint event_id,
-            uint channel_sid, out uint32 timer_id) throws DBusError;
+            uint channel_sid, out uint32 timer_id) throws DBusError, IOError;
 
         /**
          * @timer_id: The id of the timer you want to delete
@@ -81,13 +81,13 @@ namespace DVB {
          * Delete timer. If the id belongs to the currently
          * active timer recording is aborted.
          */
-        public abstract bool DeleteTimer (uint32 timer_id) throws DBusError;
+        public abstract bool DeleteTimer (uint32 timer_id) throws DBusError, IOError;
 
         /**
          * dvb_recorder_GetTimers
          * @returns: A list of all timer ids
          */
-        public abstract uint32[] GetTimers () throws DBusError;
+        public abstract uint32[] GetTimers () throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
@@ -95,7 +95,7 @@ namespace DVB {
          * 2 = day, 3 = hour and 4 = minute.
          * @returns: TRUE on success
          */
-        public abstract bool GetStartTime (uint32 timer_id, out uint32[] start_time) throws DBusError;
+        public abstract bool GetStartTime (uint32 timer_id, out uint32[] start_time) throws DBusError, IOError;
 
         /**
          * @timer_id: The new timer's id on success, or 0 if timer couldn't
@@ -108,14 +108,14 @@ namespace DVB {
          * @returns: TRUE on success
          */
         public abstract bool SetStartTime (uint32 timer_id, int start_year,
-            int start_month, int start_day, int start_hour, int start_minute) throws DBusError;
+            int start_month, int start_day, int start_hour, int start_minute) throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
          * @end_time: Same as dvb_recorder_GetStartTime()
          * @returns: TRUE on success
          */
-        public abstract bool GetEndTime (uint32 timer_id, out uint[] end_time) throws DBusError;
+        public abstract bool GetEndTime (uint32 timer_id, out uint[] end_time) throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
@@ -123,14 +123,14 @@ namespace DVB {
          * the given id
          * @returns: TRUE on success
          */
-        public abstract bool GetDuration (uint32 timer_id, out uint duration) throws DBusError;
+        public abstract bool GetDuration (uint32 timer_id, out uint duration) throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
          * @duration: Duration in minutes
          * @returns: TRUE on success
          */
-        public abstract bool SetDuration (uint32 timer_id, uint duration) throws DBusError;
+        public abstract bool SetDuration (uint32 timer_id, uint duration) throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
@@ -138,7 +138,7 @@ namespace DVB {
          * empty string when a timer with the given id doesn't exist
          * @returns: TRUE on success
          */
-        public abstract bool GetChannelName (uint32 timer_id, out string name) throws DBusError;
+        public abstract bool GetChannelName (uint32 timer_id, out string name) throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
@@ -147,7 +147,7 @@ namespace DVB {
          * about the title of the show
          * @returns: TRUE on success
          */
-        public abstract bool GetTitle (uint32 timer_id, out string title) throws DBusError;
+        public abstract bool GetTitle (uint32 timer_id, out string title) throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
@@ -156,30 +156,30 @@ namespace DVB {
          * This method can be used to retrieve all informations
          * about a particular timer at once
          */
-        public abstract bool GetAllInformations (uint32 timer_id, out TimerInfo info) throws DBusError;
+        public abstract bool GetAllInformations (uint32 timer_id, out TimerInfo info) throws DBusError, IOError;
 
         /**
          * @returns: The currently active timers
          */
-        public abstract uint32[] GetActiveTimers () throws DBusError;
+        public abstract uint32[] GetActiveTimers () throws DBusError, IOError;
 
         /**
          * @timer_id: Timer's id
          * @returns: TRUE if timer is currently active
          */
-        public abstract bool IsTimerActive (uint32 timer_id) throws DBusError;
+        public abstract bool IsTimerActive (uint32 timer_id) throws DBusError, IOError;
 
         /**
          * @returns: TRUE if a timer is already scheduled in the given
          * period of time
          */
         public abstract bool HasTimer (uint start_year, uint start_month,
-            uint start_day, uint start_hour, uint start_minute, uint duration) throws DBusError;
+            uint start_day, uint start_hour, uint start_minute, uint duration) throws DBusError, IOError;
 
         /**
          * Checks if a timer overlaps with the given event
          */
-        public abstract OverlapType HasTimerForEvent (uint event_id, uint channel_sid) throws DBusError;
+        public abstract OverlapType HasTimerForEvent (uint event_id, uint channel_sid) throws DBusError, IOError;
 
     }
 
