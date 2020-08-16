@@ -32,7 +32,7 @@ namespace DVB {
         public uint Frequency { get; protected set; }
 
         // Constructor
-        public Parameter (DvbSrcDelsys delsys) {
+        protected Parameter (DvbSrcDelsys delsys) {
             base (Delsys: delsys);
         }
 

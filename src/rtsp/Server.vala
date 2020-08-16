@@ -31,7 +31,7 @@ namespace DVB.RTSPServer {
         string iface = settings.get_streaming_interface ();
 
         string? address = null;
-        GLib.List<unowned cUtils.NetAdapter?> adapters = cUtils.get_adapters ();
+        GLib.List<cUtils.NetAdapter?> adapters = cUtils.get_adapters ();
         foreach (unowned cUtils.NetAdapter? na in adapters) {
             if (na.name == iface) {
                 address = na.address;

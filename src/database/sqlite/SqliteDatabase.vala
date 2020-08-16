@@ -32,7 +32,7 @@ namespace DVB.database.sqlite {
         protected Database db;
         private int new_version;
 
-        public SqliteDatabase (File dbfile, int version) {
+        protected SqliteDatabase (File dbfile, int version) {
             base (database_file: dbfile);
             this.new_version = version;
         }

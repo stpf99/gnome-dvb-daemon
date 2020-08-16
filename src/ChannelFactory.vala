@@ -252,7 +252,7 @@ namespace DVB {
             return bin;
         }
 
-        private static int find_element (GLib.Value av, Gst.Element bv) {
+        private static int find_element (GLib.Value? av, Gst.Element bv) {
             Gst.Element a = (Gst.Element)av;
             Gst.Element b = (Gst.Element)bv;
             if (a == b) return 0;
