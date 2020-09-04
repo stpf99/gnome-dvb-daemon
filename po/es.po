@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-dvb-daemon\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=dvb-"
-"daemon&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-09-30 23:21+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gnome-dvb-daemon/"
+"issues\n"
+"POT-Creation-Date: 2020-07-12 10:29+0000\n"
 "PO-Revision-Date: 2016-12-22 12:37+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
@@ -22,29 +22,29 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-04-16 19:16+0000\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../client/gnomedvb/__init__.py:35
+#: ../client/gnomedvb/__init__.py:36
 msgid "GNOME DVB Daemon"
 msgstr "Demonio GNOME DVB"
 
-#: ../client/gnomedvb/__init__.py:38
+#: ../client/gnomedvb/__init__.py:39
 msgid "GNOME DVB Daemon Website"
 msgstr "Sitio web del demonio GNOME DVB"
 
-#: ../client/gnomedvb/__init__.py:66
+#: ../client/gnomedvb/__init__.py:67
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: ../client/gnomedvb/__init__.py:68
+#: ../client/gnomedvb/__init__.py:69
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
-#: ../client/gnomedvb/__init__.py:70
+#: ../client/gnomedvb/__init__.py:71
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -717,7 +717,6 @@ msgid "Could not find initial tuning data."
 msgstr "No se pudo encontrar información inicial de ajuste."
 
 #: ../client/gnomedvb/ui/wizard/pages/InitialTuningDataPage.py:202
-#| msgid "Please make sure that the dvb-apps package is installed."
 msgid "Please make sure that the dtv-scan-tables package is installed."
 msgstr "Asegúrese de que el paquete dtv-scan-tables está instalado."
 
@@ -778,7 +777,7 @@ msgstr "No lo sé"
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
 msgid "Welcome to the digital television Assistant."
-msgstr "Bienvenido al asistente de televisión digital."
+msgstr "Bienvenido/a al asistente de televisión digital."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
 msgid ""
