@@ -20,7 +20,11 @@ import datetime
 from gi.repository import GObject
 from gi.repository import Gtk
 from gnomedvb import DVBRecordingsStoreClient, global_error_handler
-from cgi import escape
+from supervisor.compat import PY2
+if PY2:
+    from cgi import escape
+else:
+    from html import escape
 
 class RecordingsStore(Gtk.ListStore):
 
