@@ -20,6 +20,7 @@ UI:
     - python-gstreamer
     - pygobject >= 2.90.1
     - (Recommended) dtv-scan-tables for initial tuning data
+    - supervisor
     
 Configuration options
 =====================
