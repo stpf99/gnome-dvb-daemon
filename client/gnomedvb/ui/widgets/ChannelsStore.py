@@ -21,7 +21,11 @@ from gi.repository import GObject
 import gnomedvb
 from gnomedvb import global_error_handler
 from gnomedvb.Callback import Callback
-from cgi import escape
+from supervisor.compat import PY2
+if PY2:
+    from cgi import escape
+else:
+    from html import escape
 from gnomedvb import _
 
 class ChannelsStore(Gtk.ListStore):
