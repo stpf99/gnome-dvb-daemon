@@ -212,7 +212,7 @@ namespace DVB {
         }
 
         public bool is_busy () {
-            Element dvbsrc = ElementFactory.make ("dvbsrc", "text_dvbsrc");
+            Element dvbsrc = ElementFactory.make ("dvbsrc", "test_dvbsrc");
             if (dvbsrc == null) {
                 log.error ("Could not create dvbsrc element");
                 return true;
