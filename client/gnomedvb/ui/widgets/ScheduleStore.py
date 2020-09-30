@@ -19,7 +19,11 @@
 from gi.repository import Gtk
 from gi.repository import GObject
 import datetime
-from cgi import escape
+from supervisor.compat import PY2
+if PY2:
+    from cgi import escape
+else:
+    from html import escape
 from gnomedvb import global_error_handler
 
 class ScheduleStore(Gtk.ListStore):
