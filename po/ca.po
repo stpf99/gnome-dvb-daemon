@@ -206,7 +206,7 @@ msgstr "Dia _anterior"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:193
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:309
 msgid "Go to previous day"
-msgstr "Vés al dia anterior"
+msgstr "Ves al dia anterior"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:194
 msgid "_Next Day"
@@ -215,7 +215,7 @@ msgstr "Dia _següent"
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:195
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:318
 msgid "Go to next day"
-msgstr "Vés al dia següent"
+msgstr "Ves al dia següent"
 
 #: ../client/gnomedvb/ui/controlcenter/ControlCenterWindow.py:198
 msgid "_Channels"
@@ -762,7 +762,7 @@ msgstr "No ho sé"
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:28
 msgid "Welcome to the digital television Assistant."
-msgstr "Benvingut a l'assistent de televisió digital."
+msgstr "Us donem la benvinguda a l'assistent de televisió digital."
 
 #: ../client/gnomedvb/ui/wizard/pages/IntroPage.py:32
 msgid ""
