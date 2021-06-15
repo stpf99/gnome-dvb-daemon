@@ -19,7 +19,11 @@
 from gi.repository import Gtk
 from gi.repository import GObject
 import datetime
-from cgi import escape
+import sys
+if sys.version_info.major == 3 and sys.version_info.minor <= 1 or sys.version_info.major == 2:
+    from cgi import escape
+else:
+    from html import escape
 from gnomedvb import global_error_handler
 
 class ScheduleStore(Gtk.ListStore):
