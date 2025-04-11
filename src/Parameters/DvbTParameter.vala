@@ -32,12 +32,19 @@ namespace DVB {
         public ModulationType Constellation { get; private set; }
         public DVBCodeRate CodeRateLP { get; private set; }
         public DVBCodeRate CodeRateHP { get; private set; }
+        
+        // T2 specific parameters
+        public uint PlpId { get; private set; }
+        public uint StreamId { get; private set; }
+        public bool IsT2 { get; private set; }
 
-        // Constructor
+        // Constructor for DVB-T
         public DvbTParameter () {
             base (DvbSrcDelsys.SYS_DVBT);
+            this.IsT2 = false;
         }
 
+        // Constructor for DVB-T with parameters
         public DvbTParameter.with_parameter (uint frequency, uint bandwidth,
                 TerrestrialGuardInterval interval, TerrestrialTransmissionMode transmission,
                 TerrestrialHierarchy hierarchy, ModulationType constellation,
@@ -51,6 +58,32 @@ namespace DVB {
             this.Constellation = constellation;
             this.CodeRateLP = code_rate_lp;
             this.CodeRateHP = code_rate_hp;
+            this.IsT2 = false;
+        }
+
+        // Constructor for DVB-T2
+        public DvbTParameter.t2 () {
+            base (DvbSrcDelsys.SYS_DVBT2);
+            this.IsT2 = true;
+        }
+
+        // Constructor for DVB-T2 with parameters
+        public DvbTParameter.t2_with_parameter (uint frequency, uint bandwidth,
+                TerrestrialGuardInterval interval, TerrestrialTransmissionMode transmission,
+                TerrestrialHierarchy hierarchy, ModulationType constellation,
+                DVBCodeRate code_rate_lp, DVBCodeRate code_rate_hp, uint plp_id, uint stream_id) {
+            base (DvbSrcDelsys.SYS_DVBT2);
+            this.Frequency = frequency;
+            this.Bandwidth = bandwidth;
+            this.GuardInterval = interval;
+            this.TransmissionMode = transmission;
+            this.Hierarchy = hierarchy;
+            this.Constellation = constellation;
+            this.CodeRateLP = code_rate_lp;
+            this.CodeRateHP = code_rate_hp;
+            this.PlpId = plp_id;
+            this.StreamId = stream_id;
+            this.IsT2 = true;
         }
 
         public override bool add_scanning_data (HashTable<string, Variant> data) {
@@ -96,6 +129,27 @@ namespace DVB {
                 return false;
             this.GuardInterval = getGuardIntervalEnum (_var.get_string ());
 
+            // Check if this is T2
+            _var = data.lookup ("delsys");
+            if (_var != null && _var.get_string () == "SYS_DVBT2") {
+                this.IsT2 = true;
+                this.Delsys = DvbSrcDelsys.SYS_DVBT2;
+                
+                _var = data.lookup ("plp-id");
+                if (_var == null)
+                    return false;
+                this.PlpId = _var.get_uint32 ();
+                
+                _var = data.lookup ("stream-id");
+                if (_var != null)
+                    this.StreamId = _var.get_uint32 ();
+                else
+                    this.StreamId = 0;
+            } else {
+                this.IsT2 = false;
+                this.Delsys = DvbSrcDelsys.SYS_DVBT;
+            }
+
             return true;
         }
 
@@ -115,14 +169,27 @@ namespace DVB {
                 tparam.CodeRateHP == this.CodeRateHP &&
                 tparam.CodeRateLP == this.CodeRateLP &&
                 tparam.Constellation == this.Constellation &&
-                tparam.GuardInterval == this.GuardInterval)
+                tparam.GuardInterval == this.GuardInterval) {
+                
+                // For T2, also check T2-specific parameters
+                if (this.IsT2) {
+                    if (tparam.IsT2 && tparam.PlpId == this.PlpId && tparam.StreamId == this.StreamId)
+                        return true;
+                    return false;
+                }
                 return true;
+            }
 
             return false;
         }
 
         public override void prepare (Gst.Element source) {
-            log.debug ("Prepare DVB-T Scanning Parameter");
+            if (this.IsT2) {
+                log.debug ("Prepare DVB-T2 Scanning Parameter");
+            } else {
+                log.debug ("Prepare DVB-T Scanning Parameter");
+            }
+            
             source.set ("frequency", this.Frequency);
             source.set ("bandwidth-hz", this.Bandwidth);
             source.set ("hierarchy", this.Hierarchy);
@@ -132,15 +199,26 @@ namespace DVB {
             source.set ("guard", this.GuardInterval);
             source.set ("trans-mode", this.TransmissionMode);
             source.set ("delsys", this.Delsys);
-
+            
+            if (this.IsT2) {
+                source.set ("plp-id", this.PlpId);
+                source.set ("stream-id", this.StreamId);
+            }
         }
 
         public override string to_string () {
-            return "DVBT:%u:%u:%s:%s:%s:%s:%s:%s".printf (this.Frequency, this.Bandwidth,
-                getCodeRateString (this.CodeRateLP), getCodeRateString (this.CodeRateHP),
-                getModulationString (this.Constellation), getTransmissionModeString (this.TransmissionMode),
-                getGuardIntervalString (this.GuardInterval), getHierarchyString (this.Hierarchy));
+            if (this.IsT2) {
+                return "DVBT2:%u:%u:%s:%s:%s:%s:%s:%s:%u:%u".printf (this.Frequency, this.Bandwidth,
+                    getCodeRateString (this.CodeRateLP), getCodeRateString (this.CodeRateHP),
+                    getModulationString (this.Constellation), getTransmissionModeString (this.TransmissionMode),
+                    getGuardIntervalString (this.GuardInterval), getHierarchyString (this.Hierarchy),
+                    this.PlpId, this.StreamId);
+            } else {
+                return "DVBT:%u:%u:%s:%s:%s:%s:%s:%s".printf (this.Frequency, this.Bandwidth,
+                    getCodeRateString (this.CodeRateLP), getCodeRateString (this.CodeRateHP),
+                    getModulationString (this.Constellation), getTransmissionModeString (this.TransmissionMode),
+                    getGuardIntervalString (this.GuardInterval), getHierarchyString (this.Hierarchy));
+            }
         }
     }
 }
-
