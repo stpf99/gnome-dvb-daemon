@@ -39,7 +39,7 @@ namespace DVB {
 
         private static Logger log = LogManager.getLogManager().getDefaultLogger();
 
-        private const int PRIME = 31;
+        private static const int PRIME = 31;
 
         public uint Adapter { get; construct; }
         public uint Frontend { get; construct; }
@@ -126,12 +126,13 @@ namespace DVB {
         }
 
         public bool isCable () {
-             foreach (DvbSrcDelsys delsys in this.delsys) {
+            foreach (DvbSrcDelsys delsys in this.delsys) {
                 switch (delsys) {
                     case DvbSrcDelsys.SYS_DVBC_ANNEX_A:
                     case DvbSrcDelsys.SYS_DVBC_ANNEX_B:
                     case DvbSrcDelsys.SYS_DVBC_ANNEX_C:
                     case DvbSrcDelsys.SYS_ISDBC:
+                    case DvbSrcDelsys.SYS_DVBC2:  // Added for DVB-C2
                         return true;
                     default:
                         break;
@@ -141,20 +142,20 @@ namespace DVB {
         }
 
         public bool isSatellite () {
-            bool ret = false;
             foreach (DvbSrcDelsys delsys in this.delsys) {
                 switch (delsys) {
-                   case DvbSrcDelsys.SYS_DVBS:
-                   case DvbSrcDelsys.SYS_DVBS2:
-                   case DvbSrcDelsys.SYS_ISDBS:
-                   case DvbSrcDelsys.SYS_DSS:
-                   case DvbSrcDelsys.SYS_TURBO:
-                       return true;
-                   default:
-                       break;
+                    case DvbSrcDelsys.SYS_DVBS:
+                    case DvbSrcDelsys.SYS_DVBS2:
+                    case DvbSrcDelsys.SYS_DVBS2X:  // Added for DVB-S2X
+                    case DvbSrcDelsys.SYS_ISDBS:
+                    case DvbSrcDelsys.SYS_DSS:
+                    case DvbSrcDelsys.SYS_TURBO:
+                        return true;
+                    default:
+                        break;
                 }
             }
-            return ret;
+            return false;
         }
 
         public bool isDVB () {
@@ -164,8 +165,10 @@ namespace DVB {
                     case DvbSrcDelsys.SYS_DVBT2:
                     case DvbSrcDelsys.SYS_DVBS:
                     case DvbSrcDelsys.SYS_DVBS2:
+                    case DvbSrcDelsys.SYS_DVBS2X:  // Added for DVB-S2X
                     case DvbSrcDelsys.SYS_DVBC_ANNEX_A:
                     case DvbSrcDelsys.SYS_DVBC_ANNEX_C:
+                    case DvbSrcDelsys.SYS_DVBC2:   // Added for DVB-C2
                     case DvbSrcDelsys.SYS_DVBH:
                         return true;
                     default:
@@ -278,57 +281,44 @@ namespace DVB {
 
                         if (structure.has_field("dvb-c-a"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBC_ANNEX_A);
-
                         if (structure.has_field("dvb-c-b"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBC_ANNEX_B);
-
                         if (structure.has_field("dvb-t"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBT);
-
                         if (structure.has_field("dss"))
                             this.delsys.add (DvbSrcDelsys.SYS_DSS);
-
                         if (structure.has_field("dvb-s"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBS);
-
                         if (structure.has_field("dvb-s2"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBS2);
-
+                        if (structure.has_field("dvb-s2x"))  // Added for DVB-S2X
+                            this.delsys.add (DvbSrcDelsys.SYS_DVBS2X);
                         if (structure.has_field("dvb-h"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBH);
-
                         if (structure.has_field("isdb-t"))
                             this.delsys.add (DvbSrcDelsys.SYS_ISDBT);
-
                         if (structure.has_field("isdb-s"))
                             this.delsys.add (DvbSrcDelsys.SYS_ISDBS);
-
                         if (structure.has_field("isdb-c"))
                             this.delsys.add (DvbSrcDelsys.SYS_ISDBC);
-
                         if (structure.has_field("atsc"))
                             this.delsys.add (DvbSrcDelsys.SYS_ATSC);
-
                         if (structure.has_field("atsc-mh"))
                             this.delsys.add (DvbSrcDelsys.SYS_ATSCMH);
-
                         if (structure.has_field("dtmb"))
                             this.delsys.add (DvbSrcDelsys.SYS_DTMB);
-
                         if (structure.has_field("cmmb"))
                             this.delsys.add (DvbSrcDelsys.SYS_CMMB);
-
                         if (structure.has_field("dab"))
                             this.delsys.add (DvbSrcDelsys.SYS_DAB);
-
                         if (structure.has_field("dvb-t2"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBT2);
-
                         if (structure.has_field("turbo"))
                             this.delsys.add (DvbSrcDelsys.SYS_TURBO);
-
                         if (structure.has_field("dvb-c-c"))
                             this.delsys.add (DvbSrcDelsys.SYS_DVBC_ANNEX_C);
+                        if (structure.has_field("dvb-c2"))  // Added for DVB-C2
+                            this.delsys.add (DvbSrcDelsys.SYS_DVBC2);
 
                         success = true;
                         break;

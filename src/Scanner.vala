@@ -71,8 +71,8 @@ namespace DVB {
          */
         private Gee.HashSet<Parameter> scanned_scanning_params;
 
-        private const string BASE_PIDS = "16:17"; // NIT, SDT
-        private const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u stats-reporting-interval=100 ! tsparse ! fakesink silent=true";
+        private static const string BASE_PIDS = "16:17"; // NIT, SDT
+        private static const string PIPELINE_TEMPLATE = "dvbsrc name=dvbsrc adapter=%u frontend=%u stats-reporting-interval=100 ! tsparse ! fakesink silent=true";
 
         // Contains SIDs
         private ArrayList<uint> new_channels;
@@ -177,17 +177,45 @@ namespace DVB {
                             return true;
                         }
                         break;
+                    case "DVBT2":
+                        DvbTParameter t2param = new DvbTParameter.t2 ();
+                        if (t2param.add_scanning_data (data)) {
+                            this.add_to_queue (t2param);
+                            return true;
+                        }
+                        break;
                     case "DVBC/ANNEX_A":
-                        DvbCEuropeParameter param = new DvbCEuropeParameter ();
-                        if (param.add_scanning_data (data)) {
-                            this.add_to_queue (param);
+                        DvbCEuropeParameter cparam = new DvbCEuropeParameter ();
+                        if (cparam.add_scanning_data (data)) {
+                            this.add_to_queue (cparam);
+                            return true;
+                        }
+                        break;
+                    case "DVBC2":
+                        DvbCEuropeParameter c2param = new DvbCEuropeParameter.c2 ();
+                        if (c2param.add_scanning_data (data)) {
+                            this.add_to_queue (c2param);
                             return true;
                         }
                         break;
                     case "DVBS":
-                        DvbSParameter param = new DvbSParameter ();
-                        if (param.add_scanning_data (data)) {
-                            this.add_to_queue (param);
+                        DvbSParameter sparam = new DvbSParameter ();
+                        if (sparam.add_scanning_data (data)) {
+                            this.add_to_queue (sparam);
+                            return true;
+                        }
+                        break;
+                    case "DVBS2":
+                        DvbSParameter s2param = new DvbSParameter.with_delivery_system (DvbSrcDelsys.SYS_DVBS2);
+                        if (s2param.add_scanning_data (data)) {
+                            this.add_to_queue (s2param);
+                            return true;
+                        }
+                        break;
+                    case "DVBS2X":
+                        DvbSParameter s2xparam = new DvbSParameter.with_delivery_system (DvbSrcDelsys.SYS_DVBS2X);
+                        if (s2xparam.add_scanning_data (data)) {
+                            this.add_to_queue (s2xparam);
                             return true;
                         }
                         break;
@@ -663,10 +691,18 @@ namespace DVB {
                                 ratelp = tdesc.code_rate_lp;
                             }
 
-                            DvbTParameter dvbtp = new DvbTParameter.with_parameter (
-                                tdesc.frequency, tdesc.bandwidth, tdesc.guard_interval,
-                                tdesc.transmission_mode, tdesc.hierarchy, tdesc.constellation,
-                                ratelp, ratehp);
+                            Parameter dvbtp;
+                            if (tdesc.extension_id == 0x04) { // DVB-T2
+                                dvbtp = new DvbTParameter.t2_with_parameter (
+                                    tdesc.frequency, tdesc.bandwidth, tdesc.guard_interval,
+                                    tdesc.transmission_mode, tdesc.hierarchy, tdesc.constellation,
+                                    ratelp, ratehp, 0, 0); // Default PLP and Stream ID
+                            } else { // DVB-T
+                                dvbtp = new DvbTParameter.with_parameter (
+                                    tdesc.frequency, tdesc.bandwidth, tdesc.guard_interval,
+                                    tdesc.transmission_mode, tdesc.hierarchy, tdesc.constellation,
+                                    ratelp, ratehp);
+                            }
 
                             if (this.current_scanning_param.Frequency == tdesc.frequency) {
                                 lock (this.channels) {
@@ -676,22 +712,31 @@ namespace DVB {
                                     }
                                 }
                                 this.current_scanning_param = dvbtp;
-                            } else
+                            } else {
                                 this.add_to_queue (dvbtp);
+                            }
 
                             break;
                         case DVBDescriptorType.CABLE_DELIVERY_SYSTEM:
                             CableDeliverySystemDescriptor cdesc;
                             desc.parse_cable_delivery_system (out cdesc);
 
-                            DvbCEuropeParameter dvbcp = new DvbCEuropeParameter.with_parameter (
-                                cdesc.frequency, cdesc.symbol_rate, cdesc.modulation,
-                                cdesc.fec_inner);
+                            Parameter dvbcp;
+                            if (cdesc.extension_id == 0x44) { // DVB-C2
+                                dvbcp = new DvbCEuropeParameter.c2_with_parameter (
+                                    cdesc.frequency, cdesc.symbol_rate, cdesc.modulation,
+                                    cdesc.fec_inner, 0, 0); // Default DataSlice and PlpId
+                            } else { // DVB-C
+                                dvbcp = new DvbCEuropeParameter.with_parameter (
+                                    cdesc.frequency, cdesc.symbol_rate, cdesc.modulation,
+                                    cdesc.fec_inner);
+                            }
 
-                            if (this.current_scanning_param.Frequency == cdesc.frequency)
+                            if (this.current_scanning_param.Frequency == cdesc.frequency) {
                                 this.current_scanning_param = dvbcp;
-                            else
+                            } else {
                                 this.add_to_queue (dvbcp);
+                            }
 
                             break;
                         case DVBDescriptorType.SATELLITE_DELIVERY_SYSTEM:
@@ -699,30 +744,38 @@ namespace DVB {
                             desc.parse_satellite_delivery_system (out sdesc);
                             float position;
 
-                            if (!sdesc.modulation_system) {
-                                if (sdesc.modulation_type != ModulationType.QPSK) {
-                                    // TODO: Turbo
-                                } else {
-                                    // DVB-S
-                                    position = sdesc.orbital_position;
-                                    if (!sdesc.west_east) {
-                                       // west
-                                       position *= -1;
-                                    }
-                                    log.debug ("Orbital position: %f", position);
-
-                                    DvbSParameter dvbsp = new DvbSParameter.with_parameter (
-                                        sdesc.frequency, sdesc.symbol_rate, position,
-                                        sdesc.polarization, sdesc.fec_inner);
-
-                                    if (this.current_scanning_param.Frequency == sdesc.frequency)
-                                        this.current_scanning_param = dvbsp;
-                                    else
-                                        this.add_to_queue (dvbsp);
-                                }
-                            } else {
-                               // TODO:  DVB-S2
+                            position = sdesc.orbital_position;
+                            if (!sdesc.west_east) {
+                                // west
+                                position *= -1;
                             }
+                            log.debug ("Orbital position: %f", position);
+
+                            Parameter dvbsp;
+                            if (!sdesc.modulation_system) {
+                                // DVB-S
+                                dvbsp = new DvbSParameter.with_parameter (
+                                    sdesc.frequency, sdesc.symbol_rate, position,
+                                    sdesc.polarization, sdesc.fec_inner,
+                                    DvbSrcDelsys.SYS_DVBS);
+                            } else if (sdesc.extension_id == 0x02) { // DVB-S2X
+                                dvbsp = new DvbSParameter.with_s2x_parameter (
+                                    sdesc.frequency, sdesc.symbol_rate, position,
+                                    sdesc.polarization, sdesc.fec_inner,
+                                    sdesc.modulation_type, 0, 1, 0); // Default StreamId, PLS_Code, PLS_Mode
+                            } else { // DVB-S2
+                                dvbsp = new DvbSParameter.with_extended_parameter (
+                                    sdesc.frequency, sdesc.symbol_rate, position,
+                                    sdesc.polarization, sdesc.fec_inner,
+                                    sdesc.modulation_type, DvbSrcDelsys.SYS_DVBS2);
+                            }
+
+                            if (this.current_scanning_param.Frequency == sdesc.frequency) {
+                                this.current_scanning_param = dvbsp;
+                            } else {
+                                this.add_to_queue (dvbsp);
+                            }
+
                             break;
                         default:
                             break;
