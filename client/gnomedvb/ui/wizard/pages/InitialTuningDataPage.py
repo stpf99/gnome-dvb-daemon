@@ -30,7 +30,7 @@ from gnomedvb import GROUP_TERRESTRIAL
 from gnomedvb import GROUP_SATELLITE
 from gnomedvb import GROUP_CABLE
 
-DTV_SCAN_TABLES_DIRS = ("/usr/share/dvbv5","/usr/share/dvb",)
+DVB_APPS_DIRS = ("/usr/share/dvb-v5",)
 
 COUNTRIES = {
     "ad": "Andorra",
@@ -185,9 +185,8 @@ class InitialTuningDataPage(BasePage):
 
     def is_dvb_apps_installed(self):
         val = False
-        # also check if subdir exists, to test different paths in different distributions
-        for d in DTV_SCAN_TABLES_DIRS:
-            if os.path.exists(d) and os.path.exists(os.path.join(d, 'dvb-t')) :
+        for d in DVB_APPS_DIRS:
+            if os.path.exists(d):
                 val = True
                 break
         return val
@@ -199,7 +198,7 @@ class InitialTuningDataPage(BasePage):
 
     def setup_dvb_apps_missing(self):
         text = "<big><b>%s</b></big>\n%s" % (_("Could not find initial tuning data."),
-            _("Please make sure that the dtv-scan-tables package is installed."))
+            _("Please make sure that the dvb-apps package is installed."))
         self._label.set_markup(text)
 
     def setup_dvb_t(self):
@@ -213,7 +212,7 @@ class InitialTuningDataPage(BasePage):
         countries = {self.NOT_LISTED: _("Not listed")}
         t = gettext.translation("iso_3166", fallback=True)
         for lang in COUNTRIES_DVB_T:
-            countries[lang] = t.gettext(COUNTRIES[lang])
+            countries[lang] = t.ugettext(COUNTRIES[lang])
 
         self._create_table()
 
@@ -233,7 +232,7 @@ class InitialTuningDataPage(BasePage):
         self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
         self.country_combo.set_hexpand(True)
         self.country_combo.connect('changed', self.on_country_changed)
-        self.__data_dir = "dvb-t"
+        self.__data_dir = "terrestrial"
         cell = Gtk.CellRendererText()
         self.country_combo.pack_start(cell, True)
         self.country_combo.set_entry_text_column(0)
@@ -287,7 +286,7 @@ class InitialTuningDataPage(BasePage):
         countries = {}
         t = gettext.translation("iso_3166", fallback=True)
         for lang in COUNTRIES_DVB_C:
-            countries[lang] = t.gettext(COUNTRIES[lang])
+            countries[lang] = t.ugettext(COUNTRIES[lang])
 
         self._create_table()
 
@@ -306,7 +305,7 @@ class InitialTuningDataPage(BasePage):
         self.country_combo = Gtk.ComboBox.new_with_model_and_entry(self.countries)
         self.country_combo.set_hexpand(True)
         self.country_combo.connect('changed', self.on_country_changed)
-        self.__data_dir = "dvb-c"
+        self.__data_dir = "cable"
         cell = Gtk.CellRendererText()
         self.country_combo.pack_start(cell, True)
         self.country_combo.set_entry_text_column(0)
@@ -377,10 +376,8 @@ class InitialTuningDataPage(BasePage):
         if self.__adapter_info["type"] == GROUP_TERRESTRIAL:
             self.providers.append([_("Don't know"), self.NOT_LISTED])
 
-        # only search in correct subfolders, to avoid errors if one of the
-        # DTV_SCAN_TABLES_DIRS exists, but has incorrect content
-        for d in DTV_SCAN_TABLES_DIRS:
-            if os.access(d, os.F_OK | os.R_OK) and os.access(os.path.join(d, self.__data_dir), os.F_OK | os.R_OK):
+        for d in DVB_APPS_DIRS:
+            if os.access(d, os.F_OK | os.R_OK):
                 for f in os.listdir(os.path.join(d, self.__data_dir)):
                     values = f.split('-', 1)
                     if len(values) != 2:
@@ -408,12 +405,10 @@ class InitialTuningDataPage(BasePage):
             self.emit("finished", True)
 
     def read_satellites(self):
-        # only search in correct subfolders, to avoid errors if one of the
-        # DTV_SCAN_TABLES_DIRS exists, but has incorrect content
-        for d in DTV_SCAN_TABLES_DIRS:
-            if os.access(d, os.F_OK | os.R_OK) and os.access(os.path.join(d, 'dvb-s'), os.F_OK | os.R_OK):
-                for f in os.listdir(os.path.join(d, 'dvb-s')):
-                    self.satellites.append([f, os.path.join(d, 'dvb-s', f)])
+        for d in DVB_APPS_DIRS:
+            if os.access(d, os.F_OK | os.R_OK):
+                for f in os.listdir(os.path.join(d, 'satellite')):
+                    self.satellites.append([f, os.path.join(d, 'satellite', f)])
 
     def on_satellite_changed(self, selection):
         model, aiter = selection.get_selected()
